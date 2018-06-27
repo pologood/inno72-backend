@@ -7,102 +7,118 @@
 		<artifactId>inno72-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>inno72-frame</artifactId>
+	<artifactId>inno72-backend</artifactId>
 	<description>
-		inno72-frame提供整体架构中通用的部分功能
+		inno72-backend后台程序
 	</description>
 	<packaging>pom</packaging>
-	<name>inno72-frame</name>
+	<name>inno72-backend</name>
 	<url>http://maven.apache.org</url>
-	
 	<properties>
-	<!-- inno72-plugin版本 -->
-		<plugin.version>0.0.1-SNAPSHOT</plugin.version>
-	<!-- inno72-frame版本 -->
+		<mapper.version>4.0.3</mapper.version>
 		<frame.version>0.0.1-SNAPSHOT</frame.version>
+		<plugin.version>0.0.1-SNAPSHOT</plugin.version>
+		<java.version>1.8</java.version>
+		<freemarker.version>2.3.23</freemarker.version>
+        <generator.version>1.3.6</generator.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	
+	<!-- 配置依赖的仓库地址 -->
+    <repositories>
+        <repository>
+            <id>nexus</id>
+            <url>http://47.95.217.215:8094/repository/maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <!-- 配置插件的仓库地址 -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>nexus</id>
+            <url>http://47.95.217.215:8094/repository/maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 
 	<dependencies>
-		
+
+		<!-- plugin -->
+		<dependency>
+			<groupId>com.inno72</groupId>
+			<artifactId>inno72-core</artifactId>
+			<version>${frame.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.inno72</groupId>
+			<artifactId>inno72-redis</artifactId>
+			<version>${plugin.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.inno72</groupId>
+			<artifactId>inno72-http</artifactId>
+			<version>${plugin.version}</version>
+		</dependency>
+		<dependency>
+		  <groupId>com.alibaba</groupId>
+        <artifactId>fastjson</artifactId>
+        <version>1.2.6</version>
+        </dependency>
+	<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-hystrix</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bcpkix-jdk15on</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- web模块 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- 需打为war包时，tomcat由外部提供 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-web</artifactId>
+			<version>2.6.2</version>
+		</dependency>
+
 	</dependencies>
-	
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.inno72</groupId>
-				<artifactId>inno72-http</artifactId>
-				<version>${plugin.version}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>com.alibaba</groupId>
-				<artifactId>fastjson</artifactId>
-				<version>1.2.6</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
-
-	<!-- 依赖仓库地址 -->
-	<repositories>
-		<repository>
-			<id>nexus</id>
-			<url>http://47.95.217.215:8094/nexus/content/groups/public/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
-	<!-- 插件仓库地址 -->
-	<pluginRepositories>
-		<pluginRepository>
-			<id>nexus</id>
-			<url>http://47.95.217.215:8094/nexus/content/groups/public/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
-
-	<!-- 发布管理 -->
-	<distributionManagement>
-		<repository>
-			<id>nexus-releases</id>
-			<name>Nexus Release Repository</name>
-			<url>http://47.95.217.215:8094/repository/maven-releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>nexus-snapshots</id>
-			<name>Nexus Snapshot Repository</name>
-			<url>http://47.95.217.215:8094/repository/maven-snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
-	
+	<build>
+		<plugins>
+			<!-- war包插件 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 	<modules>
-		<module>inno72-core</module>
-		<module>inno72-config</module>
-		<module>inno72-config-client</module>
-		<module>inno72-register-center</module>
-		<module>inno72-zuul</module>
-		<module>inno72-msg-center</module>
-		<module>inno72-alarm-center</module>
-		<module>inno72-task-dispatch-center</module>
-  </modules>
-
-
-	<!-- 配置git仓库，release插件使用 -->
-	<scm>
-		<connection>scm:git@47.95.217.215/:inno72/inno72-frame.git</connection>
-		<url>scm:git@47.95.217.215/:inno72/inno72-frame.git</url>
-		<developerConnection>scm:git@47.95.217.215/:inno72/inno72-frame.git</developerConnection>
-		<tag>v1.0</tag>
-	</scm>
-
+		<module>machine-backend</module>
+	</modules>
 </project>
