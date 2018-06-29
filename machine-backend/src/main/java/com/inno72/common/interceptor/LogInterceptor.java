@@ -148,6 +148,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	private void checkAuthority(HttpServletRequest request) throws HttpRequestMethodNotSupportedException {
 		String url = request.getServletPath();
 		boolean match = doNotCheckUs.parallelStream().anyMatch(_url -> url.indexOf(_url) != -1);
