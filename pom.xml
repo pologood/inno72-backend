@@ -146,5 +146,6 @@
 	</build>
 	<modules>
 		<module>machine-backend</module>
-	</modules>
+    <module>machine-monitor-backend</module>
+  </modules>
 </project>

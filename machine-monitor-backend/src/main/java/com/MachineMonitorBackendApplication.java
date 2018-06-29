@@ -12,14 +12,14 @@ import com.inno72.springboot.web.SpringBootServletInitializer;
 @EnableFeignClients
 @EnableEurekaClient
 @EnableCircuitBreaker // 开启熔断
-public class MechineBackendApplication extends SpringBootServletInitializer {
+public class MachineMonitorBackendApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
-		new SpringApplicationBuilder(MechineBackendApplication.class, "mechine-backend", args);
+		new SpringApplicationBuilder(MachineMonitorBackendApplication.class, "machine-monitor-backend", args);
 	}
 
 	@Override
 	public String setAppNameForLog() {
-		return "mechine-backend";
+		return "machine-monitor-backend";
 	}
 }
