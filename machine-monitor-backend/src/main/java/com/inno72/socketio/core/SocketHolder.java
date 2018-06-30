@@ -1,4 +1,4 @@
-package com.inno72.socketio;
+package com.inno72.socketio.core;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -8,6 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import com.corundumstudio.socketio.SocketIOClient;
 
+/**
+ * 连接调用类
+ * 
+ * @author lzh
+ *
+ */
 public class SocketHolder {
 
 	private static Logger logger = LoggerFactory.getLogger(SocketHolder.class);
@@ -20,7 +26,6 @@ public class SocketHolder {
 	 * 关闭连接
 	 * 
 	 * @param key
-	 * @author Houkm 2017年9月1日
 	 */
 	public static void close(String key) {
 		logger.info("主动关闭连接 --> {}", key);
@@ -36,11 +41,11 @@ public class SocketHolder {
 	}
 
 	/**
-	 * 发送data给key
+	 * 主动发送message消息
 	 * 
 	 * @param key
 	 * @param data
-	 * @author Houkm 2017年9月1日
+	 * @return
 	 */
 	public static boolean send(String key, String data) {
 		logger.info("发送数据: {} --> {}", key, data);
@@ -48,27 +53,15 @@ public class SocketHolder {
 	}
 
 	/**
-	 * 发送心跳
+	 * 发送心跳消息
 	 * 
 	 * @param key
 	 * @param data
-	 * @author Houkm 2017年9月5日
+	 * @return
 	 */
-	public static boolean heart(String key, String data) {
-		logger.info("发送心跳数据: {} --> {}", key, data);
+	public static boolean monitor(String key, String data) {
+		logger.info("发送监控数据: {} --> {}", key, data);
 		return send(get(key), "heart", data);
-	}
-
-	/**
-	 * 发送destory
-	 * 
-	 * @param key
-	 * @param data
-	 * @author Houkm 2017年9月5日
-	 */
-	public static boolean destory(String key, String data) {
-		logger.info("发送destory数据: {} --> {}", key, data);
-		return send(get(key), "destory", data);
 	}
 
 	static boolean send(SocketIOClient channel, String event, String data) {

@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.inno72.socketio.core.SocketServer;
+import com.inno72.socketio.core.SocketServerHandler;
+
 @Configuration
 public class SocketIOStartHandler {
 	Logger log = LoggerFactory.getLogger(this.getClass());
@@ -18,13 +21,11 @@ public class SocketIOStartHandler {
 
 			@Override
 			public String process(String key, String data, Map<String, List<String>> params) {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
-			public void heartBeatResponse(String key, String data, Map<String, List<String>> params) {
-				// TODO Auto-generated method stub
+			public void monitorResponse(String key, String data, Map<String, List<String>> params) {
 
 			}
 
@@ -34,27 +35,8 @@ public class SocketIOStartHandler {
 			}
 
 			@Override
-			public boolean isExceptionClose(String key, Map<String, List<String>> data) {
-				// TODO Auto-generated method stub
-				return false;
-			}
+			public void closeNotify(String key, Map<String, List<String>> data) {
 
-			@Override
-			public int exceptionCloseWaitTimeSeconds() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public void closeNotify(String key, boolean exception, Map<String, List<String>> data) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public String getCurrentSessionId(Map<String, List<String>> data) {
-				// TODO Auto-generated method stub
-				return null;
 			}
 
 		};

@@ -1,4 +1,4 @@
-package com.inno72.socketio;
+package com.inno72.socketio.core;
 
 import java.util.UUID;
 
@@ -47,7 +47,7 @@ public class SocketServer {
 		server.addConnectListener(listener.connect());
 		server.addDisconnectListener(listener.disconnect());
 		server.addEventListener("message", String.class, listener.message());
-		server.addEventListener("heart", String.class, listener.heart());
+		server.addEventListener("monitor", String.class, listener.monitor());
 
 		server.start();
 		Thread shutdownHookOne = new Thread() {
