@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import tk.mybatis.mapper.entity.Condition;
 
@@ -26,19 +27,32 @@ public class GoodsController {
     private GoodsService goodsService;
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> add(Inno72Goods goods) {
-        goodsService.save(goods);
+    public Result<String> add(Inno72Goods goods,@RequestParam(value = "file",required = false) MultipartFile file) {
+    	try {
+    		goodsService.save(goods,file);
+		} catch (Exception e) {
+			ResultGenerator.genFailResult("操作失败！");
+		}
+        
         return ResultGenerator.genSuccessResult();
     }
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> delete(@RequestParam String id) {
-        goodsService.deleteById(id);
+    	try {
+            goodsService.deleteById(id);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
         return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> update(Inno72Goods goods) {
-        goodsService.update(goods);
+    	try {
+    		goodsService.update(goods);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
         return ResultGenerator.genSuccessResult();
     }
     
@@ -49,9 +63,11 @@ public class GoodsController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list() {
+    public ModelAndView list(Inno72Goods goods) {
    	   Condition condition = new Condition( Inno72Goods.class);
+   	   condition.createCriteria().andEqualTo(goods);
         List<Inno72Goods> list = goodsService.findByPage(condition);
+        
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
 }

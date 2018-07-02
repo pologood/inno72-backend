@@ -27,18 +27,34 @@ public class ActivityController {
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> add(Inno72Activity activity) {
-        activityService.save(activity);
+    	try {
+    		activityService.save(activity);
+		} catch (Exception e) {
+			ResultGenerator.genFailResult("操作失败！");
+		}
+        
         return ResultGenerator.genSuccessResult();
     }
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> delete(@RequestParam String id) {
-        activityService.deleteById(id);
+        try {
+    		activityService.deleteById(id);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
+        
         return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> update(Inno72Activity activity) {
-        activityService.update(activity);
+    	
+    	try {
+    		activityService.update(activity);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
+        
         return ResultGenerator.genSuccessResult();
     }
     
@@ -49,8 +65,9 @@ public class ActivityController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list() {
+    public ModelAndView list(Inno72Activity activity) {
    	   Condition condition = new Condition( Inno72Activity.class);
+   	   condition.createCriteria().andEqualTo(activity);
         List<Inno72Activity> list = activityService.findByPage(condition);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }

@@ -59,15 +59,8 @@ public class AdminAreaController {
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<List<Inno72AdminArea>> list(String code) {
-	   	 Condition condition = new Condition( Inno72AdminArea.class);
-	   	 if (StringUtil.isEmpty(code)) {
-	   		 condition.createCriteria().andCondition("level = 1");
-	   	 }else{
-	   		 condition.createCriteria().andCondition("parent_code = "+code);
-	   	 }
-	   	 //condition.createCriteria().andEqualTo(adminArea);
-   	   
-        List<Inno72AdminArea> list = adminAreaService.findByCondition(condition);
+   	   	//联动查询
+        List<Inno72AdminArea> list = adminAreaService.getLiset(code);
         return ResultGenerator.genSuccessResult(list);
     }
 }

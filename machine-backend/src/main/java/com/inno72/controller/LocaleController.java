@@ -27,25 +27,29 @@ public class LocaleController {
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> add(Inno72Locale locale) {
-        localeService.save(locale);
+    	try {
+    		localeService.save(locale);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
         return ResultGenerator.genSuccessResult();
     }
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> delete(@RequestParam String id) {
-    	
-    	
-    	localeService.deleteById(id);
+    	try {
+    		localeService.deleteById(id);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
         return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> update(Inno72Locale locale) {
-    	
     	try {
-    		
     		localeService.update(locale);
 		} catch (Exception e) {
-			return ResultGenerator.genFailResult("");
+			return ResultGenerator.genFailResult("操作失败！");
 		}
         return ResultGenerator.genSuccessResult();
     }
@@ -57,9 +61,8 @@ public class LocaleController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list() {
-   	   Condition condition = new Condition( Inno72Locale.class);
-        List<Inno72Locale> list = localeService.findByPage(condition);
+    public ModelAndView list(Inno72Locale locale) {
+        List<Inno72Locale> list = localeService.findByPage(locale);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
 }
