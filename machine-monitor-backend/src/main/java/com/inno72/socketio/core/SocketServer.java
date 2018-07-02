@@ -38,8 +38,8 @@ public class SocketServer {
 		Configuration config = new Configuration();
 		config.setHostname(hostname);
 		config.setPort(port);
-		config.setPingTimeout(1000);
-		config.setPingInterval(1100);
+		// config.setPingTimeout(1000);
+		// config.setPingInterval(1100);
 		SocketConfig socketConfig = new SocketConfig();
 		socketConfig.setTcpKeepAlive(false);
 		config.setSocketConfig(socketConfig);

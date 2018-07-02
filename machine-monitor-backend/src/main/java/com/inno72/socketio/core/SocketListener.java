@@ -37,7 +37,7 @@ public class SocketListener {
 				logger.info("【{}】连接到服务器", client.getRemoteAddress());
 				String id = client.getSessionId().toString();
 				Map<String, List<String>> param = client.getHandshakeData().getUrlParams();
-				String machineId = Optional.ofNullable(param.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
+				String machineId = Optional.ofNullable(param.get(CommonConstants.DEVICE_ID)).map(a -> a.get(0))
 						.orElse("init");
 				logger.info("连接ID ：{},机器ID：{}", id, machineId);
 				SocketHolder.bind(id, client);
@@ -52,9 +52,10 @@ public class SocketListener {
 			public void onDisconnect(SocketIOClient client) {
 				String id = client.getSessionId().toString();
 				logger.info("{}断开连接", id);
-				client.disconnect();
-				SocketHolder.remove(id);
-				handler.closeNotify(id, client.getHandshakeData().getUrlParams());
+				// client.disconnect();
+				// SocketHolder.remove(id);
+				// handler.closeNotify(id,
+				// client.getHandshakeData().getUrlParams());
 			}
 		};
 	}
@@ -72,6 +73,7 @@ public class SocketListener {
 				String result = handler.process(client.getSessionId().toString(), data,
 						client.getHandshakeData().getUrlParams());
 				client.sendEvent("message", result);
+				// 只用作客户端获取机器id
 			}
 		};
 	}
