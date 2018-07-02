@@ -43,7 +43,7 @@ public class CustomSelectProvider extends MapperTemplate {
 		exampleProvider = new ExampleProvider(mapperClass, mapperHelper);
 	}
 
-	public String selectByCondition(MappedStatement ms) {
+	public String selectByConditionByPage(MappedStatement ms) {
 		return exampleProvider.selectByExample(ms);
 	}
 }

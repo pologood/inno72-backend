@@ -11,4 +11,5 @@ public interface SelectByPageMapper<T> {
 
 	@SelectProvider(type = CustomSelectProvider.class, method = "dynamicSQL")
 	List<T> selectByConditionByPage(Object condition);
+
 }
