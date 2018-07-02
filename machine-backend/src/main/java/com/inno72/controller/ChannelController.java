@@ -31,19 +31,30 @@ public class ChannelController {
         return ResultGenerator.genSuccessResult();
     }
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> delete(@RequestParam Integer id) {
-        channelService.deleteById(id);
+    public Result<String> delete(@RequestParam String id) {
+        Inno72Channel channel = new Inno72Channel();
+        channel.setId(id);
+        //0：删除，1：未删除
+        channel.setStatus(0);
+        channelService.update(channel);
         return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> update(Inno72Channel channel) {
-        channelService.update(channel);
+        String id = channel.getId();
+        Inno72Channel inno72Channel = channelService.findById(id);
+        if(inno72Channel != null){
+            channelService.update(channel);
+        }else {
+            return ResultGenerator.genFailResult("数据库该数据已删除");
+        }
+
         return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<Inno72Channel> detail(@RequestParam Integer id) {
+    public Result<Inno72Channel> detail(@RequestParam String id) {
         Inno72Channel channel = channelService.findById(id);
         return ResultGenerator.genSuccessResult(channel);
     }
