@@ -48,7 +48,7 @@ public class InitAdminArea {
 			provice.setLevel(1);
 			String provinceCode = String.valueOf(provinceCodeInt) + "0000000";
 			provice.setCode(provinceCode);
-			provice.setProvice(admin.get(i).getName());
+			provice.setProvince(admin.get(i).getName());
 			list.add(provice);
 			for (int j = 0; j < citys.size(); j++) {
 				List<Country> countrys = citys.get(j).getCounties();
@@ -60,7 +60,7 @@ public class InitAdminArea {
 				Inno72AdminArea city = new Inno72AdminArea();
 				city.setName(citys.get(j).getName());
 				city.setLevel(2);
-				city.setProvice(provice.getName());
+				city.setProvince(provice.getName());
 				city.setCity(citys.get(j).getName());
 				String cityCode = String.valueOf(provinceCodeInt) + cs + "00000";
 				city.setCode(cityCode);
@@ -78,7 +78,7 @@ public class InitAdminArea {
 					country.setLevel(3);
 					String countryCode = String.valueOf(provinceCodeInt) + cs + ccs + "000";
 					country.setCode(countryCode);
-					country.setProvice(provice.getName());
+					country.setProvince(provice.getName());
 					country.setCity(city.getName());
 					country.setDistrict(countrys.get(k).getName());
 					country.setParentCode(city.getCode());
@@ -96,7 +96,7 @@ public class InitAdminArea {
 						circle.setLevel(4);
 						String circleCode = String.valueOf(provinceCodeInt) + cs + ccs + cccs;
 						circle.setCode(circleCode);
-						circle.setProvice(provice.getName());
+						circle.setProvince(provice.getName());
 						circle.setCity(city.getName());
 						circle.setDistrict(country.getName());
 						circle.setCircle(circles.get(h).getName());

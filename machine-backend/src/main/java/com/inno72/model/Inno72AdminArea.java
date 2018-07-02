@@ -12,7 +12,7 @@ public class Inno72AdminArea {
 
     private String name;
 
-    private String provice;
+    private String province;
 
     private String city;
 
@@ -65,17 +65,17 @@ public class Inno72AdminArea {
     }
 
     /**
-     * @return provice
+     * @return province
      */
-    public String getProvice() {
-        return provice;
+    public String getProvince() {
+        return province;
     }
 
     /**
-     * @param provice
+     * @param province
      */
-    public void setProvice(String provice) {
-        this.provice = provice;
+    public void setProvince(String province) {
+        this.province = province;
     }
 
     /**
