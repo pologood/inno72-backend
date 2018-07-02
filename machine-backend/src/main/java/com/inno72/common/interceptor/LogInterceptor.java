@@ -37,7 +37,6 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 
 		// 检查POST方法，token，url权限, 启用后删除检查参数中的token
 		// checkAuthority(request);
-		System.out.println("====================");
 		@SuppressWarnings("rawtypes")
 		Enumeration enumeration = request.getParameterNames();
 		StringBuffer parm = new StringBuffer();

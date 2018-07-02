@@ -28,11 +28,11 @@
 			<artifactId>pagehelper</artifactId>
 			<version>4.0.0</version>
 		</dependency>
-		<!--  <dependency>
+		  <dependency>
 			<groupId>com.inno72</groupId>
 			<artifactId>inno72-mongo</artifactId>
 			<version>${mongo.version}</version>
-		</dependency> -->
+		</dependency> 
 
 		<dependency>
 			<groupId>javax.validation</groupId>
