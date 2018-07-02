@@ -5,6 +5,8 @@ import com.inno72.common.ResultGenerator;
 import com.inno72.model.Inno72AdminArea;
 import com.inno72.service.AdminAreaService;
 import com.inno72.common.ResultPages;
+import com.inno72.common.StringUtil;
+
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,10 +50,24 @@ public class AdminAreaController {
         return ResultGenerator.genSuccessResult(adminArea);
     }
     
-    @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list() {
+    @RequestMapping(value = "/pageList", method = { RequestMethod.POST,  RequestMethod.GET})
+    public ModelAndView pageList() {
    	   Condition condition = new Condition( Inno72AdminArea.class);
         List<Inno72AdminArea> list = adminAreaService.findByPage(condition);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
+    }
+    
+    @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
+    public Result<List<Inno72AdminArea>> list(String code) {
+	   	 Condition condition = new Condition( Inno72AdminArea.class);
+	   	 if (StringUtil.isEmpty(code)) {
+	   		 condition.createCriteria().andCondition("level = 1");
+	   	 }else{
+	   		 condition.createCriteria().andCondition("parent_code = "+code);
+	   	 }
+	   	 //condition.createCriteria().andEqualTo(adminArea);
+   	   
+        List<Inno72AdminArea> list = adminAreaService.findByCondition(condition);
+        return ResultGenerator.genSuccessResult(list);
     }
 }
