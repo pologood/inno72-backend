@@ -21,12 +21,14 @@ public class SocketIOStartHandler {
 
 			@Override
 			public String process(String key, String data, Map<String, List<String>> params) {
-				return null;
+				log.info("推送自定义消息" + data);
+
+				return "jiqiid";
 			}
 
 			@Override
 			public void monitorResponse(String key, String data, Map<String, List<String>> params) {
-
+				log.info("推送监控信息" + data);
 			}
 
 			@Override
@@ -36,7 +38,7 @@ public class SocketIOStartHandler {
 
 			@Override
 			public void closeNotify(String key, Map<String, List<String>> data) {
-
+				log.info("socket 断开了");
 			}
 
 		};
@@ -44,7 +46,7 @@ public class SocketIOStartHandler {
 
 	@Bean
 	public SocketServer socketServer() {
-		return new SocketServer("0.0.0.0", 1234, socketServerHandler());
+		return new SocketServer("0.0.0.0", 1237, socketServerHandler());
 	}
 
 }
