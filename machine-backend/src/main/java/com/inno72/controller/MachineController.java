@@ -31,7 +31,7 @@ public class MachineController {
         return ResultGenerator.genSuccessResult();
     }
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> delete(@RequestParam Integer id) {
+    public Result<String> delete(@RequestParam String id) {
         machineService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
@@ -43,7 +43,7 @@ public class MachineController {
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<Inno72Machine> detail(@RequestParam Integer id) {
+    public Result<Inno72Machine> detail(@RequestParam String id) {
         Inno72Machine machine = machineService.findById(id);
         return ResultGenerator.genSuccessResult(machine);
     }

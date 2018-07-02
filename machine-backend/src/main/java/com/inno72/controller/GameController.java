@@ -31,7 +31,7 @@ public class GameController {
         return ResultGenerator.genSuccessResult();
     }
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> delete(@RequestParam Integer id) {
+    public Result<String> delete(@RequestParam String id) {
         gameService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
@@ -43,7 +43,7 @@ public class GameController {
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<Inno72Game> detail(@RequestParam Integer id) {
+    public Result<Inno72Game> detail(@RequestParam String id) {
         Inno72Game game = gameService.findById(id);
         return ResultGenerator.genSuccessResult(game);
     }

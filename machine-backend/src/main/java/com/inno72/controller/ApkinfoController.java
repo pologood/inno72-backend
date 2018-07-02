@@ -31,7 +31,7 @@ public class ApkinfoController {
         return ResultGenerator.genSuccessResult();
     }
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> delete(@RequestParam Integer id) {
+    public Result<String> delete(@RequestParam String id) {
         apkinfoService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
@@ -43,7 +43,7 @@ public class ApkinfoController {
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<Inno72Apkinfo> detail(@RequestParam Integer id) {
+    public Result<Inno72Apkinfo> detail(@RequestParam String id) {
         Inno72Apkinfo apkinfo = apkinfoService.findById(id);
         return ResultGenerator.genSuccessResult(apkinfo);
     }
