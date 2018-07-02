@@ -31,7 +31,7 @@ public class ActivityController {
         return ResultGenerator.genSuccessResult();
     }
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> delete(@RequestParam Integer id) {
+    public Result<String> delete(@RequestParam String id) {
         activityService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
@@ -43,7 +43,7 @@ public class ActivityController {
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<Inno72Activity> detail(@RequestParam Integer id) {
+    public Result<Inno72Activity> detail(@RequestParam String id) {
         Inno72Activity activity = activityService.findById(id);
         return ResultGenerator.genSuccessResult(activity);
     }

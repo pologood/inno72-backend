@@ -31,19 +31,27 @@ public class LocaleController {
         return ResultGenerator.genSuccessResult();
     }
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> delete(@RequestParam Integer id) {
-        localeService.deleteById(id);
+    public Result<String> delete(@RequestParam String id) {
+    	
+    	
+    	localeService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> update(Inno72Locale locale) {
-        localeService.update(locale);
+    	
+    	try {
+    		
+    		localeService.update(locale);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("");
+		}
         return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<Inno72Locale> detail(@RequestParam Integer id) {
+    public Result<Inno72Locale> detail(@RequestParam String id) {
         Inno72Locale locale = localeService.findById(id);
         return ResultGenerator.genSuccessResult(locale);
     }

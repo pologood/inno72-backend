@@ -31,7 +31,7 @@ public class MerchantController {
         return ResultGenerator.genSuccessResult();
     }
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> delete(@RequestParam Integer id) {
+    public Result<String> delete(@RequestParam String id) {
         merchantService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
@@ -43,7 +43,7 @@ public class MerchantController {
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<Inno72Merchant> detail(@RequestParam Integer id) {
+    public Result<Inno72Merchant> detail(@RequestParam String id) {
         Inno72Merchant merchant = merchantService.findById(id);
         return ResultGenerator.genSuccessResult(merchant);
     }

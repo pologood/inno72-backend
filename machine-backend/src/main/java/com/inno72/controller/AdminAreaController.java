@@ -33,7 +33,7 @@ public class AdminAreaController {
         return ResultGenerator.genSuccessResult();
     }
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> delete(@RequestParam Integer id) {
+    public Result<String> delete(@RequestParam String id) {
         adminAreaService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
@@ -45,7 +45,7 @@ public class AdminAreaController {
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<Inno72AdminArea> detail(@RequestParam Integer id) {
+    public Result<Inno72AdminArea> detail(@RequestParam String id) {
         Inno72AdminArea adminArea = adminAreaService.findById(id);
         return ResultGenerator.genSuccessResult(adminArea);
     }
