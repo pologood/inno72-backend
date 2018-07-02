@@ -47,6 +47,11 @@ public class Inno72Channel {
     private Date updateTime;
 
     /**
+     * 渠道是否删除，0:删除，1:未删除
+     */
+    private Integer status;
+
+    /**
      * @return Id
      */
     public String getId() {
@@ -166,5 +171,23 @@ public class Inno72Channel {
      */
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    /**
+     * 获取渠道是否删除，0:删除，1:未删除
+     *
+     * @return status - 渠道是否删除，0:删除，1:未删除
+     */
+    public Integer getStatus() {
+        return status;
+    }
+
+    /**
+     * 设置渠道是否删除，0:删除，1:未删除
+     *
+     * @param status 渠道是否删除，0:删除，1:未删除
+     */
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

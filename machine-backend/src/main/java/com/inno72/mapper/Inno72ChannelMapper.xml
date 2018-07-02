@@ -12,5 +12,6 @@
     <result column="uodate_id" jdbcType="VARCHAR" property="uodateId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
 </mapper>

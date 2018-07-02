@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import tk.mybatis.mapper.entity.Condition;
+
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -48,7 +50,8 @@ public class MerchantController {
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
     public ModelAndView list() {
-        List<Inno72Merchant> list = merchantService.findByPage();
+   	   Condition condition = new Condition( Inno72Merchant.class);
+        List<Inno72Merchant> list = merchantService.findByPage(condition);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
 }
