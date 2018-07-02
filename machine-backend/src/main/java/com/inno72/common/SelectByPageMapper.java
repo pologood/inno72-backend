@@ -10,5 +10,5 @@ import tk.mybatis.mapper.annotation.RegisterMapper;
 public interface SelectByPageMapper<T> {
 
 	@SelectProvider(type = CustomSelectProvider.class, method = "dynamicSQL")
-	List<T> selectByCondition(Object condition);
+	List<T> selectByConditionByPage(Object condition);
 }
