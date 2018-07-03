@@ -6,14 +6,14 @@ import com.inno72.model.Inno72Activity;
 import com.inno72.service.ActivityService;
 import com.inno72.common.ResultPages;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import tk.mybatis.mapper.entity.Condition;
-
-
 import javax.annotation.Resource;
+import javax.validation.Valid;
+
 import java.util.List;
 
 /**
@@ -26,9 +26,13 @@ public class ActivityController {
     private ActivityService activityService;
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> add(Inno72Activity activity) {
+    public Result<String> add(@Valid Inno72Activity activity,BindingResult bindingResult) {
     	try {
-    		activityService.save(activity);
+    		if(bindingResult.hasErrors()){
+    			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
+            }else{
+            	activityService.save(activity);
+            }
 		} catch (Exception e) {
 			ResultGenerator.genFailResult("操作失败！");
 		}
@@ -66,9 +70,13 @@ public class ActivityController {
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
     public ModelAndView list(Inno72Activity activity) {
-   	   Condition condition = new Condition( Inno72Activity.class);
-   	   condition.createCriteria().andEqualTo(activity);
-        List<Inno72Activity> list = activityService.findByPage(condition);
+        List<Inno72Activity> list = activityService.findByPage(activity);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
+    @RequestMapping(value = "/getList", method = { RequestMethod.POST,  RequestMethod.GET})
+    public Result<List<Inno72Activity>> getList(Inno72Activity activity) {
+        List<Inno72Activity> list = activityService.getList(activity);
+        return ResultGenerator.genSuccessResult(list);
+    }
+    
 }

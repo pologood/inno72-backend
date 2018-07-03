@@ -1,7 +1,13 @@
 package com.inno72.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import javax.persistence.*;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters.LocalDateTimeConverter;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
 @Table(name = "inno72_activity")
 public class Inno72Activity {
@@ -15,25 +21,33 @@ public class Inno72Activity {
     /**
      * 活动名称
      */
+    @NotEmpty(message="请填写活动名称")
     private String name;
 
     /**
      * 商户ID
      */
+    @NotEmpty(message="请选择商户")
     @Column(name = "seller_id")
     private String sellerId;
 
     /**
      * 活动开始时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Convert(converter = LocalDateTimeConverter.class)
     @Column(name = "start_time")
-    private Date startTime;
+    private LocalDateTime startTime;
 
     /**
      * 活动结束时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Convert(converter = LocalDateTimeConverter.class)
     @Column(name = "end_time")
-    private Date endTime;
+    private LocalDateTime endTime;
 
     /**
      * 状态：0正常，1停止
@@ -54,8 +68,10 @@ public class Inno72Activity {
     /**
      * 创建时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 更新人
@@ -66,8 +82,10 @@ public class Inno72Activity {
     /**
      * 更新时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "update_time")
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
     /**
      * 获取活动ID
@@ -128,7 +146,7 @@ public class Inno72Activity {
      *
      * @return start_time - 活动开始时间
      */
-    public Date getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
@@ -137,7 +155,7 @@ public class Inno72Activity {
      *
      * @param startTime 活动开始时间
      */
-    public void setStartTime(Date startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
@@ -146,7 +164,7 @@ public class Inno72Activity {
      *
      * @return end_time - 活动结束时间
      */
-    public Date getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
@@ -155,7 +173,7 @@ public class Inno72Activity {
      *
      * @param endTime 活动结束时间
      */
-    public void setEndTime(Date endTime) {
+    public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 
@@ -218,7 +236,7 @@ public class Inno72Activity {
      *
      * @return create_time - 创建时间
      */
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
@@ -227,7 +245,7 @@ public class Inno72Activity {
      *
      * @param createTime 创建时间
      */
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
@@ -254,7 +272,7 @@ public class Inno72Activity {
      *
      * @return update_time - 更新时间
      */
-    public Date getUpdateTime() {
+    public LocalDateTime getUpdateTime() {
         return updateTime;
     }
 
@@ -263,7 +281,7 @@ public class Inno72Activity {
      *
      * @param updateTime 更新时间
      */
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
     }
 }

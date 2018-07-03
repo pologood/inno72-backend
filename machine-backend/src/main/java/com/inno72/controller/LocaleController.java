@@ -6,14 +6,16 @@ import com.inno72.model.Inno72Locale;
 import com.inno72.service.LocaleService;
 import com.inno72.common.ResultPages;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import tk.mybatis.mapper.entity.Condition;
 
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
+
 import java.util.List;
 
 /**
@@ -26,9 +28,13 @@ public class LocaleController {
     private LocaleService localeService;
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> add(Inno72Locale locale) {
+    public Result<String> add(@Valid Inno72Locale locale,BindingResult bindingResult) {
     	try {
-    		localeService.save(locale);
+    		if(bindingResult.hasErrors()){
+    			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
+            }else{
+            	localeService.save(locale);
+            }
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
@@ -63,6 +69,12 @@ public class LocaleController {
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
     public ModelAndView list(Inno72Locale locale) {
         List<Inno72Locale> list = localeService.findByPage(locale);
+        return ResultPages.page(ResultGenerator.genSuccessResult(list));
+    }
+    
+    @RequestMapping(value = "/getList", method = { RequestMethod.POST,  RequestMethod.GET})
+    public ModelAndView getList(Inno72Locale locale) {
+        List<Inno72Locale> list = localeService.getList(locale);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
 }

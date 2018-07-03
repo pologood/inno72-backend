@@ -27,6 +27,12 @@ public class Inno72Merchant {
      */
     @Column(name = "channel_id")
     private String channelId;
+    
+    /**
+     * 商户状态
+     */
+    @Column(name = "status")
+    private int status;
 
     /**
      * 创建人
@@ -119,8 +125,25 @@ public class Inno72Merchant {
     public void setChannelId(String channelId) {
         this.channelId = channelId;
     }
-
+    
     /**
+     * 获取商户状态
+     *
+     * @return status - 商户状态
+     */
+    public int getStatus() {
+		return status;
+	}
+    /**
+     * 设置商户状态
+     *
+     * @param status 商户状态
+     */
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	/**
      * 获取创建人
      *
      * @return create_id - 创建人

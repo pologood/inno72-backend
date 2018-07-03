@@ -1,13 +1,19 @@
 package com.inno72.model;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
 @Table(name = "inno72_goods")
 public class Inno72Goods {
     /**
-     * 活动ID
+     * 点位ID
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,21 +22,25 @@ public class Inno72Goods {
     /**
      * 商品名称
      */
+    @NotEmpty(message="请填写商品名称")
     private String name;
 
     /**
      * 商品编码
      */
+    @NotEmpty(message="请填写商品编码")
     private String code;
 
     /**
      * 商品价格
      */
+    @Pattern(regexp="^(([1-9]{1}\\d*)|([0]{1}))(\\.(\\d){0,2})?$",message="请检查商品价格")
     private BigDecimal price;
 
     /**
      * 商户ID
      */
+    @NotEmpty(message="请选择商户")
     @Column(name = "seller_id")
     private String sellerId;
 
@@ -58,8 +68,9 @@ public class Inno72Goods {
     /**
      * 创建时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     @Column(name = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 更新人
@@ -70,13 +81,14 @@ public class Inno72Goods {
     /**
      * 更新时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     @Column(name = "update_time")
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
     /**
-     * 获取活动ID
+     * 获取点位ID
      *
-     * @return id - 活动ID
+     * @return id - 点位ID
      */
     public String getId() {
         return id;
@@ -240,7 +252,7 @@ public class Inno72Goods {
      *
      * @return create_time - 创建时间
      */
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
@@ -249,7 +261,7 @@ public class Inno72Goods {
      *
      * @param createTime 创建时间
      */
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
@@ -276,7 +288,7 @@ public class Inno72Goods {
      *
      * @return update_time - 更新时间
      */
-    public Date getUpdateTime() {
+    public LocalDateTime getUpdateTime() {
         return updateTime;
     }
 
@@ -285,7 +297,7 @@ public class Inno72Goods {
      *
      * @param updateTime 更新时间
      */
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
     }
 }
