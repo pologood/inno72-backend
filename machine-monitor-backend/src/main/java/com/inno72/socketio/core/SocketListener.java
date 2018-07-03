@@ -71,7 +71,7 @@ public class SocketListener {
 			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
 				logger.info("连接ID【{}】接收到【{}】发送的数据【{}】", client.getSessionId(), client.getRemoteAddress(), data);
 				String result = handler.process(client.getSessionId().toString(), data,
-						client.getHandshakeData().getUrlParams());
+						client.getHandshakeData().getSingleUrlParam("deviceId"));
 				client.sendEvent("message", result);
 				// 只用作客户端获取机器id
 			}

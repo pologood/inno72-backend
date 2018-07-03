@@ -16,10 +16,10 @@ public abstract class SocketServerHandler {
 	 * 
 	 * @param key
 	 * @param data
-	 * @param params
+	 * @param param
 	 * @return
 	 */
-	public abstract String process(String key, String data, Map<String, List<String>> params);
+	public abstract String process(String key, String data, String param);
 
 	/**
 	 * 监控消息处理
