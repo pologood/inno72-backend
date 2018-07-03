@@ -56,10 +56,10 @@ public class MachineController {
     }
 
     @RequestMapping(value = "/generateMachineId", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView generateMachineId(@RequestParam String id) {
+    public String generateMachineId(@RequestParam String id) {
         Inno72Machine machine = machineService.findById(id);
         String machineId = machine.getMachineId();
-        return ResultPages.page(ResultGenerator.genSuccessResult(machineId));
+        return machineId;
     }
 
 }
