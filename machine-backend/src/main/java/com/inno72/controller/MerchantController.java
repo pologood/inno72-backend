@@ -49,9 +49,14 @@ public class MerchantController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list() {
-   	   Condition condition = new Condition( Inno72Merchant.class);
-        List<Inno72Merchant> list = merchantService.findByPage(condition);
+    public ModelAndView list(Inno72Merchant merchant) {
+        List<Inno72Merchant> list = merchantService.findByPage(merchant);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
+    }
+    
+    @RequestMapping(value = "/getList", method = { RequestMethod.POST,  RequestMethod.GET})
+    public Result<List<Inno72Merchant>> getList(Inno72Merchant merchant) {
+        List<Inno72Merchant> list = merchantService.getList(merchant);
+        return ResultGenerator.genSuccessResult(list);
     }
 }
