@@ -31,7 +31,7 @@ public class ${modelNameUpperCamel}Controller {
         return ResultGenerator.genSuccessResult();
     }
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> delete(@RequestParam Integer id) {
+    public Result<String> delete(@RequestParam String id) {
         ${modelNameLowerCamel}Service.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
@@ -43,7 +43,7 @@ public class ${modelNameUpperCamel}Controller {
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<${trueModelNameUpperCamel}> detail(@RequestParam Integer id) {
+    public Result<${trueModelNameUpperCamel}> detail(@RequestParam String id) {
         ${trueModelNameUpperCamel} ${modelNameLowerCamel} = ${modelNameLowerCamel}Service.findById(id);
         return ResultGenerator.genSuccessResult(${modelNameLowerCamel});
     }

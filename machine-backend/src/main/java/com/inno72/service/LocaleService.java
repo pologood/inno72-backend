@@ -13,4 +13,6 @@ public interface LocaleService extends Service<Inno72Locale> {
 
 	List<Inno72Locale> findByPage(Inno72Locale locale);
 
+	List<Inno72Locale> getList(Inno72Locale locale);
+
 }

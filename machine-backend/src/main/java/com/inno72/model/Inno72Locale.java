@@ -1,12 +1,18 @@
 package com.inno72.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
 @Table(name = "inno72_locale")
 public class Inno72Locale {
     /**
-     * 活动ID
+     * 点位ID
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,16 +21,19 @@ public class Inno72Locale {
     /**
      * 省ID
      */
+    @NotEmpty(message="请选择所属省")
     private String province;
 
     /**
      * 市ID
      */
+    @NotEmpty(message="请选择所属城市")
     private String city;
 
     /**
      * 区/县ID
      */
+    @NotEmpty(message="请选择所属区/县")
     private String district;
 
     /**
@@ -40,11 +49,14 @@ public class Inno72Locale {
     /**
      * 运营人员
      */
+    @NotEmpty(message="请填写运营人员")
     private String manager;
 
     /**
      * 运营人员手机
      */
+    @NotEmpty(message="请填写运营人手机号")
+    @Pattern(regexp="^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\\d{8}$",message="手机格式不正确")
     private String mobile;
 
     /**
@@ -66,8 +78,9 @@ public class Inno72Locale {
     /**
      * 创建时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     @Column(name = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 更新人
@@ -78,22 +91,23 @@ public class Inno72Locale {
     /**
      * 更新时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     @Column(name = "update_time")
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
     /**
-     * 获取活动ID
+     * 获取点位ID
      *
-     * @return id - 活动ID
+     * @return id - 点位ID
      */
     public String getId() {
         return id;
     }
 
     /**
-     * 设置活动ID
+     * 设置点位ID
      *
-     * @param id 活动ID
+     * @param id 点位ID
      */
     public void setId(String id) {
         this.id = id;
@@ -284,7 +298,7 @@ public class Inno72Locale {
      *
      * @return create_time - 创建时间
      */
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
@@ -293,7 +307,7 @@ public class Inno72Locale {
      *
      * @param createTime 创建时间
      */
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
@@ -320,7 +334,7 @@ public class Inno72Locale {
      *
      * @return update_time - 更新时间
      */
-    public Date getUpdateTime() {
+    public LocalDateTime getUpdateTime() {
         return updateTime;
     }
 
@@ -329,7 +343,7 @@ public class Inno72Locale {
      *
      * @param updateTime 更新时间
      */
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
     }
 }
