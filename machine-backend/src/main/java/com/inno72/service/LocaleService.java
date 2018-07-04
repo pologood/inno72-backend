@@ -1,5 +1,6 @@
 package com.inno72.service;
 import com.inno72.model.Inno72Locale;
+import com.inno72.vo.Inno72LocaleVo;
 
 import java.util.List;
 
@@ -11,8 +12,9 @@ import com.inno72.common.Service;
  */
 public interface LocaleService extends Service<Inno72Locale> {
 
-	List<Inno72Locale> findByPage(Inno72Locale locale);
 
 	List<Inno72Locale> getList(Inno72Locale locale);
+
+	List<Inno72LocaleVo> findByPage(String code, String keyword);
 
 }

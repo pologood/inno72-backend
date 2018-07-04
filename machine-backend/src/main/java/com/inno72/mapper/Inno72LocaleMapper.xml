@@ -6,11 +6,8 @@
       WARNING - @mbg.generated
     -->
     <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="province" jdbcType="VARCHAR" property="province" />
-    <result column="city" jdbcType="VARCHAR" property="city" />
-    <result column="district" jdbcType="VARCHAR" property="district" />
-    <result column="circle" jdbcType="VARCHAR" property="circle" />
-    <result column="mail" jdbcType="VARCHAR" property="mail" />
+    <result column="are_code" jdbcType="VARCHAR" property="areCode" />
+    <result column="mall" jdbcType="VARCHAR" property="mall" />
     <result column="manager" jdbcType="VARCHAR" property="manager" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
@@ -20,4 +17,33 @@
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
+  
+  <resultMap id="VoResultMap" type="com.inno72.vo.Inno72LocaleVo" extends="BaseResultMap">
+    
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="district" jdbcType="VARCHAR" property="district" />
+    <result column="circle" jdbcType="VARCHAR" property="circle" />
+    
+  </resultMap>
+  
+  <select id="selectById" parameterType="String" resultMap="VoResultMap">
+		SELECT * FROM inno72_locale where id=#{id}
+  </select>
+
+	<select id="selectByPage" parameterType="com.inno72.vo.Inno72MerchantVo" resultMap="BaseResultMap">
+		SELECT * FROM inno72_locale locale
+		<where>
+			<if test="keyword !=null and keyword !=''">or locale.manager = #{keyword}</if>
+			<if test="keyword !=null and keyword !=''">or locale.manager = #{keyword}</if>
+			<if test="keyword !=null and keyword !=''">or locale.manager = #{keyword}</if>
+			<if test="code !=null and code !=''">and locale.are_code = #{code}</if>
+		</where>
+  </select>
+	
+  
+  
+  
+  
+  
 </mapper>

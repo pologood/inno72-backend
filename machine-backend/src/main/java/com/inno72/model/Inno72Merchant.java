@@ -12,7 +12,7 @@ import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 @Table(name = "inno72_merchant")
 public class Inno72Merchant {
     @Id
-    @Column(name = "Id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 

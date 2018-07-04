@@ -8,6 +8,7 @@ import com.inno72.vo.Inno72MerchantVo;
 import com.inno72.common.ResultPages;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +25,7 @@ import java.util.List;
 */
 @RestController
 @RequestMapping("/merchant")
+@CrossOrigin
 public class MerchantController {
     @Resource
     private MerchantService merchantService;
