@@ -8,6 +8,7 @@
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="shop_id" jdbcType="VARCHAR" property="shopId" />
+    <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />

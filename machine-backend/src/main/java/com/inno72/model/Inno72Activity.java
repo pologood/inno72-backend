@@ -25,12 +25,19 @@ public class Inno72Activity {
     private String name;
 
     /**
-     * 商户ID
+     * 店铺ID
      */
-    @NotEmpty(message="请选择所属商铺")
+    @NotEmpty(message="请选择所属店铺")
     @Column(name = "shop_id")
     private String shopId;
-
+    
+    /**
+     * 商户ID
+     */
+    @NotEmpty(message="请选择所属商户")
+    @Column(name = "seller_id")
+    private String sellerId;
+    
     /**
      * 活动开始时间
      */
@@ -131,6 +138,24 @@ public class Inno72Activity {
 	public void setShopId(String shopId) {
 		this.shopId = shopId;
 	}
+	
+	/**
+     * 获取商户ID
+     *
+     * @return seller_id - 商户ID
+     */
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    /**
+     * 设置商户ID
+     *
+     * @param sellerId 商户ID
+     */
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
+    }
 
     /**
      * 获取活动开始时间

@@ -6,6 +6,7 @@ import com.inno72.model.Inno72Shops;
 import com.inno72.service.ShopsService;
 import com.inno72.common.ResultPages;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,8 @@ import tk.mybatis.mapper.entity.Condition;
 
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
+
 import java.util.List;
 
 /**
@@ -26,8 +29,18 @@ public class ShopsController {
     private ShopsService shopsService;
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> add(Inno72Shops shops) {
-        shopsService.save(shops);
+    public Result<String> add(@Valid Inno72Shops shops,BindingResult bindingResult) {
+    	
+    	try {
+    		if(bindingResult.hasErrors()){
+    			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
+            }else{
+            	shopsService.save(shops);
+            }
+		} catch (Exception e) {
+			ResultGenerator.genFailResult("操作失败！");
+		}
+        
         return ResultGenerator.genSuccessResult();
     }
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
