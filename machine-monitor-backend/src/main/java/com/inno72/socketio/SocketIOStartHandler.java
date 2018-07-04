@@ -76,7 +76,7 @@ public class SocketIOStartHandler {
 
 				}
 
-				return null;
+				return "OK";
 			}
 
 			@Override
