@@ -5,7 +5,7 @@
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="Id" jdbcType="VARCHAR" property="id" />
+    <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="channel_code" jdbcType="VARCHAR" property="channelCode" />
     <result column="channel_name" jdbcType="VARCHAR" property="channelName" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />

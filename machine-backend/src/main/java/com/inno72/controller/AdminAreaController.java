@@ -8,6 +8,7 @@ import com.inno72.common.ResultPages;
 import com.inno72.common.StringUtil;
 
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ import java.util.List;
 */
 @RestController
 @RequestMapping("/admin/area")
+@CrossOrigin
 public class AdminAreaController {
     @Resource
     private AdminAreaService adminAreaService;

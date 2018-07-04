@@ -32,6 +32,33 @@ public class MessageBean<T> {
 		}
 	}
 
+	public enum SubEventType {
+		// 机器状态
+		MACHINESTATUS(1),
+		// app状态
+		APPSTATUS(2);
+
+		private int v;
+
+		private SubEventType(int v) {
+			this.v = v;
+		}
+
+		public int v() {
+			return this.v;
+		}
+
+		public static SubEventType get(int v) {
+			for (SubEventType c : SubEventType.values()) {
+				if (c.v == v) {
+					return c;
+				}
+			}
+			return null;
+		}
+	}
+
+
 	public Integer getEventType() {
 		return eventType;
 	}

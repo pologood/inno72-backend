@@ -17,39 +17,21 @@ public class Inno72Locale {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
-
-    /**
-     * 省ID
-     */
-    @NotEmpty(message="请选择所属省")
-    private String province;
-
-    /**
-     * 市ID
-     */
-    @NotEmpty(message="请选择所属城市")
-    private String city;
-
-    /**
-     * 区/县ID
-     */
-    @NotEmpty(message="请选择所属区/县")
-    private String district;
-
-    /**
-     * 商圈ID
-     */
-    private String circle;
+    
+    @Column(name = "are_code")
+    private String areCode;
 
     /**
      * 商场
      */
-    private String mail;
+    @Column(name = "mall")
+    private String mall;
 
     /**
      * 运营人员
      */
     @NotEmpty(message="请填写运营人员")
+    @Column(name = "manager")
     private String manager;
 
     /**
@@ -57,6 +39,7 @@ public class Inno72Locale {
      */
     @NotEmpty(message="请填写运营人手机号")
     @Pattern(regexp="^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\\d{8}$",message="手机格式不正确")
+    @Column(name = "mobile")
     private String mobile;
 
     /**
@@ -68,6 +51,7 @@ public class Inno72Locale {
     /**
      * 备注描述
      */
+    @Column(name = "remark")
     private String remark;
 
     /**
@@ -113,86 +97,23 @@ public class Inno72Locale {
     public void setId(String id) {
         this.id = id;
     }
+    
+    
+    public String getAreCode() {
+		return areCode;
+	}
 
-    /**
-     * 获取省ID
-     *
-     * @return province - 省ID
-     */
-    public String getProvince() {
-        return province;
-    }
+	public void setAreCode(String areCode) {
+		this.areCode = areCode;
+	}
 
-    /**
-     * 设置省ID
-     *
-     * @param province 省ID
-     */
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    /**
-     * 获取市ID
-     *
-     * @return city - 市ID
-     */
-    public String getCity() {
-        return city;
-    }
-
-    /**
-     * 设置市ID
-     *
-     * @param city 市ID
-     */
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    /**
-     * 获取区/县ID
-     *
-     * @return district - 区/县ID
-     */
-    public String getDistrict() {
-        return district;
-    }
-
-    /**
-     * 设置区/县ID
-     *
-     * @param district 区/县ID
-     */
-    public void setDistrict(String district) {
-        this.district = district;
-    }
-
-    /**
-     * 获取商圈ID
-     *
-     * @return circle - 商圈ID
-     */
-    public String getCircle() {
-        return circle;
-    }
-
-    /**
-     * 设置商圈ID
-     *
-     * @param circle 商圈ID
-     */
-    public void setCircle(String circle) {
-        this.circle = circle;
-    }
-
-    /**
+	/**
      * 获取商场
      *
      * @return mail - 商场
      */
-    public String getMail() {
-        return mail;
+    public String getMall() {
+        return mall;
     }
 
     /**
@@ -200,8 +121,8 @@ public class Inno72Locale {
      *
      * @param mail 商场
      */
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setMall(String mall) {
+        this.mall = mall;
     }
 
     /**
