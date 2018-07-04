@@ -45,7 +45,7 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 		// TODO 活动逻辑删除
 		logger.info("--------------------活动删除-------------------");
 		Inno72Activity model = inno72ActivityMapper.selectByPrimaryKey(id);
-		model.setState(1);//0正常,1结束
+		model.setIsDelete(1);//0正常,1结束
 		
 		model.setCreateId("");
 		model.setUpdateId("");
@@ -76,7 +76,7 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 	public List<Inno72Activity> getList(Inno72Activity model) {
 		// TODO 获取活动列表
 		logger.info("---------------------获取活动列表-------------------");
-		model.setState(0);
+		model.setIsDelete(0);
 		Condition condition = new Condition( Inno72Activity.class);
 	   	condition.createCriteria().andEqualTo(model);
 		return super.findByCondition(condition);

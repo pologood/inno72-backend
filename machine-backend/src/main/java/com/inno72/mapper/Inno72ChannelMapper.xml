@@ -6,12 +6,12 @@
       WARNING - @mbg.generated
     -->
     <id column="Id" jdbcType="VARCHAR" property="id" />
-    <result column="channel_id" jdbcType="VARCHAR" property="channelId" />
+    <result column="channel_code" jdbcType="VARCHAR" property="channelCode" />
     <result column="channel_name" jdbcType="VARCHAR" property="channelName" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
-    <result column="uodate_id" jdbcType="VARCHAR" property="uodateId" />
+    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
   </resultMap>
 </mapper>

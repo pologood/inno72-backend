@@ -58,7 +58,6 @@ public class ActivityController {
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
-        
         return ResultGenerator.genSuccessResult();
     }
     
@@ -73,6 +72,7 @@ public class ActivityController {
         List<Inno72Activity> list = activityService.findByPage(activity);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
+    
     @RequestMapping(value = "/getList", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<List<Inno72Activity>> getList(Inno72Activity activity) {
         List<Inno72Activity> list = activityService.getList(activity);

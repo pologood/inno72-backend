@@ -58,7 +58,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 		// TODO Auto-generated method stub
 		logger.info("----------------商品删除--------------");
 		Inno72Goods model = inno72GoodsMapper.selectByPrimaryKey(id);
-		model.setState(1);//0正常，1下架
+		model.setIsDelete(1);//0正常，1下架
 		model.setCreateId("");
 		model.setUpdateId("");
 		
@@ -79,7 +79,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 	public List<Inno72Goods> getList(Inno72Goods model) {
 		// TODO 获取商品列表
 		logger.info("---------------------获取商品列表-------------------");
-		model.setState(0);
+		model.setIsDelete(1);
 		Condition condition = new Condition( Inno72Goods.class);
 	   	condition.createCriteria().andEqualTo(model);
 		return super.findByCondition(condition);

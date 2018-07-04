@@ -62,7 +62,8 @@ public class Inno72Locale {
     /**
      * 状态：0正常，1停止
      */
-    private Integer state;
+    @Column(name = "is_delete")
+    private Integer isDelete;
 
     /**
      * 备注描述
@@ -242,19 +243,19 @@ public class Inno72Locale {
     /**
      * 获取状态：0正常，1停止
      *
-     * @return state - 状态：0正常，1停止
+     * @return is_delete - 状态：0正常，1停止
      */
-    public Integer getState() {
-        return state;
+    public Integer getIsDelete() {
+        return isDelete;
     }
 
     /**
      * 设置状态：0正常，1停止
      *
-     * @param state 状态：0正常，1停止
+     * @param isDelete 状态：0正常，1停止
      */
-    public void setState(Integer state) {
-        this.state = state;
+    public void setIsDelete(Integer isDelete) {
+        this.isDelete = isDelete;
     }
 
     /**

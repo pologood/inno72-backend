@@ -1,10 +1,9 @@
 package com.inno72.service.impl;
 
 import com.inno72.mapper.Inno72MerchantMapper;
-import com.inno72.model.Inno72Activity;
-import com.inno72.model.Inno72Locale;
 import com.inno72.model.Inno72Merchant;
 import com.inno72.service.MerchantService;
+import com.inno72.vo.Inno72MerchantVo;
 
 import tk.mybatis.mapper.entity.Condition;
 
@@ -15,9 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
-
 import javax.annotation.Resource;
 
 
@@ -48,7 +45,7 @@ public class MerchantServiceImpl extends AbstractService<Inno72Merchant> impleme
 		// TODO 商户删除
 		logger.info("---------------------商户删除-------------------");
 		Inno72Merchant model = inno72MerchantMapper.selectByPrimaryKey(id);
-		model.setStatus(0);
+		model.setIsDelete(1);
 		model.setCreateId("");
 		model.setUpdateId("");
 		super.update(model);
@@ -65,19 +62,17 @@ public class MerchantServiceImpl extends AbstractService<Inno72Merchant> impleme
 	}
 
 	@Override
-	public List<Inno72Merchant> findByPage(Inno72Merchant model) {
+	public List<Inno72MerchantVo> findByPage(Inno72MerchantVo params) {
 		// TODO 商户分页列表查询
 		logger.info("---------------------商户分页列表查询-------------------");
-		Condition condition = new Condition( Inno72Merchant.class);
-	   	condition.createCriteria().andEqualTo(model);
-		return super.findByPage(condition);
+		return inno72MerchantMapper.selectByPage(params);
 	}
 
 	@Override
 	public List<Inno72Merchant> getList(Inno72Merchant model) {
 		// TODO 获取商户列表
 		logger.info("---------------------获取商户列表-------------------");
-		model.setStatus(1);
+		model.setIsDelete(0);
 		Condition condition = new Condition( Inno72Merchant.class);
 	   	condition.createCriteria().andEqualTo(model);
 		return super.findByCondition(condition);

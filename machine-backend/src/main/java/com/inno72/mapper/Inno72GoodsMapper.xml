@@ -11,7 +11,7 @@
     <result column="price" jdbcType="DECIMAL" property="price" />
     <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
     <result column="img" jdbcType="VARCHAR" property="img" />
-    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />

@@ -25,12 +25,19 @@ public class Inno72Activity {
     private String name;
 
     /**
+     * 店铺ID
+     */
+    @NotEmpty(message="请选择所属店铺")
+    @Column(name = "shop_id")
+    private String shopId;
+    
+    /**
      * 商户ID
      */
-    @NotEmpty(message="请选择商户")
+    @NotEmpty(message="请选择所属商户")
     @Column(name = "seller_id")
     private String sellerId;
-
+    
     /**
      * 活动开始时间
      */
@@ -52,7 +59,8 @@ public class Inno72Activity {
     /**
      * 状态：0正常，1停止
      */
-    private Integer state;
+    @Column(name = "is_delete")
+    private Integer isDelete;
 
     /**
      * 备注描述
@@ -123,7 +131,15 @@ public class Inno72Activity {
         this.name = name;
     }
 
-    /**
+    public String getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(String shopId) {
+		this.shopId = shopId;
+	}
+	
+	/**
      * 获取商户ID
      *
      * @return seller_id - 商户ID
@@ -180,19 +196,19 @@ public class Inno72Activity {
     /**
      * 获取状态：0正常，1停止
      *
-     * @return state - 状态：0正常，1停止
+     * @return is_delete - 状态：0正常，1停止
      */
-    public Integer getState() {
-        return state;
+    public Integer getIsDelete() {
+        return isDelete;
     }
 
     /**
      * 设置状态：0正常，1停止
      *
-     * @param state 状态：0正常，1停止
+     * @param isDelete 状态：0正常，1停止
      */
-    public void setState(Integer state) {
-        this.state = state;
+    public void setIsDelete(Integer isDelete) {
+        this.isDelete = isDelete;
     }
 
     /**

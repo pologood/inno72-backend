@@ -13,7 +13,7 @@
     <result column="mail" jdbcType="VARCHAR" property="mail" />
     <result column="manager" jdbcType="VARCHAR" property="manager" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
-    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
