@@ -55,6 +55,7 @@ public class SocketIOStartHandler {
 
 				MessageBean ms = JSON.parseObject(data, MessageBean.class);
 				if (ms.getEventType() == MessageBean.EventType.CHECKSTATUS.v()) {
+
 				}
 				return machineId;
 			}
