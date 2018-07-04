@@ -46,7 +46,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		// TODO 点位逻辑删除
 		logger.info("---------------------点位删除-------------------");
 		Inno72Locale model = inno72LocaleMapper.selectByPrimaryKey(id);
-		model.setState(1);
+		model.setIsDelete(1);
 		model.setCreateId("");
 		model.setUpdateId("");
 		
@@ -77,7 +77,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	public List<Inno72Locale> getList(Inno72Locale locale) {
 		// TODO 分页列表查询
 		logger.info("---------------------分页列表查询-------------------");
-		locale.setState(0);
+		locale.setIsDelete(0);
 		Condition condition = new Condition( Inno72Locale.class);
 	   	condition.createCriteria().andEqualTo(locale);
 		return super.findByCondition(condition);

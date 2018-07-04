@@ -3,6 +3,8 @@ package com.inno72.model;
 import java.util.Date;
 import javax.persistence.*;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 @Table(name = "inno72_merchant")
 public class Inno72Merchant {
     @Id
@@ -13,26 +15,29 @@ public class Inno72Merchant {
     /**
      * 商户号
      */
-    @Column(name = "merchant_id")
-    private String merchantId;
+    @NotEmpty(message="请填写商户编码")
+    @Column(name = "merchant_code")
+    private String merchantCode;
 
     /**
      * 商户名称
      */
+    @NotEmpty(message="请填写商户名称")
     @Column(name = "merchant_name")
     private String merchantName;
 
     /**
      * 商户所属渠道
      */
+    @NotEmpty(message="请选择所属渠道")
     @Column(name = "channel_id")
     private String channelId;
-    
+
     /**
-     * 商户状态
+     * 商户可用状态0:可用，1:不可用
      */
-    @Column(name = "status")
-    private int status;
+    @Column(name = "is_delete")
+    private Integer isDelete;
 
     /**
      * 创建人
@@ -75,19 +80,19 @@ public class Inno72Merchant {
     /**
      * 获取商户号
      *
-     * @return merchant_id - 商户号
+     * @return merchant_code - 商户号
      */
-    public String getMerchantId() {
-        return merchantId;
+    public String getMerchantCode() {
+        return merchantCode;
     }
 
     /**
      * 设置商户号
      *
-     * @param merchantId 商户号
+     * @param merchantCode 商户号
      */
-    public void setMerchantId(String merchantId) {
-        this.merchantId = merchantId;
+    public void setMerchantCode(String merchantCode) {
+        this.merchantCode = merchantCode;
     }
 
     /**
@@ -125,25 +130,26 @@ public class Inno72Merchant {
     public void setChannelId(String channelId) {
         this.channelId = channelId;
     }
-    
-    /**
-     * 获取商户状态
-     *
-     * @return status - 商户状态
-     */
-    public int getStatus() {
-		return status;
-	}
-    /**
-     * 设置商户状态
-     *
-     * @param status 商户状态
-     */
-	public void setStatus(int status) {
-		this.status = status;
-	}
 
-	/**
+    /**
+     * 获取商户可用状态0:可用，1:不可用
+     *
+     * @return is_delete - 商户可用状态0:可用，1:不可用
+     */
+    public Integer getIsDelete() {
+        return isDelete;
+    }
+
+    /**
+     * 设置商户可用状态0:可用，1:不可用
+     *
+     * @param isDelete 商户可用状态0:可用，1:不可用
+     */
+    public void setIsDelete(Integer isDelete) {
+        this.isDelete = isDelete;
+    }
+
+    /**
      * 获取创建人
      *
      * @return create_id - 创建人

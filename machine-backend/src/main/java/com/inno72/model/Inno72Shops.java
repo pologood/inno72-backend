@@ -1,56 +1,42 @@
 package com.inno72.model;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.Date;
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
-
-@Table(name = "inno72_goods")
-public class Inno72Goods {
+@Table(name = "inno72_shops")
+public class Inno72Shops {
     /**
-     * 商品ID
+     * 店铺ID
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     /**
-     * 商品名称
+     * 店铺名称
      */
-    @NotEmpty(message="请填写商品名称")
-    private String name;
+    @NotEmpty(message="请填写店铺名称")
+    @Column(name = "shop_name")
+    private String shopName;
 
     /**
-     * 商品编码
+     * 店铺编码
      */
-    @NotEmpty(message="请填写商品编码")
-    private String code;
-
-    /**
-     * 商品价格
-     */
-    @Pattern(regexp="^(([1-9]{1}\\d*)|([0]{1}))(\\.(\\d){0,2})?$",message="请检查商品价格")
-    private BigDecimal price;
+    @NotEmpty(message="请填写店铺编码")
+    @Column(name = "shop_code")
+    private String shopCode;
 
     /**
      * 商户ID
      */
-    @NotEmpty(message="请选择商户")
+    @NotEmpty(message="请选择所属商户")
     @Column(name = "seller_id")
     private String sellerId;
 
     /**
-     * 图片
-     */
-    private String img;
-
-    /**
-     * 状态：0正常，1下架
+     * 状态：0正常，1停止
      */
     @Column(name = "is_delete")
     private Integer isDelete;
@@ -69,9 +55,8 @@ public class Inno72Goods {
     /**
      * 创建时间
      */
-    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     @Column(name = "create_time")
-    private LocalDateTime createTime;
+    private Date createTime;
 
     /**
      * 更新人
@@ -82,80 +67,61 @@ public class Inno72Goods {
     /**
      * 更新时间
      */
-    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     @Column(name = "update_time")
-    private LocalDateTime updateTime;
+    private Date updateTime;
 
     /**
-     * 获取商品ID
+     * 获取店铺ID
      *
-     * @return id - 商品ID
+     * @return id - 店铺ID
      */
     public String getId() {
         return id;
     }
 
     /**
-     * 设置商品ID
+     * 设置店铺ID
      *
-     * @param id 商品ID
+     * @param id 店铺ID
      */
     public void setId(String id) {
         this.id = id;
     }
 
     /**
-     * 获取商品名称
+     * 获取店铺名称
      *
-     * @return name - 商品名称
+     * @return shop_name - 店铺名称
      */
-    public String getName() {
-        return name;
+    public String getShopName() {
+        return shopName;
     }
 
     /**
-     * 设置商品名称
+     * 设置店铺名称
      *
-     * @param name 商品名称
+     * @param shopName 店铺名称
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 
     /**
-     * 获取商品编码
+     * 获取店铺编码
      *
-     * @return code - 商品编码
+     * @return shop_code - 店铺编码
      */
-    public String getCode() {
-        return code;
+    public String getShopCode() {
+        return shopCode;
     }
 
     /**
-     * 设置商品编码
+     * 设置店铺编码
      *
-     * @param code 商品编码
+     * @param shopCode 店铺编码
      */
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    /**
-     * 获取商品价格
-     *
-     * @return price - 商品价格
-     */
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    /**
-     * 设置商品价格
-     *
-     * @param price 商品价格
-     */
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setShopCode(String shopCode) {
+        this.shopCode = shopCode;
     }
 
     /**
@@ -177,36 +143,18 @@ public class Inno72Goods {
     }
 
     /**
-     * 获取图片
+     * 获取状态：0正常，1停止
      *
-     * @return img - 图片
-     */
-    public String getImg() {
-        return img;
-    }
-
-    /**
-     * 设置图片
-     *
-     * @param img 图片
-     */
-    public void setImg(String img) {
-        this.img = img;
-    }
-
-    /**
-     * 获取状态：0正常，1下架
-     *
-     * @return is_delete - 状态：0正常，1下架
+     * @return is_delete - 状态：0正常，1停止
      */
     public Integer getIsDelete() {
         return isDelete;
     }
 
     /**
-     * 设置状态：0正常，1下架
+     * 设置状态：0正常，1停止
      *
-     * @param isDelete 状态：0正常，1下架
+     * @param isDelete 状态：0正常，1停止
      */
     public void setIsDelete(Integer isDelete) {
         this.isDelete = isDelete;
@@ -253,7 +201,7 @@ public class Inno72Goods {
      *
      * @return create_time - 创建时间
      */
-    public LocalDateTime getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
@@ -262,7 +210,7 @@ public class Inno72Goods {
      *
      * @param createTime 创建时间
      */
-    public void setCreateTime(LocalDateTime createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
@@ -289,7 +237,7 @@ public class Inno72Goods {
      *
      * @return update_time - 更新时间
      */
-    public LocalDateTime getUpdateTime() {
+    public Date getUpdateTime() {
         return updateTime;
     }
 
@@ -298,7 +246,7 @@ public class Inno72Goods {
      *
      * @param updateTime 更新时间
      */
-    public void setUpdateTime(LocalDateTime updateTime) {
+    public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
 }

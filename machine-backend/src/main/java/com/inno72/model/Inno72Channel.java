@@ -3,6 +3,8 @@ package com.inno72.model;
 import java.util.Date;
 import javax.persistence.*;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 @Table(name = "inno72_channel")
 public class Inno72Channel {
     @Id
@@ -11,14 +13,16 @@ public class Inno72Channel {
     private String id;
 
     /**
-     * 渠道id
+     * 渠道编码
      */
-    @Column(name = "channel_id")
-    private String channelId;
+    @NotEmpty(message="请填写渠道编码")
+    @Column(name = "channel_code")
+    private String channelCode;
 
     /**
      * 渠道名称
      */
+    @NotEmpty(message="请填写渠道名称")
     @Column(name = "channel_name")
     private String channelName;
 
@@ -31,8 +35,8 @@ public class Inno72Channel {
     /**
      * 更新人
      */
-    @Column(name = "uodate_id")
-    private String uodateId;
+    @Column(name = "update_id")
+    private String updateId;
 
     /**
      * 创建时间
@@ -47,9 +51,10 @@ public class Inno72Channel {
     private Date updateTime;
 
     /**
-     * 渠道是否删除，0:删除，1:未删除
+     * 渠道是否删除，0:正常，1:删除
      */
-    private Integer status;
+    @Column(name = "is_delete")
+    private Integer isDelete;
 
     /**
      * @return Id
@@ -68,19 +73,19 @@ public class Inno72Channel {
     /**
      * 获取渠道id
      *
-     * @return channel_id - 渠道id
+     * @return channel_code - 渠道id
      */
-    public String getChannelId() {
-        return channelId;
+    public String getChannelCode() {
+        return channelCode;
     }
 
     /**
      * 设置渠道id
      *
-     * @param channelId 渠道id
+     * @param channelCode 渠道id
      */
-    public void setChannelId(String channelId) {
-        this.channelId = channelId;
+    public void setChannelCode(String channelCode) {
+        this.channelCode = channelCode;
     }
 
     /**
@@ -122,19 +127,19 @@ public class Inno72Channel {
     /**
      * 获取更新人
      *
-     * @return uodate_id - 更新人
+     * @return update_id - 更新人
      */
-    public String getUodateId() {
-        return uodateId;
+    public String getUpdateId() {
+        return updateId;
     }
 
     /**
      * 设置更新人
      *
-     * @param uodateId 更新人
+     * @param updateId 更新人
      */
-    public void setUodateId(String uodateId) {
-        this.uodateId = uodateId;
+    public void setUpdateId(String updateId) {
+        this.updateId = updateId;
     }
 
     /**
@@ -174,20 +179,20 @@ public class Inno72Channel {
     }
 
     /**
-     * 获取渠道是否删除，0:删除，1:未删除
+     * 获取渠道是否删除，0:正常，1:删除
      *
-     * @return status - 渠道是否删除，0:删除，1:未删除
+     * @return is_delete - 渠道是否删除，0:正常，1:删除
      */
-    public Integer getStatus() {
-        return status;
+    public Integer getIsDelete() {
+        return isDelete;
     }
 
     /**
-     * 设置渠道是否删除，0:删除，1:未删除
+     * 设置渠道是否删除，0:正常，1:删除
      *
-     * @param status 渠道是否删除，0:删除，1:未删除
+     * @param isDelete 渠道是否删除，0:正常，1:删除
      */
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setIsDelete(Integer isDelete) {
+        this.isDelete = isDelete;
     }
 }

@@ -4,13 +4,13 @@ import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.model.Inno72Merchant;
 import com.inno72.service.MerchantService;
+import com.inno72.vo.Inno72MerchantVo;
 import com.inno72.common.ResultPages;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import tk.mybatis.mapper.entity.Condition;
 
 
 import javax.annotation.Resource;
@@ -49,8 +49,8 @@ public class MerchantController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list(Inno72Merchant merchant) {
-        List<Inno72Merchant> list = merchantService.findByPage(merchant);
+    public ModelAndView list(Inno72MerchantVo params) {
+        List<Inno72MerchantVo> list = merchantService.findByPage(params);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
     
