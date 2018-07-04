@@ -22,48 +22,38 @@ public class SystemStatus {
      * serviceData : [{"machine_id":"sdfsfd23e","app_package_name":"com.inno72.installler","service_name":"com.inno72.installler.MonitorService","service_status":1},{"machine_id":"sdfsfd23e","app_package_name":"com.inno72.installler","service_name":"com.inno72.installler.MonitorService","service_status":1}]
      */
 
-    private String machine_id;
-    private String network_type;
-    private String network_operate_name;
+    private String machineId;
+    private String networkType;
+    private String networkOperateName;
     private String accid;
-    private long memory_free;
-    private long memory_totle;
+    private long memoryFree;
+    private long memoryTotle;
     private String cpu;
-    private long sd_free;
-    private long sd_totle;
+    private long sdFree;
+    private long sdTotle;
 
-    public String getPing() {
-        return ping;
+    public String getMachineId() {
+        return machineId;
     }
 
-    public void setPing(String ping) {
-        this.ping = ping;
+    public void setMachineId(String machineId) {
+        this.machineId = machineId;
     }
 
-    private String ping;
-
-    public String getMachine_id() {
-        return machine_id;
+    public String getNetworkType() {
+        return networkType;
     }
 
-    public void setMachine_id(String machine_id) {
-        this.machine_id = machine_id;
+    public void setNetworkType(String networkType) {
+        this.networkType = networkType;
     }
 
-    public String getNetwork_type() {
-        return network_type;
+    public String getNetworkOperateName() {
+        return networkOperateName;
     }
 
-    public void setNetwork_type(String network_type) {
-        this.network_type = network_type;
-    }
-
-    public String getNetwork_operate_name() {
-        return network_operate_name;
-    }
-
-    public void setNetwork_operate_name(String network_operate_name) {
-        this.network_operate_name = network_operate_name;
+    public void setNetworkOperateName(String networkOperateName) {
+        this.networkOperateName = networkOperateName;
     }
 
     public String getAccid() {
@@ -74,20 +64,20 @@ public class SystemStatus {
         this.accid = accid;
     }
 
-    public long getMemory_free() {
-        return memory_free;
+    public long getMemoryFree() {
+        return memoryFree;
     }
 
-    public void setMemory_free(long memory_free) {
-        this.memory_free = memory_free;
+    public void setMemoryFree(long memoryFree) {
+        this.memoryFree = memoryFree;
     }
 
-    public long getMemory_totle() {
-        return memory_totle;
+    public long getMemoryTotle() {
+        return memoryTotle;
     }
 
-    public void setMemory_totle(long memory_totle) {
-        this.memory_totle = memory_totle;
+    public void setMemoryTotle(long memoryTotle) {
+        this.memoryTotle = memoryTotle;
     }
 
     public String getCpu() {
@@ -98,20 +88,19 @@ public class SystemStatus {
         this.cpu = cpu;
     }
 
-    public long getSd_free() {
-        return sd_free;
+    public long getSdFree() {
+        return sdFree;
     }
 
-    public void setSd_free(long sd_free) {
-        this.sd_free = sd_free;
+    public void setSdFree(long sdFree) {
+        this.sdFree = sdFree;
     }
 
-    public long getSd_totle() {
-        return sd_totle;
+    public long getSdTotle() {
+        return sdTotle;
     }
 
-    public void setSd_totle(long sd_totle) {
-        this.sd_totle = sd_totle;
+    public void setSdTotle(long sdTotle) {
+        this.sdTotle = sdTotle;
     }
-
 }

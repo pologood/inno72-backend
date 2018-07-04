@@ -7,43 +7,44 @@ package com.inno72.model;
  */
 public class MachineStatus {
 
-    private String machine_id;
-    private int machine_door_status;
-    private int drop_goods_switch;
-    private String goods_channel_status;
+    private String machineId;
+    private int machineDoorStatus;
+    private int dropGoodsSwitch;
+    private String goodsChannelStatus;
     private String temperature;
-    private int temperature_switch_status;
+    private int temperatureSwitchStatus;
 
-    public String getMachine_id() {
-        return machine_id;
+
+    public String getMachineId() {
+        return machineId;
     }
 
-    public void setMachine_id(String machine_id) {
-        this.machine_id = machine_id;
+    public void setMachineId(String machineId) {
+        this.machineId = machineId;
     }
 
-    public int getMachine_door_status() {
-        return machine_door_status;
+    public int getMachineDoorStatus() {
+        return machineDoorStatus;
     }
 
-    public void setMachine_door_status(int machine_door_status) {
-        this.machine_door_status = machine_door_status;
+    public void setMachineDoorStatus(int machineDoorStatus) {
+        this.machineDoorStatus = machineDoorStatus;
     }
 
-    public int getDrop_goods_switch() {
-        return drop_goods_switch;
+    public int getDropGoodsSwitch() {
+        return dropGoodsSwitch;
     }
 
-    public void setDrop_goods_switch(int drop_goods_switch) {
-        this.drop_goods_switch = drop_goods_switch;
+    public void setDropGoodsSwitch(int dropGoodsSwitch) {
+        this.dropGoodsSwitch = dropGoodsSwitch;
     }
 
-    public String getGoods_channel_status() {
-        return goods_channel_status;
+    public String getGoodsChannelStatus() {
+        return goodsChannelStatus;
     }
 
-    public void setGoods_channel_status(String goods_channel_status) {
-        this.goods_channel_status = goods_channel_status;
+    public void setGoodsChannelStatus(String goodsChannelStatus) {
+        this.goodsChannelStatus = goodsChannelStatus;
     }
 
     public String getTemperature() {
@@ -54,19 +55,12 @@ public class MachineStatus {
         this.temperature = temperature;
     }
 
-    public int getTemperature_switch_status() {
-        return temperature_switch_status;
+    public int getTemperatureSwitchStatus() {
+        return temperatureSwitchStatus;
     }
 
-    public void setTemperature_switch_status(int temperature_switch_status) {
-        this.temperature_switch_status = temperature_switch_status;
+    public void setTemperatureSwitchStatus(int temperatureSwitchStatus) {
+        this.temperatureSwitchStatus = temperatureSwitchStatus;
     }
-
-
-
-
-
-
-
 }
 
