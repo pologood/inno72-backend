@@ -1,217 +1,313 @@
 package com.inno72.model;
 
-import java.util.Date;
-import javax.persistence.*;
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Table(name = "inno72_machine")
 public class Inno72Machine {
-    @Id
-    @Column(name = "Id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private String id;
 
-    /**
-     * 机器id
-     */
-    @Column(name = "machine_id")
-    private String machineId;
+	/**
+	 * 机器id
+	 */
+	@Column(name = "machine_code")
+	private String machineCode;
 
-    /**
-     * 机器名称
-     */
-    @Column(name = "machine_name")
-    private String machineName;
+	/**
+	 * 机器名称
+	 */
+	@Column(name = "machine_name")
+	private String machineName;
 
-    /**
-     * 所属点位
-     */
-    @Column(name = "locale_id")
-    private String localeId;
+	/**
+	 * 所属点位
+	 */
+	@Column(name = "locale_id")
+	private String localeId;
 
-    /**
-     * 机器所属标签
-     */
-    private String tag;
+	/**
+	 * 机器所属标签
+	 */
+	@Column(name = "tag")
+	private String tag;
 
-    /**
-     * 创建人
-     */
-    @Column(name = "create_id")
-    private String createId;
+	/**
+	 * 创建人
+	 */
+	@Column(name = "create_id")
+	private String createId;
 
-    /**
-     * 更新人
-     */
-    @Column(name = "update_id")
-    private String updateId;
+	/**
+	 * 更新人
+	 */
+	@Column(name = "update_id")
+	private String updateId;
 
-    /**
-     * 创建时间
-     */
-    @Column(name = "create_time")
-    private Date createTime;
+	/**
+	 * 创建时间
+	 */
+	@Column(name = "create_time")
+	private LocalDateTime createTime;
 
-    /**
-     * 更新时间
-     */
-    @Column(name = "update_time")
-    private Date updateTime;
+	/**
+	 * 更新时间
+	 */
+	@Column(name = "update_time")
+	private LocalDateTime updateTime;
 
-    /**
-     * @return Id
-     */
-    public String getId() {
-        return id;
-    }
+	/**
+	 * 机器状态 1：未出厂（厂内安装测试）2:厂内测试通过；3:H5录入状态；4:正常
+	 */
+	@Column(name = "machine_status")
+	private Integer machineStatus;
 
-    /**
-     * @param id
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
+	/**
+	 * 网络灯状态 0:关闭，1:开启
+	 */
+	@Column(name = "net_status")
+	private Integer netStatus;
 
-    /**
-     * 获取机器id
-     *
-     * @return machine_id - 机器id
-     */
-    public String getMachineId() {
-        return machineId;
-    }
+	/**
+	 * 设备id
+	 */
+	@Column(name = "device_id")
+	private String deviceId;
 
-    /**
-     * 设置机器id
-     *
-     * @param machineId 机器id
-     */
-    public void setMachineId(String machineId) {
-        this.machineId = machineId;
-    }
+	public enum Machine_Status {
+		// 在厂测试
+		INFACTORY(1),
+		// 通过测试
+		PASSTEST(2),
+		// 设置在点位
+		INLOCAL(3),
+		// 正常
+		NORMAL(4);
 
-    /**
-     * 获取机器名称
-     *
-     * @return machine_name - 机器名称
-     */
-    public String getMachineName() {
-        return machineName;
-    }
+		private int v;
 
-    /**
-     * 设置机器名称
-     *
-     * @param machineName 机器名称
-     */
-    public void setMachineName(String machineName) {
-        this.machineName = machineName;
-    }
+		private Machine_Status(int v) {
+			this.v = v;
+		}
 
-    /**
-     * 获取所属点位
-     *
-     * @return locale_id - 所属点位
-     */
-    public String getLocaleId() {
-        return localeId;
-    }
+		public int v() {
+			return this.v;
+		}
 
-    /**
-     * 设置所属点位
-     *
-     * @param localeId 所属点位
-     */
-    public void setLocaleId(String localeId) {
-        this.localeId = localeId;
-    }
+		public static Machine_Status get(int v) {
+			for (Machine_Status c : Machine_Status.values()) {
+				if (c.v == v) {
+					return c;
+				}
+			}
+			return null;
+		}
+	}
 
-    /**
-     * 获取机器所属标签
-     *
-     * @return tag - 机器所属标签
-     */
-    public String getTag() {
-        return tag;
-    }
+	/**
+	 * @return id
+	 */
+	public String getId() {
+		return id;
+	}
 
-    /**
-     * 设置机器所属标签
-     *
-     * @param tag 机器所属标签
-     */
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
+	/**
+	 * @param id
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    /**
-     * 获取创建人
-     *
-     * @return create_id - 创建人
-     */
-    public String getCreateId() {
-        return createId;
-    }
+	/**
+	 * 获取机器id
+	 *
+	 * @return machine_code - 机器id
+	 */
+	public String getMachineCode() {
+		return machineCode;
+	}
 
-    /**
-     * 设置创建人
-     *
-     * @param createId 创建人
-     */
-    public void setCreateId(String createId) {
-        this.createId = createId;
-    }
+	/**
+	 * 设置机器id
+	 *
+	 * @param machineCode
+	 *            机器id
+	 */
+	public void setMachineCode(String machineCode) {
+		this.machineCode = machineCode;
+	}
 
-    /**
-     * 获取更新人
-     *
-     * @return update_id - 更新人
-     */
-    public String getUpdateId() {
-        return updateId;
-    }
+	/**
+	 * 获取机器名称
+	 *
+	 * @return machine_name - 机器名称
+	 */
+	public String getMachineName() {
+		return machineName;
+	}
 
-    /**
-     * 设置更新人
-     *
-     * @param updateId 更新人
-     */
-    public void setUpdateId(String updateId) {
-        this.updateId = updateId;
-    }
+	/**
+	 * 设置机器名称
+	 *
+	 * @param machineName
+	 *            机器名称
+	 */
+	public void setMachineName(String machineName) {
+		this.machineName = machineName;
+	}
 
-    /**
-     * 获取创建时间
-     *
-     * @return create_time - 创建时间
-     */
-    public Date getCreateTime() {
-        return createTime;
-    }
+	/**
+	 * 获取所属点位
+	 *
+	 * @return locale_id - 所属点位
+	 */
+	public String getLocaleId() {
+		return localeId;
+	}
 
-    /**
-     * 设置创建时间
-     *
-     * @param createTime 创建时间
-     */
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
+	/**
+	 * 设置所属点位
+	 *
+	 * @param localeId
+	 *            所属点位
+	 */
+	public void setLocaleId(String localeId) {
+		this.localeId = localeId;
+	}
 
-    /**
-     * 获取更新时间
-     *
-     * @return update_time - 更新时间
-     */
-    public Date getUpdateTime() {
-        return updateTime;
-    }
+	/**
+	 * 获取机器所属标签
+	 *
+	 * @return tag - 机器所属标签
+	 */
+	public String getTag() {
+		return tag;
+	}
 
-    /**
-     * 设置更新时间
-     *
-     * @param updateTime 更新时间
-     */
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
+	/**
+	 * 设置机器所属标签
+	 *
+	 * @param tag
+	 *            机器所属标签
+	 */
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+
+	/**
+	 * 获取创建人
+	 *
+	 * @return create_id - 创建人
+	 */
+	public String getCreateId() {
+		return createId;
+	}
+
+	/**
+	 * 设置创建人
+	 *
+	 * @param createId
+	 *            创建人
+	 */
+	public void setCreateId(String createId) {
+		this.createId = createId;
+	}
+
+	/**
+	 * 获取更新人
+	 *
+	 * @return update_id - 更新人
+	 */
+	public String getUpdateId() {
+		return updateId;
+	}
+
+	/**
+	 * 设置更新人
+	 *
+	 * @param updateId
+	 *            更新人
+	 */
+	public void setUpdateId(String updateId) {
+		this.updateId = updateId;
+	}
+
+	public LocalDateTime getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(LocalDateTime createTime) {
+		this.createTime = createTime;
+	}
+
+	public LocalDateTime getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(LocalDateTime updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	/**
+	 * 获取机器状态 1：未出厂（厂内安装测试）2:厂内测试通过；3:H5录入状态；4:正常
+	 *
+	 * @return machine_status - 机器状态 1：未出厂（厂内安装测试）2:厂内测试通过；3:H5录入状态；4:正常
+	 */
+	public Integer getMachineStatus() {
+		return machineStatus;
+	}
+
+	/**
+	 * 设置机器状态 1：未出厂（厂内安装测试）2:厂内测试通过；3:H5录入状态；4:正常
+	 *
+	 * @param machineStatus
+	 *            机器状态 1：未出厂（厂内安装测试）2:厂内测试通过；3:H5录入状态；4:正常
+	 */
+	public void setMachineStatus(Integer machineStatus) {
+		this.machineStatus = machineStatus;
+	}
+
+	/**
+	 * 获取网络灯状态 0:关闭，1:开启
+	 *
+	 * @return net_status - 网络灯状态 0:关闭，1:开启
+	 */
+	public Integer getNetStatus() {
+		return netStatus;
+	}
+
+	/**
+	 * 设置网络灯状态 0:关闭，1:开启
+	 *
+	 * @param netStatus
+	 *            网络灯状态 0:关闭，1:开启
+	 */
+	public void setNetStatus(Integer netStatus) {
+		this.netStatus = netStatus;
+	}
+
+	/**
+	 * 获取设备id
+	 *
+	 * @return device_id - 设备id
+	 */
+	public String getDeviceId() {
+		return deviceId;
+	}
+
+	/**
+	 * 设置设备id
+	 *
+	 * @param deviceId
+	 *            设备id
+	 */
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
 }

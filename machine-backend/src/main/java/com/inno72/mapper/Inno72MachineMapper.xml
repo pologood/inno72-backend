@@ -5,8 +5,8 @@
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="Id" jdbcType="VARCHAR" property="id" />
-    <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
     <result column="machine_name" jdbcType="VARCHAR" property="machineName" />
     <result column="locale_id" jdbcType="VARCHAR" property="localeId" />
     <result column="tag" jdbcType="VARCHAR" property="tag" />
@@ -14,5 +14,8 @@
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="machine_status" jdbcType="INTEGER" property="machineStatus" />
+    <result column="net_status" jdbcType="INTEGER" property="netStatus" />
+    <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
   </resultMap>
 </mapper>
