@@ -71,7 +71,25 @@ public class SocketListener {
 			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
 				logger.info("连接ID【{}】接收到【{}】发送的数据【{}】", client.getSessionId(), client.getRemoteAddress(), data);
 				String result = handler.process(client.getSessionId().toString(), data,
-						client.getHandshakeData().getSingleUrlParam("deviceId"));
+						client.getHandshakeData().getUrlParams());
+				client.sendEvent("message", result);
+				// 只用作客户端获取机器id
+			}
+		};
+	}
+
+	/**
+	 * 接收到客户端主动发送消息并回执
+	 *
+	 * @return
+	 */
+	DataListener<String> msg() {
+		return new DataListener<String>() {
+			@Override
+			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
+				logger.info("连接ID【{}】接收到【{}】发送的数据【{}】", client.getSessionId(), client.getRemoteAddress(), data);
+				String result = handler.deviceIdMsg(client.getSessionId().toString(), data,
+						client.getHandshakeData().getUrlParams());
 				client.sendEvent("message", result);
 				// 只用作客户端获取机器id
 			}
