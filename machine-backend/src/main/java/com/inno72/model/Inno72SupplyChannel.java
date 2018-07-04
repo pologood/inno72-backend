@@ -1,7 +1,7 @@
 package com.inno72.model;
 
-import javax.persistence.*;
 import java.util.Date;
+import javax.persistence.*;
 
 @Table(name = "inno72_supply_channel")
 public class Inno72SupplyChannel {
@@ -40,12 +40,6 @@ public class Inno72SupplyChannel {
     private String parentCode;
 
     /**
-     * 商品编号
-     */
-    @Column(name = "goods_code")
-    private String goodsCode;
-
-    /**
      * 商品容量
      */
     @Column(name = "volume_count")
@@ -58,10 +52,10 @@ public class Inno72SupplyChannel {
     private Integer goodsCount;
 
     /**
-     * 客户编号
+     * 活动ID
      */
-    @Column(name = "seller_id")
-    private String sellerId;
+    @Column(name = "activity_id")
+    private String activityId;
 
     /**
      * 创建人ID
@@ -196,24 +190,6 @@ public class Inno72SupplyChannel {
     }
 
     /**
-     * 获取商品编号
-     *
-     * @return goods_code - 商品编号
-     */
-    public String getGoodsCode() {
-        return goodsCode;
-    }
-
-    /**
-     * 设置商品编号
-     *
-     * @param goodsCode 商品编号
-     */
-    public void setGoodsCode(String goodsCode) {
-        this.goodsCode = goodsCode;
-    }
-
-    /**
      * 获取商品容量
      *
      * @return volume_count - 商品容量
@@ -250,21 +226,21 @@ public class Inno72SupplyChannel {
     }
 
     /**
-     * 获取客户编号
+     * 获取活动ID
      *
-     * @return seller_id - 客户编号
+     * @return activity_id - 活动ID
      */
-    public String getSellerId() {
-        return sellerId;
+    public String getActivityId() {
+        return activityId;
     }
 
     /**
-     * 设置客户编号
+     * 设置活动ID
      *
-     * @param sellerId 客户编号
+     * @param activityId 活动ID
      */
-    public void setSellerId(String sellerId) {
-        this.sellerId = sellerId;
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
     }
 
     /**

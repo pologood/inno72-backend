@@ -3,6 +3,7 @@ package com.inno72.service.impl;
 import com.inno72.mapper.Inno72LocaleMapper;
 import com.inno72.model.Inno72Locale;
 import com.inno72.service.LocaleService;
+import com.inno72.vo.Inno72LocaleVo;
 
 import tk.mybatis.mapper.entity.Condition;
 
@@ -13,8 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -63,14 +67,33 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		
 		super.update(model);
 	}
+	
+	
+	
+	@Override
+	public Inno72LocaleVo findById(String id) {
+		// TODO Auto-generated method stub
+		
+		Inno72LocaleVo vo = inno72LocaleMapper.selectById(id);
+		String areCode = vo.getAreCode();//一共9位 省前2位后补0  市4位后补0 县6位后补0 商圈直接取
+		String province=areCode.substring(0,1);
+		String city=areCode.substring(0,3);
+		String district=areCode.substring(0,5);
+		vo.setProvince(province);
+		vo.setCity(city);
+		vo.setDistrict(district);
+		
+		return inno72LocaleMapper.selectById(id);
+	}
 
 	@Override
-	public List<Inno72Locale> findByPage(Inno72Locale locale) {
+	public List<Inno72LocaleVo> findByPage(String code,String keyword) {
 		// TODO 分页列表查询
 		logger.info("---------------------分页列表查询-------------------");
-		Condition condition = new Condition( Inno72Locale.class);
-	   	condition.createCriteria().andEqualTo(locale);
-		return super.findByPage(condition);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("code", code);
+		params.put("keyword", keyword);
+		return inno72LocaleMapper.selectByPage(params);
 	}
 	
 	@Override
@@ -82,6 +105,8 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	   	condition.createCriteria().andEqualTo(locale);
 		return super.findByCondition(condition);
 	}
+	
+	
     
     
 

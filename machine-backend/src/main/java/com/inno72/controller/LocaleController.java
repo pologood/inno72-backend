@@ -4,9 +4,11 @@ import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.model.Inno72Locale;
 import com.inno72.service.LocaleService;
+import com.inno72.vo.Inno72LocaleVo;
 import com.inno72.common.ResultPages;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +25,7 @@ import java.util.List;
 */
 @RestController
 @RequestMapping("/locale")
+@CrossOrigin
 public class LocaleController {
     @Resource
     private LocaleService localeService;
@@ -60,15 +63,15 @@ public class LocaleController {
         return ResultGenerator.genSuccessResult();
     }
     
-    @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<Inno72Locale> detail(@RequestParam String id) {
-        Inno72Locale locale = localeService.findById(id);
+    /*@RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
+    public Result<Inno72LocaleVo> detail(@RequestParam String id) {
+    	Inno72LocaleVo locale = localeService.(id);
         return ResultGenerator.genSuccessResult(locale);
-    }
+    }*/
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list(Inno72Locale locale) {
-        List<Inno72Locale> list = localeService.findByPage(locale);
+    public ModelAndView list(@RequestParam String code,@RequestParam String keyword) {
+        List<Inno72LocaleVo> list = localeService.findByPage(code,keyword);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
     
