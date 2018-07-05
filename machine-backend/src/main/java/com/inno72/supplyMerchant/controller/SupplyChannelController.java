@@ -1,10 +1,10 @@
-package com.inno72.controller;
+package com.inno72.supplyMerchant.controller;
 
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
-import com.inno72.model.Inno72SupplyChannel;
-import com.inno72.service.SupplyChannelService;
+import com.inno72.supplyMerchant.model.Inno72SupplyChannel;
+import com.inno72.supplyMerchant.service.SupplyChannelService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -64,6 +64,7 @@ public class SupplyChannelController {
         Result result = supplyChannelService.init(merchantId);
         return result;
     }
+
 
 
 }

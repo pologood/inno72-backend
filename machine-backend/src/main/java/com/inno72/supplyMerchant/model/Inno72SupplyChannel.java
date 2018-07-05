@@ -1,4 +1,4 @@
-package com.inno72.model;
+package com.inno72.supplyMerchant.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

@@ -1,21 +1,18 @@
-package com.inno72.service.impl;
+package com.inno72.supplyMerchant.service.impl;
 
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.StringUtil;
-import com.inno72.mapper.Inno72SupplyChannelMapper;
-import com.inno72.model.Inno72SupplyChannel;
-import com.inno72.model.Inno72SupplyChannelDict;
-import com.inno72.service.SupplyChannelDictService;
-import com.inno72.service.SupplyChannelService;
+import com.inno72.supplyMerchant.mapper.Inno72SupplyChannelMapper;
+import com.inno72.supplyMerchant.model.Inno72SupplyChannel;
+import com.inno72.supplyMerchant.model.Inno72SupplyChannelDict;
+import com.inno72.supplyMerchant.service.SupplyChannelDictService;
+import com.inno72.supplyMerchant.service.SupplyChannelService;
 import com.inno72.common.AbstractService;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,7 +81,6 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                     supplyChannelList.add(supplyChannel);
                     super.save(supplyChannel);
                 }
-//                inno72SupplyChannelMapper.insertList(supplyChannelList);
             }
         }
         return null;

@@ -1,7 +1,7 @@
-package com.inno72.mapper;
+package com.inno72.supplyMerchant.mapper;
 
 import com.inno72.common.Mapper;
-import com.inno72.model.Inno72SupplyChannel;
+import com.inno72.supplyMerchant.model.Inno72SupplyChannel;
 
 import java.util.List;
 import java.util.Map;
