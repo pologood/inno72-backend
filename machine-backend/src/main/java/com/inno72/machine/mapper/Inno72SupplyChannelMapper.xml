@@ -9,7 +9,7 @@
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="status" jdbcType="INTEGER" property="status" />
-    <result column="merchant_id" jdbcType="VARCHAR" property="merchantId" />
+    <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
     <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
     <result column="volume_count" jdbcType="INTEGER" property="volumeCount" />
     <result column="goods_count" jdbcType="INTEGER" property="goodsCount" />
@@ -25,12 +25,12 @@
 
   <update id="subCount">
     update inno72_supply_channel set goods_count = goods_count-1
-    where merchant_id=#{merchantId} and code=#{code}
+    where machine_id=#{machineId} and code=#{code}
   </update>
 
 
   <sql id="Column_List">
-      t1.id,t1.code,t1.name,t1.status,t1.merchant_id,t1.parent_code,t1.volume_count,
+      t1.id,t1.code,t1.name,t1.status,t1.machine_id,t1.parent_code,t1.volume_count,
       t1.goods_count,t1.create_id,t1.create_time,t1.update_id,t1.update_time,t2.goods_id goodsCode,
       t3.name goodsName
   </sql>
@@ -45,8 +45,8 @@
       <if test="code != null">
         and t1.code = #{code}
       </if>
-      <if test="merchantId != null">
-        and t1.merchant_id = #{merchantId}
+      <if test="machineId != null">
+        and t1.machine_id = #{machineId}
       </if>
     </where>
   </select>
@@ -60,8 +60,8 @@
       <if test="code != null">
         and t1.code = #{code}
       </if>
-      <if test="merchantId != null">
-        and t1.merchant_id = #{merchantId}
+      <if test="machineId != null">
+        and t1.machine_id = #{machineId}
       </if>
       <if test="goodsCodes != null">
         and
@@ -104,7 +104,7 @@
         update_time = #{updateTime},
       </if>
     </set>
-    where merchant_id=#{merchantId} and code=#{code}
+    where machine_id=#{machineId} and code=#{code}
   </update>
 
   <update id="updateChild">
@@ -129,7 +129,37 @@
         update_time = #{updateTime},
       </if>
     </set>
-    where merchant_id=#{merchantId} and parent_code=#{parentCode}
+    where machine_id=#{machineId} and parent_code=#{parentCode}
   </update>
 
+  <update id="updateListByParam">
+    update inno72_supply_channel
+    <set>
+      <if test="name != null">
+        name=#{name},
+      </if>
+      <if test="status != null">
+        status = #{status},
+      </if>
+      <if test="parentCode != null">
+        parent_code = #{parentCode},
+      </if>
+      <if test="volumeCount != null">
+        volume_count = #{volumeCount},
+      </if>
+      <if test="goodsCount != null">
+        goods_count = #{goodsCount},
+      </if>
+      <if test="updateId != null">
+        update_id = #{updateId},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime},
+      </if>
+    </set>
+    where machine_id=#{machineId} and
+    <foreach collection="codes" index="index" item="item" separator="or" open="(" close=")">
+      code =#{item,jdbcType=VARCHAR}
+    </foreach>
+  </update>
 </mapper>

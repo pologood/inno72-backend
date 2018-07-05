@@ -43,8 +43,8 @@ public class Inno72SupplyChannel {
 	/**
 	 * 机器编号
 	 */
-	@Column(name = "merchant_id")
-	private String merchantId;
+	@Column(name = "machine_id")
+	private String machineId;
 
 	/**
 	 * 父货道编号
@@ -184,22 +184,12 @@ public class Inno72SupplyChannel {
 		this.status = status;
 	}
 
-	/**
-	 * 获取机器编号
-	 *
-	 * @return merchant_id - 机器编号
-	 */
-	public String getMerchantId() {
-		return merchantId;
+	public String getMachineId() {
+		return machineId;
 	}
 
-	/**
-	 * 设置机器编号
-	 *
-	 * @param merchantId 机器编号
-	 */
-	public void setMerchantId(String merchantId) {
-		this.merchantId = merchantId;
+	public void setMachineId(String machineId) {
+		this.machineId = machineId;
 	}
 
 	/**
