@@ -65,6 +65,39 @@ public class SupplyChannelController {
         return result;
     }
 
+    /**
+     * 合并货道
+     * @param supplyChannel
+     * @return
+     */
+    @RequestMapping(value="/merge",method = {RequestMethod.POST,RequestMethod.GET})
+    public Result merge(Inno72SupplyChannel supplyChannel){
+        Result result = supplyChannelService.merge(supplyChannel);
+        return result;
+    }
+
+    /**
+     * 拆分货道
+     * @param supplyChannel
+     * @return
+     */
+    @RequestMapping(value="/split",method = {RequestMethod.POST,RequestMethod.GET})
+    public Result split(Inno72SupplyChannel supplyChannel){
+        Result result = supplyChannelService.split(supplyChannel);
+        return result;
+    }
+
+    /**
+     * 货道清零
+     * @param supplyChannel
+     * @return
+     */
+    @RequestMapping(value="/clear",method = {RequestMethod.POST,RequestMethod.GET})
+    public Result clear(Inno72SupplyChannel supplyChannel){
+        Result result = supplyChannelService.clear(supplyChannel);
+        return result;
+    }
+
 
 
 }

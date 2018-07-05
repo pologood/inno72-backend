@@ -69,7 +69,68 @@
           t2.goods_id =#{item,jdbcType=VARCHAR}
         </foreach>
       </if>
+      <if test="codes != null">
+        and
+        <foreach collection="codes" item="item" separator="or" open="(" close=")">
+          t1.code = #{item,jdbcType=VARCHAR}
+        </foreach>
+      </if>
     </where>
   </select>
+
+
+  <update id="updateByParam">
+    update inno72_supply_channel
+    <set>
+      <if test="name != null">
+        name=#{name},
+      </if>
+      <if test="status != null">
+        status = #{status},
+      </if>
+      <if test="parentCode != null">
+        parent_code = #{parentCode},
+      </if>
+      <if test="volumeCount != null">
+        volume_count = #{volumeCount},
+      </if>
+      <if test="goodsCount != null">
+        goods_count = #{goodsCount},
+      </if>
+      <if test="updateId != null">
+        update_id = #{updateId},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime},
+      </if>
+    </set>
+    where merchant_id=#{merchantId} and code=#{code}
+  </update>
+
+  <update id="updateChild">
+    update inno72_supply_channel
+    <set>
+    <if test="name != null">
+      name=#{name},
+    </if>
+    <if test="status != null">
+      status = #{status},
+    </if>
+    <if test="volumeCount != null">
+      volume_count = #{volumeCount},
+    </if>
+    <if test="goodsCount != null">
+      goods_count = #{goodsCount},
+    </if>
+    <if test="updateId != null">
+      update_id = #{updateId},
+    </if>
+    <if test="updateTime != null">
+      update_time = #{updateTime},
+    </if>
+    </set>
+    where merchant_id=#{merchantId} and parent_code=#{parentCode}
+  </update>
+
 
 </mapper>

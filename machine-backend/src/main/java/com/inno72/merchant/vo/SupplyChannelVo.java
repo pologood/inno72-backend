@@ -27,6 +27,7 @@ public class SupplyChannelVo {
      */
     private String code;
 
+
     public String getMerchantId() {
         return merchantId;
     }
@@ -66,4 +67,5 @@ public class SupplyChannelVo {
     public void setCode(String code) {
         this.code = code;
     }
+
 }

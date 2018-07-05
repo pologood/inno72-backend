@@ -95,6 +95,15 @@ public class Inno72SupplyChannel {
     @Transient
     private String goodsCode;
 
+    @Transient
+    private String[] codes;
+
+    @Transient
+    private String fromCode;
+
+    @Transient
+    private String toCode;
+
     /**
      * 获取uuid
      *
@@ -334,5 +343,29 @@ public class Inno72SupplyChannel {
 
     public void setGoodsCode(String goodsCode) {
         this.goodsCode = goodsCode;
+    }
+
+    public String[] getCodes() {
+        return codes;
+    }
+
+    public void setCodes(String[] codes) {
+        this.codes = codes;
+    }
+
+    public String getFromCode() {
+        return fromCode;
+    }
+
+    public void setFromCode(String fromCode) {
+        this.fromCode = fromCode;
+    }
+
+    public String getToCode() {
+        return toCode;
+    }
+
+    public void setToCode(String toCode) {
+        this.toCode = toCode;
     }
 }
