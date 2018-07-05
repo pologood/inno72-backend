@@ -1,6 +1,7 @@
 package com.inno72.system.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -8,10 +9,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inno72.common.Result;
+import com.inno72.common.SessionData;
 import com.inno72.system.service.DDService;
 
 @RestController
 @RequestMapping("/dd")
+@CrossOrigin
 public class DDController {
 
 	@Autowired
@@ -25,8 +28,13 @@ public class DDController {
 	}
 
 	@RequestMapping("/login")
-	public Result<String> login(String code, String state) {
+	public Result<SessionData> login(String code, String state) {
 		return ddService.login(code, state);
+	}
+
+	@RequestMapping("/testLogin")
+	public Result<SessionData> testLogin(String phone, String name) {
+		return ddService.testLogin(phone, name);
 	}
 
 	@RequestMapping(value = "/token", method = { RequestMethod.POST, RequestMethod.GET })

@@ -1,6 +1,7 @@
 package com.inno72.system.service;
 
 import com.inno72.common.Result;
+import com.inno72.common.SessionData;
 
 public interface DDService {
 
@@ -14,6 +15,8 @@ public interface DDService {
 
 	Result<String> initDData();
 
-	Result<String> login(String code, String state);
+	Result<SessionData> login(String code, String state);
+
+	Result<SessionData> testLogin(String phone, String name);
 
 }
