@@ -2,6 +2,7 @@ package com.inno72.socketio;
 
 import com.alibaba.fastjson.JSONObject;
 import com.inno72.common.CommonConstants;
+import com.inno72.common.Result;
 import com.inno72.model.AppStatus;
 import com.inno72.model.MachineStatus;
 import com.inno72.model.MessageBean;
@@ -19,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -89,17 +91,24 @@ public class SocketIOStartHandler {
 				//解压缩并解密data
 				String deviceId = AesUtils.decrypt(GZIPUtil.uncompress(data));
 
+				String result;
 				//从数据库中取
-				String machineId = HttpClient.post("http://localhost:8880/machine/generateMachineId?deviceId=" + deviceId, "");
-				//存入redis中
-				redisUtil.set(machineId, key);
+				String machineId = HttpClient.post("http://localhost:8880//machine/machine/initMeachine?deviceId=" + deviceId, "");
+				//解析返回数据
+				JSONObject jsonObject = JSONObject.parseObject(machineId);
+				String res = jsonObject.getString("data");
 
-				//加密并压缩
-				String result = GZIPUtil.compress(AesUtils.encrypt(machineId));
+				if(!StringUtils.isEmpty(res)){
+					//存入redis中
+					redisUtil.set(res, key);
+					//加密并压缩
+					result = GZIPUtil.compress(AesUtils.encrypt(res));
+					log.info("获取机器Id方法结束,sessionId="+key +",machineId=" + res +",deviceId" + data);
+				}else {
+					result = "";
+				}
 
-				log.info("获取机器Id方法结束,sessionId="+key +",machineId=" + result +",deviceId" + data);
-
-				return machineId;
+				return result;
 		}
 
 			@Override
@@ -115,17 +124,21 @@ public class SocketIOStartHandler {
 			@Override
 			public void connectNotify(String key, Map<String, List<String>> data) {
 
+				log.info("socket连接开始");
+
 				//获取机器Id
-				String param = Optional.ofNullable(data.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
+				String machineId = Optional.ofNullable(data.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
 						.orElse("init");
 
-				//解压缩及解密
-				String machineId = AesUtils.decrypt(GZIPUtil.uncompress(param));
+				if(!StringUtils.isEmpty(machineId) && "init".equals(machineId)){
+					log.info("socket连接中，没有获取到机器Id");
+				}else{
+					log.info("socket连接中，获取到机器Id,machineId=" + machineId);
+					//连接上的时候就将缓存
+					redisUtil.set(key,machineId);
+				}
 
-				//连接上的时候就将缓存
-				redisUtil.set(key,machineId);
-
-				log.info("socket连接上");
+				log.info("socket连接结束");
 			}
 
 			@Override
