@@ -145,15 +145,6 @@ public class SocketIOStartHandler {
 	public SocketServer socketServer() {
 		return new SocketServer("0.0.0.0", 1237, socketServerHandler());
 	}
-	public static void main(String[] args) throws Exception {
-		/*String string = HttpClient.post("http://172.16.18.240:8880/machine/generateMachineId?id=1","");
-		System.out.println("我的返回值是" + string);*/
-		SocketIOStartHandler socketIOStartHandler = new SocketIOStartHandler();
-		Map<String, List<String>> params = new HashMap<>();
-		String result = socketIOStartHandler.socketServerHandler().process("123","H4sIAAAAAAAAAA3K2xUAMQQFwJYu8YhyCPovYfd3zoi5oNeoBopbVy39EPJys4u7npnCREwuJXATHTqvf1rHPVRJdiv/y6luSbsbh54xodS4dCZ9V5jEH3d4R1A4GPm6VnSqXcFOK7VAiCtfeRRmH9oIbuygAAAA", params);
-		System.out.println("我的返回值是" + result);
-
-	}
 
 
 }
