@@ -64,6 +64,7 @@ public class Inno72SupplyChannel {
 	@Column(name = "goods_count")
 	private Integer goodsCount;
 
+
 	/**
 	 * 创建人ID
 	 */
@@ -102,6 +103,15 @@ public class Inno72SupplyChannel {
 	@Transient
 	private String goodsCode;
 
+	@Transient
+	private String[] codes;
+
+	@Transient
+	private String fromCode;
+
+	@Transient
+	private String toCode;
+
 	/**
 	 * 获取uuid
 	 *
@@ -114,8 +124,7 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置uuid
 	 *
-	 * @param id
-	 *            uuid
+	 * @param id uuid
 	 */
 	public void setId(String id) {
 		this.id = id;
@@ -133,8 +142,7 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置货道编号
 	 *
-	 * @param code
-	 *            货道编号
+	 * @param code 货道编号
 	 */
 	public void setCode(String code) {
 		this.code = code;
@@ -152,8 +160,7 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置货道名称
 	 *
-	 * @param name
-	 *            货道名称
+	 * @param name 货道名称
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -171,8 +178,7 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置状态（0.未合并，1.已合并）
 	 *
-	 * @param status
-	 *            状态（0.未合并，1.已合并）
+	 * @param status 状态（0.未合并，1.已合并）
 	 */
 	public void setStatus(Integer status) {
 		this.status = status;
@@ -190,8 +196,7 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置机器编号
 	 *
-	 * @param merchantId
-	 *            机器编号
+	 * @param merchantId 机器编号
 	 */
 	public void setMerchantId(String merchantId) {
 		this.merchantId = merchantId;
@@ -209,8 +214,7 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置父货道编号
 	 *
-	 * @param parentCode
-	 *            父货道编号
+	 * @param parentCode 父货道编号
 	 */
 	public void setParentCode(String parentCode) {
 		this.parentCode = parentCode;
@@ -228,8 +232,7 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置商品容量
 	 *
-	 * @param volumeCount
-	 *            商品容量
+	 * @param volumeCount 商品容量
 	 */
 	public void setVolumeCount(Integer volumeCount) {
 		this.volumeCount = volumeCount;
@@ -247,12 +250,12 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置商品数量
 	 *
-	 * @param goodsCount
-	 *            商品数量
+	 * @param goodsCount 商品数量
 	 */
 	public void setGoodsCount(Integer goodsCount) {
 		this.goodsCount = goodsCount;
 	}
+
 
 	/**
 	 * 获取创建人ID
@@ -266,8 +269,7 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置创建人ID
 	 *
-	 * @param createId
-	 *            创建人ID
+	 * @param createId 创建人ID
 	 */
 	public void setCreateId(String createId) {
 		this.createId = createId;
@@ -285,8 +287,7 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置创建时间
 	 *
-	 * @param createTime
-	 *            创建时间
+	 * @param createTime 创建时间
 	 */
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
@@ -304,8 +305,7 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置修改人ID
 	 *
-	 * @param updateId
-	 *            修改人ID
+	 * @param updateId 修改人ID
 	 */
 	public void setUpdateId(String updateId) {
 		this.updateId = updateId;
@@ -323,8 +323,7 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置修改时间
 	 *
-	 * @param updateTime
-	 *            修改时间
+	 * @param updateTime 修改时间
 	 */
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
@@ -352,5 +351,29 @@ public class Inno72SupplyChannel {
 
 	public void setGoodsCode(String goodsCode) {
 		this.goodsCode = goodsCode;
+	}
+
+	public String[] getCodes() {
+		return codes;
+	}
+
+	public void setCodes(String[] codes) {
+		this.codes = codes;
+	}
+
+	public String getFromCode() {
+		return fromCode;
+	}
+
+	public void setFromCode(String fromCode) {
+		this.fromCode = fromCode;
+	}
+
+	public String getToCode() {
+		return toCode;
+	}
+
+	public void setToCode(String toCode) {
+		this.toCode = toCode;
 	}
 }

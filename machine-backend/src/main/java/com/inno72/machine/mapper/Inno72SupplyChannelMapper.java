@@ -10,7 +10,11 @@ import com.inno72.machine.model.Inno72SupplyChannel;
 public interface Inno72SupplyChannelMapper extends Mapper<Inno72SupplyChannel> {
 	int subCount(Inno72SupplyChannel supplyChannel);
 
-	Inno72SupplyChannel selectByParam(Map<String, Object> map);
+	Inno72SupplyChannel selectByParam(Map<String,Object> map);
 
-	List<Inno72SupplyChannel> selectListByParam(Map<String, Object> map);
+	List<Inno72SupplyChannel> selectListByParam(Map<String,Object> map);
+
+	int updateByParam(Inno72SupplyChannel supplyChannel);
+
+	int updateChild(Inno72SupplyChannel upChildChannel);
 }
