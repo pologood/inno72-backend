@@ -1,6 +1,6 @@
 package com.inno72.machine.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -11,15 +11,14 @@ import javax.persistence.Table;
 @Table(name = "inno72_machine")
 public class Inno72Machine {
 	@Id
-	@Column(name = "Id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private String id;
 
 	/**
 	 * 机器id
 	 */
-	@Column(name = "machine_id")
-	private String machineId;
+	@Column(name = "machine_code")
+	private String machineCode;
 
 	/**
 	 * 机器名称
@@ -36,6 +35,7 @@ public class Inno72Machine {
 	/**
 	 * 机器所属标签
 	 */
+	@Column(name = "tag")
 	private String tag;
 
 	/**
@@ -54,16 +54,64 @@ public class Inno72Machine {
 	 * 创建时间
 	 */
 	@Column(name = "create_time")
-	private Date createTime;
+	private LocalDateTime createTime;
 
 	/**
 	 * 更新时间
 	 */
 	@Column(name = "update_time")
-	private Date updateTime;
+	private LocalDateTime updateTime;
 
 	/**
-	 * @return Id
+	 * 机器状态 1：未出厂（厂内安装测试）2:厂内测试通过；3:H5录入状态；4:正常
+	 */
+	@Column(name = "machine_status")
+	private Integer machineStatus;
+
+	/**
+	 * 网络灯状态 0:关闭，1:开启
+	 */
+	@Column(name = "net_status")
+	private Integer netStatus;
+
+	/**
+	 * 设备id
+	 */
+	@Column(name = "device_id")
+	private String deviceId;
+
+	public enum Machine_Status {
+		// 在厂测试
+		INFACTORY(1),
+		// 通过测试
+		PASSTEST(2),
+		// 设置在点位
+		INLOCAL(3),
+		// 正常
+		NORMAL(4);
+
+		private int v;
+
+		private Machine_Status(int v) {
+			this.v = v;
+		}
+
+		public int v() {
+			return this.v;
+		}
+
+		public static Machine_Status get(int v) {
+			for (Machine_Status c : Machine_Status.values()) {
+				if (c.v == v) {
+					return c;
+				}
+			}
+			return null;
+		}
+	}
+
+	/**
+	 * @return id
 	 */
 	public String getId() {
 		return id;
@@ -79,20 +127,20 @@ public class Inno72Machine {
 	/**
 	 * 获取机器id
 	 *
-	 * @return machine_id - 机器id
+	 * @return machine_code - 机器id
 	 */
-	public String getMachineId() {
-		return machineId;
+	public String getMachineCode() {
+		return machineCode;
 	}
 
 	/**
 	 * 设置机器id
 	 *
-	 * @param machineId
+	 * @param machineCode
 	 *            机器id
 	 */
-	public void setMachineId(String machineId) {
-		this.machineId = machineId;
+	public void setMachineCode(String machineCode) {
+		this.machineCode = machineCode;
 	}
 
 	/**
@@ -190,41 +238,77 @@ public class Inno72Machine {
 		this.updateId = updateId;
 	}
 
-	/**
-	 * 获取创建时间
-	 *
-	 * @return create_time - 创建时间
-	 */
-	public Date getCreateTime() {
+	public LocalDateTime getCreateTime() {
 		return createTime;
 	}
 
-	/**
-	 * 设置创建时间
-	 *
-	 * @param createTime
-	 *            创建时间
-	 */
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(LocalDateTime createTime) {
 		this.createTime = createTime;
 	}
 
-	/**
-	 * 获取更新时间
-	 *
-	 * @return update_time - 更新时间
-	 */
-	public Date getUpdateTime() {
+	public LocalDateTime getUpdateTime() {
 		return updateTime;
 	}
 
-	/**
-	 * 设置更新时间
-	 *
-	 * @param updateTime
-	 *            更新时间
-	 */
-	public void setUpdateTime(Date updateTime) {
+	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
 	}
+
+	/**
+	 * 获取机器状态 1：未出厂（厂内安装测试）2:厂内测试通过；3:H5录入状态；4:正常
+	 *
+	 * @return machine_status - 机器状态 1：未出厂（厂内安装测试）2:厂内测试通过；3:H5录入状态；4:正常
+	 */
+	public Integer getMachineStatus() {
+		return machineStatus;
+	}
+
+	/**
+	 * 设置机器状态 1：未出厂（厂内安装测试）2:厂内测试通过；3:H5录入状态；4:正常
+	 *
+	 * @param machineStatus
+	 *            机器状态 1：未出厂（厂内安装测试）2:厂内测试通过；3:H5录入状态；4:正常
+	 */
+	public void setMachineStatus(Integer machineStatus) {
+		this.machineStatus = machineStatus;
+	}
+
+	/**
+	 * 获取网络灯状态 0:关闭，1:开启
+	 *
+	 * @return net_status - 网络灯状态 0:关闭，1:开启
+	 */
+	public Integer getNetStatus() {
+		return netStatus;
+	}
+
+	/**
+	 * 设置网络灯状态 0:关闭，1:开启
+	 *
+	 * @param netStatus
+	 *            网络灯状态 0:关闭，1:开启
+	 */
+	public void setNetStatus(Integer netStatus) {
+		this.netStatus = netStatus;
+	}
+
+	/**
+	 * 获取设备id
+	 *
+	 * @return device_id - 设备id
+	 */
+	public String getDeviceId() {
+		return deviceId;
+	}
+
+	/**
+	 * 设置设备id
+	 *
+	 * @param deviceId
+	 *            设备id
+	 */
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
+
 }
