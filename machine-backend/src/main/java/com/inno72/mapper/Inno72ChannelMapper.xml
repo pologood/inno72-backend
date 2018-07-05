@@ -14,4 +14,17 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
   </resultMap>
+  
+  <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+		SELECT * FROM inno72_channel channel
+		<where>
+			<if test="keyword !=null and keyword !=''">( channel.channel_code LIKE concat(concat('%',#{keyword}),'%') or channel.channel_name LIKE concat(concat('%',#{keyword}),'%') )</if>
+		</where>
+  </select>
+  
+  <select id="selectIsUseing" parameterType="String" resultType="int">
+		SELECT count(1) FROM inno72_merchant where channel_id=#{id} and is_delete = 0
+  </select>
+  
+  
 </mapper>

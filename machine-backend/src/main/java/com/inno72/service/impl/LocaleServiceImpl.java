@@ -55,12 +55,12 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	public Result<String> delById(String id) {
 		// TODO 点位逻辑删除
 		logger.info("---------------------点位删除-------------------");
-		Inno72Locale model = inno72LocaleMapper.selectByPrimaryKey(id);
-		//判断是否可以删除
 		int n= inno72LocaleMapper.selectIsUseing(id);
 		if (n>0) {
 			return Results.failure("机器使用中，不能删除！");
 		}
+		Inno72Locale model = inno72LocaleMapper.selectByPrimaryKey(id);
+		//判断是否可以删除
 		model.setIsDelete(1);
 		model.setCreateId("");
 		model.setUpdateId("");
