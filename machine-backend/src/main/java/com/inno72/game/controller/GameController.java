@@ -21,7 +21,7 @@ import java.util.List;
 * Created by CodeGenerator on 2018/06/29.
 */
 @RestController
-@RequestMapping("/game")
+@RequestMapping("/game/game")
 public class GameController {
     @Resource
     private GameService gameService;

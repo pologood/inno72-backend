@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.machine.mapper.Inno72LocaleMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.machine.model.Inno72Locale">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+    <result column="mall" jdbcType="VARCHAR" property="mall" />
+    <result column="manager" jdbcType="VARCHAR" property="manager" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  <resultMap id="VoResultMap" type="com.inno72.machine.vo.Inno72LocaleVo" extends="BaseResultMap">
+    
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="district" jdbcType="VARCHAR" property="district" />
+    <result column="circle" jdbcType="VARCHAR" property="circle" />
+    
+  </resultMap>
+  
+  <select id="selectById" parameterType="String" resultMap="VoResultMap">
+		SELECT * FROM inno72_locale where id=#{id}
+  </select>
+
+	<select id="selectByPage" parameterType="java.util.Map" resultMap="VoResultMap">
+		SELECT * FROM inno72_locale locale where is_delete=0
+		<if test="keyword !=null and keyword !=''">and ( locale.manager LIKE '%${keyword}%' or locale.mobile LIKE '%${keyword}%'  )</if>
+		<if test="code !=null and code !=''">and locale.area_code = #{code}</if>
+  </select>
+  
+  <select id="selectIsUseing" parameterType="String" resultType="int">
+		SELECT count(1) FROM inno72_machine where locale_id=#{id}
+  </select>
+	
+  
+  
+  
+  
+  
+</mapper>
