@@ -1,10 +1,10 @@
-package com.inno72.supplyMerchant.controller;
+package com.inno72.merchant.controller;
 
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
-import com.inno72.supplyMerchant.model.Inno72SupplyChannel;
-import com.inno72.supplyMerchant.service.SupplyChannelService;
+import com.inno72.merchant.model.Inno72SupplyChannel;
+import com.inno72.merchant.service.SupplyChannelService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,8 +19,8 @@ import java.util.List;
 * Created by CodeGenerator on 2018/07/03.
 */
 @RestController
-@RequestMapping("/supply/channel")
-public class SupplyChannelController {
+@RequestMapping("/merchant/supply/channel/out")
+public class SupplyChannelOutController {
     @Resource
     private SupplyChannelService supplyChannelService;
 
@@ -55,16 +55,24 @@ public class SupplyChannelController {
     }
 
     /**
-     * 初始化数据
-     * @param merchantId
+     * 商品数减一
+     * @param supplyChannel
      * @return
      */
-    @RequestMapping(value = "/init" ,method={RequestMethod.POST,RequestMethod.GET})
-    public Result init(@RequestParam String merchantId){
-        Result result = supplyChannelService.init(merchantId);
+    @RequestMapping(value = "/subCount",method = {RequestMethod.POST,RequestMethod.GET})
+    public Result<Inno72SupplyChannel> subCount(Inno72SupplyChannel supplyChannel){
+        Result result = supplyChannelService.subCount(supplyChannel);
         return result;
     }
 
-
-
+    /**
+     * 获取货道
+     * @param supplyChannel
+     * @return
+     */
+    @RequestMapping(value = "/get",method = {RequestMethod.POST,RequestMethod.GET})
+    public Result getSupplyChannel(Inno72SupplyChannel supplyChannel){
+        Result result = supplyChannelService.getSupplyChannel(supplyChannel);
+        return result;
+    }
 }

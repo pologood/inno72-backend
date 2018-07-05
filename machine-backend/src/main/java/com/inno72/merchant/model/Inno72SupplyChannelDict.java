@@ -1,4 +1,4 @@
-package com.inno72.supplyMerchant.model;
+package com.inno72.merchant.model;
 
 import javax.persistence.*;
 

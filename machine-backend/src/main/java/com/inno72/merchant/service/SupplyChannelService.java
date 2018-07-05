@@ -1,6 +1,6 @@
-package com.inno72.supplyMerchant.service;
+package com.inno72.merchant.service;
 import com.inno72.common.Result;
-import com.inno72.supplyMerchant.model.Inno72SupplyChannel;
+import com.inno72.merchant.model.Inno72SupplyChannel;
 import com.inno72.common.Service;
 
 

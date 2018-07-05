@@ -1,13 +1,13 @@
-package com.inno72.supplyMerchant.service.impl;
+package com.inno72.merchant.service.impl;
 
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.StringUtil;
-import com.inno72.supplyMerchant.mapper.Inno72SupplyChannelMapper;
-import com.inno72.supplyMerchant.model.Inno72SupplyChannel;
-import com.inno72.supplyMerchant.model.Inno72SupplyChannelDict;
-import com.inno72.supplyMerchant.service.SupplyChannelDictService;
-import com.inno72.supplyMerchant.service.SupplyChannelService;
+import com.inno72.merchant.mapper.Inno72SupplyChannelMapper;
+import com.inno72.merchant.model.Inno72SupplyChannel;
+import com.inno72.merchant.model.Inno72SupplyChannelDict;
+import com.inno72.merchant.service.SupplyChannelDictService;
+import com.inno72.merchant.service.SupplyChannelService;
 import com.inno72.common.AbstractService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

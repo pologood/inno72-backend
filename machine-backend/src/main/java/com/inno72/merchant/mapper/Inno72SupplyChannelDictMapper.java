@@ -1,7 +1,7 @@
-package com.inno72.supplyMerchant.mapper;
+package com.inno72.merchant.mapper;
 
 import com.inno72.common.Mapper;
-import com.inno72.supplyMerchant.model.Inno72SupplyChannelDict;
+import com.inno72.merchant.model.Inno72SupplyChannelDict;
 
 public interface Inno72SupplyChannelDictMapper extends Mapper<Inno72SupplyChannelDict> {
 }

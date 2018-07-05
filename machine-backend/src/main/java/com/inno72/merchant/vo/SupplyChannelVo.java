@@ -1,4 +1,4 @@
-package com.inno72.supplyMerchant.vo;
+package com.inno72.merchant.vo;
 
 public class SupplyChannelVo {
 
