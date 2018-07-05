@@ -1,5 +1,12 @@
 package com.inno72.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Date;
 import javax.persistence.*;
 
@@ -51,11 +58,6 @@ public class Inno72SupplyChannel {
     @Column(name = "goods_count")
     private Integer goodsCount;
 
-    /**
-     * 活动ID
-     */
-    @Column(name = "activity_id")
-    private String activityId;
 
     /**
      * 创建人ID
@@ -66,6 +68,9 @@ public class Inno72SupplyChannel {
     /**
      * 创建时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
     @Column(name = "create_time")
     private Date createTime;
 
@@ -78,8 +83,19 @@ public class Inno72SupplyChannel {
     /**
      * 修改时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "update_time")
     private Date updateTime;
+
+    @Transient
+    private String goodsName;
+
+    @Transient
+    private String[] goodsCodes;
+
+    @Transient
+    private String goodsCode;
 
     /**
      * 获取uuid
@@ -225,23 +241,6 @@ public class Inno72SupplyChannel {
         this.goodsCount = goodsCount;
     }
 
-    /**
-     * 获取活动ID
-     *
-     * @return activity_id - 活动ID
-     */
-    public String getActivityId() {
-        return activityId;
-    }
-
-    /**
-     * 设置活动ID
-     *
-     * @param activityId 活动ID
-     */
-    public void setActivityId(String activityId) {
-        this.activityId = activityId;
-    }
 
     /**
      * 获取创建人ID
@@ -313,5 +312,29 @@ public class Inno72SupplyChannel {
      */
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getGoodsName() {
+        return goodsName;
+    }
+
+    public String[] getGoodsCodes() {
+        return goodsCodes;
+    }
+
+    public void setGoodsCodes(String[] goodsCodes) {
+        this.goodsCodes = goodsCodes;
+    }
+
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
+    }
+
+    public String getGoodsCode() {
+        return goodsCode;
+    }
+
+    public void setGoodsCode(String goodsCode) {
+        this.goodsCode = goodsCode;
     }
 }
