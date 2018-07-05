@@ -98,7 +98,7 @@ public class GZIPUtil {
     }
 
     public static void main(String[] args) {
-        String info = "qwertyuiopasdfghjklzxcbnmMNBVC";
+        String info = "46740df61be0508b856a7310a82d2747753eeb0e99eaf1a008a0d95ecde99f70831ba168ba4772a576a1fff931c6210b562b5eea7ff42147c2d97d99197020acdbf45ebd750271f4bf009475284c1966";
         System.out.println("-----info:" + info);
         String compress = GZIPUtil.compress(info);
         System.out.println("-----compress:" + compress);
