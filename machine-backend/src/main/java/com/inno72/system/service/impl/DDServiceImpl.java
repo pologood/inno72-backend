@@ -205,7 +205,9 @@ public class DDServiceImpl implements DDService {
 			}
 			// 历经九九八十一难终于拿到用户的一个标识
 			Inno72User user = userService.findBy("dingId", dingIdResult.getData());
-			List<Inno72Function> functions = functionService.findFunctionsByUserId(user.getId());
+			List<Inno72Function> functions = functionService.findAll();
+			// List<Inno72Function> functions =
+			// functionService.findFunctionsByUserId(user.getId());
 			String token = StringUtil.getUUID();
 			SessionData sessionData = new SessionData(token, user, functions);
 			// 获取用户token使用
@@ -454,7 +456,9 @@ public class DDServiceImpl implements DDService {
 			return Results.failure("登录失败");
 		}
 		Inno72User user = users.get(0);
-		List<Inno72Function> functions = functionService.findFunctionsByUserId(user.getId());
+		List<Inno72Function> functions = functionService.findAll();
+		// List<Inno72Function> functions =
+		// functionService.findFunctionsByUserId(user.getId());
 		String token = StringUtil.getUUID();
 		SessionData sessionData = new SessionData(token, user, functions);
 		// 获取用户token使用
