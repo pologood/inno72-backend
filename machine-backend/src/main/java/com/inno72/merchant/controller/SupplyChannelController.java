@@ -19,7 +19,7 @@ import java.util.List;
 * Created by CodeGenerator on 2018/07/03.
 */
 @RestController
-@RequestMapping("/merchant/supply/channel")
+@RequestMapping("/merchant/channel")
 public class SupplyChannelController {
     @Resource
     private SupplyChannelService supplyChannelService;
