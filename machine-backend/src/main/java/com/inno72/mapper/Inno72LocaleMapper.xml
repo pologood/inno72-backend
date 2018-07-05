@@ -31,11 +31,11 @@
 		SELECT * FROM inno72_locale where id=#{id}
   </select>
 
-	<select id="selectByPage" parameterType="map" resultMap="VoResultMap">
+	<select id="selectByPage" parameterType="java.util.Map" resultMap="VoResultMap">
 		SELECT * FROM inno72_locale locale
 		<where>
-			<if test="keyword !=null and keyword !=''">( locale.manager = LIKE concat(concat('%',#{keyword}),'%') or locale.mobile = LIKE concat(concat('%',#{keyword}),'%') or locale.mall = LIKE concat(concat('%',#{keyword}),'%')  )</if>
-			<if test="code !=null and code !=''">and locale.are_code = #{code}</if>
+			<if test="keyword !=null and keyword !=''">( locale.manager LIKE concat(concat('%',#{keyword}),'%') or locale.mobile LIKE concat(concat('%',#{keyword}),'%') or locale.mall LIKE concat(concat('%',#{keyword}),'%')  )</if>
+			<if test="code !=null and code !=''">and locale.area_code = #{code}</if>
 		</where>
   </select>
   
