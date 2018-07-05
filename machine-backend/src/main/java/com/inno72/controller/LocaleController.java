@@ -46,11 +46,10 @@ public class LocaleController {
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> delete(@RequestParam String id) {
     	try {
-    		localeService.deleteById(id);
+    		return localeService.delById(id);
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
-        return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
@@ -63,14 +62,14 @@ public class LocaleController {
         return ResultGenerator.genSuccessResult();
     }
     
-    /*@RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
+    @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<Inno72LocaleVo> detail(@RequestParam String id) {
-    	Inno72LocaleVo locale = localeService.(id);
+    	Inno72LocaleVo locale = localeService.findById(id);
         return ResultGenerator.genSuccessResult(locale);
-    }*/
+    }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list(@RequestParam String code,@RequestParam String keyword) {
+    public ModelAndView list(@RequestParam(required=false) String code,@RequestParam(required=false) String keyword) {
         List<Inno72LocaleVo> list = localeService.findByPage(code,keyword);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }

@@ -14,4 +14,9 @@
     <result column="circle" jdbcType="VARCHAR" property="circle" />
     <result column="level" jdbcType="INTEGER" property="level" />
   </resultMap>
+  
+  <select id="selectByCode" parameterType="String" resultMap="BaseResultMap">
+		SELECT * FROM inno72_admin_area where code=#{code}
+  </select>
+  
 </mapper>

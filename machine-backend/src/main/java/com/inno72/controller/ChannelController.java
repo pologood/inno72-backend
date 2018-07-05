@@ -47,11 +47,10 @@ public class ChannelController {
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> delete(@RequestParam String id) {
     	try {
-    		channelService.deleteById(id);
+    		return channelService.delById(id);
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
-        return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
@@ -72,9 +71,8 @@ public class ChannelController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list() {
-   	   Condition condition = new Condition( Inno72Channel.class);
-        List<Inno72Channel> list = channelService.findByPage(condition);
+    public ModelAndView list(@RequestParam(required=false) String keyword) {
+        List<Inno72Channel> list = channelService.findByPage(keyword);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
     

@@ -1,6 +1,8 @@
 package com.inno72.service.impl;
 
+import com.inno72.mapper.Inno72AdminAreaMapper;
 import com.inno72.mapper.Inno72LocaleMapper;
+import com.inno72.model.Inno72AdminArea;
 import com.inno72.model.Inno72Locale;
 import com.inno72.service.LocaleService;
 import com.inno72.vo.Inno72LocaleVo;
@@ -8,13 +10,15 @@ import com.inno72.vo.Inno72LocaleVo;
 import tk.mybatis.mapper.entity.Condition;
 
 import com.inno72.common.AbstractService;
+import com.inno72.common.Result;
+import com.inno72.common.ResultGenerator;
+import com.inno72.common.Results;
 import com.inno72.common.StringUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +37,8 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	
     @Resource
     private Inno72LocaleMapper inno72LocaleMapper;
+    @Resource
+    private Inno72AdminAreaMapper inno72AdminAreaMapper;
 
 	@Override
 	public void save(Inno72Locale model) {
@@ -44,17 +50,23 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		
 		super.save(model);
 	}
-
+	
 	@Override
-	public void deleteById(String id) {
+	public Result<String> delById(String id) {
 		// TODO 点位逻辑删除
 		logger.info("---------------------点位删除-------------------");
+		int n= inno72LocaleMapper.selectIsUseing(id);
+		if (n>0) {
+			return Results.failure("机器使用中，不能删除！");
+		}
 		Inno72Locale model = inno72LocaleMapper.selectByPrimaryKey(id);
+		//判断是否可以删除
 		model.setIsDelete(1);
 		model.setCreateId("");
 		model.setUpdateId("");
 		
 		super.update(model);
+		return ResultGenerator.genSuccessResult();
 	}
 
 	@Override
@@ -64,24 +76,22 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		
 		model.setCreateId("");
 		model.setUpdateId("");
-		
 		super.update(model);
 	}
-	
-	
 	
 	@Override
 	public Inno72LocaleVo findById(String id) {
 		// TODO Auto-generated method stub
 		
 		Inno72LocaleVo vo = inno72LocaleMapper.selectById(id);
-		String areCode = vo.getAreCode();//一共9位 省前2位后补0  市4位后补0 县6位后补0 商圈直接取
-		String province=areCode.substring(0,1);
-		String city=areCode.substring(0,3);
-		String district=areCode.substring(0,5);
+		String areaCode = vo.getAreaCode();//一共9位 省前2位后补0  市4位后补0 县6位后补0 商圈直接取
+		String province=areaCode.substring(0,2)+"0000000";
+		String city=areaCode.substring(0,4)+"00000";
+		String district=areaCode.substring(0,6)+"000";
 		vo.setProvince(province);
 		vo.setCity(city);
 		vo.setDistrict(district);
+		vo.setCircle(areaCode);
 		
 		return inno72LocaleMapper.selectById(id);
 	}
@@ -93,6 +103,21 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("code", code);
 		params.put("keyword", keyword);
+		
+		List<Inno72LocaleVo> list = inno72LocaleMapper.selectByPage(params);
+		Inno72AdminArea area= new Inno72AdminArea();
+		
+		for (Inno72LocaleVo inno72LocaleVo : list) {
+			StringBuffer areaNmae=new StringBuffer();
+			area =inno72AdminAreaMapper.selectByCode(inno72LocaleVo.getAreaCode());
+			areaNmae.append(area.getProvince());
+			areaNmae.append(area.getCity());
+			areaNmae.append(area.getDistrict());
+			if (!area.getCircle().equals("其他")) {
+				areaNmae.append(area.getCircle());
+			}
+			inno72LocaleVo.setAreaName(areaNmae.toString());
+		}
 		return inno72LocaleMapper.selectByPage(params);
 	}
 	

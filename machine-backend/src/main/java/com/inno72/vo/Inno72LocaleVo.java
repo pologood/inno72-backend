@@ -23,6 +23,11 @@ public class Inno72LocaleVo extends Inno72Locale{
      * 商圈ID
      */
     private String circle;
+    
+    private String areaName;
+    
+    
+    
 
 	public String getProvince() {
 		return province;
@@ -55,6 +60,16 @@ public class Inno72LocaleVo extends Inno72Locale{
 	public void setCircle(String circle) {
 		this.circle = circle;
 	}
+
+	public String getAreaName() {
+		return areaName;
+	}
+
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
+	}
+
+	
 	
    
 }
