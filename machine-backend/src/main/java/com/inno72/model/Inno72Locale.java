@@ -18,8 +18,8 @@ public class Inno72Locale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     
-    @Column(name = "are_code")
-    private String areCode;
+    @Column(name = "area_code")
+    private String areaCode;
 
     /**
      * 商场
@@ -98,13 +98,12 @@ public class Inno72Locale {
         this.id = id;
     }
     
-    
-    public String getAreCode() {
-		return areCode;
+	public String getAreaCode() {
+		return areaCode;
 	}
 
-	public void setAreCode(String areCode) {
-		this.areCode = areCode;
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
 	}
 
 	/**

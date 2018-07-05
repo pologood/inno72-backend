@@ -6,7 +6,7 @@
       WARNING - @mbg.generated
     -->
     <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="are_code" jdbcType="VARCHAR" property="areCode" />
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
     <result column="mall" jdbcType="VARCHAR" property="mall" />
     <result column="manager" jdbcType="VARCHAR" property="manager" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
@@ -31,14 +31,16 @@
 		SELECT * FROM inno72_locale where id=#{id}
   </select>
 
-	<select id="selectByPage" parameterType="com.inno72.vo.Inno72MerchantVo" resultMap="BaseResultMap">
+	<select id="selectByPage" parameterType="map" resultMap="VoResultMap">
 		SELECT * FROM inno72_locale locale
 		<where>
-			<if test="keyword !=null and keyword !=''">or locale.manager = #{keyword}</if>
-			<if test="keyword !=null and keyword !=''">or locale.manager = #{keyword}</if>
-			<if test="keyword !=null and keyword !=''">or locale.manager = #{keyword}</if>
+			<if test="keyword !=null and keyword !=''">( locale.manager = LIKE concat(concat('%',#{keyword}),'%') or locale.mobile = LIKE concat(concat('%',#{keyword}),'%') or locale.mall = LIKE concat(concat('%',#{keyword}),'%')  )</if>
 			<if test="code !=null and code !=''">and locale.are_code = #{code}</if>
 		</where>
+  </select>
+  
+  <select id="selectIsUseing" parameterType="String" resultType="int">
+		SELECT count(1) FROM inno72_machine where locale_id=#{id}
   </select>
 	
   
