@@ -143,11 +143,11 @@ public class AesUtils {
         return encrypted;
     }
 
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
         String userid = "897807300@qq.com";
         String token = "8aa8690f65f080aee595d8781e7044a7eacda7a86520786db0838136554920b6";
         System.out.println(encrypt(token));
         System.out.println(decrypt(encrypt(token)));
-    }
+    }*/
 
 }

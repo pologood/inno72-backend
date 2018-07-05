@@ -22,14 +22,14 @@ public class GenerateMachineIdUtil {
 
 
 
-    public static void main(String[] args) throws Exception {
+    /*public static void main(String[] args) throws Exception {
         for(int i = 0;i <= 2000;i++){
            String time = generateNumberString(10);
 
             System.out.println(" " + time);
         }
 
-    }
+    }*/
 
 }
 

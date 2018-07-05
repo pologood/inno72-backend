@@ -19,7 +19,7 @@ public class BytesToHex {
 		return builder.toString();
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		System.out.println(Integer.toHexString(0xFF & 15));
-	}
+	}*/
 }
