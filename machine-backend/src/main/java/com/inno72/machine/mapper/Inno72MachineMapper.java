@@ -1,7 +1,8 @@
-package com.inno72.mapper;
+package com.inno72.machine.mapper;
 
 import com.inno72.common.Mapper;
-import com.inno72.model.Inno72Machine;
+import com.inno72.machine.model.Inno72Machine;
 
 public interface Inno72MachineMapper extends Mapper<Inno72Machine> {
+
 }

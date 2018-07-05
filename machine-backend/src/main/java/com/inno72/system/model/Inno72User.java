@@ -7,6 +7,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
 @Table(name = "inno72_user")
 public class Inno72User {
@@ -30,11 +34,15 @@ public class Inno72User {
 
 	private String avatar;
 
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
 	@Column(name = "create_time")
 	private LocalDateTime createTime;
 
 	@Column(name = "is_delete")
 	private Integer isDelete;
+
+	@Transient
+	private String deptName;
 
 	/**
 	 * @return id
@@ -169,4 +177,13 @@ public class Inno72User {
 	public void setIsDelete(Integer isDelete) {
 		this.isDelete = isDelete;
 	}
+
+	public String getDeptName() {
+		return deptName;
+	}
+
+	public void setDeptName(String deptName) {
+		this.deptName = deptName;
+	}
+
 }
