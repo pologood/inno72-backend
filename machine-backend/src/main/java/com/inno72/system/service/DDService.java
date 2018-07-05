@@ -1,4 +1,4 @@
-package com.inno72.service;
+package com.inno72.system.service;
 
 import com.inno72.common.Result;
 

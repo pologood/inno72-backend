@@ -1,4 +1,4 @@
-package com.inno72.model;
+package com.inno72.system.model;
 
 import javax.persistence.*;
 

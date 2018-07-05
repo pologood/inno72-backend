@@ -1,4 +1,4 @@
-package com.inno72.service.impl;
+package com.inno72.system.service.impl;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
@@ -16,17 +16,17 @@ import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.StringUtil;
-import com.inno72.model.Inno72Dept;
-import com.inno72.model.Inno72User;
-import com.inno72.model.Inno72UserDept;
 import com.inno72.plugin.http.HttpClient;
-import com.inno72.service.DDService;
-import com.inno72.service.DeptService;
-import com.inno72.service.UserDeptService;
-import com.inno72.service.UserService;
-import com.inno72.util.dd.DingTalkEncryptException;
-import com.inno72.util.dd.DingTalkEncryptor;
-import com.inno72.vo.UserDeptVo;
+import com.inno72.system.encrypt.DingTalkEncryptException;
+import com.inno72.system.encrypt.DingTalkEncryptor;
+import com.inno72.system.model.Inno72Dept;
+import com.inno72.system.model.Inno72User;
+import com.inno72.system.model.Inno72UserDept;
+import com.inno72.system.service.DDService;
+import com.inno72.system.service.DeptService;
+import com.inno72.system.service.UserDeptService;
+import com.inno72.system.service.UserService;
+import com.inno72.system.vo.UserDeptVo;
 
 @Service
 public class DDServiceImpl implements DDService {
@@ -45,6 +45,7 @@ public class DDServiceImpl implements DDService {
 		String encrypt = jsonEncrypt.getString("encrypt");
 		DingTalkEncryptor dingTalkEncryptor = null;
 		String plainText = null;
+
 		try {
 			dingTalkEncryptor = new DingTalkEncryptor(CommonConstants.DD_TOKEN, CommonConstants.AES_KEY,
 					CommonConstants.DD_CORPID);

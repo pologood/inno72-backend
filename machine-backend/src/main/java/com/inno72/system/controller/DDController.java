@@ -1,4 +1,4 @@
-package com.inno72.controller;
+package com.inno72.system.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inno72.common.Result;
-import com.inno72.service.DDService;
+import com.inno72.system.service.DDService;
 
 @RestController
 @RequestMapping("/dd")

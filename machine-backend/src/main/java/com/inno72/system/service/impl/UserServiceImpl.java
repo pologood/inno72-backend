@@ -1,4 +1,4 @@
-package com.inno72.service.impl;
+package com.inno72.system.service.impl;
 
 import java.util.List;
 
@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
-import com.inno72.mapper.Inno72UserMapper;
-import com.inno72.model.Inno72User;
-import com.inno72.service.UserService;
+import com.inno72.system.mapper.Inno72UserMapper;
+import com.inno72.system.model.Inno72User;
+import com.inno72.system.service.UserService;
 
 import tk.mybatis.mapper.entity.Condition;
 
@@ -34,6 +34,7 @@ public class UserServiceImpl extends AbstractService<Inno72User> implements User
 			return ResultGenerator.genSuccessResult(users.get(0));
 		}
 		return ResultGenerator.genSuccessResult(null);
+
 	}
 
 }

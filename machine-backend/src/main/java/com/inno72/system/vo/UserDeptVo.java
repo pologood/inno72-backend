@@ -1,7 +1,7 @@
-package com.inno72.vo;
+package com.inno72.system.vo;
 
 import com.alibaba.fastjson.JSONArray;
-import com.inno72.model.Inno72User;
+import com.inno72.system.model.Inno72User;
 
 public class UserDeptVo {
 	private Inno72User user;

@@ -1,4 +1,4 @@
-package com.inno72.service.impl;
+package com.inno72.system.service.impl;
 
 import javax.annotation.Resource;
 
@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
-import com.inno72.mapper.Inno72UserDeptMapper;
-import com.inno72.model.Inno72UserDept;
-import com.inno72.service.UserDeptService;
+import com.inno72.system.mapper.Inno72UserDeptMapper;
+import com.inno72.system.model.Inno72UserDept;
+import com.inno72.system.service.UserDeptService;
 
 /**
  * Created by CodeGenerator on 2018/07/03.

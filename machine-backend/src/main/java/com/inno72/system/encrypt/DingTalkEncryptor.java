@@ -1,4 +1,4 @@
-package com.inno72.util.dd;
+package com.inno72.system.encrypt;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
