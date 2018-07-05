@@ -98,7 +98,18 @@ public class SupplyChannelController {
 	 */
 	@RequestMapping(value="/clear",method = {RequestMethod.POST,RequestMethod.GET})
 	public Result<String> clear(Inno72SupplyChannel supplyChannel){
-		Result result = supplyChannelService.clear(supplyChannel);
+		Result<String> result = supplyChannelService.clear(supplyChannel);
+		return result;
+	}
+
+	/**
+	 * 一键下架
+	 * @param supplyChannel
+	 * @return
+	 */
+	@RequestMapping(value="downAll",method = {RequestMethod.POST,RequestMethod.GET})
+	public Result<String> downAll(Inno72SupplyChannel supplyChannel){
+		Result<String> result = supplyChannelService.downAll(supplyChannel);
 		return result;
 	}
 

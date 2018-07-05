@@ -19,4 +19,5 @@ public interface Inno72SupplyChannelMapper extends Mapper<Inno72SupplyChannel> {
 	int updateChild(Inno72SupplyChannel upChildChannel);
 
 	int updateListByParam(Inno72SupplyChannel supplyChannel);
+
 }

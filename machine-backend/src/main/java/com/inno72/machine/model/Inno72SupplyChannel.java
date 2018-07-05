@@ -94,6 +94,12 @@ public class Inno72SupplyChannel {
 	@Column(name = "update_time")
 	private Date updateTime;
 
+	@Column(name="is_delete")
+	private int isDelete;
+
+	@Transient
+	private int goodsStatus;
+
 	@Transient
 	private String goodsName;
 
@@ -317,6 +323,22 @@ public class Inno72SupplyChannel {
 	 */
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public int getIsDelete() {
+		return isDelete;
+	}
+
+	public void setIsDelete(int isDelete) {
+		this.isDelete = isDelete;
+	}
+
+	public int getGoodsStatus() {
+		return goodsStatus;
+	}
+
+	public void setGoodsStatus(int goodsStatus) {
+		this.goodsStatus = goodsStatus;
 	}
 
 	public String getGoodsName() {

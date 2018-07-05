@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.inno72.common.*;
+import com.inno72.machine.mapper.Inno72SupplyChannelGoodsMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	@Resource
 	private SupplyChannelDictService supplyChannelDictService;
 
+	@Resource
+	private Inno72SupplyChannelGoodsMapper inno72SupplyChannelGoodsMapper;
+
 	@Override
 	public Result<Inno72SupplyChannel> subCount(Inno72SupplyChannel supplyChannel) {
 		String machineId = supplyChannel.getMachineId();
@@ -36,10 +40,18 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		if(StringUtil.isEmpty(machineId) || StringUtil.isEmpty(code)){
 			return Results.failure("参数错误");
 		}
-		inno72SupplyChannelMapper.subCount(supplyChannel);
 		Map<String,Object> map = new HashMap<>();
 		map.put("machineId",machineId);
 		map.put("code",code);
+		supplyChannel = inno72SupplyChannelMapper.selectByParam(map);
+		if(supplyChannel == null){
+			return Results.failure("货道不存在");
+		}else if(supplyChannel.getGoodsStatus()==1){
+			return Results.failure("商品已下架");
+		}else if(supplyChannel.getGoodsCount()<=0){
+			return Results.failure("商品已无货");
+		}
+		inno72SupplyChannelMapper.subCount(supplyChannel);
 		supplyChannel = inno72SupplyChannelMapper.selectByParam(map);
 		return ResultGenerator.genSuccessResult(supplyChannel);
 	}
@@ -166,6 +178,28 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		}
 		supplyChannel.setGoodsCount(0);
 		inno72SupplyChannelMapper.updateListByParam(supplyChannel);
+		return ResultGenerator.genSuccessResult();
+	}
+
+	@Override
+	public Result<String> downAll(Inno72SupplyChannel supplyChannel) {
+		String machineId = supplyChannel.getMachineId();
+		if(StringUtil.isEmpty(machineId)){
+			return Results.failure("参数有误");
+		}
+		Map<String,Object> map = new HashMap<>();
+		map.put("machineId",machineId);
+		List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectListByParam(map);
+		if(supplyChannelList == null || supplyChannelList.size()<=0){
+			return Results.failure("本机器未设置货道");
+		}
+		String[] supplyChannelIds = new String[supplyChannelList.size()];
+		for(int i=0;i<supplyChannelList.size();i++){
+			supplyChannelIds[i] = supplyChannelList.get(i).getId();
+		}
+		map.put("supplyChannelIds",supplyChannelIds);
+		map.put("isDelete",1);
+		inno72SupplyChannelGoodsMapper.updateGoodsRelation(map);
 		return ResultGenerator.genSuccessResult();
 	}
 }

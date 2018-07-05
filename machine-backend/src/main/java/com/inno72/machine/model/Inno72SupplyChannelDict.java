@@ -25,6 +25,11 @@ public class Inno72SupplyChannelDict {
 	private String name;
 
 	/**
+	 * 是否删除（0.正常，1.已删除）
+	 */
+	private int isDelete;
+
+	/**
 	 * 获取主键
 	 *
 	 * @return id - 主键
@@ -79,5 +84,13 @@ public class Inno72SupplyChannelDict {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public int getIsDelete() {
+		return isDelete;
+	}
+
+	public void setIsDelete(int isDelete) {
+		this.isDelete = isDelete;
 	}
 }
