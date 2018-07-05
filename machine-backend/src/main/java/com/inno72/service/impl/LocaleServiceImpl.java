@@ -106,8 +106,9 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		
 		List<Inno72LocaleVo> list = inno72LocaleMapper.selectByPage(params);
 		Inno72AdminArea area= new Inno72AdminArea();
-		StringBuffer areaNmae=new StringBuffer();
+		
 		for (Inno72LocaleVo inno72LocaleVo : list) {
+			StringBuffer areaNmae=new StringBuffer();
 			area =inno72AdminAreaMapper.selectByCode(inno72LocaleVo.getAreaCode());
 			areaNmae.append(area.getProvince());
 			areaNmae.append(area.getCity());
