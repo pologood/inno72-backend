@@ -26,6 +26,20 @@ public class Inno72Merchant {
     /**
      * 商户名称
      */
+    @NotEmpty(message="请填写品牌名称")
+    @Column(name = "brand_name")
+    private String brandName;
+    
+    /**
+     * 商户号
+     */
+    @NotEmpty(message="请填写原始标示")
+    @Column(name = "origin_flag")
+    private String originFlag;
+
+    /**
+     * 商户名称
+     */
     @NotEmpty(message="请填写商户名称")
     @Column(name = "merchant_name")
     private String merchantName;
@@ -120,8 +134,24 @@ public class Inno72Merchant {
     public void setMerchantName(String merchantName) {
         this.merchantName = merchantName;
     }
+    
+    public String getBrandName() {
+		return brandName;
+	}
 
-    /**
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
+
+	public String getOriginFlag() {
+		return originFlag;
+	}
+
+	public void setOriginFlag(String originFlag) {
+		this.originFlag = originFlag;
+	}
+
+	/**
      * 获取商户所属渠道
      *
      * @return channel_id - 商户所属渠道

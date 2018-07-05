@@ -48,11 +48,10 @@ public class MerchantController {
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> delete(@RequestParam String id) {
     	try {
-    		merchantService.deleteById(id);
+    		return merchantService.delById(id);
 	    } catch (Exception e) {
-			ResultGenerator.genFailResult("操作失败！");
+	    	return ResultGenerator.genFailResult("操作失败！");
 		}
-        return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})

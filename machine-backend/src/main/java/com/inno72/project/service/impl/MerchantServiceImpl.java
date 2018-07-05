@@ -3,6 +3,9 @@ package com.inno72.project.service.impl;
 import tk.mybatis.mapper.entity.Condition;
 
 import com.inno72.common.AbstractService;
+import com.inno72.common.Result;
+import com.inno72.common.ResultGenerator;
+import com.inno72.common.Results;
 import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72MerchantMapper;
 import com.inno72.project.model.Inno72Merchant;
@@ -42,16 +45,22 @@ public class MerchantServiceImpl extends AbstractService<Inno72Merchant> impleme
     	
 		super.save(model);
 	}
-
-	@Override
-	public void deleteById(String id) {
-		// TODO 商户删除
-		logger.info("---------------------商户删除-------------------");
+    
+    @Override
+	public Result<String> delById(String id) {
+		// TODO 商户逻辑删除
+		logger.info("--------------------商户删除-------------------");
+		
+		int n= inno72MerchantMapper.selectIsUseing(id);
+		if (n>0) {
+			return Results.failure("店铺使用中，不能删除！");
+		}
 		Inno72Merchant model = inno72MerchantMapper.selectByPrimaryKey(id);
-		model.setIsDelete(1);
-		model.setCreateId("");
+		model.setIsDelete(1);//0正常,1结束
 		model.setUpdateId("");
+		
 		super.update(model);
+		return ResultGenerator.genSuccessResult();
 	}
 
 	@Override

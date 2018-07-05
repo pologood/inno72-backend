@@ -61,7 +61,6 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		Inno72Locale model = inno72LocaleMapper.selectByPrimaryKey(id);
 		//判断是否可以删除
 		model.setIsDelete(1);
-		model.setCreateId("");
 		model.setUpdateId("");
 		
 		super.update(model);

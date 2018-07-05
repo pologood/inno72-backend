@@ -16,4 +16,32 @@
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
+  
+  <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+	 	SELECT
+	 		s.id,
+			s.shop_name,
+			s.shop_code,
+			m.merchant_name as seller_id,
+			s.is_delete,
+			s.remark,
+			s.create_id,
+			s.update_id,
+			s.create_time,
+			s.update_time
+		FROM
+			inno72_shops s LEFT JOIN inno72_merchant m on m.id = s.seller_id	
+		WHERE s.is_delete = 0
+		<if test="code !=null and code !=''">and s.seller_id = #{code}</if>
+		<if test="keyword !=null and keyword !=''">
+			and ( s.shop_name LIKE '%${keyword}%' or s.shop_code LIKE '%${keyword}%' )
+		</if>
+  </select>
+  
+  <select id="selectIsUseing" parameterType="String" resultType="int">
+		SELECT count(1) FROM inno72_activity where shop_id=#{id} and is_delete = 0
+  </select>
+  
+  
+  
 </mapper>
