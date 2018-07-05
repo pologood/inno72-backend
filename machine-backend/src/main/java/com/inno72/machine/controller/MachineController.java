@@ -21,9 +21,9 @@ public class MachineController {
 	@Resource
 	private MachineService machineService;
 
-	@RequestMapping(value = "/initMeachine", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> initMeachine(@RequestParam String deviceId) {
-		return machineService.initMeachine(deviceId);
+	@RequestMapping(value = "/initMachine", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> initMachine(@RequestParam String deviceId) {
+		return machineService.initMachine(deviceId);
 
 	}
 

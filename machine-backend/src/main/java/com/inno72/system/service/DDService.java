@@ -14,4 +14,6 @@ public interface DDService {
 
 	Result<String> initDData();
 
+	Result<String> login(String code, String state);
+
 }

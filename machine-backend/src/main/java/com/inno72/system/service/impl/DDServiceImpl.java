@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
+import com.inno72.common.Results;
 import com.inno72.common.StringUtil;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.system.encrypt.DingTalkEncryptException;
@@ -37,6 +38,10 @@ public class DDServiceImpl implements DDService {
 	private UserService userService;
 	@Autowired
 	private UserDeptService userDeptService;
+	// 需要写在配置中心
+	String appid = "dingoa25um8bzdtan7hjgw";
+	String appsecret = "z3ZGL5THRX-qW-dwKi7vrBWNmnKUcSo3R5eLoPK2hA5SR4ITEDtZ_MhD7D5zHf4G";
+	String callback = "http://47.95.217.215:30901/dd";
 
 	@Override
 	public String process(String data, String signature, String timestamp, String nonce) {
@@ -168,6 +173,75 @@ public class DDServiceImpl implements DDService {
 	}
 
 	@Override
+	public Result<String> login(String code, String state) {
+		Result<String> tokenResult = getLoginToken();
+		if (tokenResult.getCode() != Result.SUCCESS) {
+			return ResultGenerator.genFailResult("获取token失败");
+		}
+		if (!StringUtil.isEmpty(state)) {
+			Result<String> persisintResult = getPersisintCode(code, tokenResult.getData());
+			if (persisintResult.getCode() != Result.SUCCESS) {
+				return ResultGenerator.genFailResult("获取授权码失败");
+			}
+			Result<String> snsTokenResult = getSnsToken(persisintResult.getData(), tokenResult.getData());
+			if (snsTokenResult.getCode() != Result.SUCCESS) {
+				return ResultGenerator.genFailResult("获取snsToken失败");
+			}
+			Result<String> dingIdResult = getDingId(snsTokenResult.getData());
+			if (dingIdResult.getCode() != Result.SUCCESS) {
+				return ResultGenerator.genFailResult("获取dingId失败");
+			}
+			// 历经九九八十一难终于拿到用户的一个标识
+			Inno72User user = userService.findBy("dingId", dingIdResult.getData());
+			return Results.success(JSON.toJSONString(user));
+		}
+		return Results.success();
+	}
+
+	private Result<String> getLoginToken() {
+		String url = MessageFormat.format("https://oapi.dingtalk.com/sns/gettoken?appid={0}&appsecret={1}", appid,
+				appsecret);
+		String result = HttpClient.get(url);
+		JSONObject resultJson = JSON.parseObject(result);
+		if (resultJson.getInteger("errcode") == 0) {
+			return ResultGenerator.genSuccessResult(resultJson.getString("access_token"));
+		}
+		return ResultGenerator.genFailResult(resultJson.getString("errmsg"));
+	}
+
+	private Result<String> getPersisintCode(String tmpAuthCode, String token) {
+		String url = MessageFormat.format("https://oapi.dingtalk.com/sns/get_persistent_code?access_token={0}", token);
+		JSONObject json = new JSONObject();
+		json.put("tmp_auth_code", tmpAuthCode);
+		String result = HttpClient.post(url, json.toJSONString());
+		JSONObject resultJson = JSON.parseObject(result);
+		if (resultJson.getInteger("errcode") == 0) {
+			return ResultGenerator.genSuccessResult(result);
+		}
+		return ResultGenerator.genFailResult(resultJson.getString("errmsg"));
+	}
+
+	private Result<String> getSnsToken(String data, String token) {
+		String url = MessageFormat.format("https://oapi.dingtalk.com/sns/get_sns_token?access_token={0}", token);
+		String result = HttpClient.post(url, data);
+		JSONObject resultJson = JSON.parseObject(result);
+		if (resultJson.getInteger("errcode") == 0) {
+			return ResultGenerator.genSuccessResult(resultJson.getString("sns_token"));
+		}
+		return ResultGenerator.genFailResult(resultJson.getString("errmsg"));
+	}
+
+	private Result<String> getDingId(String snsToken) {
+		String url = MessageFormat.format("https://oapi.dingtalk.com/sns/getuserinfo?sns_token={0}", snsToken);
+		String result = HttpClient.get(url);
+		JSONObject resultJson = JSON.parseObject(result);
+		if (resultJson.getInteger("errcode") == 0) {
+			return ResultGenerator.genSuccessResult(resultJson.getJSONObject("user_info").getString("dingId"));
+		}
+		return ResultGenerator.genFailResult(resultJson.getString("errmsg"));
+	}
+
+	@Override
 	public Result<String> getToken() {
 		String url = "https://oapi.dingtalk.com/gettoken?corpid=dingd04d2d6ca18d0fd535c2f4657eb6378f&corpsecret=2ralypy62nV4kL8DOMjWWEoJyQkFnjNhlin3PzdkIMs1LQ7jj8huTsqibi7UdaKD";
 		String result = HttpClient.get(url);
@@ -180,7 +254,6 @@ public class DDServiceImpl implements DDService {
 
 	@Override
 	public Result<String> registryCallback(String url) {
-		String callback = "http://47.95.217.215:30901/dd";
 		Result<String> tokenResult = getToken();
 		if (tokenResult.getCode() != Result.SUCCESS) {
 			return ResultGenerator.genFailResult("获取token失败");
@@ -281,6 +354,7 @@ public class DDServiceImpl implements DDService {
 				user.setOrgEmail($user.getString("orgEmail"));
 				user.setPosition($user.getString("position"));
 				user.setUserId($user.getString("userid"));
+				user.setDingId($user.getString("dingId"));
 				user.setIsDelete(0);
 				userService.save(user);
 
@@ -330,10 +404,12 @@ public class DDServiceImpl implements DDService {
 		user.setOrgEmail($user.getString("orgEmail"));
 		user.setPosition($user.getString("position"));
 		user.setUserId($user.getString("userid"));
+		user.setDingId($user.getString("dingId"));
 		user.setIsDelete(0);
 		UserDeptVo vo = new UserDeptVo();
 		vo.setUser(user);
 		vo.setDeptIds($user.getJSONArray("department"));
 		return vo;
 	}
+
 }

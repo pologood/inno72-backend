@@ -24,6 +24,11 @@ public class DDController {
 		return result;
 	}
 
+	@RequestMapping("/login")
+	public Result<String> login(String code, String state) {
+		return ddService.login(code, state);
+	}
+
 	@RequestMapping(value = "/token", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> token() {
 		return ddService.getToken();

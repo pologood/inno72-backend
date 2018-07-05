@@ -9,6 +9,6 @@ import com.inno72.machine.model.Inno72Machine;
  */
 public interface MachineService extends Service<Inno72Machine> {
 
-	Result<String> initMeachine(String deviceId);
+	Result<String> initMachine(String deviceId);
 
 }

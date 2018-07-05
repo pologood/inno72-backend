@@ -41,6 +41,9 @@ public class Inno72User {
 	@Column(name = "is_delete")
 	private Integer isDelete;
 
+	@Column(name = "ding_id")
+	private String dingId;
+
 	@Transient
 	private String deptName;
 
@@ -184,6 +187,14 @@ public class Inno72User {
 
 	public void setDeptName(String deptName) {
 		this.deptName = deptName;
+	}
+
+	public String getDingId() {
+		return dingId;
+	}
+
+	public void setDingId(String dingId) {
+		this.dingId = dingId;
 	}
 
 }
