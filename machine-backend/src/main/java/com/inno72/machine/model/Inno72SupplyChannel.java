@@ -43,8 +43,8 @@ public class Inno72SupplyChannel {
 	/**
 	 * 机器编号
 	 */
-	@Column(name = "merchant_id")
-	private String merchantId;
+	@Column(name = "machine_id")
+	private String machineId;
 
 	/**
 	 * 父货道编号
@@ -93,6 +93,12 @@ public class Inno72SupplyChannel {
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "update_time")
 	private Date updateTime;
+
+	@Column(name="is_delete")
+	private int isDelete;
+
+	@Transient
+	private int goodsStatus;
 
 	@Transient
 	private String goodsName;
@@ -184,22 +190,12 @@ public class Inno72SupplyChannel {
 		this.status = status;
 	}
 
-	/**
-	 * 获取机器编号
-	 *
-	 * @return merchant_id - 机器编号
-	 */
-	public String getMerchantId() {
-		return merchantId;
+	public String getMachineId() {
+		return machineId;
 	}
 
-	/**
-	 * 设置机器编号
-	 *
-	 * @param merchantId 机器编号
-	 */
-	public void setMerchantId(String merchantId) {
-		this.merchantId = merchantId;
+	public void setMachineId(String machineId) {
+		this.machineId = machineId;
 	}
 
 	/**
@@ -327,6 +323,22 @@ public class Inno72SupplyChannel {
 	 */
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public int getIsDelete() {
+		return isDelete;
+	}
+
+	public void setIsDelete(int isDelete) {
+		this.isDelete = isDelete;
+	}
+
+	public int getGoodsStatus() {
+		return goodsStatus;
+	}
+
+	public void setGoodsStatus(int goodsStatus) {
+		this.goodsStatus = goodsStatus;
 	}
 
 	public String getGoodsName() {

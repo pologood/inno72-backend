@@ -13,6 +13,7 @@
 		<result column="avatar" jdbcType="VARCHAR" property="avatar" />
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
 		<result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+		<result column="ding_id" jdbcType="VARCHAR" property="dingId" />
 		<result column="dept_name" jdbcType="VARCHAR" property="deptName" />
 	</resultMap>
 

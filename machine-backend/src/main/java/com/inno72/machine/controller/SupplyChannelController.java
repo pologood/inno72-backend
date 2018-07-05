@@ -60,12 +60,12 @@ public class SupplyChannelController {
 
 	/**
 	 * 初始化数据
-	 * @param merchantId
+	 * @param machineId
 	 * @return
 	 */
 	@RequestMapping(value = "/init" ,method={RequestMethod.POST,RequestMethod.GET})
-	public Result init(@RequestParam String merchantId){
-		Result result = supplyChannelService.init(merchantId);
+	public Result<String> init(@RequestParam String machineId){
+		Result result = supplyChannelService.init(machineId);
 		return result;
 	}
 
@@ -75,7 +75,7 @@ public class SupplyChannelController {
 	 * @return
 	 */
 	@RequestMapping(value="/merge",method = {RequestMethod.POST,RequestMethod.GET})
-	public Result merge(Inno72SupplyChannel supplyChannel){
+	public Result<String> merge(Inno72SupplyChannel supplyChannel){
 		Result result = supplyChannelService.merge(supplyChannel);
 		return result;
 	}
@@ -86,7 +86,7 @@ public class SupplyChannelController {
 	 * @return
 	 */
 	@RequestMapping(value="/split",method = {RequestMethod.POST,RequestMethod.GET})
-	public Result split(Inno72SupplyChannel supplyChannel){
+	public Result<String> split(Inno72SupplyChannel supplyChannel){
 		Result result = supplyChannelService.split(supplyChannel);
 		return result;
 	}
@@ -97,8 +97,19 @@ public class SupplyChannelController {
 	 * @return
 	 */
 	@RequestMapping(value="/clear",method = {RequestMethod.POST,RequestMethod.GET})
-	public Result clear(Inno72SupplyChannel supplyChannel){
-		Result result = supplyChannelService.clear(supplyChannel);
+	public Result<String> clear(Inno72SupplyChannel supplyChannel){
+		Result<String> result = supplyChannelService.clear(supplyChannel);
+		return result;
+	}
+
+	/**
+	 * 一键下架
+	 * @param supplyChannel
+	 * @return
+	 */
+	@RequestMapping(value="downAll",method = {RequestMethod.POST,RequestMethod.GET})
+	public Result<String> downAll(Inno72SupplyChannel supplyChannel){
+		Result<String> result = supplyChannelService.downAll(supplyChannel);
 		return result;
 	}
 

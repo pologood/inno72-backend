@@ -25,7 +25,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	private Inno72MachineMapper inno72MachineMapper;
 
 	@Override
-	public Result<String> initMeachine(String deviceId) {
+	public Result<String> initMachine(String deviceId) {
 		Inno72Machine initMeachine = findBy("deviceId", deviceId);
 		if (initMeachine != null) {
 			return Results.success(initMeachine.getMachineCode());

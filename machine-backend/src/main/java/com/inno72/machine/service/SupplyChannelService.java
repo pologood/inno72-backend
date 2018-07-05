@@ -13,11 +13,13 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
 	Result getSupplyChannel(Inno72SupplyChannel supplyChannel);
 
-	Result init(String merchantId);
+	Result<String> init(String machineId);
 
-	Result merge(Inno72SupplyChannel supplyChannel);
+	Result<String> merge(Inno72SupplyChannel supplyChannel);
 
-	Result split(Inno72SupplyChannel supplyChannel);
+	Result<String> split(Inno72SupplyChannel supplyChannel);
 
-	Result clear(Inno72SupplyChannel supplyChannel);
+	Result<String> clear(Inno72SupplyChannel supplyChannel);
+
+    Result<String> downAll(Inno72SupplyChannel supplyChannel);
 }
