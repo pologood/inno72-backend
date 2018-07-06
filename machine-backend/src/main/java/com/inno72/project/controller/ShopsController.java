@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import tk.mybatis.mapper.entity.Condition;
 
 
 import javax.annotation.Resource;
@@ -48,8 +47,11 @@ public class ShopsController {
     }
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> delete(@RequestParam String id) {
-        shopsService.deleteById(id);
-        return ResultGenerator.genSuccessResult();
+    	try {
+    		return shopsService.delById(id);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
@@ -65,9 +67,8 @@ public class ShopsController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list() {
-   	   Condition condition = new Condition( Inno72Shops.class);
-        List<Inno72Shops> list = shopsService.findByPage(condition);
+    public ModelAndView list(@RequestParam(required=false) String code,@RequestParam(required=false) String keyword) {
+        List<Inno72Shops> list = shopsService.findByPage(code,keyword);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
     

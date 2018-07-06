@@ -54,7 +54,6 @@ public class ChannelServiceImpl extends AbstractService<Inno72Channel> implement
 		}
 		Inno72Channel model = inno72ChannelMapper.selectByPrimaryKey(id);
 		model.setIsDelete(1);//0正常,1结束
-		model.setCreateId("");
 		model.setUpdateId("");
 		
 		super.update(model);

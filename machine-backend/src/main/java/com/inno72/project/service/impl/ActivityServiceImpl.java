@@ -4,6 +4,9 @@ package com.inno72.project.service.impl;
 import tk.mybatis.mapper.entity.Condition;
 
 import com.inno72.common.AbstractService;
+import com.inno72.common.Result;
+import com.inno72.common.ResultGenerator;
+import com.inno72.common.Results;
 import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72ActivityMapper;
 import com.inno72.project.model.Inno72Activity;
@@ -14,7 +17,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -41,16 +46,18 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 	}
 
 	@Override
-	public void deleteById(String id) {
+	public Result<String> delById(String id) {
 		// TODO 活动逻辑删除
 		logger.info("--------------------活动删除-------------------");
+		int n= inno72ActivityMapper.selectIsUseing(id);
+		if (n>0) {
+			return Results.failure("活动使用中，不能删除！");
+		}
 		Inno72Activity model = inno72ActivityMapper.selectByPrimaryKey(id);
 		model.setIsDelete(1);//0正常,1结束
-		
-		model.setCreateId("");
 		model.setUpdateId("");
 		
-		super.deleteById(id);
+		return ResultGenerator.genSuccessResult();
 	}
 
 	@Override
@@ -64,12 +71,14 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 	}
 
 	@Override
-	public List<Inno72Activity> findByPage(Inno72Activity model) {
+	public List<Inno72Activity> findByPage(String code,String keyword) {
 		// TODO 分页列表查询
 		logger.info("---------------------活动分页列表查询-------------------");
-		Condition condition = new Condition( Inno72Activity.class);
-	   	condition.createCriteria().andEqualTo(model);
-		return super.findByPage(condition);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("keyword", keyword);
+		params.put("code", code);
+		
+		return inno72ActivityMapper.selectByPage(params);
 	}
 	
 	@Override

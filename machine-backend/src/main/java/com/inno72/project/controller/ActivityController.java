@@ -45,12 +45,10 @@ public class ActivityController {
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> delete(@RequestParam String id) {
         try {
-    		activityService.deleteById(id);
+        	return activityService.delById(id);
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
-        
-        return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
@@ -71,8 +69,8 @@ public class ActivityController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list(Inno72Activity activity) {
-        List<Inno72Activity> list = activityService.findByPage(activity);
+    public ModelAndView list(@RequestParam(required=false) String code,@RequestParam(required=false) String keyword) {
+        List<Inno72Activity> list = activityService.findByPage(code,keyword);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
     

@@ -2,6 +2,7 @@ package com.inno72.system.service.impl;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -16,18 +17,25 @@ import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
+import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
+import com.inno72.common.json.JsonUtil;
 import com.inno72.plugin.http.HttpClient;
+import com.inno72.redis.IRedisUtil;
 import com.inno72.system.encrypt.DingTalkEncryptException;
 import com.inno72.system.encrypt.DingTalkEncryptor;
 import com.inno72.system.model.Inno72Dept;
+import com.inno72.system.model.Inno72Function;
 import com.inno72.system.model.Inno72User;
 import com.inno72.system.model.Inno72UserDept;
 import com.inno72.system.service.DDService;
 import com.inno72.system.service.DeptService;
+import com.inno72.system.service.FunctionService;
 import com.inno72.system.service.UserDeptService;
 import com.inno72.system.service.UserService;
 import com.inno72.system.vo.UserDeptVo;
+
+import tk.mybatis.mapper.entity.Condition;
 
 @Service
 public class DDServiceImpl implements DDService {
@@ -38,6 +46,10 @@ public class DDServiceImpl implements DDService {
 	private UserService userService;
 	@Autowired
 	private UserDeptService userDeptService;
+	@Autowired
+	private FunctionService functionService;
+	@Autowired
+	private IRedisUtil redisUtil;
 	// 需要写在配置中心
 	String appid = "dingoa25um8bzdtan7hjgw";
 	String appsecret = "z3ZGL5THRX-qW-dwKi7vrBWNmnKUcSo3R5eLoPK2hA5SR4ITEDtZ_MhD7D5zHf4G";
@@ -173,27 +185,50 @@ public class DDServiceImpl implements DDService {
 	}
 
 	@Override
-	public Result<String> login(String code, String state) {
+	public Result<SessionData> login(String code, String state) {
 		Result<String> tokenResult = getLoginToken();
 		if (tokenResult.getCode() != Result.SUCCESS) {
-			return ResultGenerator.genFailResult("获取token失败");
+			return Results.failure("获取token失败");
 		}
 		if (!StringUtil.isEmpty(state)) {
 			Result<String> persisintResult = getPersisintCode(code, tokenResult.getData());
 			if (persisintResult.getCode() != Result.SUCCESS) {
-				return ResultGenerator.genFailResult("获取授权码失败");
+				return Results.failure("获取授权码失败");
 			}
 			Result<String> snsTokenResult = getSnsToken(persisintResult.getData(), tokenResult.getData());
 			if (snsTokenResult.getCode() != Result.SUCCESS) {
-				return ResultGenerator.genFailResult("获取snsToken失败");
+				return Results.failure("获取snsToken失败");
 			}
 			Result<String> dingIdResult = getDingId(snsTokenResult.getData());
 			if (dingIdResult.getCode() != Result.SUCCESS) {
-				return ResultGenerator.genFailResult("获取dingId失败");
+				return Results.failure("获取dingId失败");
 			}
 			// 历经九九八十一难终于拿到用户的一个标识
 			Inno72User user = userService.findBy("dingId", dingIdResult.getData());
-			return Results.success(JSON.toJSONString(user));
+			List<Inno72Function> functions = functionService.findAll();
+			// List<Inno72Function> functions =
+			// functionService.findFunctionsByUserId(user.getId());
+			String token = StringUtil.getUUID();
+			SessionData sessionData = new SessionData(token, user, functions);
+			// 获取用户token使用
+			String userTokenKey = CommonConstants.USER_LOGIN_TOKEN_CACHE_KEY_PREF + user.getId();
+			// 获取用户之前登录的token
+			String oldToken = redisUtil.get(userTokenKey);
+			// 清除之前的登录信息
+			if (StringUtil.isNotBlank(oldToken)) {
+				redisUtil.del(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + oldToken);
+				// 记录被踢出
+				redisUtil.sadd(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, oldToken);
+			}
+			// 保存新登录的token
+			redisUtil.set(userTokenKey, token);
+			// 用户登录信息缓存
+			String userInfoKey = CommonConstants.USER_LOGIN_CACHE_KEY_PREF + token;
+			// 缓存用户登录sessionData
+			redisUtil.set(userInfoKey, JsonUtil.toJson(sessionData));
+			redisUtil.expire(userInfoKey, CommonConstants.SESSION_DATA_EXP);
+			redisUtil.expire(userTokenKey, CommonConstants.SESSION_DATA_EXP);
+			return Results.success(sessionData);
 		}
 		return Results.success();
 	}
@@ -410,6 +445,41 @@ public class DDServiceImpl implements DDService {
 		vo.setUser(user);
 		vo.setDeptIds($user.getJSONArray("department"));
 		return vo;
+	}
+
+	@Override
+	public Result<SessionData> testLogin(String phone, String name) {
+		Condition condition = new Condition(Inno72User.class);
+		condition.createCriteria().andEqualTo("mobile", phone).andEqualTo("name", name);
+		List<Inno72User> users = userService.findByCondition(condition);
+		if (users == null || users.size() != 1) {
+			return Results.failure("登录失败");
+		}
+		Inno72User user = users.get(0);
+		List<Inno72Function> functions = functionService.findAll();
+		// List<Inno72Function> functions =
+		// functionService.findFunctionsByUserId(user.getId());
+		String token = StringUtil.getUUID();
+		SessionData sessionData = new SessionData(token, user, functions);
+		// 获取用户token使用
+		String userTokenKey = CommonConstants.USER_LOGIN_TOKEN_CACHE_KEY_PREF + user.getId();
+		// 获取用户之前登录的token
+		String oldToken = redisUtil.get(userTokenKey);
+		// 清除之前的登录信息
+		if (StringUtil.isNotBlank(oldToken)) {
+			redisUtil.del(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + oldToken);
+			// 记录被踢出
+			redisUtil.sadd(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, oldToken);
+		}
+		// 保存新登录的token
+		redisUtil.set(userTokenKey, token);
+		// 用户登录信息缓存
+		String userInfoKey = CommonConstants.USER_LOGIN_CACHE_KEY_PREF + token;
+		// 缓存用户登录sessionData
+		redisUtil.set(userInfoKey, JsonUtil.toJson(sessionData));
+		redisUtil.expire(userInfoKey, CommonConstants.SESSION_DATA_EXP);
+		redisUtil.expire(userTokenKey, CommonConstants.SESSION_DATA_EXP);
+		return Results.success(sessionData);
 	}
 
 }

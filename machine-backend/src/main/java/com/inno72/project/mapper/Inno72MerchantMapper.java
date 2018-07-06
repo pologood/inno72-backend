@@ -11,4 +11,6 @@ import com.inno72.project.vo.Inno72MerchantVo;
 public interface Inno72MerchantMapper extends Mapper<Inno72Merchant> {
 	
 	List<Inno72MerchantVo> selectByPage(Map<String, Object> params);
+	
+	int selectIsUseing(String id);
 }

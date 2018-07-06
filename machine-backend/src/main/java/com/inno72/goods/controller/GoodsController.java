@@ -46,7 +46,7 @@ public class GoodsController {
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> delete(@RequestParam String id) {
     	try {
-            goodsService.deleteById(id);
+            goodsService.delById(id);
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
@@ -70,8 +70,8 @@ public class GoodsController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list(Inno72Goods goods) {
-        List<Inno72Goods> list = goodsService.findByPage(goods);
+    public ModelAndView list(@RequestParam(required=false) String code,@RequestParam(required=false) String keyword) {
+        List<Inno72Goods> list = goodsService.findByPage(code,keyword);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
     
