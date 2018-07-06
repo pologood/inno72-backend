@@ -1,73 +1,90 @@
 package com.inno72.system.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Table(name = "inno72_dept")
 public class Inno72Dept {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private String id;
 
-    private String name;
+	private String name;
 
-    private Integer seq;
+	private Integer seq;
 
-    @Column(name = "parent_id")
-    private String parentId;
+	@Column(name = "parent_id")
+	private String parentId;
 
-    /**
-     * @return id
-     */
-    public String getId() {
-        return id;
-    }
+	@Transient
+	private String parentName;
 
-    /**
-     * @param id
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
+	/**
+	 * @return id
+	 */
+	public String getId() {
+		return id;
+	}
 
-    /**
-     * @return name
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * @param id
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    /**
-     * @param name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * @return name
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * @return seq
-     */
-    public Integer getSeq() {
-        return seq;
-    }
+	/**
+	 * @param name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    /**
-     * @param seq
-     */
-    public void setSeq(Integer seq) {
-        this.seq = seq;
-    }
+	/**
+	 * @return seq
+	 */
+	public Integer getSeq() {
+		return seq;
+	}
 
-    /**
-     * @return parent_id
-     */
-    public String getParentId() {
-        return parentId;
-    }
+	/**
+	 * @param seq
+	 */
+	public void setSeq(Integer seq) {
+		this.seq = seq;
+	}
 
-    /**
-     * @param parentId
-     */
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
+	/**
+	 * @return parent_id
+	 */
+	public String getParentId() {
+		return parentId;
+	}
+
+	/**
+	 * @param parentId
+	 */
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
+
+	public String getParentName() {
+		return parentName;
+	}
+
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
+	}
+
 }

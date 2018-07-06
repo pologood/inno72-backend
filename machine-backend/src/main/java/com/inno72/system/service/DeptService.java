@@ -1,5 +1,7 @@
 package com.inno72.system.service;
 
+import java.util.List;
+
 import com.inno72.common.Result;
 import com.inno72.common.Service;
 import com.inno72.system.model.Inno72Dept;
@@ -10,5 +12,7 @@ import com.inno72.system.model.Inno72Dept;
 public interface DeptService extends Service<Inno72Dept> {
 
 	Result<String> deleteAll();
+
+	Result<List<Inno72Dept>> findDepts(String keyword);
 
 }
