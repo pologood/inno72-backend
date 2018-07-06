@@ -115,6 +115,8 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 				areaNmae.append(area.getCircle());
 			}
 			inno72LocaleVo.setAreaName(areaNmae.toString());
+			int userNum= inno72LocaleMapper.selectIsUseing(inno72LocaleVo.getId());
+			inno72LocaleVo.setUserNum(userNum);
 		}
 		return inno72LocaleMapper.selectByPage(params);
 	}

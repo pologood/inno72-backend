@@ -28,18 +28,29 @@ public class GameController {
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> add(Inno72Game game) {
-        gameService.save(game);
+    	try {
+    		gameService.save(game);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
         return ResultGenerator.genSuccessResult();
     }
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> delete(@RequestParam String id) {
-        gameService.deleteById(id);
-        return ResultGenerator.genSuccessResult();
+    	try {
+    		return gameService.delById(id);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> update(Inno72Game game) {
-        gameService.update(game);
+    	try {
+    		gameService.update(game);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
         return ResultGenerator.genSuccessResult();
     }
     

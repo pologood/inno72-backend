@@ -26,6 +26,8 @@ public class Inno72LocaleVo extends Inno72Locale{
     
     private String areaName;
     
+    private int userNum;
+    
     
     
 
@@ -67,6 +69,14 @@ public class Inno72LocaleVo extends Inno72Locale{
 
 	public void setAreaName(String areaName) {
 		this.areaName = areaName;
+	}
+
+	public int getUserNum() {
+		return userNum;
+	}
+
+	public void setUserNum(int userNum) {
+		this.userNum = userNum;
 	}
 
 	

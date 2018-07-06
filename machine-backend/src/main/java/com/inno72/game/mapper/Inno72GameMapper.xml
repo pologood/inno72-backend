@@ -9,7 +9,7 @@
      <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="version" jdbcType="VARCHAR" property="version" />
     <result column="version_inno72" jdbcType="VARCHAR" property="versionInno72" />
-    <result column="desc" jdbcType="VARCHAR" property="desc" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
     <result column="shop_id" jdbcType="VARCHAR" property="shopId" />
     <result column="interact_id" jdbcType="VARCHAR" property="interactId" />
@@ -31,7 +31,7 @@
 			g.name,
 			g.version,
 			g.version_inno72,
-			g.desc,
+			g.remark,
 			g.interact_id,
 			g.max_participance_per_day,
 			g.max_participance_total,

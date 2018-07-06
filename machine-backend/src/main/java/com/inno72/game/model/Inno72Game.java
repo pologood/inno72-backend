@@ -3,6 +3,11 @@ package com.inno72.game.model;
 import java.util.Date;
 import javax.persistence.*;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
+
 @Table(name = "inno72_game")
 public class Inno72Game {
     @Id
@@ -31,8 +36,8 @@ public class Inno72Game {
     /**
      * 游戏描述
      */
-    @Column(name = "desc")
-    private String desc;
+    @Column(name = "remark")
+    private String remark;
 
     /**
      * 售卖者id
@@ -92,6 +97,8 @@ public class Inno72Game {
     /**
      * 创建时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "create_time")
     private Date createTime;
 
@@ -104,6 +111,8 @@ public class Inno72Game {
     /**
      * 更新时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "update_time")
     private Date updateTime;
 
@@ -164,19 +173,19 @@ public class Inno72Game {
 	/**
      * 获取游戏描述
      *
-     * @return desc - 游戏描述
+     * @return remark - 游戏描述
      */
-    public String getDesc() {
-        return desc;
+    public String getRemark() {
+        return remark;
     }
 
     /**
      * 设置游戏描述
      *
-     * @param desc 游戏描述
+     * @param remarks 游戏描述
      */
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     /**
