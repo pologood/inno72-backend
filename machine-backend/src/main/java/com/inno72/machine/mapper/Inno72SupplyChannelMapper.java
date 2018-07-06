@@ -20,4 +20,6 @@ public interface Inno72SupplyChannelMapper extends Mapper<Inno72SupplyChannel> {
 
 	int updateListByParam(Inno72SupplyChannel supplyChannel);
 
+	Inno72SupplyChannel selectByParentCode(Map<String, Object> map);
+
 }

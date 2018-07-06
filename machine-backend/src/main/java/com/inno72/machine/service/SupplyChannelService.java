@@ -22,4 +22,6 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 	Result<String> clear(Inno72SupplyChannel supplyChannel);
 
     Result<String> downAll(Inno72SupplyChannel supplyChannel);
+
+    Result history(Inno72SupplyChannel supplyChannel);
 }

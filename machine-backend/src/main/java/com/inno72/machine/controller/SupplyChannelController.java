@@ -113,4 +113,15 @@ public class SupplyChannelController {
 		return result;
 	}
 
+    /**
+     * 查询货道操作历史
+     * @param supplyChannel
+     * @return
+     */
+	@RequestMapping(value="history",method = {RequestMethod.POST,RequestMethod.GET})
+	public Result<List<Inno72SupplyChannel>> history(Inno72SupplyChannel supplyChannel){
+	    Result<List<Inno72SupplyChannel>> result = supplyChannelService.history(supplyChannel);
+	    return result;
+    }
+
 }
