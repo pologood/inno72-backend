@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,15 +13,16 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.inno72.common.Result;
 import com.inno72.common.ResultPages;
-import com.inno72.common.Results;
 import com.inno72.system.model.Inno72Function;
 import com.inno72.system.service.FunctionService;
+import com.inno72.system.vo.FunctionTreeVo;
 
 /**
  * Created by CodeGenerator on 2018/07/05.
  */
 @RestController
 @RequestMapping("/system/function")
+@CrossOrigin
 public class FunctionController {
 	@Resource
 	private FunctionService functionService;
@@ -32,7 +34,7 @@ public class FunctionController {
 	}
 
 	@RequestMapping(value = "/all", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72Function>> all() {
-		return Results.success(functionService.findAll());
+	public Result<FunctionTreeVo> all() {
+		return functionService.findAllTree();
 	}
 }
