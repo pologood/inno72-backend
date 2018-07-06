@@ -3,7 +3,6 @@ package com.inno72.socketio;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.inno72.common.CommonConstants;
-import com.inno72.common.Result;
 import com.inno72.model.AppStatus;
 import com.inno72.model.MachineStatus;
 import com.inno72.model.MessageBean;
@@ -24,7 +23,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
