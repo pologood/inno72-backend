@@ -1,6 +1,7 @@
 package com.inno72.socketio;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.model.AppStatus;
@@ -53,15 +54,14 @@ public class SocketIOStartHandler {
 				//解压缩及解密
 				String message = AesUtils.decrypt(GZIPUtil.uncompress(data));
 				//转数据类型
-				MessageBean<Object> messageBean = new MessageBean<>();
-				messageBean = JSONObject.parseObject(message, MessageBean.class);
+				MessageBean<MachineStatus> messageBean = JSONObject.parseObject(message, new TypeReference<MessageBean<MachineStatus> >(){});
 
 				//解析数据
-				if (CHECKSTATUS.equals(messageBean.getEventType())) {
+				if (CHECKSTATUS.v() == messageBean.getEventType()) {
 					//查看机器状态数据
-					if (MACHINESTATUS.equals(messageBean.getSubEventType())) {
+					if (MACHINESTATUS.v() == (messageBean.getSubEventType())) {
 
-						MachineStatus machineStatus = (MachineStatus) messageBean.getT();
+						MachineStatus machineStatus = messageBean.getData();
 						String machineId = machineStatus.getMachineId();
 						//保存到mongo表中--先删除再保存
 						Query query = new Query();
@@ -69,7 +69,7 @@ public class SocketIOStartHandler {
 						machineStatus = mongoTpl.findAndRemove(query, MachineStatus.class);
 						mongoTpl.save(machineStatus, "machineStatus");
 
-					} else if (APPSTATUS.equals(messageBean.getSubEventType())) {
+					} else if (APPSTATUS.v() == messageBean.getSubEventType()) {
 						AppStatus appStatus = new AppStatus();
 						String machineId = appStatus.getMachineId();
 						//保存到mongo表中
@@ -156,7 +156,7 @@ public class SocketIOStartHandler {
 
 	@Bean
 	public SocketServer socketServer() {
-		return new SocketServer("0.0.0.0", 1237, socketServerHandler());
+		return new SocketServer("0.0.0.0", 1234, socketServerHandler());
 	}
 
 

@@ -4,7 +4,16 @@ public class MessageBean<T> {
 
 	private Integer eventType;
 	private Integer subEventType;
-	private T t;
+
+	public T getData() {
+		return data;
+	}
+
+	public void setData(T data) {
+		this.data = data;
+	}
+
+	private T data;
 
 	public enum EventType {
 		// 查看状态
@@ -75,12 +84,6 @@ public class MessageBean<T> {
 		this.subEventType = subEventType;
 	}
 
-	public T getT() {
-		return t;
-	}
 
-	public void setT(T t) {
-		this.t = t;
-	}
 
 }

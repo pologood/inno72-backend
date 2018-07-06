@@ -31,6 +31,15 @@ public class SystemStatus {
     private String cpu;
     private long sdFree;
     private long sdTotle;
+    private String ping;
+
+    public String getPing() {
+        return ping;
+    }
+
+    public void setPing(String ping) {
+        this.ping = ping;
+    }
 
     public String getMachineId() {
         return machineId;

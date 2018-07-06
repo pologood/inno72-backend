@@ -8,10 +8,19 @@ package com.inno72.model;
 public class AppStatus {
 
     private String machineId;
-    private String app_packageName;
+    private String appPackageName;
     private String versionName;
     private int versionCode;
     private String appName;
+
+    public String getAppPackageName() {
+        return appPackageName;
+    }
+
+    public void setAppPackageName(String appPackageName) {
+        this.appPackageName = appPackageName;
+    }
+
     private int appStatus;
 
     public String getMachineId() {
@@ -22,13 +31,7 @@ public class AppStatus {
         this.machineId = machineId;
     }
 
-    public String getApp_packageName() {
-        return app_packageName;
-    }
 
-    public void setApp_packageName(String app_packageName) {
-        this.app_packageName = app_packageName;
-    }
 
     public String getVersionName() {
         return versionName;
