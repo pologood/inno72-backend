@@ -115,7 +115,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 				String name =StringUtil.getUUID()+ typeName;
 				String path = CommonConstants.OSS_PATH+"/good/"+name;
 				OSSUtil.uploadByStream(file.getInputStream(),path);
-				return Results.success(CommonConstants.ALI_OSS+path);
+				return Results.success(path);
 			} catch (IOException e) {
 				e.printStackTrace();
 				return Results.failure("图片处理失败！");
