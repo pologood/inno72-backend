@@ -37,6 +37,7 @@
 			<if test="keyword !=null and keyword !=''">
 			and ( m.merchant_code LIKE '%${keyword}%' or m.merchant_name LIKE '%${keyword}%' or m.brand_name LIKE '%${keyword}%' or m.origin_flag LIKE '%${keyword}%' )
 			</if>
+			ORDER BY m.update_time DESC
   </select>
   
   <select id="selectIsUseing" parameterType="String" resultType="int">

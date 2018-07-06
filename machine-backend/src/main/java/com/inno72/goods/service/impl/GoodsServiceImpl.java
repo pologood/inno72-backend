@@ -10,7 +10,6 @@ import com.inno72.common.StringUtil;
 import com.inno72.goods.mapper.Inno72GoodsMapper;
 import com.inno72.goods.model.Inno72Goods;
 import com.inno72.goods.service.GoodsService;
-import com.inno72.machine.model.Inno72Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -50,9 +50,8 @@ public class GameController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list() {
-   	   Condition condition = new Condition( Inno72Game.class);
-        List<Inno72Game> list = gameService.findByPage(condition);
+    public ModelAndView list(@RequestParam(required=false) String code,@RequestParam(required=false) String keyword) {
+        List<Inno72Game> list = gameService.findByPage(code,keyword);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
 }

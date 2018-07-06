@@ -6,43 +6,45 @@ import javax.persistence.*;
 @Table(name = "inno72_game")
 public class Inno72Game {
     @Id
-    @Column(name = "Id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
+    
+    /**
+     * 游戏名称
+     */
+    @Column(name = "name")
+    private String name;
 
     /**
      * 游戏版本
      */
+    @Column(name = "version")
     private String version;
+    
+    
+    /**
+     * 游戏版本(点72)
+     */
+    @Column(name = "version_inno72")
+    private String versionInno72;
 
     /**
      * 游戏描述
      */
+    @Column(name = "desc")
     private String desc;
-
-    /**
-     * 品牌名称
-     */
-    @Column(name = "brand_name")
-    private String brandName;
-
-    /**
-     * 原始标示
-     */
-    @Column(name = "origin_flag")
-    private String originFlag;
 
     /**
      * 售卖者id
      */
     @Column(name = "seller_id")
-    private Long sellerId;
+    private String sellerId;
 
     /**
      * 店铺ID
      */
     @Column(name = "shop_id")
-    private Long shopId;
+    private String shopId;
 
     /**
      * 商家设定的奖池所对应的ID
@@ -54,7 +56,7 @@ public class Inno72Game {
      * 每天最大参与次数(-1表示不限制数量)
      */
     @Column(name = "max_participance_per_day")
-    private Boolean maxParticipancePerDay;
+    private Integer maxParticipancePerDay;
 
     /**
      * 最大参与次数(-1表示不限制数量)
@@ -76,10 +78,16 @@ public class Inno72Game {
     private Integer maxPrizeTotal;
 
     /**
+     * 是否删除：0未删除，1已删除
+     */
+    @Column(name = "is_delete")
+    private Integer isDelete;
+
+    /**
      * 创建人
      */
     @Column(name = "create_id")
-    private Long createId;
+    private String createId;
 
     /**
      * 创建时间
@@ -91,7 +99,7 @@ public class Inno72Game {
      * 更新人
      */
     @Column(name = "update_id")
-    private Long updateId;
+    private String updateId;
 
     /**
      * 更新时间
@@ -103,10 +111,10 @@ public class Inno72Game {
      * 活动id
      */
     @Column(name = "activity_id")
-    private Long activityId;
+    private String activityId;
 
     /**
-     * @return Id
+     * @return id
      */
     public String getId() {
         return id;
@@ -118,8 +126,16 @@ public class Inno72Game {
     public void setId(String id) {
         this.id = id;
     }
+    
+    public String getName() {
+		return name;
+	}
 
-    /**
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
      * 获取游戏版本
      *
      * @return version - 游戏版本
@@ -136,8 +152,16 @@ public class Inno72Game {
     public void setVersion(String version) {
         this.version = version;
     }
+    
+    public String getVersionInno72() {
+		return versionInno72;
+	}
 
-    /**
+	public void setVersionInno72(String versionInno72) {
+		this.versionInno72 = versionInno72;
+	}
+
+	/**
      * 获取游戏描述
      *
      * @return desc - 游戏描述
@@ -156,47 +180,11 @@ public class Inno72Game {
     }
 
     /**
-     * 获取品牌名称
-     *
-     * @return brand_name - 品牌名称
-     */
-    public String getBrandName() {
-        return brandName;
-    }
-
-    /**
-     * 设置品牌名称
-     *
-     * @param brandName 品牌名称
-     */
-    public void setBrandName(String brandName) {
-        this.brandName = brandName;
-    }
-
-    /**
-     * 获取原始标示
-     *
-     * @return origin_flag - 原始标示
-     */
-    public String getOriginFlag() {
-        return originFlag;
-    }
-
-    /**
-     * 设置原始标示
-     *
-     * @param originFlag 原始标示
-     */
-    public void setOriginFlag(String originFlag) {
-        this.originFlag = originFlag;
-    }
-
-    /**
      * 获取售卖者id
      *
      * @return seller_id - 售卖者id
      */
-    public Long getSellerId() {
+    public String getSellerId() {
         return sellerId;
     }
 
@@ -205,7 +193,7 @@ public class Inno72Game {
      *
      * @param sellerId 售卖者id
      */
-    public void setSellerId(Long sellerId) {
+    public void setSellerId(String sellerId) {
         this.sellerId = sellerId;
     }
 
@@ -214,7 +202,7 @@ public class Inno72Game {
      *
      * @return shop_id - 店铺ID
      */
-    public Long getShopId() {
+    public String getShopId() {
         return shopId;
     }
 
@@ -223,7 +211,7 @@ public class Inno72Game {
      *
      * @param shopId 店铺ID
      */
-    public void setShopId(Long shopId) {
+    public void setShopId(String shopId) {
         this.shopId = shopId;
     }
 
@@ -250,7 +238,7 @@ public class Inno72Game {
      *
      * @return max_participance_per_day - 每天最大参与次数(-1表示不限制数量)
      */
-    public Boolean getMaxParticipancePerDay() {
+    public Integer getMaxParticipancePerDay() {
         return maxParticipancePerDay;
     }
 
@@ -259,7 +247,7 @@ public class Inno72Game {
      *
      * @param maxParticipancePerDay 每天最大参与次数(-1表示不限制数量)
      */
-    public void setMaxParticipancePerDay(Boolean maxParticipancePerDay) {
+    public void setMaxParticipancePerDay(Integer maxParticipancePerDay) {
         this.maxParticipancePerDay = maxParticipancePerDay;
     }
 
@@ -322,11 +310,29 @@ public class Inno72Game {
     }
 
     /**
+     * 获取是否删除：0未删除，1已删除
+     *
+     * @return is_delete - 是否删除：0未删除，1已删除
+     */
+    public Integer getIsDelete() {
+        return isDelete;
+    }
+
+    /**
+     * 设置是否删除：0未删除，1已删除
+     *
+     * @param isDelete 是否删除：0未删除，1已删除
+     */
+    public void setIsDelete(Integer isDelete) {
+        this.isDelete = isDelete;
+    }
+
+    /**
      * 获取创建人
      *
      * @return create_id - 创建人
      */
-    public Long getCreateId() {
+    public String getCreateId() {
         return createId;
     }
 
@@ -335,7 +341,7 @@ public class Inno72Game {
      *
      * @param createId 创建人
      */
-    public void setCreateId(Long createId) {
+    public void setCreateId(String createId) {
         this.createId = createId;
     }
 
@@ -362,7 +368,7 @@ public class Inno72Game {
      *
      * @return update_id - 更新人
      */
-    public Long getUpdateId() {
+    public String getUpdateId() {
         return updateId;
     }
 
@@ -371,7 +377,7 @@ public class Inno72Game {
      *
      * @param updateId 更新人
      */
-    public void setUpdateId(Long updateId) {
+    public void setUpdateId(String updateId) {
         this.updateId = updateId;
     }
 
@@ -398,7 +404,7 @@ public class Inno72Game {
      *
      * @return activity_id - 活动id
      */
-    public Long getActivityId() {
+    public String getActivityId() {
         return activityId;
     }
 
@@ -407,7 +413,7 @@ public class Inno72Game {
      *
      * @param activityId 活动id
      */
-    public void setActivityId(Long activityId) {
+    public void setActivityId(String activityId) {
         this.activityId = activityId;
     }
 }

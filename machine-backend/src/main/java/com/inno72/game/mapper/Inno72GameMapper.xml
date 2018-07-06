@@ -5,22 +5,59 @@
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="Id" jdbcType="VARCHAR" property="id" />
+    <id column="id" jdbcType="VARCHAR" property="id" />
+     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="version_inno72" jdbcType="VARCHAR" property="versionInno72" />
     <result column="desc" jdbcType="VARCHAR" property="desc" />
-    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
-    <result column="origin_flag" jdbcType="VARCHAR" property="originFlag" />
-    <result column="seller_id" jdbcType="BIGINT" property="sellerId" />
-    <result column="shop_id" jdbcType="BIGINT" property="shopId" />
+    <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
+    <result column="shop_id" jdbcType="VARCHAR" property="shopId" />
     <result column="interact_id" jdbcType="VARCHAR" property="interactId" />
-    <result column="max_participance_per_day" jdbcType="BIT" property="maxParticipancePerDay" />
+    <result column="max_participance_per_day" jdbcType="INTEGER" property="maxParticipancePerDay" />
     <result column="max_participance_total" jdbcType="INTEGER" property="maxParticipanceTotal" />
     <result column="max_prize_per_day" jdbcType="INTEGER" property="maxPrizePerDay" />
     <result column="max_prize_total" jdbcType="INTEGER" property="maxPrizeTotal" />
-    <result column="create_id" jdbcType="BIGINT" property="createId" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_id" jdbcType="BIGINT" property="updateId" />
+    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="activity_id" jdbcType="BIGINT" property="activityId" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
   </resultMap>
+  
+  <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+		SELECT 
+			g.id,
+			g.name,
+			g.version,
+			g.version_inno72,
+			g.desc,
+			g.interact_id,
+			g.max_participance_per_day,
+			g.max_participance_total,
+			g.max_prize_per_day,
+			g.max_prize_total,
+			g.is_delete,
+			g.create_id,
+			g.create_time,
+			g.update_id,
+			g.update_time,
+			m.merchant_name AS seller_id,
+			a.name AS activity_id,
+			s.shop_name AS shop_id
+		FROM inno72_game g 
+		LEFT JOIN inno72_shops s ON s.id = g.shop_id
+		LEFT JOIN inno72_merchant m ON m.id = s.seller_id
+		LEFT JOIN inno72_activity a ON a.id = g.activity_id
+		where g.is_delete=0
+		<if test="keyword !=null and keyword !=''">and ( g.name LIKE '%${keyword}%' or g.desc LIKE '%${keyword}%'  )</if>
+		<if test="code !=null and code !=''">and g.seller_id = #{code}</if>
+		ORDER BY g.update_time DESC
+  </select>
+  
+  <select id="selectIsUseing" parameterType="String" resultType="int">
+		SELECT count(1) FROM inno72_machine_game where game_id=#{id}
+  </select>
+  
+  
 </mapper>

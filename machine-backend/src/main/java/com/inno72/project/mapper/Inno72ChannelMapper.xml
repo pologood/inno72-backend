@@ -18,6 +18,7 @@
   <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
 		SELECT * FROM inno72_channel channel where is_delete=0
 	<if test="keyword !=null and keyword !=''">and ( channel.channel_code LIKE '%${keyword}%' or channel.channel_name LIKE '%${keyword}%' )</if>
+	ORDER BY channel.update_time DESC
   </select>
   
   <select id="selectIsUseing" parameterType="String" resultType="int">
