@@ -2,7 +2,6 @@ package com.inno72.socketio.core;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,6 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
-import com.inno72.common.CommonConstants;
 
 /**
  * socket消息监听
@@ -37,9 +35,6 @@ public class SocketListener {
 				logger.info("【{}】连接到服务器", client.getRemoteAddress());
 				String id = client.getSessionId().toString();
 				Map<String, List<String>> param = client.getHandshakeData().getUrlParams();
-				String machineId = Optional.ofNullable(param.get(CommonConstants.DEVICE_ID)).map(a -> a.get(0))
-						.orElse("init");
-				logger.info("连接ID ：{},机器ID：{}", id, machineId);
 				SocketHolder.bind(id, client);
 				handler.connectNotify(id, param);
 			}
@@ -52,10 +47,9 @@ public class SocketListener {
 			public void onDisconnect(SocketIOClient client) {
 				String id = client.getSessionId().toString();
 				logger.info("{}断开连接", id);
-				// client.disconnect();
-				// SocketHolder.remove(id);
-				// handler.closeNotify(id,
-				// client.getHandshakeData().getUrlParams());
+				client.disconnect();
+				SocketHolder.remove(id);
+				handler.closeNotify(id, client.getHandshakeData().getUrlParams());
 			}
 		};
 	}
@@ -70,10 +64,7 @@ public class SocketListener {
 			@Override
 			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
 				logger.info("连接ID【{}】接收到【{}】发送的数据【{}】", client.getSessionId(), client.getRemoteAddress(), data);
-				String result = handler.process(client.getSessionId().toString(), data,
-						client.getHandshakeData().getUrlParams());
-				client.sendEvent("message", result);
-				// 只用作客户端获取机器id
+				handler.process(client.getSessionId().toString(), data, client.getHandshakeData().getUrlParams());
 			}
 		};
 	}
@@ -91,7 +82,6 @@ public class SocketListener {
 				String result = handler.deviceIdMsg(client.getSessionId().toString(), data,
 						client.getHandshakeData().getUrlParams());
 				client.sendEvent("deviceIdMsg", result);
-				// 只用作客户端获取机器id
 			}
 		};
 	}

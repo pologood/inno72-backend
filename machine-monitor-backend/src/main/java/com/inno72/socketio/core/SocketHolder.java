@@ -65,7 +65,7 @@ public class SocketHolder {
 	}
 
 	static boolean send(SocketIOClient channel, String event, String data) {
-		if (channel != null && channel.isChannelOpen()) {
+		if (channel != null) {
 			channel.sendEvent(event, data);
 			return true;
 		} else {

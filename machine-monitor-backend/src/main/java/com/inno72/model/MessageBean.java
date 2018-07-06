@@ -67,7 +67,6 @@ public class MessageBean<T> {
 		}
 	}
 
-
 	public Integer getEventType() {
 		return eventType;
 	}
@@ -83,7 +82,5 @@ public class MessageBean<T> {
 	public void setSubEventType(Integer subEventType) {
 		this.subEventType = subEventType;
 	}
-
-
 
 }
