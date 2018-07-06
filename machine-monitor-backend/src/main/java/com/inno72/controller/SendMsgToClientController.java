@@ -20,7 +20,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/sendMsgToClient/sendEvent")
-public class sendMsgToClientController {
+public class SendMsgToClientController {
 
     @Resource
     private IRedisUtil redisUtil;
