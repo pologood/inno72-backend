@@ -77,16 +77,6 @@ public class UserServiceImpl extends AbstractService<Inno72User> implements User
 		return Results.success();
 	}
 
-	public static void main(String[] args) {
-		String s[] = { "a1", "a2" };
-		String j = JSON.toJSONString(s);
-		String[] array = JSON.parseArray(j).toArray(new String[] {});
-		for (String a : array) {
-			System.out.println(a.toString());
-		}
-		;
-		// JSONObject deptJson = JSON.parseObject(dept_result);
-		// JSONArray dept_ary = deptJson.getJSONArray("department");
-	}
+	
 
 }

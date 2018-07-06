@@ -3,6 +3,7 @@ package com.inno72.goods.service.impl;
 import tk.mybatis.mapper.entity.Condition;
 
 import com.inno72.common.AbstractService;
+import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
@@ -10,6 +11,7 @@ import com.inno72.common.StringUtil;
 import com.inno72.goods.mapper.Inno72GoodsMapper;
 import com.inno72.goods.model.Inno72Goods;
 import com.inno72.goods.service.GoodsService;
+import com.inno72.oss.OSSUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,24 +39,58 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
     private Inno72GoodsMapper inno72GoodsMapper;
 
     @Override
-	public void save(Inno72Goods goods, MultipartFile file) {
+	public Result<String> save(Inno72Goods goods, MultipartFile file) {
     	logger.info("----------------商品添加--------------");
-		
-		goods.setId(StringUtil.getUUID());
+		String id=StringUtil.getUUID();
+		goods.setId(id);
 		goods.setCreateId("");
 		goods.setUpdateId("");
-		//调用上传图片
-		
+		if (null !=file) {
+			//调用上传图片
+			try {
+				String originalFilename = file.getOriginalFilename();
+				String typeName = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
+				String name =id+ typeName;
+				String path = CommonConstants.OSS_PATH+"/good/"+name;
+				
+				OSSUtil.uploadByStream(file.getInputStream(),path);
+				goods.setImg(path);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return Results.failure("图片处理失败！");
+			} catch (Exception e) {
+				e.printStackTrace();
+				return Results.failure("图片处理失败！");
+			}
+		}
 		super.save(goods);
+		return ResultGenerator.genSuccessResult();
 	}
 
 	@Override
-	public void update(Inno72Goods model) {
+	public Result<String> update(Inno72Goods model, MultipartFile file) {
 		logger.info("----------------商品修改--------------");
+		if (file!=null){
+			try {
+				String originalFilename = file.getOriginalFilename();
+				String typeName = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
+				String name =model.getId()+ typeName;
+				String path = CommonConstants.OSS_PATH+"/good/"+name;
+				
+				OSSUtil.uploadByStream(file.getInputStream(),path);
+				model.setImg(path);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return Results.failure("图片处理失败！");
+			} catch (Exception e) {
+				e.printStackTrace();
+				return Results.failure("图片处理失败！");
+			}
+		}
 		
 		model.setUpdateId("");
-		
 		super.update(model);
+		return ResultGenerator.genSuccessResult();
 	}
 
 	@Override

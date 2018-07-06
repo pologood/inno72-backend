@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -28,13 +29,13 @@ public class Inno72Goods {
     /**
      * 商品编码
      */
-    @NotEmpty(message="请填写商品编码")
+    @NotBlank(message="请填写商品编码")
     private String code;
 
     /**
      * 商品价格
      */
-    @Pattern(regexp="^(([1-9]{1}\\d*)|([0]{1}))(\\.(\\d){0,2})?$",message="请检查商品价格")
+    @Column(name = "price")
     private BigDecimal price;
 
     /**
@@ -47,6 +48,7 @@ public class Inno72Goods {
     /**
      * 图片
      */
+    @Column(name = "img")
     private String img;
 
     /**

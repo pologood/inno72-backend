@@ -54,9 +54,9 @@ public class GoodsController {
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> update(Inno72Goods goods) {
+    public Result<String> update(Inno72Goods goods,@RequestParam(value = "file",required = false) MultipartFile file) {
     	try {
-    		goodsService.update(goods);
+    		goodsService.update(goods,file);
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}

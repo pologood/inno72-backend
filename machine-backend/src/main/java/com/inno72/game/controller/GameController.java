@@ -7,6 +7,7 @@ import com.inno72.game.model.Inno72Game;
 import com.inno72.game.service.GameService;
 
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ import java.util.List;
 */
 @RestController
 @RequestMapping("/game/game")
+@CrossOrigin
 public class GameController {
     @Resource
     private GameService gameService;
