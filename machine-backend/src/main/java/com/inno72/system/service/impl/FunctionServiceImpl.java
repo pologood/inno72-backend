@@ -51,8 +51,25 @@ public class FunctionServiceImpl extends AbstractService<Inno72Function> impleme
 		condition.createCriteria().andEqualTo("functionLevel", 1);
 		List<Inno72Function> first = findByCondition(condition);
 		List<FunctionTreeVo> firstVo = new ArrayList<>();
-
-		return null;
+		for (Inno72Function fun : first) {
+			FunctionTreeVo v = new FunctionTreeVo();
+			v.setId(fun.getId());
+			v.setTitle(fun.getFunctionDepict());
+			firstVo.add(v);
+			condition = new Condition(Inno72Function.class);
+			condition.createCriteria().andEqualTo("functionLevel", 2).andEqualTo("parentId", fun.getId());
+			List<Inno72Function> second = findByCondition(condition);
+			List<FunctionTreeVo> secondVo = new ArrayList<>();
+			for (Inno72Function fun1 : second) {
+				FunctionTreeVo v1 = new FunctionTreeVo();
+				v1.setId(fun1.getId());
+				v1.setTitle(fun1.getFunctionDepict());
+				secondVo.add(v1);
+			}
+			v.setChildren(secondVo);
+		}
+		vo.setChildren(firstVo);
+		return Results.success(vo);
 	}
 
 }
