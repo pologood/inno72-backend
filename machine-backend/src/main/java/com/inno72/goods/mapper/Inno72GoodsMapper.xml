@@ -23,6 +23,7 @@
 		SELECT * FROM inno72_goods g where is_delete=0
 		<if test="keyword !=null and keyword !=''">and ( g.name LIKE '%${keyword}%' or g.code LIKE '%${keyword}%'  )</if>
 		<if test="code !=null and code !=''">and g.seller_id = #{code}</if>
+		ORDER BY g.update_time DESC
   </select>
   
   <select id="selectIsUseing" parameterType="String" resultType="int">

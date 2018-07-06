@@ -33,8 +33,9 @@
 
 	<select id="selectByPage" parameterType="java.util.Map" resultMap="VoResultMap">
 		SELECT * FROM inno72_locale locale where is_delete=0
-		<if test="keyword !=null and keyword !=''">and ( locale.manager LIKE '%${keyword}%' or locale.mobile LIKE '%${keyword}%'  )</if>
-		<if test="code !=null and code !=''">and locale.area_code = #{code}</if>
+		<if test="keyword !=null and keyword !=''"> and ( locale.manager LIKE '%${keyword}%' or locale.mobile LIKE '%${keyword}%'  )</if>
+		<if test="code !=null and code !=''">and locale.area_code LIKE '%${code}%'</if>
+		ORDER BY locale.update_time DESC
   </select>
   
   <select id="selectIsUseing" parameterType="String" resultType="int">

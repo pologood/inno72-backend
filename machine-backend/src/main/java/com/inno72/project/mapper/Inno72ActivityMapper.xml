@@ -35,12 +35,13 @@
 		FROM
 			inno72_activity a
 			LEFT JOIN inno72_shops s ON s.id = a.shop_id
-			LEFT JOIN inno72_merchant m ON m.Id = a.seller_id
+			LEFT JOIN inno72_merchant m ON m.id = s.seller_id
 			where a.is_delete = 0
 			<if test="code !=null and code !=''">and a.seller_id = #{code}</if>
 			<if test="keyword !=null and keyword !=''">
-			and ( m.merchant_code LIKE '%${keyword}%' or a.merchant_name LIKE '%${keyword}%' or m.brand_name LIKE '%${keyword}%' or m.origin_flag LIKE '%${keyword}%' )
+			and ( a.name LIKE '%${keyword}%' )
 			</if>
+			ORDER BY a.update_time DESC
   </select>
   
   <select id="selectIsUseing" parameterType="String" resultType="int">
