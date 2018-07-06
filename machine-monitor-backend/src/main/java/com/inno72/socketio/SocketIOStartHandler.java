@@ -105,6 +105,9 @@ public class SocketIOStartHandler {
 				}else {
 					result = "";
 				}
+				/*String machineId = "1827308070495";
+				result = GZIPUtil.compress(AesUtils.encrypt(machineId));*/
+
 
 				return result;
 		}
@@ -154,7 +157,7 @@ public class SocketIOStartHandler {
 
 	@Bean
 	public SocketServer socketServer() {
-		return new SocketServer("0.0.0.0", 1234, socketServerHandler());
+		return new SocketServer("0.0.0.0", 1238, socketServerHandler());
 	}
 
 

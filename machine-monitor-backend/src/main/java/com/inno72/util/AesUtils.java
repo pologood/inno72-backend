@@ -1,5 +1,7 @@
 package com.inno72.util;
 
+import com.inno72.plugin.http.HttpClient;
+
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -143,11 +145,12 @@ public class AesUtils {
         return encrypted;
     }
 
-   /* public static void main(String[] args) {
-        String userid = "897807300@qq.com";
+    public static void main(String[] args) {
+       /* String userid = "897807300@qq.com";
         String token = "8aa8690f65f080aee595d8781e7044a7eacda7a86520786db0838136554920b6";
         System.out.println(encrypt(token));
-        System.out.println(decrypt(encrypt(token)));
-    }*/
-
+        System.out.println(decrypt(encrypt(token)));*/
+        String result = HttpClient.post("http://localhost:8881//sendMsgToClient/sendEvent/sendEvent", "");
+        System.out.println("调用发送结果是" + result);
+    }
 }
