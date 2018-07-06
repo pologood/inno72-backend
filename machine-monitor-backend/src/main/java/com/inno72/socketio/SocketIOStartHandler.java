@@ -136,7 +136,7 @@ public class SocketIOStartHandler {
 				}else{
 					log.info("socket连接中，获取到机器Id,machineId=" + machineId);
 					//连接上的时候就将缓存
-					redisUtil.set(key,machineId);
+					redisUtil.set(machineId,key);
 				}
 
 				log.info("socket连接结束");
