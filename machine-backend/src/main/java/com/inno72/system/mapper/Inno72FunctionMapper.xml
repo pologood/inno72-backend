@@ -10,6 +10,7 @@
 		<result column="function_level" jdbcType="INTEGER" property="functionLevel" />
 		<result column="function_icon" jdbcType="VARCHAR" property="functionIcon" />
 		<result column="color" jdbcType="VARCHAR" property="color" />
+		<result column="parent_name" jdbcType="VARCHAR" property="parentName" />
 	</resultMap>
 
 	<select id="findFunctionsByUserId" parameterType="String"
@@ -18,5 +19,16 @@
 		inno72_role_function rf on ur.role_id=rf.role_id
 		left join inno72_function f on rf.function_id=f.id where
 		ur.user_id=#{id}
+	</select>
+	
+	<select id="selectFunctionsByPage" parameterType="java.util.Map"
+		resultMap="BaseResultMap">
+
+		SELECT f.*,ff.function_depict parent_name from inno72_function f left join inno72_function ff on f.parent_id=ff.id
+		<where>
+		<if test="keyword !=null and keyword !=''">  ( f.function_depict like '%${keyword}%' or ff.function_depict like '%${keyword}%'
+		  )</if>
+		  </where>
+		order by f.function_level,f.parent_id
 	</select>
 </mapper>

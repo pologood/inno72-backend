@@ -9,12 +9,17 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
+import com.inno72.common.StringUtil;
 import com.inno72.system.mapper.Inno72UserMapper;
+import com.inno72.system.mapper.Inno72UserRoleMapper;
 import com.inno72.system.model.Inno72User;
+import com.inno72.system.model.Inno72UserRole;
 import com.inno72.system.service.UserService;
 
 import tk.mybatis.mapper.entity.Condition;
@@ -27,6 +32,8 @@ import tk.mybatis.mapper.entity.Condition;
 public class UserServiceImpl extends AbstractService<Inno72User> implements UserService {
 	@Resource
 	private Inno72UserMapper inno72UserMapper;
+	@Resource
+	private Inno72UserRoleMapper inno72UserRoleMapper;
 
 	@Override
 	public Result<Inno72User> getUserByUserId(String userId) {
@@ -46,6 +53,40 @@ public class UserServiceImpl extends AbstractService<Inno72User> implements User
 		param.put("keyword", keyword);
 		List<Inno72User> users = inno72UserMapper.selectUsersByPage(param);
 		return Results.success(users);
+	}
+
+	@Override
+	public Result<String> auth(String userId, String roleIds) {
+		try {
+			JSONArray array = JSON.parseArray(roleIds);
+			if (array.isEmpty()) {
+				return Results.failure("角色参数错误");
+			}
+			array.forEach(role -> {
+				Inno72UserRole ur = new Inno72UserRole();
+				ur.setId(StringUtil.getUUID());
+				ur.setRoleId(role.toString());
+				ur.setUserId(userId);
+				inno72UserRoleMapper.insert(ur);
+			});
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Results.failure("角色参数错误");
+		}
+		return Results.success();
+	}
+
+	public static void main(String[] args) {
+		String s[] = { "a1", "a2" };
+		String j = JSON.toJSONString(s);
+		String[] array = JSON.parseArray(j).toArray(new String[] {});
+		for (String a : array) {
+			System.out.println(a.toString());
+		}
+		;
+		// JSONObject deptJson = JSON.parseObject(dept_result);
+		// JSONArray dept_ary = deptJson.getJSONArray("department");
 	}
 
 }

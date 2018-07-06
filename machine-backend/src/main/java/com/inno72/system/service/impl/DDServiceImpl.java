@@ -300,7 +300,7 @@ public class DDServiceImpl implements DDService {
 		json.put("call_back_tag", tags);
 		json.put("token", CommonConstants.DD_TOKEN);
 		json.put("aes_key", CommonConstants.AES_KEY);
-		json.put("url", callback);
+		json.put("url", url);
 
 		String $j = HttpClient.post(api, json.toJSONString());
 		JSONObject $json = JSON.parseObject($j);
@@ -313,7 +313,6 @@ public class DDServiceImpl implements DDService {
 
 	@Override
 	public Result<String> updateRegistryCallback(String url) {
-		String callback = "http://47.95.217.215:30901/dd";
 		Result<String> tokenResult = getToken();
 		if (tokenResult.getCode() != Result.SUCCESS) {
 			return ResultGenerator.genFailResult("获取token失败");
@@ -326,7 +325,7 @@ public class DDServiceImpl implements DDService {
 		json.put("call_back_tag", tags);
 		json.put("token", CommonConstants.DD_TOKEN);
 		json.put("aes_key", CommonConstants.AES_KEY);
-		json.put("url", callback);
+		json.put("url", url);
 
 		String $j = HttpClient.post(api, json.toJSONString());
 		JSONObject $json = JSON.parseObject($j);

@@ -1,125 +1,142 @@
 package com.inno72.system.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Table(name = "inno72_function")
 public class Inno72Function {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private String id;
 
-    @Column(name = "function_depict")
-    private String functionDepict;
+	@Column(name = "function_depict")
+	private String functionDepict;
 
-    @Column(name = "function_path")
-    private String functionPath;
+	@Column(name = "function_path")
+	private String functionPath;
 
-    @Column(name = "parent_id")
-    private String parentId;
+	@Column(name = "parent_id")
+	private String parentId;
 
-    @Column(name = "function_level")
-    private Integer functionLevel;
+	@Column(name = "function_level")
+	private Integer functionLevel;
 
-    @Column(name = "function_icon")
-    private String functionIcon;
+	@Column(name = "function_icon")
+	private String functionIcon;
 
-    private String color;
+	private String color;
 
-    /**
-     * @return id
-     */
-    public String getId() {
-        return id;
-    }
+	@Transient
+	private String parentName;
 
-    /**
-     * @param id
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
+	/**
+	 * @return id
+	 */
+	public String getId() {
+		return id;
+	}
 
-    /**
-     * @return function_depict
-     */
-    public String getFunctionDepict() {
-        return functionDepict;
-    }
+	/**
+	 * @param id
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    /**
-     * @param functionDepict
-     */
-    public void setFunctionDepict(String functionDepict) {
-        this.functionDepict = functionDepict;
-    }
+	/**
+	 * @return function_depict
+	 */
+	public String getFunctionDepict() {
+		return functionDepict;
+	}
 
-    /**
-     * @return function_path
-     */
-    public String getFunctionPath() {
-        return functionPath;
-    }
+	/**
+	 * @param functionDepict
+	 */
+	public void setFunctionDepict(String functionDepict) {
+		this.functionDepict = functionDepict;
+	}
 
-    /**
-     * @param functionPath
-     */
-    public void setFunctionPath(String functionPath) {
-        this.functionPath = functionPath;
-    }
+	/**
+	 * @return function_path
+	 */
+	public String getFunctionPath() {
+		return functionPath;
+	}
 
-    /**
-     * @return parent_id
-     */
-    public String getParentId() {
-        return parentId;
-    }
+	/**
+	 * @param functionPath
+	 */
+	public void setFunctionPath(String functionPath) {
+		this.functionPath = functionPath;
+	}
 
-    /**
-     * @param parentId
-     */
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
+	/**
+	 * @return parent_id
+	 */
+	public String getParentId() {
+		return parentId;
+	}
 
-    /**
-     * @return function_level
-     */
-    public Integer getFunctionLevel() {
-        return functionLevel;
-    }
+	/**
+	 * @param parentId
+	 */
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
 
-    /**
-     * @param functionLevel
-     */
-    public void setFunctionLevel(Integer functionLevel) {
-        this.functionLevel = functionLevel;
-    }
+	/**
+	 * @return function_level
+	 */
+	public Integer getFunctionLevel() {
+		return functionLevel;
+	}
 
-    /**
-     * @return function_icon
-     */
-    public String getFunctionIcon() {
-        return functionIcon;
-    }
+	/**
+	 * @param functionLevel
+	 */
+	public void setFunctionLevel(Integer functionLevel) {
+		this.functionLevel = functionLevel;
+	}
 
-    /**
-     * @param functionIcon
-     */
-    public void setFunctionIcon(String functionIcon) {
-        this.functionIcon = functionIcon;
-    }
+	/**
+	 * @return function_icon
+	 */
+	public String getFunctionIcon() {
+		return functionIcon;
+	}
 
-    /**
-     * @return color
-     */
-    public String getColor() {
-        return color;
-    }
+	/**
+	 * @param functionIcon
+	 */
+	public void setFunctionIcon(String functionIcon) {
+		this.functionIcon = functionIcon;
+	}
 
-    /**
-     * @param color
-     */
-    public void setColor(String color) {
-        this.color = color;
-    }
+	/**
+	 * @return color
+	 */
+	public String getColor() {
+		return color;
+	}
+
+	/**
+	 * @param color
+	 */
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public String getParentName() {
+		return parentName;
+	}
+
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
+	}
+
 }

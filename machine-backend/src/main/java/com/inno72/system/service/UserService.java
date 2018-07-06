@@ -15,4 +15,6 @@ public interface UserService extends Service<Inno72User> {
 
 	Result<List<Inno72User>> findUsers(String keyword);
 
+	Result<String> auth(String userId, String roleIds);
+
 }

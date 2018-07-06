@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,27 +13,22 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.inno72.common.Result;
 import com.inno72.common.ResultPages;
-import com.inno72.common.Results;
-import com.inno72.system.model.Inno72Function;
-import com.inno72.system.service.FunctionService;
+import com.inno72.system.model.Inno72Dept;
+import com.inno72.system.service.DeptService;
 
 /**
- * Created by CodeGenerator on 2018/07/05.
+ * Created by CodeGenerator on 2018/07/03.
  */
 @RestController
-@RequestMapping("/system/function")
-public class FunctionController {
+@RequestMapping("/system/dept")
+@CrossOrigin
+public class DeptController {
 	@Resource
-	private FunctionService functionService;
+	private DeptService deptService;
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView list(@RequestParam(required = false) String keyword) {
-		Result<List<Inno72Function>> list = functionService.findFunctions(keyword);
+		Result<List<Inno72Dept>> list = deptService.findDepts(keyword);
 		return ResultPages.page(list);
-	}
-
-	@RequestMapping(value = "/all", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72Function>> all() {
-		return Results.success(functionService.findAll());
 	}
 }

@@ -31,4 +31,9 @@ public class UserController {
 		Result<List<Inno72User>> list = userService.findUsers(keyword);
 		return ResultPages.page(list);
 	}
+
+	@RequestMapping(value = "/auth", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> auth(@RequestParam() String userId, @RequestParam() String roleIds) {
+		return userService.auth(userId, roleIds);
+	}
 }

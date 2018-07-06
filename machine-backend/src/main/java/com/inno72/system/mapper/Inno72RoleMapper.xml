@@ -7,5 +7,17 @@
     -->
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="auths" jdbcType="VARCHAR" property="auths" />
   </resultMap>
+  
+  <select id="selectRolesByPage" parameterType="java.util.Map"
+		resultMap="BaseResultMap">
+			select r.*,group_concat(f.function_depict,'') auths from inno72_role r left join inno72_role_function rf on r.id=rf.role_id
+			left join inno72_function f on rf.function_id=f.id
+		<where>
+		<if test="keyword !=null and keyword !=''"> r.name like '%${keyword}%' </if>
+		</where>
+		group by r.id
+		order by r.id
+	</select>
 </mapper>
