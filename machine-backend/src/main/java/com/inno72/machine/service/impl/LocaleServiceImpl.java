@@ -99,7 +99,12 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		// TODO 分页列表查询
 		logger.info("---------------------分页列表查询-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("code", code);
+		if (StringUtil.isNotEmpty(code)) {
+			int num =getlikeCode(code);
+			String likeCode = code.substring(0, num);
+			params.put("code", likeCode);
+			params.put("num", num);
+		}
 		params.put("keyword", keyword);
 		
 		List<Inno72LocaleVo> list = inno72LocaleMapper.selectByPage(params);
@@ -129,6 +134,16 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		Condition condition = new Condition( Inno72Locale.class);
 	   	condition.createCriteria().andEqualTo(locale);
 		return super.findByCondition(condition);
+	}
+	
+	
+	public int getlikeCode(String s){
+		for (int i = s.length()-1; i >=0; i--) {
+			if (!"0".equals(String.valueOf(s.charAt(i)))) {
+				return i+1;
+			}
+		}
+		return 0;
 	}
 	
 	
