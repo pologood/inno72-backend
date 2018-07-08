@@ -4,12 +4,15 @@ import static com.inno72.model.MessageBean.EventType.CHECKSTATUS;
 import static com.inno72.model.MessageBean.SubEventType.APPSTATUS;
 import static com.inno72.model.MessageBean.SubEventType.MACHINESTATUS;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Resource;
 
+import com.inno72.model.MachineLogInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
@@ -66,6 +71,7 @@ public class SocketIOStartHandler {
 								});
 						MachineStatus machineStatus = messageBean.getData();
 						String machineId = machineStatus.getMachineId();
+						machineStatus.setCreateTime(new Date());
 						// 保存到mongo表中--先删除再保存
 						Query query = new Query();
 						query.addCriteria(Criteria.where("machineId").is(machineId));
@@ -78,6 +84,7 @@ public class SocketIOStartHandler {
 								});
 						MachineAppStatus apps = appStatus.getData();
 						String machineId = apps.getMachineId();
+						apps.setCreateTime(new Date());
 						// 保存到mongo表中
 						Query query = new Query();
 						query.addCriteria(Criteria.where("machineId").is(machineId));
@@ -120,8 +127,22 @@ public class SocketIOStartHandler {
 				log.info("推送监控消息方法执行开始，data=" + data);
 				// 解压缩以及解密数据
 				String message = AesUtils.decrypt(GZIPUtil.uncompress(data));
+				log.info("推送监控消息方法执行中，data=" + message);
+				//获取机器Id
+				String machineId = "1827308070495";
+
+				MachineLogInfo machineLogInfo = new MachineLogInfo();
+				machineLogInfo.setMachineId(machineId);
+				//获取当前时间
+				machineLogInfo.setCreateTime(new Date());
+
+				//将机器Id与时间缓存到mangoDB中
+				mongoTpl.save(machineLogInfo, "MachineAppStatus");
+
 				log.info("推送监控消息方法执行结束，data=" + message);
 			}
+
+
 
 			@Override
 			public void connectNotify(String sessionId, Map<String, List<String>> data) {

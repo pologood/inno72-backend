@@ -1,5 +1,7 @@
 package com.inno72.model;
 
+import java.util.Date;
+
 /**
  * @Auther: wxt
  * @Date: 2018/7/4 16:19
@@ -13,6 +15,15 @@ public class MachineStatus {
     private String goodsChannelStatus;
     private String temperature;
     private int temperatureSwitchStatus;
+    private Date createTime;
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 
 
     public String getMachineId() {
