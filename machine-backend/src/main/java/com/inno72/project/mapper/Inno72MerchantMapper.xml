@@ -34,7 +34,7 @@
 			LEFT JOIN inno72_channel c ON c.Id = m.channel_id
 			where m.is_delete = 0
 			<if test="code !=null and code !=''">and m.channel_id = #{code}</if>
-			<if test="keyword !=null and keyword !=''">
+			<if test="keyword !=null and keyword !='' and keyword !='undefined'">
 			and ( m.merchant_code LIKE '%${keyword}%' or m.merchant_name LIKE '%${keyword}%' or m.brand_name LIKE '%${keyword}%' or m.origin_flag LIKE '%${keyword}%' )
 			</if>
 			ORDER BY m.update_time DESC
