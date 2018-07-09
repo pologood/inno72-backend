@@ -9,6 +9,7 @@
   </parent>
   <artifactId>machine-monitor-backend</artifactId>
   <name>machine-monitor-backend</name>
+    <packaging>war</packaging>
   <url>http://maven.apache.org</url>
   <properties>
 		<mongo.version>0.0.1-SNAPSHOT</mongo.version>
