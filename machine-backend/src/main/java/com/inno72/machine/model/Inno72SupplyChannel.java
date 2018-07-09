@@ -1,7 +1,6 @@
 package com.inno72.machine.model;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -65,7 +64,6 @@ public class Inno72SupplyChannel {
 	@Column(name = "goods_count")
 	private Integer goodsCount;
 
-
 	/**
 	 * 创建人ID
 	 */
@@ -95,7 +93,7 @@ public class Inno72SupplyChannel {
 	@Column(name = "update_time")
 	private LocalDateTime updateTime;
 
-	@Column(name="is_delete")
+	@Column(name = "is_delete")
 	private int isDelete;
 
 	@Transient
@@ -124,7 +122,6 @@ public class Inno72SupplyChannel {
 
 	private int pageNo;
 
-
 	/**
 	 * 获取uuid
 	 *
@@ -137,7 +134,8 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置uuid
 	 *
-	 * @param id uuid
+	 * @param id
+	 *            uuid
 	 */
 	public void setId(String id) {
 		this.id = id;
@@ -155,7 +153,8 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置货道编号
 	 *
-	 * @param code 货道编号
+	 * @param code
+	 *            货道编号
 	 */
 	public void setCode(String code) {
 		this.code = code;
@@ -173,7 +172,8 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置货道名称
 	 *
-	 * @param name 货道名称
+	 * @param name
+	 *            货道名称
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -191,7 +191,8 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置状态（0.未合并，1.已合并）
 	 *
-	 * @param status 状态（0.未合并，1.已合并）
+	 * @param status
+	 *            状态（0.未合并，1.已合并）
 	 */
 	public void setStatus(Integer status) {
 		this.status = status;
@@ -217,7 +218,8 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置父货道编号
 	 *
-	 * @param parentCode 父货道编号
+	 * @param parentCode
+	 *            父货道编号
 	 */
 	public void setParentCode(String parentCode) {
 		this.parentCode = parentCode;
@@ -235,7 +237,8 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置商品容量
 	 *
-	 * @param volumeCount 商品容量
+	 * @param volumeCount
+	 *            商品容量
 	 */
 	public void setVolumeCount(Integer volumeCount) {
 		this.volumeCount = volumeCount;
@@ -253,12 +256,12 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置商品数量
 	 *
-	 * @param goodsCount 商品数量
+	 * @param goodsCount
+	 *            商品数量
 	 */
 	public void setGoodsCount(Integer goodsCount) {
 		this.goodsCount = goodsCount;
 	}
-
 
 	/**
 	 * 获取创建人ID
@@ -272,7 +275,8 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置创建人ID
 	 *
-	 * @param createId 创建人ID
+	 * @param createId
+	 *            创建人ID
 	 */
 	public void setCreateId(String createId) {
 		this.createId = createId;
@@ -290,7 +294,8 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置创建时间
 	 *
-	 * @param createTime 创建时间
+	 * @param createTime
+	 *            创建时间
 	 */
 	public void setCreateTime(LocalDateTime createTime) {
 		this.createTime = createTime;
@@ -308,7 +313,8 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置修改人ID
 	 *
-	 * @param updateId 修改人ID
+	 * @param updateId
+	 *            修改人ID
 	 */
 	public void setUpdateId(String updateId) {
 		this.updateId = updateId;
@@ -326,7 +332,8 @@ public class Inno72SupplyChannel {
 	/**
 	 * 设置修改时间
 	 *
-	 * @param updateTime 修改时间
+	 * @param updateTime
+	 *            修改时间
 	 */
 	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;

@@ -26,9 +26,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<String> initMachine(String deviceId) {
-		Inno72Machine initMeachine = findBy("deviceId", deviceId);
-		if (initMeachine != null) {
-			return Results.success(initMeachine.getMachineCode());
+		Inno72Machine initMachine = findBy("deviceId", deviceId);
+		if (initMachine != null) {
+			return Results.success(initMachine.getMachineCode());
 		}
 		String machineCode = StringUtil.getMachineCode();
 		LocalDateTime now = LocalDateTime.now();
@@ -41,11 +41,26 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		machine.setCreateId("machine-backend");
 		machine.setCreateTime(now);
 		machine.setUpdateTime(now);
+		machine.setNetStatus(1);
 		int result = inno72MachineMapper.insert(machine);
 		if (result == 1) {
 			return Results.success(machineCode);
 		}
 		return Results.failure("生成machineCode失败");
+	}
+
+	@Override
+	public Result<String> updateNetStatus(String machineCode, Integer netStatus) {
+		Inno72Machine machine = findBy("machineCode", machineCode);
+		if (machine != null) {
+			if (machine.getNetStatus() != netStatus) {
+				machine.setNetStatus(netStatus);
+				inno72MachineMapper.updateByPrimaryKeySelective(machine);
+			}
+		} else {
+			return Results.failure("机器code传入错误");
+		}
+		return Results.success();
 	}
 
 }
