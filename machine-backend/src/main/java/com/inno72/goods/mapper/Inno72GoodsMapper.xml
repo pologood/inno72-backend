@@ -36,8 +36,8 @@
 		from inno72_goods g 
 		LEFT JOIN inno72_merchant m on m.id=g.seller_id
 		WHERE g.is_delete=0 
-		<if test="keyword !=null and keyword !=''">and ( g.name LIKE '%${keyword}%' or g.code LIKE '%${keyword}%' )</if>
-		<if test="code !=null and code !=''">and g.seller_id = #{code}</if>
+		<if test="keyword !=null and keyword !='' and keyword !='undefined'">and ( g.name LIKE '%${keyword}%' or g.code LIKE '%${keyword}%' )</if>
+		<if test="code !=null and code !='' code !='undefined'">and g.seller_id = #{code}</if>
 		ORDER BY g.update_time DESC
   </select>
   

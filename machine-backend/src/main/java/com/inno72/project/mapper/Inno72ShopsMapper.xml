@@ -32,8 +32,8 @@
 		FROM
 			inno72_shops s LEFT JOIN inno72_merchant m on m.id = s.seller_id	
 		WHERE s.is_delete = 0
-		<if test="code !=null and code !=''">and s.seller_id = #{code}</if>
-		<if test="keyword !=null and keyword !=''">
+		<if test="code !=null and code !='' and code !='undefined'">and s.seller_id = #{code}</if>
+		<if test="keyword !=null and keyword !='' and keyword !='undefined'">
 			and ( s.shop_name LIKE '%${keyword}%' or s.shop_code LIKE '%${keyword}%' )
 		</if>
 		ORDER BY s.update_time DESC
