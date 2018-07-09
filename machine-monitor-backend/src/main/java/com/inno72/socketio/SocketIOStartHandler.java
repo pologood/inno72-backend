@@ -160,7 +160,7 @@ public class SocketIOStartHandler {
 
 	@Bean
 	public SocketServer socketServer() {
-		return new SocketServer("0.0.0.0", 1239, socketServerHandler());
+		return new SocketServer("0.0.0.0", 1244, socketServerHandler());
 	}
 
 }
