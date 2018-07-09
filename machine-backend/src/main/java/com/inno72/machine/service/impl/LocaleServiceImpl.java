@@ -101,6 +101,9 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		Map<String, Object> params = new HashMap<String, Object>();
 		if (StringUtil.isNotEmpty(code)) {
 			int num =getlikeCode(code);
+			if (num<4) {
+				num=3;
+			}
 			String likeCode = code.substring(0, num);
 			params.put("code", likeCode);
 			params.put("num", num);

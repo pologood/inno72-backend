@@ -1,13 +1,11 @@
 package com.inno72.machine.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.inno72.common.Result;
@@ -22,6 +20,7 @@ import tk.mybatis.mapper.entity.Condition;
  * Created by CodeGenerator on 2018/07/03.
  */
 @RestController
+@CrossOrigin
 @RequestMapping("/machine/channel")
 public class SupplyChannelController {
 	@Resource
@@ -119,8 +118,8 @@ public class SupplyChannelController {
      * @return
      */
 	@RequestMapping(value="history",method = {RequestMethod.POST,RequestMethod.GET})
-	public Result<List<Inno72SupplyChannel>> history(Inno72SupplyChannel supplyChannel){
-	    Result<List<Inno72SupplyChannel>> result = supplyChannelService.history(supplyChannel);
+	public Result<Map<String,Object>> history(Inno72SupplyChannel supplyChannel){
+	    Result<Map<String,Object>> result = supplyChannelService.history(supplyChannel);
 	    return result;
     }
 

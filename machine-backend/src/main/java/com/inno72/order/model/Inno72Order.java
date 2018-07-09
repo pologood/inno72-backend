@@ -113,11 +113,6 @@ public class Inno72Order {
     @Transient
     private int pageNo;
 
-    @Transient
-    private int pageSize;
-
-    @Transient
-    private int row;
 
     public String getId() {
         return id;
@@ -223,21 +218,6 @@ public class Inno72Order {
         this.pageNo = pageNo;
     }
 
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public int getRow() {
-        return row;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
 
     public String getChannelCode() {
         return channelCode;

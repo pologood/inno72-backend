@@ -122,6 +122,9 @@ public class Inno72SupplyChannel {
 	@Transient
 	private String remark;
 
+	private int pageNo;
+
+
 	/**
 	 * 获取uuid
 	 *
@@ -399,5 +402,13 @@ public class Inno72SupplyChannel {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public int getPageNo() {
+		return pageNo;
+	}
+
+	public void setPageNo(int pageNo) {
+		this.pageNo = pageNo;
 	}
 }
