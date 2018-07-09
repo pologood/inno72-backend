@@ -134,10 +134,10 @@ public class SocketIOStartHandler {
 
 			@Override
 			public void monitorResponse(String key, String data, Map<String, List<String>> params) {
-				log.info("推送监控消息方法执行开始，data=" + data);
+				log.info("推送监控消息方法执行开始，data：{}" ,data);
 				// 解压缩以及解密数据
 				String message = AesUtils.decrypt(GZIPUtil.uncompress(data));
-				log.info("推送监控消息方法执行中，data=" + message);
+				log.info("推送监控消息方法执行中，data：{}" ,message);
 				//获取机器Id
 				SystemStatus systemStatus = JSONObject.parseObject(message,SystemStatus.class);
 				String machineId = systemStatus.getMachineId();
@@ -158,7 +158,7 @@ public class SocketIOStartHandler {
 					mongoTpl.updateMulti(query,update,"MachineLogInfo");
 				}
 
-				log.info("推送监控消息方法执行结束，data=" + message);
+				log.info("推送监控消息方法执行结束，data：{}" ,message);
 			}
 
 			@Override
