@@ -1,15 +1,16 @@
 package com.inno72.socketio;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
-import com.inno72.common.CommonConstants;
-import com.inno72.model.*;
-import com.inno72.redis.IRedisUtil;
-import com.inno72.socketio.core.SocketServer;
-import com.inno72.socketio.core.SocketServerHandler;
-import com.inno72.util.AesUtils;
-import com.inno72.util.GZIPUtil;
+import static com.inno72.model.MessageBean.EventType.CHECKSTATUS;
+import static com.inno72.model.MessageBean.SubEventType.APPSTATUS;
+import static com.inno72.model.MessageBean.SubEventType.MACHINESTATUS;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +22,20 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static com.inno72.model.MessageBean.EventType.CHECKSTATUS;
-import static com.inno72.model.MessageBean.SubEventType.APPSTATUS;
-import static com.inno72.model.MessageBean.SubEventType.MACHINESTATUS;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
+import com.inno72.common.CommonConstants;
+import com.inno72.model.MachineAppStatus;
+import com.inno72.model.MachineLogInfo;
+import com.inno72.model.MachineStatus;
+import com.inno72.model.MessageBean;
+import com.inno72.model.SystemStatus;
+import com.inno72.redis.IRedisUtil;
+import com.inno72.socketio.core.SocketServer;
+import com.inno72.socketio.core.SocketServerHandler;
+import com.inno72.util.AesUtils;
+import com.inno72.util.GZIPUtil;
 
 @Configuration
 public class SocketIOStartHandler {
@@ -40,7 +46,6 @@ public class SocketIOStartHandler {
 
 	@Autowired
 	private MongoOperations mongoTpl;
-
 
 	private SocketServerHandler socketServerHandler() {
 
@@ -70,13 +75,13 @@ public class SocketIOStartHandler {
 						// 保存到mongo表中--先删除再保存
 						Query query = new Query();
 						query.addCriteria(Criteria.where("machineId").is(machineId));
-						if(mongoTpl.exists(query,"MachineStatus") == false ){
-							mongoTpl.save(machineStatus,"MachineStatus");
-						}else{
+						if (mongoTpl.exists(query, "MachineStatus") == false) {
+							mongoTpl.save(machineStatus, "MachineStatus");
+						} else {
 							Update update = new Update();
-							update.set("machineId",machineId);
-							update.set("createTime",new Date());
-							mongoTpl.updateMulti(query,update,"MachineStatus");
+							update.set("machineId", machineId);
+							update.set("createTime", new Date());
+							mongoTpl.updateMulti(query, update, "MachineStatus");
 						}
 					} else if (APPSTATUS.v() == subEventType) {
 						MessageBean<MachineAppStatus> appStatus = JSONObject.parseObject(message,
@@ -88,13 +93,13 @@ public class SocketIOStartHandler {
 						// 保存到mongo表中
 						Query query = new Query();
 						query.addCriteria(Criteria.where("machineId").is(machineId));
-						if(mongoTpl.exists(query,"MachineAppStatus") == false ){
-							mongoTpl.save(apps,"MachineAppStatus");
-						}else{
+						if (mongoTpl.exists(query, "MachineAppStatus") == false) {
+							mongoTpl.save(apps, "MachineAppStatus");
+						} else {
 							Update update = new Update();
-							update.set("machineId",machineId);
-							update.set("createTime",new Date());
-							mongoTpl.updateMulti(query,update,"MachineAppStatus");
+							update.set("machineId", machineId);
+							update.set("createTime", new Date());
+							mongoTpl.updateMulti(query, update, "MachineAppStatus");
 						}
 					}
 
@@ -134,31 +139,31 @@ public class SocketIOStartHandler {
 
 			@Override
 			public void monitorResponse(String key, String data, Map<String, List<String>> params) {
-				log.info("推送监控消息方法执行开始，data：{}" ,data);
+				log.info("推送监控消息方法执行开始，data：{}", data);
 				// 解压缩以及解密数据
 				String message = AesUtils.decrypt(GZIPUtil.uncompress(data));
-				log.info("推送监控消息方法执行中，data：{}" ,message);
-				//获取机器Id
-				SystemStatus systemStatus = JSONObject.parseObject(message,SystemStatus.class);
+				log.info("推送监控消息方法执行中，data：{}", message);
+				// 获取机器Id
+				SystemStatus systemStatus = JSONObject.parseObject(message, SystemStatus.class);
 				String machineId = systemStatus.getMachineId();
-				//删除原有数据，保留最新一条
-				//将机器Id与时间缓存到mangoDB中
+				// 删除原有数据，保留最新一条
+				// 将机器Id与时间缓存到mangoDB中
 				Query query = new Query();
 				query.addCriteria(Criteria.where("machineId").is(machineId));
-				Boolean flag = mongoTpl.exists(query,"MachineLogInfo");
-				if( false == flag ){
+				Boolean flag = mongoTpl.exists(query, "MachineLogInfo");
+				if (false == flag) {
 					MachineLogInfo machineLogInfo = new MachineLogInfo();
 					machineLogInfo.setMachineId(machineId);
 					machineLogInfo.setCreateTime(new Date());
-					mongoTpl.save(machineLogInfo,"MachineLogInfo");
-				}else{
+					mongoTpl.save(machineLogInfo, "MachineLogInfo");
+				} else {
 					Update update = new Update();
-					update.set("machineId",machineId);
-					update.set("createTime",new Date());
-					mongoTpl.updateMulti(query,update,"MachineLogInfo");
+					update.set("machineId", machineId);
+					update.set("createTime", new Date());
+					mongoTpl.updateMulti(query, update, "MachineLogInfo");
 				}
 
-				log.info("推送监控消息方法执行结束，data：{}" ,message);
+				log.info("推送监控消息方法执行结束，data：{}", message);
 			}
 
 			@Override
