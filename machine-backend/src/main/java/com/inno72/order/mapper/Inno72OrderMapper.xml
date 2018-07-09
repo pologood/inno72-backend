@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.order.mapper.Inno72OrderMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.order.model.Inno72Order">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="order_num" jdbcType="VARCHAR" property="orderNum" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="channel_id" jdbcType="VARCHAR" property="channelId" />
+    <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
+    <result column="game_id" jdbcType="VARCHAR" property="gameId" />
+    <result column="order_time" jdbcType="TIMESTAMP" property="orderTime" />
+    <result column="order_price" jdbcType="VARCHAR" property="orderPrice" />
+    <result column="order_type" jdbcType="VARCHAR" property="orderType" />
+    <result column="pay_status" jdbcType="VARCHAR" property="payStatus" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="channel_code" jdbcType="VARCHAR" property="channelCode"/>
+    <result column="channel_name" jdbcType="VARCHAR" property="channelName"/>
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode"/>
+    <result column="machine_name" jdbcType="VARCHAR" property="machineName"/>
+    <result column="gameName" jdbcType="VARCHAR" property="gameName"/>
+    <result column="gameRemark" jdbcType="VARCHAR" property="gameRemark"/>
+
+  </resultMap>
+
+  <sql id="Column_List">
+
+
+  </sql>
+
+  <select id="seleByParamForPage" resultMap="BaseResultMap">
+    select t1.id,t1.order_num,t1.user_id,t1.channel_id,t1.machine_id,t1.game_id,
+    t1.order_time,t1.order_price,t1.order_type,t1.pay_status,t1.pay_time,t1.activity_id,
+    t2.channel_code,t2.channel_name,t3.machine_code,t3.machine_name,
+    t4.name gameName,t4.remark gameRemark
+    from inno72_order t1
+    left join inno72_channel t2 on t1.channel_id=t2.id
+    left join inno72_machine t3 on t1.machine_id=t3.id
+    left join inno72_game t4 on t1.game_id=t4.id
+    <where>
+      <if test="machineId != null">
+        and t1.machine_id = #{machineId}
+      </if>
+      <if test="orderNum != null">
+        and t1.order_num = #{orderNum}
+      </if>
+      <if test="channelId != null">
+        and t1.channel_id = #{channelId}
+      </if>
+      <if test="gameId != null">
+        and t1.game_id = #{gameId}
+      </if>
+      <if test="activityId != null">
+        and t1.activity_id = #{activityId}
+      </if>
+      <if test="orderType != null">
+        and t1.order_type = #{orderType}
+      </if>
+    </where>
+    ORDER BY t1.order_time desc
+  </select>
+</mapper>

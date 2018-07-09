@@ -1,5 +1,6 @@
 package com.inno72.machine.model;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -78,7 +79,7 @@ public class Inno72SupplyChannel {
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	@Column(name = "create_time")
-	private Date createTime;
+	private LocalDateTime createTime;
 
 	/**
 	 * 修改人ID
@@ -92,7 +93,7 @@ public class Inno72SupplyChannel {
 	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "update_time")
-	private Date updateTime;
+	private LocalDateTime updateTime;
 
 	@Column(name="is_delete")
 	private int isDelete;
@@ -117,6 +118,9 @@ public class Inno72SupplyChannel {
 
 	@Transient
 	private String toCode;
+
+	@Transient
+	private String remark;
 
 	/**
 	 * 获取uuid
@@ -276,7 +280,7 @@ public class Inno72SupplyChannel {
 	 *
 	 * @return create_time - 创建时间
 	 */
-	public Date getCreateTime() {
+	public LocalDateTime getCreateTime() {
 		return createTime;
 	}
 
@@ -285,7 +289,7 @@ public class Inno72SupplyChannel {
 	 *
 	 * @param createTime 创建时间
 	 */
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(LocalDateTime createTime) {
 		this.createTime = createTime;
 	}
 
@@ -312,7 +316,7 @@ public class Inno72SupplyChannel {
 	 *
 	 * @return update_time - 修改时间
 	 */
-	public Date getUpdateTime() {
+	public LocalDateTime getUpdateTime() {
 		return updateTime;
 	}
 
@@ -321,7 +325,7 @@ public class Inno72SupplyChannel {
 	 *
 	 * @param updateTime 修改时间
 	 */
-	public void setUpdateTime(Date updateTime) {
+	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
 	}
 
@@ -387,5 +391,13 @@ public class Inno72SupplyChannel {
 
 	public void setToCode(String toCode) {
 		this.toCode = toCode;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 }

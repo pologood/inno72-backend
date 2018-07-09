@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +46,12 @@ public class GameServiceImpl extends AbstractService<Inno72Game> implements Game
 	@Override
 	public Result<String> delById(String id) {
 		logger.info("----------------游戏删除--------------");
+		
+		int nmu=inno72GameMapper.selectIsUseing(id);
+		if (nmu > 0) {
+			return ResultGenerator.genFailResult("游戏使用中，不能删除！");
+		}
+		
 		Inno72Game model = inno72GameMapper.selectByPrimaryKey(id);
 		model.setIsDelete(1);
 		model.setUpdateId("");
@@ -66,6 +74,32 @@ public class GameServiceImpl extends AbstractService<Inno72Game> implements Game
 		params.put("code", code);
 		
 		return inno72GameMapper.selectByPage(params);
+	}
+	
+	@Override
+	public Result<String> matchMachine(String gameId,String machineIds) {
+		logger.info("----------------游戏绑定机器--------------");
+		try {
+			List<String> mIds = Arrays.asList(machineIds.split(","));
+			//删除所选机器对应的游戏
+			inno72GameMapper.deleteMachineGameByMachineId(mIds);
+			
+			//添加所选机器与改游戏对应关系
+			List<Map<String, Object>> machineGames =new ArrayList<>();
+			for (String mId : mIds) {
+				Map<String, Object> mg = new HashMap<String, Object>();
+				mg.put("gameId", gameId);
+				mg.put("mId", mId);
+				mg.put("id", StringUtil.getUUID());
+				machineGames.add(mg);
+			}
+			inno72GameMapper.addMachineGame(machineGames);
+			
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
+		
+		return ResultGenerator.genSuccessResult();
 	}
     
     

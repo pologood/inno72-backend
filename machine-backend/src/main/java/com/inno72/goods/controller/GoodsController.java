@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -30,12 +31,12 @@ public class GoodsController {
     private GoodsService goodsService;
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> add(@Valid  Inno72Goods goods,BindingResult bindingResult,@RequestParam(value = "file",required = false) MultipartFile file) {
+    public Result<String> add(@Valid  Inno72Goods goods,BindingResult bindingResult) {
     	try {
     		if(bindingResult.hasErrors()){
     			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
             }else{
-            	goodsService.save(goods,file);
+            	goodsService.save(goods);
             }
 		} catch (Exception e) {
 			ResultGenerator.genFailResult("操作失败！");
@@ -54,9 +55,9 @@ public class GoodsController {
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> update(Inno72Goods goods,@RequestParam(value = "file",required = false) MultipartFile file) {
+    public Result<String> update(Inno72Goods goods) {
     	try {
-    		goodsService.update(goods,file);
+    		goodsService.update(goods);
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
@@ -80,4 +81,15 @@ public class GoodsController {
         List<Inno72Goods> list = goodsService.getList(goods);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
+    
+    @RequestMapping(value = "/uploadImage", method = { RequestMethod.POST,  RequestMethod.GET})
+    public @ResponseBody Result<String> uploadImage(@RequestParam(value = "file",required = false) MultipartFile file) {
+    	try {
+    		return goodsService.uploadImage(file);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
+    }
+    
+    
 }

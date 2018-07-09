@@ -15,4 +15,6 @@ public interface GameService extends Service<Inno72Game> {
 
 	Result<String> delById(String id);
 
+	Result<String> matchMachine(String gameId, String machineIds);
+
 }

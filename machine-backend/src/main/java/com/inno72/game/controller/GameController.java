@@ -5,6 +5,7 @@ import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.game.model.Inno72Game;
 import com.inno72.game.service.GameService;
+import com.inno72.gameUser.model.Inno72GameUser;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -66,5 +67,17 @@ public class GameController {
     public ModelAndView list(@RequestParam(required=false) String code,@RequestParam(required=false) String keyword) {
         List<Inno72Game> list = gameService.findByPage(code,keyword);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
+    }
+    
+    
+    @RequestMapping(value = "/matchMachine", method = { RequestMethod.POST, RequestMethod.GET })
+    public Result<String> matchMachine(@RequestParam(required=false) String gameId,@RequestParam(required=false) String machineIds) {
+    	gameService.matchMachine(gameId, machineIds);
+    	try {
+    		gameService.matchMachine(gameId, machineIds);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
+        return ResultGenerator.genSuccessResult();
     }
 }
