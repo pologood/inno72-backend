@@ -3,7 +3,6 @@ package com.inno72.goods.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;

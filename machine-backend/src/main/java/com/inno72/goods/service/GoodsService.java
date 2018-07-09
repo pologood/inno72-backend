@@ -14,14 +14,15 @@ import com.inno72.goods.model.Inno72Goods;
  */
 public interface GoodsService extends Service<Inno72Goods> {
 
-	Result<String> save(Inno72Goods goods, MultipartFile file);
 	
-	Result<String> update(Inno72Goods model, MultipartFile file);
 		
 	List<Inno72Goods> getList(Inno72Goods model);
 
 	List<Inno72Goods> findByPage(String code, String keyword);
 
 	Result<String> delById(String id);
+
+	Result<String> uploadImage(MultipartFile file);
+
 
 }

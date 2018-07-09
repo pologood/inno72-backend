@@ -25,6 +25,8 @@ public class CommonConstants {
 	public static SessionData SESSION_DATA = new SessionData();
 	
 	/** OSS基础路径 **/
-	public static final String OSS_PATH = "/backend";
+	public static final String OSS_PATH = "backend";
+	/** OSS基础路径 **/
+	public static final String ALI_OSS = "https://inno72.oss-cn-beijing.aliyuncs.com/";
 
 }

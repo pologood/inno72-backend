@@ -39,58 +39,22 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
     private Inno72GoodsMapper inno72GoodsMapper;
 
     @Override
-	public Result<String> save(Inno72Goods goods, MultipartFile file) {
+	public void save(Inno72Goods goods) {
     	logger.info("----------------商品添加--------------");
 		String id=StringUtil.getUUID();
 		goods.setId(id);
 		goods.setCreateId("");
 		goods.setUpdateId("");
-		if (null !=file) {
-			//调用上传图片
-			try {
-				String originalFilename = file.getOriginalFilename();
-				String typeName = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
-				String name =id+ typeName;
-				String path = CommonConstants.OSS_PATH+"/good/"+name;
-				
-				OSSUtil.uploadByStream(file.getInputStream(),path);
-				goods.setImg(path);
-			} catch (IOException e) {
-				e.printStackTrace();
-				return Results.failure("图片处理失败！");
-			} catch (Exception e) {
-				e.printStackTrace();
-				return Results.failure("图片处理失败！");
-			}
-		}
+		
 		super.save(goods);
-		return ResultGenerator.genSuccessResult();
 	}
 
 	@Override
-	public Result<String> update(Inno72Goods model, MultipartFile file) {
+	public void update(Inno72Goods model) {
 		logger.info("----------------商品修改--------------");
-		if (file!=null){
-			try {
-				String originalFilename = file.getOriginalFilename();
-				String typeName = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
-				String name =model.getId()+ typeName;
-				String path = CommonConstants.OSS_PATH+"/good/"+name;
-				
-				OSSUtil.uploadByStream(file.getInputStream(),path);
-				model.setImg(path);
-			} catch (IOException e) {
-				e.printStackTrace();
-				return Results.failure("图片处理失败！");
-			} catch (Exception e) {
-				e.printStackTrace();
-				return Results.failure("图片处理失败！");
-			}
-		}
 		
 		model.setUpdateId("");
 		super.update(model);
-		return ResultGenerator.genSuccessResult();
 	}
 
 	@Override
@@ -107,8 +71,15 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 		super.update(model);
 		return ResultGenerator.genSuccessResult();
 	}
-
 	
+	
+	@Override
+	public Inno72Goods findById(String id) {
+		Inno72Goods good =super.findById(id);
+		good.setImg(CommonConstants.ALI_OSS+good.getImg());
+		return good;
+	}
+
 	@Override
 	public List<Inno72Goods> findByPage(String code,String keyword) {
 		// TODO 商户分页列表查询
@@ -116,7 +87,10 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("keyword", keyword);
 		params.put("code", code);
-		
+		List<Inno72Goods> list =inno72GoodsMapper.selectByPage(params);
+		for (Inno72Goods inno72Goods : list) {
+			inno72Goods.setImg(CommonConstants.ALI_OSS+inno72Goods.getImg());
+		}
 		return inno72GoodsMapper.selectByPage(params);
 	}
 	
@@ -129,6 +103,30 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 		Condition condition = new Condition( Inno72Goods.class);
 	   	condition.createCriteria().andEqualTo(model);
 		return super.findByCondition(condition);
+	}
+
+	@Override
+	public Result<String> uploadImage(MultipartFile file) {
+		if ( file.getSize() > 0) {
+			//调用上传图片
+			try {
+				String originalFilename = file.getOriginalFilename();
+				String typeName = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
+				String name =StringUtil.getUUID()+ typeName;
+				String path = CommonConstants.OSS_PATH+"/good/"+name;
+				OSSUtil.uploadByStream(file.getInputStream(),path);
+				return Results.success(path);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return Results.failure("图片处理失败！");
+			} catch (Exception e) {
+				e.printStackTrace();
+				return Results.failure("图片处理失败！");
+			}
+		}
+		logger.info("[out-uploadImg]-空");
+		return Results.success("");
+
 	}
 
 	
