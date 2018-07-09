@@ -29,7 +29,8 @@ public abstract class SocketServerHandler {
 	 * @param params
 	 * @return
 	 */
-	public abstract String deviceIdMsg(String key, String data, Map<String, List<String>> params);
+	// public abstract String deviceIdMsg(String key, String data, Map<String,
+	// List<String>> params);
 
 	/**
 	 * 监控消息处理
