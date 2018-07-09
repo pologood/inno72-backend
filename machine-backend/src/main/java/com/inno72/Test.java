@@ -1,9 +1,8 @@
 package com.inno72;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +29,9 @@ public class Test {
 		Map<String, Object> map = new HashMap<>();
 		map.put("name", "wxt");
 		map.put("age", 18);
-		mongoTpl.save(map, "test");
+		map.put("date",new Date());
+		map.put("birth",LocalDateTime.now());
+		mongoTpl.save(map, "mytest");
 	}
 
 	@RequestMapping(value = "/testQuery", method = { RequestMethod.POST, RequestMethod.GET })
@@ -42,20 +43,20 @@ public class Test {
 
 		int pageSize = 20;
 
-		orOparators.add(Criteria.where("age").is(11));
+		orOparators.add(Criteria.where("age").is(18));
 
 		if (orOparators.size() > 0) {
 			_forPage.addCriteria(new Criteria().andOperator(orOparators.toArray(new Criteria[orOparators.size()])));
 		}
 
-		Long count = mongoTpl.count(_forPage, HashMap.class, "test");
+		Long count = mongoTpl.count(_forPage, HashMap.class, "mytest");
 		// Long count = mongoTpl.count(_forPage, AA.class,"test");
 		int pageNo = 1;
 		Pagination pagination = new Pagination(pageNo, pageSize, count.intValue());
 		_forPage.skip((pageNo - 1) * pageSize).limit(pageSize);// 分页
 		// _forPage.with(new Sort(Sort.Direction.DESC, "createTime"));
 
-		List<HashMap> data = mongoTpl.find(_forPage, HashMap.class, "test");
+		List<HashMap> data = mongoTpl.find(_forPage, HashMap.class, "mytest");
 		pagination.setList(data);
 
 		adapter.put("page", pagination);

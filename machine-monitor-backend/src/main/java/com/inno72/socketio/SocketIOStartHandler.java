@@ -1,16 +1,15 @@
 package com.inno72.socketio;
 
-import static com.inno72.model.MessageBean.EventType.CHECKSTATUS;
-import static com.inno72.model.MessageBean.SubEventType.APPSTATUS;
-import static com.inno72.model.MessageBean.SubEventType.MACHINESTATUS;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.annotation.Resource;
-
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
+import com.inno72.common.CommonConstants;
+import com.inno72.model.*;
+import com.inno72.redis.IRedisUtil;
+import com.inno72.socketio.core.SocketServer;
+import com.inno72.socketio.core.SocketServerHandler;
+import com.inno72.util.AesUtils;
+import com.inno72.util.GZIPUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,22 +18,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
-import com.inno72.common.CommonConstants;
-import com.inno72.model.MachineAppStatus;
-import com.inno72.model.MachineLogInfo;
-import com.inno72.model.MachineStatus;
-import com.inno72.model.MessageBean;
-import com.inno72.redis.IRedisUtil;
-import com.inno72.socketio.core.SocketListener;
-import com.inno72.socketio.core.SocketServer;
-import com.inno72.socketio.core.SocketServerHandler;
-import com.inno72.util.AesUtils;
-import com.inno72.util.GZIPUtil;
+import javax.annotation.Resource;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static com.inno72.model.MessageBean.EventType.CHECKSTATUS;
+import static com.inno72.model.MessageBean.SubEventType.APPSTATUS;
+import static com.inno72.model.MessageBean.SubEventType.MACHINESTATUS;
 
 @Configuration
 public class SocketIOStartHandler {
@@ -46,7 +41,6 @@ public class SocketIOStartHandler {
 	@Autowired
 	private MongoOperations mongoTpl;
 
-	Logger logger = LoggerFactory.getLogger(SocketListener.class);
 
 	private SocketServerHandler socketServerHandler() {
 
@@ -76,9 +70,14 @@ public class SocketIOStartHandler {
 						// 保存到mongo表中--先删除再保存
 						Query query = new Query();
 						query.addCriteria(Criteria.where("machineId").is(machineId));
-						mongoTpl.findAndRemove(query, MachineStatus.class);
-						mongoTpl.save(machineStatus, "MachineStatus");
-
+						if(mongoTpl.exists(query,"MachineStatus") == false ){
+							mongoTpl.save(machineStatus,"MachineStatus");
+						}else{
+							Update update = new Update();
+							update.set("machineId",machineId);
+							update.set("createTime",new Date());
+							mongoTpl.updateMulti(query,update,"MachineStatus");
+						}
 					} else if (APPSTATUS.v() == subEventType) {
 						MessageBean<MachineAppStatus> appStatus = JSONObject.parseObject(message,
 								new TypeReference<MessageBean<MachineAppStatus>>() {
@@ -89,8 +88,14 @@ public class SocketIOStartHandler {
 						// 保存到mongo表中
 						Query query = new Query();
 						query.addCriteria(Criteria.where("machineId").is(machineId));
-						mongoTpl.findAndRemove(query, MachineAppStatus.class);
-						mongoTpl.save(apps, "MachineAppStatus");
+						if(mongoTpl.exists(query,"MachineAppStatus") == false ){
+							mongoTpl.save(apps,"MachineAppStatus");
+						}else{
+							Update update = new Update();
+							update.set("machineId",machineId);
+							update.set("createTime",new Date());
+							mongoTpl.updateMulti(query,update,"MachineAppStatus");
+						}
 					}
 
 				}
@@ -133,16 +138,25 @@ public class SocketIOStartHandler {
 				// 解压缩以及解密数据
 				String message = AesUtils.decrypt(GZIPUtil.uncompress(data));
 				log.info("推送监控消息方法执行中，data=" + message);
-				// 获取机器Id
-				String machineId = "1827308070495";
-
-				MachineLogInfo machineLogInfo = new MachineLogInfo();
-				machineLogInfo.setMachineId(machineId);
-				// 获取当前时间
-				machineLogInfo.setCreateTime(new Date());
-
-				// 将机器Id与时间缓存到mangoDB中
-				mongoTpl.save(machineLogInfo, "MachineAppStatus");
+				//获取机器Id
+				SystemStatus systemStatus = JSONObject.parseObject(message,SystemStatus.class);
+				String machineId = systemStatus.getMachineId();
+				//删除原有数据，保留最新一条
+				//将机器Id与时间缓存到mangoDB中
+				Query query = new Query();
+				query.addCriteria(Criteria.where("machineId").is(machineId));
+				Boolean flag = mongoTpl.exists(query,"MachineLogInfo");
+				if( false == flag ){
+					MachineLogInfo machineLogInfo = new MachineLogInfo();
+					machineLogInfo.setMachineId(machineId);
+					machineLogInfo.setCreateTime(new Date());
+					mongoTpl.save(machineLogInfo,"MachineLogInfo");
+				}else{
+					Update update = new Update();
+					update.set("machineId",machineId);
+					update.set("createTime",new Date());
+					mongoTpl.updateMulti(query,update,"MachineLogInfo");
+				}
 
 				log.info("推送监控消息方法执行结束，data=" + message);
 			}
@@ -151,7 +165,7 @@ public class SocketIOStartHandler {
 			public void connectNotify(String sessionId, Map<String, List<String>> data) {
 				String machineId = Optional.ofNullable(data.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
 						.orElse("");
-				logger.info("机器machineId:{}连接到服务器", machineId);
+				log.info("机器machineId:{}连接到服务器", machineId);
 				if (!StringUtils.isEmpty(machineId)) {
 					String machinKey = CommonConstants.REDIS_BASE_PATH + machineId;
 					redisUtil.set(machinKey, sessionId);
@@ -163,10 +177,11 @@ public class SocketIOStartHandler {
 				String machineId = Optional.ofNullable(data.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
 						.orElse("");
 				if (!StringUtils.isEmpty(machineId)) {
-					logger.info("机器machineId:{}断开连接", machineId);
+					log.info("机器machineId:{}断开连接", machineId);
 					String machinKey = CommonConstants.REDIS_BASE_PATH + machineId;
 					redisUtil.del(machinKey);
 				}
+				log.info("socket 断开了");
 			}
 
 		};
@@ -174,7 +189,7 @@ public class SocketIOStartHandler {
 
 	@Bean
 	public SocketServer socketServer() {
-		return new SocketServer("0.0.0.0", 1245, socketServerHandler());
+		return new SocketServer("0.0.0.0", 1244, socketServerHandler());
 	}
 
 }
