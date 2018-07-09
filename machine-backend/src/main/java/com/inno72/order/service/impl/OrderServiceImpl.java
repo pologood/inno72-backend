@@ -23,10 +23,8 @@ public class OrderServiceImpl extends AbstractService<Inno72Order> implements Or
     private Inno72OrderMapper inno72OrderMapper;
 
     @Override
-    public Result<List<Inno72Order>> getOrderList(Inno72Order order) {
+    public List<Inno72Order> getOrderList(Inno72Order order) {
         List<Inno72Order> orderList = inno72OrderMapper.seleByParamForPage(order);
-        Result<List<Inno72Order>> result = new Result<>();
-        result.setData(orderList);
-        return result;
+        return orderList;
     }
 }

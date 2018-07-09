@@ -4,6 +4,8 @@ import com.inno72.common.Result;
 import com.inno72.common.Service;
 import com.inno72.machine.model.Inno72SupplyChannel;
 
+import java.util.Map;
+
 /**
  * Created by CodeGenerator on 2018/07/04.
  */
@@ -23,5 +25,5 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
     Result<String> downAll(Inno72SupplyChannel supplyChannel);
 
-    Result history(Inno72SupplyChannel supplyChannel);
+    Result<Map<String,Object>> history(Inno72SupplyChannel supplyChannel);
 }

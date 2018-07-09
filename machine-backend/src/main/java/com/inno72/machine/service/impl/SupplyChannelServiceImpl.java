@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.inno72.common.*;
 import com.inno72.machine.mapper.Inno72SupplyChannelGoodsMapper;
+import com.inno72.utils.page.Pagination;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -24,6 +25,7 @@ import org.bson.conversions.Bson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -261,66 +263,33 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	}
 
     @Override
-    public Result<List<Inno72SupplyChannel>> history(Inno72SupplyChannel supplyChannel) {
+    public Result<Map<String,Object>> history(Inno72SupplyChannel supplyChannel) {
 	    String machineId = supplyChannel.getMachineId();
 	    String code = supplyChannel.getCode();
 	    if(StringUtil.isEmpty(machineId)){
 	        return Results.failure("机器ID不能为空");
         }
-        DBCollection coll = mongoTpl.getCollection("supplyChannel");
-        BasicDBObject dbObject = new BasicDBObject();
-        dbObject.put("machineId",machineId);
-        if(StringUtil.isNotEmpty(code)){
-            dbObject.put("code",code);
-        }
-        DBCursor dbCursor = coll.find(dbObject).limit(10).sort(new BasicDBObject("updateTime",-1));
-        if(dbCursor != null){
-            List<DBObject> list = dbCursor.toArray();
-            if(list != null && list.size()>0){
-                List<Inno72SupplyChannel> supplyChannelList = new ArrayList<>();
-                for(DBObject db:list){
-                    Inno72SupplyChannel inno72SupplyChannel = new Inno72SupplyChannel();
-                    if(db.get("remark") != null){
-                    	  inno72SupplyChannel.setRemark(db.get("remark").toString());
-					}
-                    inno72SupplyChannel.setMachineId(db.get("machineId").toString());
-                    if(db.get("code") != null){
-                    	inno72SupplyChannel.setCode(db.get("code").toString());
-					}
-                    if(db.get("goodsName") != null){
-                    	inno72SupplyChannel.setGoodsName(db.get("goodsName").toString());
-					}
-                    if(db.get("goodsCode") != null){
-                    	inno72SupplyChannel.setGoodsCode(db.get("goodsCode").toString());
-					}
 
-                    if(db.get("status") != null){
-                        inno72SupplyChannel.setStatus(Integer.parseInt(db.get("status").toString()));
-                    }
-                    inno72SupplyChannel.setIsDelete(Integer.parseInt(db.get("isDelete").toString()));
-                    JSONObject jsonObject = JSON.parseObject(db.toString());
-                    JSONObject updateTimeObject = jsonObject.getJSONObject("updateTime");
-                    JSONObject createTimeObject = jsonObject.getJSONObject("createTime");
-                    String createTime = createTimeObject.getString("$date");
-                    String updateTime = updateTimeObject.getString("$date");
-                    if(StringUtil.isNotEmpty(createTime)){
-                    	 createTime = createTime.replace("T"," ");
-                    	 createTime = createTime.substring(0,createTime.indexOf("."));
-                    	 logger.info("date:"+updateTime);
-                    	 inno72SupplyChannel.setCreateTime(LocalDateTime.parse(createTime,DateUtil.DF_FULL_S1));
-					}
-                    if(StringUtil.isNotEmpty(updateTime)){
-                        updateTime = updateTime.replace("T"," ");
-                        updateTime = updateTime.substring(0,updateTime.indexOf("."));
-                        logger.info("date:"+updateTime);
-                        inno72SupplyChannel.setUpdateTime(LocalDateTime.parse(updateTime,DateUtil.DF_FULL_S1));
-                    }
-                    supplyChannelList.add(inno72SupplyChannel);
-                }
-                return ResultGenerator.genSuccessResult(supplyChannelList);
-            }
-        }
-	    return null;
+        Query query = new Query();
+	    Criteria criteria = Criteria.where("machineId").is(machineId);
+	    if(StringUtil.isNotEmpty(code)){
+	    	criteria.and("code").is(code);
+		}
+	    query.addCriteria(criteria);
+		query.with(new Sort(Sort.Direction.DESC,"updateTime"));
+	    int pageNo = supplyChannel.getPageNo();
+	    int pageSize = 20;
+		Long count = mongoTpl.count(query, Inno72SupplyChannel.class, "supplyChannel");
+	    Pagination pagination = new Pagination(pageNo, pageSize, count.intValue());
+	    query.skip((pageNo-1)*pageSize).limit(pageSize);
+	    List<Inno72SupplyChannel> supplyChannelList = mongoTpl.find(query,Inno72SupplyChannel.class,"supplyChannel");
+		logger.info("mongo返回data:{}",JSON.toJSON(supplyChannelList));
+		Map<String,Object> map = new HashMap<>();
+		map.put("data",supplyChannelList);
+		map.put("page",pagination);
+		map.put("msg", "成功");
+		map.put("code", 0);
+	    return ResultGenerator.genSuccessResult(map);
     }
 
     public void addSupplyChannelToMongo(Inno72SupplyChannel supplyChannel){
