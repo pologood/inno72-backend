@@ -1,14 +1,16 @@
 package com.inno72;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,12 +22,16 @@ public class Test {
 	@Autowired
 	private MongoOperations mongoTpl;
 
+	Logger log = LoggerFactory.getLogger(this.getClass());
+
 	@RequestMapping(value = "/testAdd", method = { RequestMethod.POST, RequestMethod.GET })
 	public void test() {
 		Map<String, Object> map = new HashMap<>();
-		map.put("name", "123");
-		map.put("age", 11);
-		mongoTpl.save(map, "test");
+		map.put("name", "wxt");
+		map.put("age", 18);
+		map.put("date",new Date());
+		map.put("birth",LocalDateTime.now());
+		mongoTpl.save(map, "mytest");
 	}
 
 	@RequestMapping(value = "/testQuery", method = { RequestMethod.POST, RequestMethod.GET })
@@ -37,20 +43,20 @@ public class Test {
 
 		int pageSize = 20;
 
-		orOparators.add(Criteria.where("age").is(11));
+		orOparators.add(Criteria.where("age").is(18));
 
 		if (orOparators.size() > 0) {
 			_forPage.addCriteria(new Criteria().andOperator(orOparators.toArray(new Criteria[orOparators.size()])));
 		}
 
-		Long count = mongoTpl.count(_forPage, HashMap.class, "test");
+		Long count = mongoTpl.count(_forPage, HashMap.class, "mytest");
 		// Long count = mongoTpl.count(_forPage, AA.class,"test");
 		int pageNo = 1;
 		Pagination pagination = new Pagination(pageNo, pageSize, count.intValue());
 		_forPage.skip((pageNo - 1) * pageSize).limit(pageSize);// 分页
 		// _forPage.with(new Sort(Sort.Direction.DESC, "createTime"));
 
-		List<HashMap> data = mongoTpl.find(_forPage, HashMap.class, "test");
+		List<HashMap> data = mongoTpl.find(_forPage, HashMap.class, "mytest");
 		pagination.setList(data);
 
 		adapter.put("page", pagination);
@@ -64,9 +70,29 @@ public class Test {
 	public void delete() {
 
 		Query query = new Query();
-		query.addCriteria(Criteria.where("name").is("123"));
-		mongoTpl.findAllAndRemove(query,"test");
+		query.addCriteria(Criteria.where("name").is("wxt3"));
+		mongoTpl.remove(query,"test");
 	}
 
+	@RequestMapping(value = "/testUpdate", method = { RequestMethod.POST, RequestMethod.GET })
+	public void update() {
+
+		Query query = new Query();
+		query.addCriteria(Criteria.where("name").is("wxt"));
+
+		if(mongoTpl.exists(query,"mytest") == false){
+			log.info("在数据库中不存在");
+			Map<String, Object> map = new HashMap<>();
+			map.put("name", "wxt");
+			map.put("age", 18);
+			mongoTpl.save(map,"mytest");
+		}else{
+			Update update = new Update();
+			update.set("name","ceshi");
+			update.set("age","16");
+			mongoTpl.updateMulti(query,update,"mytest");
+		}
+
+	}
 
 }
