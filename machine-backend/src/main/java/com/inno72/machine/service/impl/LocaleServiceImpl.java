@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -99,6 +100,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		// TODO 分页列表查询
 		logger.info("---------------------分页列表查询-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
+		keyword=Optional.ofNullable(keyword).map(a->a.replace("'", "")).orElse(keyword);
 		if (StringUtil.isNotEmpty(code)) {
 			int num =getlikeCode(code);
 			if (num<4) {

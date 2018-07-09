@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -74,6 +75,7 @@ public class ShopsServiceImpl extends AbstractService<Inno72Shops> implements Sh
 		// TODO 分页列表查询
 		logger.info("---------------------店铺分页列表查询-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
+		keyword=Optional.ofNullable(keyword).map(a->a.replace("'", "")).orElse(keyword);
 		params.put("code", code);
 		params.put("keyword", keyword);
 		return inno72ShopsMapper.selectByPage(params);

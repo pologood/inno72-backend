@@ -47,6 +47,9 @@ public class Inno72User {
 	@Transient
 	private String deptName;
 
+	@Transient
+	private String roles;
+
 	/**
 	 * @return id
 	 */
@@ -195,6 +198,14 @@ public class Inno72User {
 
 	public void setDingId(String dingId) {
 		this.dingId = dingId;
+	}
+
+	public String getRoles() {
+		return roles;
+	}
+
+	public void setRoles(String roles) {
+		this.roles = roles;
 	}
 
 }

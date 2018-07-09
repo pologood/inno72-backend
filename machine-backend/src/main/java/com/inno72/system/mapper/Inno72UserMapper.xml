@@ -15,14 +15,17 @@
 		<result column="is_delete" jdbcType="INTEGER" property="isDelete" />
 		<result column="ding_id" jdbcType="VARCHAR" property="dingId" />
 		<result column="dept_name" jdbcType="VARCHAR" property="deptName" />
+		<result column="roles" jdbcType="VARCHAR" property="roles" />
 	</resultMap>
 
 	<select id="selectUsersByPage" parameterType="java.util.Map"
 		resultMap="BaseResultMap">
 
-		SELECT u.*,group_concat(d.name,'') dept_name FROM inno72_user u
+		SELECT u.*,group_concat(d.name,'') dept_name,group_concat(r.name,'') roles FROM inno72_user u
 		left join inno72_user_dept ud on u.id=ud.user_id
 		left join inno72_dept d on ud.dept_id=d.id
+		left join inno72_user_role ur on u.id=ur.user_id
+		left join  inno72_role r on ur.role_id=r.id
 		where u.is_delete!=1
 		<if test="keyword !=null and keyword !=''"> and ( u.name like '%${keyword}%' or d.name like '%${keyword}%'
 		 or u.mobile like '%${keyword}%' or u.org_email like '%${keyword}%'  )</if>
