@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -78,6 +79,7 @@ public class MerchantServiceImpl extends AbstractService<Inno72Merchant> impleme
 		// TODO 商户分页列表查询
 		logger.info("---------------------商户分页列表查询-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
+		keyword=Optional.ofNullable(keyword).map(a->a.replace("'", "")).orElse(keyword);
 		params.put("keyword", keyword);
 		params.put("code", code);
 		

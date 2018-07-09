@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -69,6 +70,7 @@ public class GameServiceImpl extends AbstractService<Inno72Game> implements Game
 	@Override
 	public List<Inno72Game> findByPage(String code,String keyword) {
 		logger.info("----------------游戏分页列表--------------");
+		keyword=Optional.ofNullable(keyword).map(a->a.replace("'", "")).orElse(keyword);
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("keyword", keyword);
 		params.put("code", code);

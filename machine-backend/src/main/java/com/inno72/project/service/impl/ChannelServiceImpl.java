@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -75,6 +76,7 @@ public class ChannelServiceImpl extends AbstractService<Inno72Channel> implement
 		// TODO 分页获取渠道列表
 		logger.info("---------------------分页获取渠道列表-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
+		keyword=Optional.ofNullable(keyword).map(a->a.replace("'", "")).orElse(keyword);
 		params.put("keyword", keyword);
 		return inno72ChannelMapper.selectByPage(params);
 	}
