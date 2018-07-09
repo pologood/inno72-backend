@@ -50,10 +50,14 @@ public class SupplyChannelController {
 		return ResultGenerator.genSuccessResult(supplyChannel);
 	}
 
+    /**
+     * 货道列表
+     * @param supplyChannel
+     * @return
+     */
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list() {
-		Condition condition = new Condition(Inno72SupplyChannel.class);
-		List<Inno72SupplyChannel> list = supplyChannelService.findByPage(condition);
+	public ModelAndView list(Inno72SupplyChannel supplyChannel) {
+		List<Inno72SupplyChannel> list = supplyChannelService.getListForPage(supplyChannel);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 

@@ -1,27 +1,15 @@
 package com.inno72.machine.service.impl;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import javax.annotation.Resource;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.inno72.common.*;
 import com.inno72.machine.mapper.Inno72SupplyChannelGoodsMapper;
 import com.inno72.utils.page.Pagination;
-import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mongodb.client.MongoCollection;
-import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -292,7 +280,13 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	    return ResultGenerator.genSuccessResult(map);
     }
 
-    public void addSupplyChannelToMongo(Inno72SupplyChannel supplyChannel){
+	@Override
+	public List<Inno72SupplyChannel> getListForPage(Inno72SupplyChannel supplyChannel) {
+		List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectListForPage(supplyChannel);
+		return list;
+	}
+
+	public void addSupplyChannelToMongo(Inno72SupplyChannel supplyChannel){
 		DBCollection dbCollection = mongoTpl.getCollection("supplyChannel");
 		if(dbCollection == null){
 			mongoTpl.createCollection("supplyChannel");

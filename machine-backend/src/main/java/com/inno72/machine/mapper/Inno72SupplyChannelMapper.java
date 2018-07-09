@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.inno72.common.Mapper;
 import com.inno72.machine.model.Inno72SupplyChannel;
+import tk.mybatis.mapper.entity.Condition;
 
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72SupplyChannelMapper extends Mapper<Inno72SupplyChannel> {
@@ -22,4 +23,6 @@ public interface Inno72SupplyChannelMapper extends Mapper<Inno72SupplyChannel> {
 
 	Inno72SupplyChannel selectByParentCode(Map<String, Object> map);
 
+
+	List<Inno72SupplyChannel> selectListForPage(Inno72SupplyChannel supplyChannel);
 }
