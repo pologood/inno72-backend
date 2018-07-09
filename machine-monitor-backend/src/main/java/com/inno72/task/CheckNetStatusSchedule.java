@@ -42,7 +42,7 @@ public class CheckNetStatusSchedule {
 		DBCollection dbCollection = mongoTpl.getCollection("MachineLogInfo");
 		DBCursor dbCursor = dbCollection.find();
 		List<DBObject> list = dbCursor.toArray();
-		log.info("检查并修改网络状态的定时任务执行中,数据库数据" + list.get(0));
+		log.info("检查并修改网络状态的定时任务执行中,数据库数据{}" , list.get(0));
 		if(list != null){
 			for (DBObject db : list) {
 
@@ -51,12 +51,12 @@ public class CheckNetStatusSchedule {
 				JSONObject jsonObject = JSON.parseObject(db.toString());
 				JSONObject createTimeObject = jsonObject.getJSONObject("createTime");
 				if (createTimeObject != null) {
-					log.info("date================", JSON.toJSONString(createTimeObject));
+					log.info("创建时间date:{}", JSON.toJSONString(createTimeObject));
 					String createTime = createTimeObject.getString("$date");
 					if (StringUtils.isNotEmpty(createTime)) {
 						createTime = createTime.replace("T", " ");
 						createTime = createTime.substring(0, createTime.indexOf("."));
-						log.info("检查并修改网络状态的定时任务执行中,数据库createTime = " + createTime);
+						log.info("检查并修改网络状态的定时任务执行中,数据库createTime:{} " , createTime);
 						// 创建时间
 						date1 = DateUtil.toDateOld(createTime, DateUtil.DF_ONLY_ALL_S1_OLD);
 
@@ -64,7 +64,7 @@ public class CheckNetStatusSchedule {
 					// TODO
 					// 将当前时间与数据库时间对比，如果大于10分钟，调用修改网络状态方法
 					int timeDifference = DateUtil.compareTime(date1, new Date(), 2);
-					log.info("数据库时间与当前时间的时间差，timeDifference =" + timeDifference);
+					log.info("数据库时间与当前时间的时间差，timeDifference :{}" ,timeDifference);
 					if (timeDifference >= 10) {
 
 						log.info("调用修改网络状态的方法");
