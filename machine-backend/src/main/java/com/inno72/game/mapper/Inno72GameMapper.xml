@@ -59,5 +59,22 @@
 		SELECT count(1) FROM inno72_machine_game where game_id=#{id}
   </select>
   
+  <delete id="deleteMachineGameByMachineId">
+        delete from inno72_machine_game
+        where  machineId IN
+        <foreach collection="mIds" item="mId" index="index" open="(" close=")" separator=",">
+            #{mId}
+        </foreach>
+   </delete>
+   
+   
+   <insert id="addMachineGame" parameterType="java.util.List">
+        insert into inno72_machine_game (id, machineId,gameId)
+        values
+        <foreach collection="machineGames" item="mg" index="index" separator=",">
+            (#{mg.id}, #{mg.mId},#{mg.gameId})
+        </foreach>
+    </insert>
+  
   
 </mapper>
