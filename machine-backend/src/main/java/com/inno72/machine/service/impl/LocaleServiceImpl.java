@@ -123,13 +123,13 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 			int userNum= inno72LocaleMapper.selectIsUseing(inno72LocaleVo.getId());
 			inno72LocaleVo.setUserNum(userNum);
 		}
-		return inno72LocaleMapper.selectByPage(params);
+		return list;
 	}
 	
 	@Override
 	public List<Inno72Locale> getList(Inno72Locale locale) {
 		// TODO 分页列表查询
-		logger.info("---------------------分页列表查询-------------------");
+		logger.info("---------------------列表查询-------------------");
 		locale.setIsDelete(0);
 		Condition condition = new Condition( Inno72Locale.class);
 	   	condition.createCriteria().andEqualTo(locale);
