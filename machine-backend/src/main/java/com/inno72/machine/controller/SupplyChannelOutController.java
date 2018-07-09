@@ -4,7 +4,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.inno72.common.Result;
@@ -61,9 +65,10 @@ public class SupplyChannelOutController {
 	 * @param supplyChannel
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/subCount", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<Inno72SupplyChannel> subCount(@RequestBody Inno72SupplyChannel supplyChannel) {
-		Result result = supplyChannelService.subCount(supplyChannel);
+		Result<Inno72SupplyChannel> result = supplyChannelService.subCount(supplyChannel);
 		return result;
 	}
 
@@ -74,8 +79,9 @@ public class SupplyChannelOutController {
 	 * @return
 	 */
 	@RequestMapping(value = "/get", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result getSupplyChannel(@RequestBody Inno72SupplyChannel supplyChannel) {
-		Result result = supplyChannelService.getSupplyChannel(supplyChannel);
+	public Result<String> getSupplyChannel(@RequestBody Inno72SupplyChannel supplyChannel) {
+		@SuppressWarnings("unchecked")
+		Result<String> result = supplyChannelService.getSupplyChannel(supplyChannel);
 		return result;
 	}
 }
