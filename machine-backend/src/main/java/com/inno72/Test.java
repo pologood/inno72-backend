@@ -5,10 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,11 +23,13 @@ public class Test {
 	@Autowired
 	private MongoOperations mongoTpl;
 
+	Logger log = LoggerFactory.getLogger(this.getClass());
+
 	@RequestMapping(value = "/testAdd", method = { RequestMethod.POST, RequestMethod.GET })
 	public void test() {
 		Map<String, Object> map = new HashMap<>();
-		map.put("name", "123");
-		map.put("age", 11);
+		map.put("name", "wxt");
+		map.put("age", 18);
 		mongoTpl.save(map, "test");
 	}
 
@@ -64,9 +69,29 @@ public class Test {
 	public void delete() {
 
 		Query query = new Query();
-		query.addCriteria(Criteria.where("name").is("123"));
-		mongoTpl.findAllAndRemove(query,"test");
+		query.addCriteria(Criteria.where("name").is("wxt3"));
+		mongoTpl.remove(query,"test");
 	}
 
+	@RequestMapping(value = "/testUpdate", method = { RequestMethod.POST, RequestMethod.GET })
+	public void update() {
+
+		Query query = new Query();
+		query.addCriteria(Criteria.where("name").is("wxt"));
+
+		if(mongoTpl.exists(query,"mytest") == false){
+			log.info("在数据库中不存在");
+			Map<String, Object> map = new HashMap<>();
+			map.put("name", "wxt");
+			map.put("age", 18);
+			mongoTpl.save(map,"mytest");
+		}else{
+			Update update = new Update();
+			update.set("name","ceshi");
+			update.set("age","16");
+			mongoTpl.updateMulti(query,update,"mytest");
+		}
+
+	}
 
 }
