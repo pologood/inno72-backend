@@ -262,15 +262,14 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 
     @Override
     public Result<List<Inno72SupplyChannel>> history(Inno72SupplyChannel supplyChannel) {
-	    String merchantId = supplyChannel.getMachineId();
+	    String machineId = supplyChannel.getMachineId();
 	    String code = supplyChannel.getCode();
-	    if(StringUtil.isEmpty(merchantId)){
+	    if(StringUtil.isEmpty(machineId)){
 	        return Results.failure("机器ID不能为空");
         }
-        Bson orderBy = new BasicDBObject("updateTime",1);
         DBCollection coll = mongoTpl.getCollection("supplyChannel");
         BasicDBObject dbObject = new BasicDBObject();
-        dbObject.put("machineId",merchantId);
+        dbObject.put("machineId",machineId);
         if(StringUtil.isNotEmpty(code)){
             dbObject.put("code",code);
         }

@@ -55,5 +55,16 @@ public class OrderController {
 	}
 
 
+	/**
+	 * 订单集合
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value="/orderList",method = {RequestMethod.POST,RequestMethod.GET})
+	public Result<List<Inno72Order>> orderList(Inno72Order order){
+		Result<List<Inno72Order>> result = orderService.getOrderList(order);
+		return result;
+
+	}
 
 }
