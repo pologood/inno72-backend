@@ -82,26 +82,6 @@ public class SocketListener {
 		};
 	}
 
-	// /**
-	// * 接收到客户端主动发送消息并回执
-	// *
-	// * @return
-	// */
-	// DataListener<String> msg() {
-	// return new DataListener<String>() {
-	// @Override
-	// public void onData(SocketIOClient client, String data, AckRequest
-	// ackSender) throws Exception {
-	// logger.info("连接ID【{}】接收到【{}】发送的数据【{}】", client.getSessionId(),
-	// client.getRemoteAddress(), data);
-	// String result = handler.deviceIdMsg(client.getSessionId().toString(),
-	// data,
-	// client.getHandshakeData().getUrlParams());
-	// client.sendEvent("deviceIdMsg", result);
-	// }
-	// };
-	// }
-
 	/**
 	 * 接收到主动发起查询监控的消息，不需要回执
 	 * 
