@@ -70,14 +70,8 @@ public class SocketIOStartHandler {
 						// 保存到mongo表中--先删除再保存
 						Query query = new Query();
 						query.addCriteria(Criteria.where("machineId").is(machineId));
-						if(mongoTpl.exists(query,"MachineStatus") == false ){
-							mongoTpl.save(machineStatus,"MachineStatus");
-						}else{
-							Update update = new Update();
-							update.set("machineId",machineId);
-							update.set("createTime",new Date());
-							mongoTpl.updateMulti(query,update,"MachineStatus");
-						}
+						mongoTpl.remove(query,"MachineStatus");
+						mongoTpl.save(machineStatus,"MachineStatus");
 					} else if (APPSTATUS.v() == subEventType) {
 						MessageBean<MachineAppStatus> appStatus = JSONObject.parseObject(message,
 								new TypeReference<MessageBean<MachineAppStatus>>() {
@@ -88,14 +82,8 @@ public class SocketIOStartHandler {
 						// 保存到mongo表中
 						Query query = new Query();
 						query.addCriteria(Criteria.where("machineId").is(machineId));
-						if(mongoTpl.exists(query,"MachineAppStatus") == false ){
-							mongoTpl.save(apps,"MachineAppStatus");
-						}else{
-							Update update = new Update();
-							update.set("machineId",machineId);
-							update.set("createTime",new Date());
-							mongoTpl.updateMulti(query,update,"MachineAppStatus");
-						}
+						mongoTpl.remove(query,"MachineAppStatus");
+						mongoTpl.save(apps,"MachineAppStatus");
 					}
 
 				}
@@ -141,22 +129,15 @@ public class SocketIOStartHandler {
 				//获取机器Id
 				SystemStatus systemStatus = JSONObject.parseObject(message,SystemStatus.class);
 				String machineId = systemStatus.getMachineId();
+				MachineLogInfo machineLogInfo = new MachineLogInfo();
+				machineLogInfo.setMachineId(machineId);
+				machineLogInfo.setCreateTime(new Date());
 				//删除原有数据，保留最新一条
 				//将机器Id与时间缓存到mangoDB中
 				Query query = new Query();
 				query.addCriteria(Criteria.where("machineId").is(machineId));
-				Boolean flag = mongoTpl.exists(query,"MachineLogInfo");
-				if( false == flag ){
-					MachineLogInfo machineLogInfo = new MachineLogInfo();
-					machineLogInfo.setMachineId(machineId);
-					machineLogInfo.setCreateTime(new Date());
-					mongoTpl.save(machineLogInfo,"MachineLogInfo");
-				}else{
-					Update update = new Update();
-					update.set("machineId",machineId);
-					update.set("createTime",new Date());
-					mongoTpl.updateMulti(query,update,"MachineLogInfo");
-				}
+				mongoTpl.remove(query,"MachineLogInfo");
+				mongoTpl.save(machineLogInfo,"MachineLogInfo");
 
 				log.info("推送监控消息方法执行结束，data：{}" ,message);
 			}
