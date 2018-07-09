@@ -94,35 +94,6 @@ public class SocketIOStartHandler {
 
 				return "OK";
 			}
-			//
-			// @Override
-			// public String deviceIdMsg(String sessionId, String data,
-			// Map<String, List<String>> params) {
-			// log.info("获取机器Id方法开始,sessionId=" + sessionId + ",deviceId" +
-			// data);
-			//
-			// // 解压缩并解密data
-			// String deviceId = AesUtils.decrypt(GZIPUtil.uncompress(data));
-			//
-			// // 从数据库中取
-			// String machineIdResult = HttpClient
-			// .post("http://localhost:8880/machine/machine/initMachine?deviceId="
-			// + deviceId, "");
-			// // 解析返回数据
-			// JSONObject jsonObject = JSONObject.parseObject(machineIdResult);
-			// String machineId = jsonObject.getString("data");
-			// if (!StringUtils.isEmpty(machineId)) {
-			// String machinKey = CommonConstants.REDIS_BASE_PATH + machineId;
-			// // 存入redis中
-			// redisUtil.set(machinKey, sessionId);
-			// // 加密并压缩
-			// String result = GZIPUtil.compress(AesUtils.encrypt(machineId));
-			// log.info("获取机器Id方法结束,sessionId=" + sessionId + ",machineId=" +
-			// machineId + ",deviceId" + data);
-			// return result;
-			// }
-			// return "";
-			// }
 
 			@Override
 			public void monitorResponse(String key, String data, Map<String, List<String>> params) {

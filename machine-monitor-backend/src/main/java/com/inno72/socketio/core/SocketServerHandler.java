@@ -22,17 +22,6 @@ public abstract class SocketServerHandler {
 	public abstract String process(String key, String data, Map<String, List<String>> params);
 
 	/**
-	 * message类型消息处理
-	 *
-	 * @param key
-	 * @param data
-	 * @param params
-	 * @return
-	 */
-	// public abstract String deviceIdMsg(String key, String data, Map<String,
-	// List<String>> params);
-
-	/**
 	 * 监控消息处理
 	 * 
 	 * @param key

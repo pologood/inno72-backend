@@ -1,5 +1,8 @@
 package com.inno72.controller;
 
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -12,8 +15,7 @@ import com.alibaba.fastjson.JSON;
 import com.inno72.common.MachineMonitorBackendProperties;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
-import com.inno72.model.MachineAppStatus;
-import com.mongodb.WriteResult;
+import com.inno72.model.MachineLogInfo;
 
 @RestController
 @RequestMapping("/test")
@@ -27,12 +29,8 @@ public class TestController {
 	@RequestMapping(value = "/test", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> test() {
 		Query query = new Query();
-		query.addCriteria(Criteria.where("machineId").is("1864272070630"));
-		WriteResult a = mongoTpl.remove(query, "MachineAppStatus");
-		MachineAppStatus status = new MachineAppStatus();
-		status.setMachineId("1864272070630");
-		status.setStatus(null);
-		mongoTpl.save(status, "MachineAppStatus");
+		query.addCriteria(Criteria.where("createTime").lte(new Date()));
+		List<MachineLogInfo> a = mongoTpl.find(query, MachineLogInfo.class);
 		return ResultGenerator.genSuccessResult(JSON.toJSONString(a));
 	}
 }
