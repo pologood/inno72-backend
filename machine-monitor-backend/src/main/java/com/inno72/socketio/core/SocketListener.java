@@ -2,6 +2,9 @@ package com.inno72.socketio.core;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +14,9 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
+import com.inno72.common.CommonConstants;
+import com.inno72.common.utils.StringUtil;
+import com.inno72.redis.IRedisUtil;
 
 /**
  * socket消息监听
@@ -21,6 +27,8 @@ import com.corundumstudio.socketio.listener.DisconnectListener;
 public class SocketListener {
 
 	private SocketServerHandler handler;
+	@Resource
+	private IRedisUtil redisUtil;
 
 	Logger logger = LoggerFactory.getLogger(SocketListener.class);
 
@@ -32,11 +40,16 @@ public class SocketListener {
 		return new ConnectListener() {
 			@Override
 			public void onConnect(SocketIOClient client) {
-				logger.info("【{}】连接到服务器", client.getRemoteAddress());
-				String id = client.getSessionId().toString();
+				String sessionId = client.getSessionId().toString();
 				Map<String, List<String>> param = client.getHandshakeData().getUrlParams();
-				SocketHolder.bind(id, client);
-				handler.connectNotify(id, param);
+				String machineId = Optional.ofNullable(param.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
+						.orElse("");
+				if (StringUtil.isEmpty(machineId)) {
+					client.disconnect();
+					logger.info("【{}】连接到服务器，没有machineId，强制退出。", client.getRemoteAddress());
+				}
+				SocketHolder.bind(sessionId, client);
+				handler.connectNotify(sessionId, param);
 			}
 		};
 	}
@@ -69,22 +82,25 @@ public class SocketListener {
 		};
 	}
 
-	/**
-	 * 接收到客户端主动发送消息并回执
-	 *
-	 * @return
-	 */
-	DataListener<String> msg() {
-		return new DataListener<String>() {
-			@Override
-			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
-				logger.info("连接ID【{}】接收到【{}】发送的数据【{}】", client.getSessionId(), client.getRemoteAddress(), data);
-				String result = handler.deviceIdMsg(client.getSessionId().toString(), data,
-						client.getHandshakeData().getUrlParams());
-				client.sendEvent("deviceIdMsg", result);
-			}
-		};
-	}
+	// /**
+	// * 接收到客户端主动发送消息并回执
+	// *
+	// * @return
+	// */
+	// DataListener<String> msg() {
+	// return new DataListener<String>() {
+	// @Override
+	// public void onData(SocketIOClient client, String data, AckRequest
+	// ackSender) throws Exception {
+	// logger.info("连接ID【{}】接收到【{}】发送的数据【{}】", client.getSessionId(),
+	// client.getRemoteAddress(), data);
+	// String result = handler.deviceIdMsg(client.getSessionId().toString(),
+	// data,
+	// client.getHandshakeData().getUrlParams());
+	// client.sendEvent("deviceIdMsg", result);
+	// }
+	// };
+	// }
 
 	/**
 	 * 接收到主动发起查询监控的消息，不需要回执

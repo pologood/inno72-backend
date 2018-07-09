@@ -5,7 +5,11 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.inno72.common.Result;
@@ -13,8 +17,6 @@ import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.machine.model.Inno72SupplyChannel;
 import com.inno72.machine.service.SupplyChannelService;
-
-import tk.mybatis.mapper.entity.Condition;
 
 /**
  * Created by CodeGenerator on 2018/07/03.
@@ -50,11 +52,12 @@ public class SupplyChannelController {
 		return ResultGenerator.genSuccessResult(supplyChannel);
 	}
 
-    /**
-     * 货道列表
-     * @param supplyChannel
-     * @return
-     */
+	/**
+	 * 货道列表
+	 * 
+	 * @param supplyChannel
+	 * @return
+	 */
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView list(Inno72SupplyChannel supplyChannel) {
 		List<Inno72SupplyChannel> list = supplyChannelService.getListForPage(supplyChannel);
@@ -63,68 +66,74 @@ public class SupplyChannelController {
 
 	/**
 	 * 初始化数据
+	 * 
 	 * @param machineId
 	 * @return
 	 */
-	@RequestMapping(value = "/init" ,method={RequestMethod.POST,RequestMethod.GET})
-	public Result<String> init(@RequestParam String machineId){
-		Result result = supplyChannelService.init(machineId);
+	@RequestMapping(value = "/init", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> init(@RequestParam String machineId) {
+		Result<String> result = supplyChannelService.init(machineId);
 		return result;
 	}
 
 	/**
 	 * 合并货道
+	 * 
 	 * @param supplyChannel
 	 * @return
 	 */
-	@RequestMapping(value="/merge",method = {RequestMethod.POST,RequestMethod.GET})
-	public Result<String> merge(Inno72SupplyChannel supplyChannel){
-		Result result = supplyChannelService.merge(supplyChannel);
+	@RequestMapping(value = "/merge", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> merge(Inno72SupplyChannel supplyChannel) {
+		Result<String> result = supplyChannelService.merge(supplyChannel);
 		return result;
 	}
 
 	/**
 	 * 拆分货道
+	 * 
 	 * @param supplyChannel
 	 * @return
 	 */
-	@RequestMapping(value="/split",method = {RequestMethod.POST,RequestMethod.GET})
-	public Result<String> split(Inno72SupplyChannel supplyChannel){
-		Result result = supplyChannelService.split(supplyChannel);
+	@RequestMapping(value = "/split", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> split(Inno72SupplyChannel supplyChannel) {
+		Result<String> result = supplyChannelService.split(supplyChannel);
 		return result;
 	}
 
 	/**
 	 * 货道清零
+	 * 
 	 * @param supplyChannel
 	 * @return
 	 */
-	@RequestMapping(value="/clear",method = {RequestMethod.POST,RequestMethod.GET})
-	public Result<String> clear(Inno72SupplyChannel supplyChannel){
+	@RequestMapping(value = "/clear", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> clear(Inno72SupplyChannel supplyChannel) {
 		Result<String> result = supplyChannelService.clear(supplyChannel);
 		return result;
 	}
 
 	/**
 	 * 一键下架
+	 * 
 	 * @param supplyChannel
 	 * @return
 	 */
-	@RequestMapping(value="downAll",method = {RequestMethod.POST,RequestMethod.GET})
-	public Result<String> downAll(Inno72SupplyChannel supplyChannel){
+	@RequestMapping(value = "downAll", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> downAll(Inno72SupplyChannel supplyChannel) {
 		Result<String> result = supplyChannelService.downAll(supplyChannel);
 		return result;
 	}
 
-    /**
-     * 查询货道操作历史
-     * @param supplyChannel
-     * @return
-     */
-	@RequestMapping(value="history",method = {RequestMethod.POST,RequestMethod.GET})
-	public Result<Map<String,Object>> history(Inno72SupplyChannel supplyChannel){
-	    Result<Map<String,Object>> result = supplyChannelService.history(supplyChannel);
-	    return result;
-    }
+	/**
+	 * 查询货道操作历史
+	 * 
+	 * @param supplyChannel
+	 * @return
+	 */
+	@RequestMapping(value = "history", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<Map<String, Object>> history(Inno72SupplyChannel supplyChannel) {
+		Result<Map<String, Object>> result = supplyChannelService.history(supplyChannel);
+		return result;
+	}
 
 }

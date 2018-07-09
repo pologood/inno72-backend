@@ -11,4 +11,6 @@ public interface MachineService extends Service<Inno72Machine> {
 
 	Result<String> initMachine(String deviceId);
 
+	Result<String> updateNetStatus(String machineCode, Integer netStatus);
+
 }
