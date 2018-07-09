@@ -17,6 +17,7 @@ import com.inno72.common.DateUtil;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import org.springframework.scheduling.annotation.Scheduled;
 
 /**
  * @Auther: wxt
@@ -33,7 +34,7 @@ public class CheckNetStatusSchedule {
 	private MongoOperations mongoTpl;
 
 	// 每15分钟执行一次
-	// @Scheduled(cron = "* 0/15 * * * ?")
+    @Scheduled(cron = "* 0/15 * * * ?")
 	public void checkNetStatus() {
 
 		log.info("检查并修改网络状态的定时任务开始执行");
