@@ -21,9 +21,28 @@ public class MachineController {
 	@Resource
 	private MachineService machineService;
 
+	/**
+	 * 初始化机器id
+	 * 
+	 * @param deviceId
+	 * @return
+	 */
 	@RequestMapping(value = "/initMachine", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> initMachine(@RequestParam String deviceId) {
 		return machineService.initMachine(deviceId);
+
+	}
+
+	/**
+	 * 更新机器网络状态
+	 * 
+	 * @param machineCode
+	 * @param netStatus
+	 * @return
+	 */
+	@RequestMapping(value = "/updateNetStatus", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> updateNetStatus(@RequestParam String machineCode, @RequestParam Integer netStatus) {
+		return machineService.updateNetStatus(machineCode, netStatus);
 
 	}
 
