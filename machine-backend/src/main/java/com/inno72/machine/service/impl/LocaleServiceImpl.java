@@ -42,7 +42,6 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 
 	@Override
 	public void save(Inno72Locale model) {
-		// TODO 点位新增
 		logger.info("---------------------点位新增-------------------");
 		model.setId(StringUtil.getUUID());
 		model.setCreateId("");
@@ -53,7 +52,6 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	
 	@Override
 	public Result<String> delById(String id) {
-		// TODO 点位逻辑删除
 		logger.info("---------------------点位删除-------------------");
 		int n= inno72LocaleMapper.selectIsUseing(id);
 		if (n>0) {
@@ -70,7 +68,6 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 
 	@Override
 	public void update(Inno72Locale model) {
-		// TODO 点位信息更新
 		logger.info("---------------------点位更新-------------------");
 		
 		model.setCreateId("");
@@ -80,8 +77,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	
 	@Override
 	public Inno72LocaleVo findById(String id) {
-		// TODO Auto-generated method stub
-		
+		logger.info("---------------------点位详情（返回省市县商圈）-------------------");
 		Inno72LocaleVo vo = inno72LocaleMapper.selectById(id);
 		String areaCode = vo.getAreaCode();//一共9位 省前2位后补0  市4位后补0 县6位后补0 商圈直接取
 		String province=areaCode.substring(0,2)+"0000000";
@@ -97,7 +93,6 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 
 	@Override
 	public List<Inno72LocaleVo> findByPage(String code,String keyword) {
-		// TODO 分页列表查询
 		logger.info("---------------------分页列表查询-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword=Optional.ofNullable(keyword).map(a->a.replace("'", "")).orElse(keyword);
@@ -133,7 +128,6 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	
 	@Override
 	public List<Inno72Locale> getList(Inno72Locale locale) {
-		// TODO 分页列表查询
 		logger.info("---------------------列表查询-------------------");
 		locale.setIsDelete(0);
 		Condition condition = new Condition( Inno72Locale.class);

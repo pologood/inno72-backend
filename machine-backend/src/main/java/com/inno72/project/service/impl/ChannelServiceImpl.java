@@ -36,7 +36,6 @@ public class ChannelServiceImpl extends AbstractService<Inno72Channel> implement
 
 	@Override
 	public void save(Inno72Channel model) {
-		// TODO 活动添加
 		logger.info("--------------------渠道新增-------------------");
 		model.setId(StringUtil.getUUID());
 		model.setCreateId("");
@@ -46,7 +45,6 @@ public class ChannelServiceImpl extends AbstractService<Inno72Channel> implement
 
 	@Override
 	public Result<String> delById(String id) {
-		// TODO 活动逻辑删除
 		logger.info("--------------------渠道删除-------------------");
 		
 		int n= inno72ChannelMapper.selectIsUseing(id);
@@ -63,7 +61,6 @@ public class ChannelServiceImpl extends AbstractService<Inno72Channel> implement
 
 	@Override
 	public void update(Inno72Channel model) {
-		// TODO 渠道更新
 		logger.info("--------------------渠道更新-------------------");
 		
 		model.setCreateId("");
@@ -73,7 +70,6 @@ public class ChannelServiceImpl extends AbstractService<Inno72Channel> implement
 
 	@Override
 	public List<Inno72Channel> findByPage(String keyword) {
-		// TODO 分页获取渠道列表
 		logger.info("---------------------分页获取渠道列表-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword=Optional.ofNullable(keyword).map(a->a.replace("'", "")).orElse(keyword);
@@ -83,7 +79,6 @@ public class ChannelServiceImpl extends AbstractService<Inno72Channel> implement
 	
 	@Override
 	public List<Inno72Channel> getList(Inno72Channel channel) {
-		// TODO 渠道列表
 		logger.info("---------------------渠道列表查询-------------------");
 		channel.setIsDelete(0);
 		Condition condition = new Condition( Inno72Channel.class);
