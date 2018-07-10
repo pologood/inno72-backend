@@ -44,5 +44,10 @@
 		SELECT count(1) FROM inno72_shops where seller_id=#{id} and is_delete = 0
   </select>
   
+  <select id="getCount" parameterType="String" resultType="int">
+		SELECT count(1) FROM inno72_merchant m where m.is_delete = 0
+		<if test="code !=null and code !=''">and m.merchant_code =#{code} </if>
+  </select>
+  
   
 </mapper>

@@ -37,7 +37,7 @@ public class MerchantController {
     		if(bindingResult.hasErrors()){
     			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
             }else{
-            	merchantService.save(merchant);
+            	return merchantService.saveModel(merchant);
             }
 		} catch (Exception e) {
 			ResultGenerator.genFailResult("操作失败！");
@@ -57,7 +57,7 @@ public class MerchantController {
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> update(Inno72Merchant merchant) {
     	try {
-    		merchantService.update(merchant);
+    		return merchantService.updateModel(merchant);
 	    } catch (Exception e) {
 			ResultGenerator.genFailResult("操作失败！");
 		}

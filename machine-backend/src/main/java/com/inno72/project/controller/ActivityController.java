@@ -34,7 +34,7 @@ public class ActivityController {
     		if(bindingResult.hasErrors()){
     			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
             }else{
-            	activityService.save(activity);
+            	return activityService.saveModel(activity);
             }
 		} catch (Exception e) {
 			ResultGenerator.genFailResult("操作失败！");
@@ -55,11 +55,10 @@ public class ActivityController {
     public Result<String> update(Inno72Activity activity) {
     	
     	try {
-    		activityService.update(activity);
+    		return activityService.updateModel(activity);
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
-        return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})

@@ -12,10 +12,16 @@ import com.inno72.project.model.Inno72Shops;
  */
 public interface ShopsService extends Service<Inno72Shops> {
 
+	
+	Result<String> saveModel(Inno72Shops model);
+	
+	Result<String> delById(String id);
+
+	Result<String> updateModel(Inno72Shops model);
+	
 	List<Inno72Shops> getList(Inno72Shops model);
 
 	List<Inno72Shops> findByPage(String code,String keyword);
 
-	Result<String> delById(String id);
 
 }

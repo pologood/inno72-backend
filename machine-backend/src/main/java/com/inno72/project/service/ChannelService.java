@@ -12,11 +12,15 @@ import com.inno72.project.model.Inno72Channel;
  */
 public interface ChannelService extends Service<Inno72Channel> {
 
+	Result<String> saveModel(Inno72Channel model);
+	
+	Result<String> delById(String id);
+
+	Result<String> updateModel(Inno72Channel model);
 
 	List<Inno72Channel> getList(Inno72Channel channel);
 
 	List<Inno72Channel> findByPage(String keyword);
-
-	Result<String> delById(String id);
+	
 
 }

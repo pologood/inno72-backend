@@ -13,10 +13,16 @@ import com.inno72.project.model.Inno72Activity;
 public interface ActivityService extends Service<Inno72Activity> {
 
 
+	Result<String> saveModel(Inno72Activity model);
+	
+	Result<String> delById(String id);
+
+	Result<String> updateModel(Inno72Activity model);
+	
 	List<Inno72Activity> getList(Inno72Activity model);
 
 	List<Inno72Activity> findByPage(String code, String keyword);
 
-	Result<String> delById(String id);
+	
 
 }

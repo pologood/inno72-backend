@@ -37,7 +37,7 @@ public class ShopsController {
     		if(bindingResult.hasErrors()){
     			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
             }else{
-            	shopsService.save(shops);
+            	shopsService.saveModel(shops);
             }
 		} catch (Exception e) {
 			ResultGenerator.genFailResult("操作失败！");
@@ -56,8 +56,13 @@ public class ShopsController {
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> update(Inno72Shops shops) {
-        shopsService.update(shops);
-        return ResultGenerator.genSuccessResult();
+    	
+    	try {
+    		return shopsService.updateModel(shops);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
+    	
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})

@@ -13,10 +13,16 @@ import com.inno72.project.vo.Inno72MerchantVo;
  */
 public interface MerchantService extends Service<Inno72Merchant> {
 
+	Result<String> saveModel(Inno72Merchant model);
+	
+	Result<String> delById(String id);
+
+	Result<String> updateModel(Inno72Merchant model);
+	
 	List<Inno72Merchant> getList(Inno72Merchant model);
 
 	List<Inno72MerchantVo> findByPage(String code, String keyword);
 
-	Result<String> delById(String id);
+	
 
 }

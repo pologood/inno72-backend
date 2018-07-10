@@ -43,6 +43,10 @@
 		SELECT count(1) FROM inno72_activity where shop_id=#{id} and is_delete = 0
   </select>
   
+  <select id="getCount" parameterType="String" resultType="int">
+		SELECT count(1) FROM inno72_shops s where s.is_delete = 0
+		<if test="code !=null and code !=''">and s.shop_code =#{code} </if>
+  </select>
   
   
 </mapper>

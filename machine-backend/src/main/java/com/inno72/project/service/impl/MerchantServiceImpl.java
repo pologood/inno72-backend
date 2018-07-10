@@ -3,20 +3,23 @@ package com.inno72.project.service.impl;
 import tk.mybatis.mapper.entity.Condition;
 
 import com.inno72.common.AbstractService;
+import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
-import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
+import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72MerchantMapper;
 import com.inno72.project.model.Inno72Merchant;
 import com.inno72.project.service.MerchantService;
 import com.inno72.project.vo.Inno72MerchantVo;
+import com.inno72.system.model.Inno72User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,38 +40,75 @@ public class MerchantServiceImpl extends AbstractService<Inno72Merchant> impleme
     private Inno72MerchantMapper inno72MerchantMapper;
     
     @Override
-	public void save(Inno72Merchant model) {
+	public Result<String> saveModel(Inno72Merchant model) {
 		logger.info("---------------------商户新增-------------------");
+		SessionData session = CommonConstants.SESSION_DATA;
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
+		
+		int n= inno72MerchantMapper.getCount(model.getMerchantCode());
+		if (n>0) {
+			return Results.failure("商户编码已存在，请确认！");
+		}
+		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+		
 		model.setId(StringUtil.getUUID());
-		model.setCreateId("");
-		model.setUpdateId("");
+		model.setCreateId(userId);
+		model.setUpdateId(userId);
     	
 		super.save(model);
+		return Results.success("操作成功");
 	}
     
     @Override
 	public Result<String> delById(String id) {
 		logger.info("--------------------商户删除-------------------");
+		SessionData session = CommonConstants.SESSION_DATA;
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
 		
 		int n= inno72MerchantMapper.selectIsUseing(id);
 		if (n>0) {
 			return Results.failure("店铺使用中，不能删除！");
 		}
+		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		Inno72Merchant model = inno72MerchantMapper.selectByPrimaryKey(id);
 		model.setIsDelete(1);//0正常,1结束
-		model.setUpdateId("");
+		model.setUpdateId(userId);
+		model.setUpdateTime(LocalDateTime.now());
 		
 		super.update(model);
-		return ResultGenerator.genSuccessResult();
+		return Results.success("操作成功");
 	}
 
 	@Override
-	public void update(Inno72Merchant model) {
+	public Result<String> updateModel(Inno72Merchant model) {
 		logger.info("---------------------商户更新-------------------");
-		model.setCreateId("");
-		model.setUpdateId("");
+		SessionData session = CommonConstants.SESSION_DATA;
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
+		
+		Inno72Merchant m = inno72MerchantMapper.selectByPrimaryKey(model.getId());
+		int n= inno72MerchantMapper.getCount(model.getMerchantCode());
+		if (n>0 && !m.getMerchantCode().equals(model.getMerchantCode())) {
+			return Results.failure("商户编码已存在，请确认！");
+		}
+		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+		
+		model.setUpdateId(userId);
+		model.setUpdateTime(LocalDateTime.now());
 		
 		super.update(model);
+		return Results.success("操作成功");
 	}
 
 	@Override

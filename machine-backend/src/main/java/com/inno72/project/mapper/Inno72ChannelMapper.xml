@@ -17,12 +17,19 @@
   
   <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
 		SELECT * FROM inno72_channel channel where is_delete=0
-	<if test="keyword !=null and keyword !='' and keyword !='undefined'">and ( channel.channel_code LIKE '%${keyword}%' or channel.channel_name LIKE '%${keyword}%' )</if>
+	<if test="keyword !=null and keyword !='' and keyword !='undefined'">
+		and ( channel.channel_code LIKE '%${keyword}%' or channel.channel_name LIKE '%${keyword}%' )
+	</if>
 	ORDER BY channel.update_time DESC
   </select>
   
   <select id="selectIsUseing" parameterType="String" resultType="int">
 		SELECT count(1) FROM inno72_merchant where channel_id=#{id} and is_delete = 0
+  </select>
+  
+  <select id="getCount" parameterType="String" resultType="int">
+		SELECT count(1) FROM inno72_channel c where c.is_delete = 0
+		<if test="code !=null and code !=''">and c.channel_code =#{code} </if>
   </select>
   
   

@@ -35,7 +35,7 @@ public class ChannelController {
     		if(bindingResult.hasErrors()){
     			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
             }else{
-            	channelService.save(channel);
+            	return channelService.saveModel(channel);
             }
 		} catch (Exception e) {
 			ResultGenerator.genFailResult("操作失败！");
@@ -54,12 +54,11 @@ public class ChannelController {
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> update(Inno72Channel channel) {
     	try {
-    		channelService.update(channel);
+    		return channelService.updateModel(channel);
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
 
-        return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
