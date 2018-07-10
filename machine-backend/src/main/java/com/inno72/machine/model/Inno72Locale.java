@@ -19,6 +19,9 @@ public class Inno72Locale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     
+    @Column(name = "name")
+    private String name;
+    
     @Column(name = "area_code")
     private String areaCode;
 
@@ -99,6 +102,14 @@ public class Inno72Locale {
         this.id = id;
     }
     
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getAreaCode() {
 		return areaCode;
 	}
