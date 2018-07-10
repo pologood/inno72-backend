@@ -1,6 +1,9 @@
 package com.inno72.task;
 
+import com.inno72.common.CommonConstants;
+import com.inno72.common.MachineMonitorBackendProperties;
 import com.inno72.model.MachineLogInfo;
+import com.inno72.plugin.http.HttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,6 +32,9 @@ public class CheckNetStatusSchedule {
 	@Autowired
 	private MongoOperations mongoTpl;
 
+	@Autowired
+	private MachineMonitorBackendProperties machineMonitorBackendProperties;
+
 	// 每15分钟执行一次
 	@Scheduled(cron = "0 0/15 * * * ?")
 	public void checkNetStatus() {
@@ -44,12 +51,22 @@ public class CheckNetStatusSchedule {
 
 		if(flag == true){
 			//调用修改网络状态方法
-			MachineLogInfo machineLogInfo = new MachineLogInfo();
 			List<MachineLogInfo> list= mongoTpl.find(query,MachineLogInfo.class,"MachineLogInfo");
-			log.info("调用修改网络状态的方法");
+			if(null != list){
+				for(MachineLogInfo machineLogInfo : list){
+					String machineId = machineLogInfo.getMachineId();
+					String urlProp = machineMonitorBackendProperties.getProps().get("updateNetStatusUrl");
+					log.info("配置文件中获取的url：{}",urlProp);
+					String url = MessageFormat.format(urlProp,machineId,CommonConstants.NET_CLOSE);
+					log.info("组装后的url：{}",url);
+					String result = HttpClient.post(url, "");
+					log.info("调用远程服务发送结果是result：{}",result);
+
+				}
+				log.info("检查并修改网络状态执行完成");
+			}
+
 		}
-
-
 		log.info("检查并修改网络状态的定时任务执行结束");
 
 	}
