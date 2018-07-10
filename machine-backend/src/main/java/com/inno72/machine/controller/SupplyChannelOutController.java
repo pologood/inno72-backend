@@ -14,8 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
-import com.inno72.machine.model.Inno72SupplyChannel;
-import com.inno72.machine.service.SupplyChannelService;
+import com.inno72.machine.model.Inno72SupplyChannelHist;
+import com.inno72.machine.service.SupplyChannelServiceHist;
 
 import tk.mybatis.mapper.entity.Condition;
 
@@ -26,10 +26,10 @@ import tk.mybatis.mapper.entity.Condition;
 @RequestMapping("/machine/channel/out")
 public class SupplyChannelOutController {
 	@Resource
-	private SupplyChannelService supplyChannelService;
+	private SupplyChannelServiceHist supplyChannelService;
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> add(Inno72SupplyChannel supplyChannel) {
+	public Result<String> add(Inno72SupplyChannelHist supplyChannel) {
 		supplyChannelService.save(supplyChannel);
 		return ResultGenerator.genSuccessResult();
 	}
@@ -41,21 +41,21 @@ public class SupplyChannelOutController {
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> update(Inno72SupplyChannel supplyChannel) {
+	public Result<String> update(Inno72SupplyChannelHist supplyChannel) {
 		supplyChannelService.update(supplyChannel);
 		return ResultGenerator.genSuccessResult();
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<Inno72SupplyChannel> detail(@RequestParam String id) {
-		Inno72SupplyChannel supplyChannel = supplyChannelService.findById(id);
+	public Result<Inno72SupplyChannelHist> detail(@RequestParam String id) {
+		Inno72SupplyChannelHist supplyChannel = supplyChannelService.findById(id);
 		return ResultGenerator.genSuccessResult(supplyChannel);
 	}
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView list() {
-		Condition condition = new Condition(Inno72SupplyChannel.class);
-		List<Inno72SupplyChannel> list = supplyChannelService.findByPage(condition);
+		Condition condition = new Condition(Inno72SupplyChannelHist.class);
+		List<Inno72SupplyChannelHist> list = supplyChannelService.findByPage(condition);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 
@@ -67,8 +67,8 @@ public class SupplyChannelOutController {
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/subCount", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<Inno72SupplyChannel> subCount(@RequestBody Inno72SupplyChannel supplyChannel) {
-		Result<Inno72SupplyChannel> result = supplyChannelService.subCount(supplyChannel);
+	public Result<Inno72SupplyChannelHist> subCount(@RequestBody Inno72SupplyChannelHist supplyChannel) {
+		Result<Inno72SupplyChannelHist> result = supplyChannelService.subCount(supplyChannel);
 		return result;
 	}
 
@@ -79,7 +79,7 @@ public class SupplyChannelOutController {
 	 * @return
 	 */
 	@RequestMapping(value = "/get", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> getSupplyChannel(@RequestBody Inno72SupplyChannel supplyChannel) {
+	public Result<String> getSupplyChannel(@RequestBody Inno72SupplyChannelHist supplyChannel) {
 		@SuppressWarnings("unchecked")
 		Result<String> result = supplyChannelService.getSupplyChannel(supplyChannel);
 		return result;

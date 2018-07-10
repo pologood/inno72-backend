@@ -15,8 +15,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
-import com.inno72.machine.model.Inno72SupplyChannel;
-import com.inno72.machine.service.SupplyChannelService;
+import com.inno72.machine.model.Inno72SupplyChannelHist;
+import com.inno72.machine.service.SupplyChannelServiceHist;
 
 /**
  * Created by CodeGenerator on 2018/07/03.
@@ -26,10 +26,10 @@ import com.inno72.machine.service.SupplyChannelService;
 @RequestMapping("/machine/channel")
 public class SupplyChannelController {
 	@Resource
-	private SupplyChannelService supplyChannelService;
+	private SupplyChannelServiceHist supplyChannelService;
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> add(Inno72SupplyChannel supplyChannel) {
+	public Result<String> add(Inno72SupplyChannelHist supplyChannel) {
 		supplyChannelService.save(supplyChannel);
 		return ResultGenerator.genSuccessResult();
 	}
@@ -41,14 +41,14 @@ public class SupplyChannelController {
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> update(Inno72SupplyChannel supplyChannel) {
+	public Result<String> update(Inno72SupplyChannelHist supplyChannel) {
 		supplyChannelService.update(supplyChannel);
 		return ResultGenerator.genSuccessResult();
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<Inno72SupplyChannel> detail(@RequestParam String id) {
-		Inno72SupplyChannel supplyChannel = supplyChannelService.findById(id);
+	public Result<Inno72SupplyChannelHist> detail(@RequestParam String id) {
+		Inno72SupplyChannelHist supplyChannel = supplyChannelService.findById(id);
 		return ResultGenerator.genSuccessResult(supplyChannel);
 	}
 
@@ -59,21 +59,9 @@ public class SupplyChannelController {
 	 * @return
 	 */
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list(Inno72SupplyChannel supplyChannel) {
-		List<Inno72SupplyChannel> list = supplyChannelService.getListForPage(supplyChannel);
+	public ModelAndView list(Inno72SupplyChannelHist supplyChannel) {
+		List<Inno72SupplyChannelHist> list = supplyChannelService.getListForPage(supplyChannel);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
-	}
-
-	/**
-	 * 初始化数据
-	 * 
-	 * @param machineId
-	 * @return
-	 */
-	@RequestMapping(value = "/init", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> init(@RequestParam String machineId) {
-		Result<String> result = supplyChannelService.init(machineId);
-		return result;
 	}
 
 	/**
@@ -83,7 +71,7 @@ public class SupplyChannelController {
 	 * @return
 	 */
 	@RequestMapping(value = "/merge", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> merge(Inno72SupplyChannel supplyChannel) {
+	public Result<String> merge(Inno72SupplyChannelHist supplyChannel) {
 		Result<String> result = supplyChannelService.merge(supplyChannel);
 		return result;
 	}
@@ -95,7 +83,7 @@ public class SupplyChannelController {
 	 * @return
 	 */
 	@RequestMapping(value = "/split", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> split(Inno72SupplyChannel supplyChannel) {
+	public Result<String> split(Inno72SupplyChannelHist supplyChannel) {
 		Result<String> result = supplyChannelService.split(supplyChannel);
 		return result;
 	}
@@ -107,7 +95,7 @@ public class SupplyChannelController {
 	 * @return
 	 */
 	@RequestMapping(value = "/clear", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> clear(Inno72SupplyChannel supplyChannel) {
+	public Result<String> clear(Inno72SupplyChannelHist supplyChannel) {
 		Result<String> result = supplyChannelService.clear(supplyChannel);
 		return result;
 	}
@@ -119,7 +107,7 @@ public class SupplyChannelController {
 	 * @return
 	 */
 	@RequestMapping(value = "downAll", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> downAll(Inno72SupplyChannel supplyChannel) {
+	public Result<String> downAll(Inno72SupplyChannelHist supplyChannel) {
 		Result<String> result = supplyChannelService.downAll(supplyChannel);
 		return result;
 	}
@@ -131,7 +119,7 @@ public class SupplyChannelController {
 	 * @return
 	 */
 	@RequestMapping(value = "history", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<Map<String, Object>> history(Inno72SupplyChannel supplyChannel) {
+	public Result<Map<String, Object>> history(Inno72SupplyChannelHist supplyChannel) {
 		Result<Map<String, Object>> result = supplyChannelService.history(supplyChannel);
 		return result;
 	}

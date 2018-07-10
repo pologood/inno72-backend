@@ -1,19 +1,24 @@
 package com.inno72.machine.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.StringUtil;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72Machine;
+import com.inno72.machine.model.Inno72SupplyChannel;
 import com.inno72.machine.service.MachineService;
+import com.inno72.machine.service.SupplyChannelService;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
@@ -23,9 +28,11 @@ import com.inno72.machine.service.MachineService;
 public class MachineServiceImpl extends AbstractService<Inno72Machine> implements MachineService {
 	@Resource
 	private Inno72MachineMapper inno72MachineMapper;
+	@Autowired
+	private SupplyChannelService supplyChannelService;
 
 	@Override
-	public Result<String> initMachine(String deviceId) {
+	public Result<String> initMachine(String deviceId, String channelJson) {
 		Inno72Machine initMachine = findBy("deviceId", deviceId);
 		if (initMachine != null) {
 			return Results.success(initMachine.getMachineCode());
@@ -43,10 +50,15 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		machine.setUpdateTime(now);
 		machine.setNetStatus(1);
 		int result = inno72MachineMapper.insert(machine);
-		if (result == 1) {
-			return Results.success(machineCode);
+		if (result != 1) {
+			return Results.failure("生成machineCode失败");
 		}
-		return Results.failure("生成machineCode失败");
+		List<Inno72SupplyChannel> channels = JSON.parseArray(channelJson, Inno72SupplyChannel.class);
+		Result<String> initResult = supplyChannelService.initChannel(machineCode, channels);
+		if (initResult.getCode() != Result.SUCCESS) {
+			return initResult;
+		}
+		return Results.success(machineCode);
 	}
 
 	@Override

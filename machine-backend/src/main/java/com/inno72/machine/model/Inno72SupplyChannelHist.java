@@ -3,13 +3,21 @@ package com.inno72.machine.model;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
 @Table(name = "inno72_supply_channel")
-public class Inno72SupplyChannel {
+public class Inno72SupplyChannelHist {
 	/**
 	 * uuid
 	 */
@@ -65,6 +73,9 @@ public class Inno72SupplyChannel {
 	/**
 	 * 创建时间
 	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	@Column(name = "create_time")
 	private LocalDateTime createTime;
 
@@ -77,17 +88,39 @@ public class Inno72SupplyChannel {
 	/**
 	 * 修改时间
 	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "update_time")
 	private LocalDateTime updateTime;
 
-	/**
-	 * 是否删除（0.正常，1.删除）
-	 */
 	@Column(name = "is_delete")
-	private Integer isDelete;
+	private int isDelete;
 
-	@Column(name = "work_status")
-	private Integer workStatus;
+	@Transient
+	private int goodsStatus;
+
+	@Transient
+	private String goodsName;
+
+	@Transient
+	private String[] goodsCodes;
+
+	@Transient
+	private String goodsCode;
+
+	@Transient
+	private String[] codes;
+
+	@Transient
+	private String fromCode;
+
+	@Transient
+	private String toCode;
+
+	@Transient
+	private String remark;
+
+	private int pageNo;
 
 	/**
 	 * 获取uuid
@@ -165,21 +198,10 @@ public class Inno72SupplyChannel {
 		this.status = status;
 	}
 
-	/**
-	 * 获取机器编号
-	 *
-	 * @return machine_id - 机器编号
-	 */
 	public String getMachineId() {
 		return machineId;
 	}
 
-	/**
-	 * 设置机器编号
-	 *
-	 * @param machineId
-	 *            机器编号
-	 */
 	public void setMachineId(String machineId) {
 		this.machineId = machineId;
 	}
@@ -261,6 +283,25 @@ public class Inno72SupplyChannel {
 	}
 
 	/**
+	 * 获取创建时间
+	 *
+	 * @return create_time - 创建时间
+	 */
+	public LocalDateTime getCreateTime() {
+		return createTime;
+	}
+
+	/**
+	 * 设置创建时间
+	 *
+	 * @param createTime
+	 *            创建时间
+	 */
+	public void setCreateTime(LocalDateTime createTime) {
+		this.createTime = createTime;
+	}
+
+	/**
 	 * 获取修改人ID
 	 *
 	 * @return update_id - 修改人ID
@@ -280,52 +321,101 @@ public class Inno72SupplyChannel {
 	}
 
 	/**
-	 * 获取是否删除（0.正常，1.删除）
+	 * 获取修改时间
 	 *
-	 * @return is_delete - 是否删除（0.正常，1.删除）
+	 * @return update_time - 修改时间
 	 */
-	public Integer getIsDelete() {
-		return isDelete;
-	}
-
-	/**
-	 * 设置是否删除（0.正常，1.删除）
-	 *
-	 * @param isDelete
-	 *            是否删除（0.正常，1.删除）
-	 */
-	public void setIsDelete(Integer isDelete) {
-		this.isDelete = isDelete;
-	}
-
-	/**
-	 * @return work_status
-	 */
-	public Integer getWorkStatus() {
-		return workStatus;
-	}
-
-	/**
-	 * @param workStatus
-	 */
-	public void setWorkStatus(Integer workStatus) {
-		this.workStatus = workStatus;
-	}
-
-	public LocalDateTime getCreateTime() {
-		return createTime;
-	}
-
-	public void setCreateTime(LocalDateTime createTime) {
-		this.createTime = createTime;
-	}
-
 	public LocalDateTime getUpdateTime() {
 		return updateTime;
 	}
 
+	/**
+	 * 设置修改时间
+	 *
+	 * @param updateTime
+	 *            修改时间
+	 */
 	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
 	}
 
+	public int getIsDelete() {
+		return isDelete;
+	}
+
+	public void setIsDelete(int isDelete) {
+		this.isDelete = isDelete;
+	}
+
+	public int getGoodsStatus() {
+		return goodsStatus;
+	}
+
+	public void setGoodsStatus(int goodsStatus) {
+		this.goodsStatus = goodsStatus;
+	}
+
+	public String getGoodsName() {
+		return goodsName;
+	}
+
+	public String[] getGoodsCodes() {
+		return goodsCodes;
+	}
+
+	public void setGoodsCodes(String[] goodsCodes) {
+		this.goodsCodes = goodsCodes;
+	}
+
+	public void setGoodsName(String goodsName) {
+		this.goodsName = goodsName;
+	}
+
+	public String getGoodsCode() {
+		return goodsCode;
+	}
+
+	public void setGoodsCode(String goodsCode) {
+		this.goodsCode = goodsCode;
+	}
+
+	public String[] getCodes() {
+		return codes;
+	}
+
+	public void setCodes(String[] codes) {
+		this.codes = codes;
+	}
+
+	public String getFromCode() {
+		return fromCode;
+	}
+
+	public void setFromCode(String fromCode) {
+		this.fromCode = fromCode;
+	}
+
+	public String getToCode() {
+		return toCode;
+	}
+
+	public void setToCode(String toCode) {
+		this.toCode = toCode;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public int getPageNo() {
+		return pageNo;
+	}
+
+	public void setPageNo(int pageNo) {
+		this.pageNo = pageNo;
+	}
 }
