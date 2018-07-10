@@ -42,6 +42,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				channel.setId(StringUtil.getUUID());
 				channel.setName("货道" + channel.getCode());
 				channel.setGoodsCount(0);
+				channel.setIsDelete(0);
 				channel.setCreateId("系统");
 				channel.setCreateTime(LocalDateTime.now());
 				channel.setUpdateTime(LocalDateTime.now());
