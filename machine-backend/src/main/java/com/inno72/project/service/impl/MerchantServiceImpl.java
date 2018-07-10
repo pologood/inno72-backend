@@ -38,7 +38,6 @@ public class MerchantServiceImpl extends AbstractService<Inno72Merchant> impleme
     
     @Override
 	public void save(Inno72Merchant model) {
-    	// TODO 商户新增
 		logger.info("---------------------商户新增-------------------");
 		model.setId(StringUtil.getUUID());
 		model.setCreateId("");
@@ -49,7 +48,6 @@ public class MerchantServiceImpl extends AbstractService<Inno72Merchant> impleme
     
     @Override
 	public Result<String> delById(String id) {
-		// TODO 商户逻辑删除
 		logger.info("--------------------商户删除-------------------");
 		
 		int n= inno72MerchantMapper.selectIsUseing(id);
@@ -66,7 +64,6 @@ public class MerchantServiceImpl extends AbstractService<Inno72Merchant> impleme
 
 	@Override
 	public void update(Inno72Merchant model) {
-		// TODO 商户更新
 		logger.info("---------------------商户更新-------------------");
 		model.setCreateId("");
 		model.setUpdateId("");
@@ -76,7 +73,6 @@ public class MerchantServiceImpl extends AbstractService<Inno72Merchant> impleme
 
 	@Override
 	public List<Inno72MerchantVo> findByPage(String code,String keyword) {
-		// TODO 商户分页列表查询
 		logger.info("---------------------商户分页列表查询-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword=Optional.ofNullable(keyword).map(a->a.replace("'", "")).orElse(keyword);
@@ -88,7 +84,6 @@ public class MerchantServiceImpl extends AbstractService<Inno72Merchant> impleme
 
 	@Override
 	public List<Inno72Merchant> getList(Inno72Merchant model) {
-		// TODO 获取商户列表
 		logger.info("---------------------获取商户列表-------------------");
 		model.setIsDelete(0);
 		Condition condition = new Condition( Inno72Merchant.class);

@@ -38,7 +38,6 @@ public class ShopsServiceImpl extends AbstractService<Inno72Shops> implements Sh
 
 	@Override
 	public void save(Inno72Shops model) {
-		// TODO 活动添加
 		logger.info("--------------------活动新增-------------------");
 		model.setId(StringUtil.getUUID());
 		model.setCreateId("");
@@ -48,7 +47,6 @@ public class ShopsServiceImpl extends AbstractService<Inno72Shops> implements Sh
 	
 	@Override
 	public Result<String> delById(String id) {
-		// TODO 店铺删除
 		logger.info("--------------------店铺删除-------------------");
 		int n= inno72ShopsMapper.selectIsUseing(id);
 		if (n>0) {
@@ -64,7 +62,6 @@ public class ShopsServiceImpl extends AbstractService<Inno72Shops> implements Sh
 
 	@Override
 	public void update(Inno72Shops model) {
-		// TODO 店铺更新
 		logger.info("--------------------店铺新增-------------------");
 		model.setUpdateId("");
 		super.update(model);
@@ -72,7 +69,6 @@ public class ShopsServiceImpl extends AbstractService<Inno72Shops> implements Sh
     
 	@Override
 	public List<Inno72Shops> findByPage(String code,String keyword) {
-		// TODO 分页列表查询
 		logger.info("---------------------店铺分页列表查询-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword=Optional.ofNullable(keyword).map(a->a.replace("'", "")).orElse(keyword);
@@ -83,7 +79,6 @@ public class ShopsServiceImpl extends AbstractService<Inno72Shops> implements Sh
 	
 	@Override
 	public List<Inno72Shops> getList(Inno72Shops model) {
-		// TODO 获取店铺列表
 		logger.info("---------------------获取店铺列表-------------------");
 		model.setIsDelete(0);
 		Condition condition = new Condition( Inno72Shops.class);

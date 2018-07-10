@@ -38,7 +38,6 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 
 	@Override
 	public void save(Inno72Activity model) {
-		// TODO 活动添加
 		logger.info("--------------------活动新增-------------------");
 		model.setId(StringUtil.getUUID());
 		model.setCreateId("");
@@ -48,7 +47,6 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 
 	@Override
 	public Result<String> delById(String id) {
-		// TODO 活动逻辑删除
 		logger.info("--------------------活动删除-------------------");
 		int n= inno72ActivityMapper.selectIsUseing(id);
 		if (n>0) {
@@ -63,7 +61,6 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 
 	@Override
 	public void update(Inno72Activity model) {
-		// TODO 活动更新
 		logger.info("--------------------活动更新-------------------");
 		model.setCreateId("");
 		model.setUpdateId("");
@@ -73,7 +70,6 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 
 	@Override
 	public List<Inno72Activity> findByPage(String code,String keyword) {
-		// TODO 分页列表查询
 		logger.info("---------------------活动分页列表查询-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword=Optional.ofNullable(keyword).map(a->a.replace("'", "")).orElse(keyword);
@@ -85,7 +81,6 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 	
 	@Override
 	public List<Inno72Activity> getList(Inno72Activity model) {
-		// TODO 获取活动列表
 		logger.info("---------------------获取活动列表-------------------");
 		model.setIsDelete(0);
 		Condition condition = new Condition( Inno72Activity.class);
