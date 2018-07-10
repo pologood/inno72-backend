@@ -1,7 +1,9 @@
 package com.inno72.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
+
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * @Auther: wxt
@@ -11,7 +13,19 @@ import java.util.Date;
 public class MachineLogInfo {
 
     private String machineId;
-    private Date createTime;
+    /**
+     * 创建时间
+     */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    private LocalDateTime createTime;
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
 
     public String getMachineId() {
         return machineId;
@@ -21,12 +35,5 @@ public class MachineLogInfo {
         this.machineId = machineId;
     }
 
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
 }
 

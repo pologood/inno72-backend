@@ -10,5 +10,10 @@
         <module name="machine-monitor-backend" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="inno72-backend" target="1.8" />
+      <module name="machine-backend" target="1.8" />
+      <module name="machine-monitor-backend" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

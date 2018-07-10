@@ -1,6 +1,9 @@
 package com.inno72.model;
 
-import java.util.Date;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
+
+import java.time.LocalDateTime;
 
 /**
  * @Auther: wxt
@@ -15,13 +18,17 @@ public class MachineStatus {
     private String goodsChannelStatus;
     private String temperature;
     private int temperatureSwitchStatus;
-    private Date createTime;
+    /**
+     * 创建时间
+     */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    private LocalDateTime createTime;
 
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
