@@ -9,8 +9,7 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="shop_id" jdbcType="VARCHAR" property="shopId" />
     <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
-    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
-    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="manager_id" jdbcType="VARCHAR" property="managerId" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
@@ -19,15 +18,28 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   
-  <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+  <resultMap id="VoResultMap" type="com.inno72.project.vo.Inno72ActivityVo" extends="BaseResultMap">
+    
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="prize_type" jdbcType="VARCHAR" property="prizeType" />
+    
+  </resultMap>
+  
+  <select id="selectByPage" parameterType="java.util.Map" resultMap="VoResultMap">
 		
 		 SELECT
 			a.id,
 			a.name,
 			s.shop_name as shop_id,
 			m.merchant_name as seller_id,
-			a.start_time,
-			a.end_time,
+			CASE 
+			WHEN ap.start_time &gt; NOW() THEN '未开始'
+			WHEN ap.start_time &lt;  NOW() and ap.end_time &gt; NOW() THEN '进行中'
+			WHEN ap.end_time &lt; NOW() THEN '已结束'
+			ELSE '未排期'
+			END state,
+			u.name as manager_id,
+			ap.prize_type,
 			a.is_delete,
 			a.create_time,
 			a.update_time,
@@ -36,10 +48,12 @@
 			inno72_activity a
 			LEFT JOIN inno72_shops s ON s.id = a.shop_id
 			LEFT JOIN inno72_merchant m ON m.id = s.seller_id
-			where a.is_delete = 0
-			<if test="code !=null and code !='' and code !='undefined' ">and a.seller_id = #{code}</if>
-			<if test="keyword !=null and keyword !='' and keyword !='undefined' ">
-			and ( a.name LIKE '%${keyword}%' )
+			LEFT JOIN inno72_activity_plan ap ON ap.activity_id = a.id
+			LEFT JOIN inno72_user u ON u.id =a.manager_id
+			where a.is_delete = 0 
+			<if test="code !=null and code !='' ">and a.seller_id = #{code}</if>
+			<if test="keyword !=null and keyword !='' ">
+			and ( a.name LIKE '%${keyword}%' or m.name LIKE '%${keyword}%' s.name LIKE '%${keyword}%')
 			</if>
 			ORDER BY a.update_time DESC
   </select>
@@ -47,6 +61,31 @@
   <select id="selectIsUseing" parameterType="String" resultType="int">
 		SELECT count(1) FROM inno72_game where activity_id=#{id} and is_delete = 0 
   </select>
+  
+  <select id="selectById" parameterType="String" resultMap="VoResultMap">
+		
+		 SELECT
+			a.id,
+			a.name,
+			s.shop_name as shop_id,
+			m.merchant_name as seller_id,
+			ap.prize_type,
+			u.name as manager_id,
+			a.is_delete,
+			a.create_time,
+			a.update_time,
+			a.remark
+		FROM
+			inno72_activity a
+			LEFT JOIN inno72_shops s ON s.id = a.shop_id
+			LEFT JOIN inno72_merchant m ON m.id = s.seller_id
+			LEFT JOIN inno72_activity_plan ap ON ap.activity_id = a.id
+			LEFT JOIN inno72_user u ON u.id =a.manager_id
+			where a.is_delete = 0
+			and a.id = #{id}
+			ORDER BY a.update_time DESC
+  </select>
+  
   
   
 </mapper>

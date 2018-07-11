@@ -5,6 +5,7 @@ import java.util.List;
 import com.inno72.common.Result;
 import com.inno72.common.Service;
 import com.inno72.project.model.Inno72Activity;
+import com.inno72.project.vo.Inno72ActivityVo;
 
 
 /**
@@ -21,7 +22,9 @@ public interface ActivityService extends Service<Inno72Activity> {
 	
 	List<Inno72Activity> getList(Inno72Activity model);
 
-	List<Inno72Activity> findByPage(String code, String keyword);
+	List<Inno72ActivityVo> findByPage(String code, String keyword);
+
+	Inno72ActivityVo selectById(String id);
 
 	
 
