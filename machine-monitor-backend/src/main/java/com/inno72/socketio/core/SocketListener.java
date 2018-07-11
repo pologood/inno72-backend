@@ -91,7 +91,7 @@ public class SocketListener {
 		return new DataListener<String>() {
 			@Override
 			public void onData(SocketIOClient client, String data, AckRequest arg2) throws Exception {
-				logger.info("收到监控返回数据:{}", data);
+				//logger.info("收到监控返回数据:{}", data);
 				handler.monitorResponse(client.getSessionId().toString(), data,
 						client.getHandshakeData().getUrlParams());
 			}

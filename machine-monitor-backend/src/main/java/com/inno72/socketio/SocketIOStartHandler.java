@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.inno72.common.CommonConstants;
+import com.inno72.common.MachineMonitorBackendProperties;
 import com.inno72.model.*;
+import com.inno72.plugin.http.HttpClient;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.socketio.core.SocketServer;
 import com.inno72.socketio.core.SocketServerHandler;
@@ -21,6 +23,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +42,9 @@ public class SocketIOStartHandler {
 
 	@Autowired
 	private MongoOperations mongoTpl;
+
+	@Autowired
+	private MachineMonitorBackendProperties machineMonitorBackendProperties;
 
 	private SocketServerHandler socketServerHandler() {
 
@@ -91,13 +97,13 @@ public class SocketIOStartHandler {
 
 			@Override
 			public void monitorResponse(String key, String data, Map<String, List<String>> params) {
-				log.info("推送监控消息方法执行开始，data：{}", data);
+				log.info("推送监控消息，执行开始");
 				// 解压缩以及解密数据
 				String message = AesUtils.decrypt(GZIPUtil.uncompress(data));
-				log.info("推送监控消息方法执行中，data：{}", message);
 				// 获取机器Id
 				SystemStatus systemStatus = JSONObject.parseObject(message, SystemStatus.class);
 				String machineId = systemStatus.getMachineId();
+				log.info("推送监控消息执行中，machineId：{}", machineId);
 				MachineLogInfo machineLogInfo = new MachineLogInfo();
 				machineLogInfo.setMachineId(machineId);
 				machineLogInfo.setCreateTime(LocalDateTime.now());
@@ -107,15 +113,29 @@ public class SocketIOStartHandler {
 				query.addCriteria(Criteria.where("machineId").is(machineId));
 				mongoTpl.remove(query, "MachineLogInfo");
 				mongoTpl.save(machineLogInfo, "MachineLogInfo");
+				//判断是否在断网机器表中存在，如果存在,修改机器主表中网络状态
+				Query queryNetOffMachine = new Query();
+				queryNetOffMachine.addCriteria(Criteria.where("machineId").is(machineId));
+				Boolean flag = mongoTpl.exists(query,"NetOffMachineInfo");
+				if(true == flag){
+					String urlProp = machineMonitorBackendProperties.getProps().get("updateNetStatusUrl");
+					String url = MessageFormat.format(urlProp,machineId,CommonConstants.NET_OPEN);
+					String result = HttpClient.post(url, "");
+					JSONObject jsonObject = JSONObject.parseObject(result);
+					Integer resultCdoe = jsonObject.getInteger("code");
+					if(!CommonConstants.RESULT_SUCCESS.equals(resultCdoe)){
+						log.info("修改机器主表网络状态失败，result：{}",result);
+					}
+				}
 
-				log.info("推送监控消息方法执行结束，data：{}", message);
+				log.info("推送监控消息，执行结束");
 			}
 
 			@Override
 			public void connectNotify(String sessionId, Map<String, List<String>> data) {
 				String machineId = Optional.ofNullable(data.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
 						.orElse("");
-				log.info("机器machineId:{}连接到服务器", machineId);
+				log.info("socket连接到服务器，机器machineId:{}", machineId);
 				if (!StringUtils.isEmpty(machineId)) {
 					String machinKey = CommonConstants.REDIS_BASE_PATH + machineId;
 					redisUtil.set(machinKey, sessionId);
@@ -127,7 +147,7 @@ public class SocketIOStartHandler {
 				String machineId = Optional.ofNullable(data.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
 						.orElse("");
 				if (!StringUtils.isEmpty(machineId)) {
-					log.info("机器machineId:{}断开连接", machineId);
+					log.info("断开连接，机器machineId:{}", machineId);
 					String machinKey = CommonConstants.REDIS_BASE_PATH + machineId;
 					redisUtil.del(machinKey);
 				}
