@@ -12,6 +12,7 @@ import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72ActivityMapper;
 import com.inno72.project.model.Inno72Activity;
 import com.inno72.project.service.ActivityService;
+import com.inno72.project.vo.Inno72ActivityVo;
 import com.inno72.system.model.Inno72User;
 
 import org.slf4j.Logger;
@@ -52,6 +53,7 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		
 		model.setId(StringUtil.getUUID());
+		model.setManagerId(userId);//负责人
 		model.setCreateId(userId);
 		model.setUpdateId(userId);
 		super.save(model);
@@ -99,7 +101,7 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 	}
 
 	@Override
-	public List<Inno72Activity> findByPage(String code,String keyword) {
+	public List<Inno72ActivityVo> findByPage(String code,String keyword) {
 		logger.info("---------------------活动分页列表查询-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword=Optional.ofNullable(keyword).map(a->a.replace("'", "")).orElse(keyword);
@@ -117,6 +119,14 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 	   	condition.createCriteria().andEqualTo(model);
 		return super.findByCondition(condition);
 	}
+
+	@Override
+	public Inno72ActivityVo selectById(String id) {
+		
+		return inno72ActivityMapper.selectById(id);
+	}
+	
+	
     
     
 

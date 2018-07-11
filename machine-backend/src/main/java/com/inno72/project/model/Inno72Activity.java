@@ -3,7 +3,6 @@ package com.inno72.project.model;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters.LocalDateTimeConverter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -39,22 +38,17 @@ public class Inno72Activity {
     private String sellerId;
     
     /**
-     * 活动开始时间
+     * 奖品类型
      */
-    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Convert(converter = LocalDateTimeConverter.class)
-    @Column(name = "start_time")
-    private LocalDateTime startTime;
-
+    @Column(name = "prize_type")
+    private String prizeType;
+    
     /**
-     * 活动结束时间
+     * 负责人ID
      */
-    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Convert(converter = LocalDateTimeConverter.class)
-    @Column(name = "end_time")
-    private LocalDateTime endTime;
+    @Column(name = "manager_id")
+    private String managerId;
+    
 
     /**
      * 状态：0正常，1停止
@@ -156,42 +150,25 @@ public class Inno72Activity {
     public void setSellerId(String sellerId) {
         this.sellerId = sellerId;
     }
+    
+    
 
-    /**
-     * 获取活动开始时间
-     *
-     * @return start_time - 活动开始时间
-     */
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
+    public String getPrizeType() {
+		return prizeType;
+	}
 
-    /**
-     * 设置活动开始时间
-     *
-     * @param startTime 活动开始时间
-     */
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
+	public void setPrizeType(String prizeType) {
+		this.prizeType = prizeType;
+	}
 
-    /**
-     * 获取活动结束时间
-     *
-     * @return end_time - 活动结束时间
-     */
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
+	public String getManagerId() {
+		return managerId;
+	}
 
-    /**
-     * 设置活动结束时间
-     *
-     * @param endTime 活动结束时间
-     */
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
+	public void setManagerId(String managerId) {
+		this.managerId = managerId;
+	}
+
 
     /**
      * 获取状态：0正常，1停止

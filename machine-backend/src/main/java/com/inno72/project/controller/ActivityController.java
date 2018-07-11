@@ -5,6 +5,7 @@ import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.project.model.Inno72Activity;
 import com.inno72.project.service.ActivityService;
+import com.inno72.project.vo.Inno72ActivityVo;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.validation.BindingResult;
@@ -62,14 +63,14 @@ public class ActivityController {
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<Inno72Activity> detail(@RequestParam String id) {
-        Inno72Activity activity = activityService.findById(id);
+    public Result<Inno72ActivityVo> detail(@RequestParam String id) {
+    	Inno72ActivityVo activity = activityService.selectById(id);
         return ResultGenerator.genSuccessResult(activity);
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
     public ModelAndView list(@RequestParam(required=false) String code,@RequestParam(required=false) String keyword) {
-        List<Inno72Activity> list = activityService.findByPage(code,keyword);
+        List<Inno72ActivityVo> list = activityService.findByPage(code,keyword);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
     
