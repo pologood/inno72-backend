@@ -10,4 +10,8 @@ public class CommonConstants {
 
 	public final static Integer NET_CLOSE = 0;
 
+	public final static Integer NET_OPEN = 1;
+
+	public final static Integer RESULT_SUCCESS = 0;
+
 }

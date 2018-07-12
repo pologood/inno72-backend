@@ -1,8 +1,10 @@
 package com.inno72.task;
 
+import com.alibaba.fastjson.JSONObject;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.MachineMonitorBackendProperties;
 import com.inno72.model.MachineLogInfo;
+import com.inno72.model.NetOffMachineInfo;
 import com.inno72.plugin.http.HttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,39 +37,39 @@ public class CheckNetStatusSchedule {
 	@Autowired
 	private MachineMonitorBackendProperties machineMonitorBackendProperties;
 
-	// 每15分钟执行一次
 	@Scheduled(cron = "0 0/15 * * * ?")
 	public void checkNetStatus() {
 
-		log.info("检查并修改网络状态的定时任务开始执行");
+		log.info("检查并修改网络状态的定时任务，开始执行");
 		//获取当前时间10分钟后的时间
 		LocalDateTime localDateTime = LocalDateTime.now();
 		LocalDateTime after = localDateTime.plusMinutes(10);
-
+		//查询库
 		Query query = new Query();
 		query.addCriteria(Criteria.where("createTime").lte(after));
-
-		Boolean flag = mongoTpl.exists(query,"MachineLogInfo");
-
-		if(flag == true){
-			//调用修改网络状态方法
-			List<MachineLogInfo> list= mongoTpl.find(query,MachineLogInfo.class,"MachineLogInfo");
-			if(null != list){
-				for(MachineLogInfo machineLogInfo : list){
-					String machineId = machineLogInfo.getMachineId();
-					String urlProp = machineMonitorBackendProperties.getProps().get("updateNetStatusUrl");
-					log.info("配置文件中获取的url：{}",urlProp);
-					String url = MessageFormat.format(urlProp,machineId,CommonConstants.NET_CLOSE);
-					log.info("组装后的url：{}",url);
-					String result = HttpClient.post(url, "");
-					log.info("调用远程服务发送结果是result：{}",result);
+		List<MachineLogInfo> list= mongoTpl.find(query,MachineLogInfo.class,"MachineLogInfo");
+		log.info("网络断开的机器有{}台",list.size());
+		if(null != list){
+			for(MachineLogInfo machineLogInfo : list){
+				String machineId = machineLogInfo.getMachineId();
+				//组装url
+				String urlProp = machineMonitorBackendProperties.getProps().get("updateNetStatusUrl");
+				String url = MessageFormat.format(urlProp,machineId,CommonConstants.NET_CLOSE);
+				//调用修改网络状态方法
+				String result = HttpClient.post(url, "");
+				JSONObject jsonObject = JSONObject.parseObject(result);
+				Integer resultCdoe = jsonObject.getInteger("code");
+				//维护一个断网机器信息表
+				if(CommonConstants.RESULT_SUCCESS.equals(resultCdoe)){
+					NetOffMachineInfo netOffMachineInfo = new NetOffMachineInfo();
+					netOffMachineInfo.setMachineId(machineId);
+					mongoTpl.save(netOffMachineInfo,"NetOffMachineInfo");
+					}
 
 				}
-				log.info("检查并修改网络状态执行完成");
 			}
 
-		}
-		log.info("检查并修改网络状态的定时任务执行结束");
+		log.info("检查并修改网络状态的定时任务，执行结束");
 
 	}
 }
