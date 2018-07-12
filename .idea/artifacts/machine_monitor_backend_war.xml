@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="machine-monitor-backend:war">
+    <output-path>$PROJECT_DIR$/machine-monitor-backend/target</output-path>
+    <root id="archive" name="machine-monitor-backend-0.0.1-SNAPSHOT.war">
+      <element id="artifact" artifact-name="machine-monitor-backend:war exploded" />
+    </root>
+  </artifact>
+</component>

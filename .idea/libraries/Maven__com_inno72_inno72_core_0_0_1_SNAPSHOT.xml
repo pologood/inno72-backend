@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.inno72:inno72-core:0.0.1-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/inno72/inno72-core/0.0.1-SNAPSHOT/inno72-core-0.0.1-20180709.085706-1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/inno72/inno72-core/0.0.1-SNAPSHOT/inno72-core-0.0.1-20180709.085706-1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/inno72/inno72-core/0.0.1-SNAPSHOT/inno72-core-0.0.1-20180709.085706-1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
