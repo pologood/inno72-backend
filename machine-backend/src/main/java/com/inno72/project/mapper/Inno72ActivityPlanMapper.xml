@@ -74,7 +74,7 @@
 			a.*,
 			m.id AS machine_id,
 			m.machine_code AS machine_code,
-			case  when ap.id is null then 0 else 1 end AS state 
+			ap.id AS state
 		FROM
 			inno72_admin_area a
 			LEFT JOIN inno72_locale locale ON LEFT ( locale.area_code, #{num}) = LEFT ( a.CODE, #{num})
