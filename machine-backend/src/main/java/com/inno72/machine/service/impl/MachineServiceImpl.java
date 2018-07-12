@@ -26,6 +26,7 @@ import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.model.Inno72SupplyChannel;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.service.SupplyChannelService;
+import com.inno72.machine.vo.ChannelListVo;
 import com.inno72.system.model.Inno72User;
 
 /**
@@ -134,6 +135,60 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			return Results.failure("修改点位失败");
 		}
 		return Results.success();
+
+	}
+
+	@Override
+	public Result<List<ChannelListVo>> channelList(String id) {
+		Inno72Machine machine = findById(id);
+		if (machine == null) {
+			return Results.failure("机器id传入错误");
+		}
+		return supplyChannelService.findChannelListByMachineId(machine.getMachineCode());
+	}
+
+	@Override
+	public Result<String> deleteChannel(String channelId, Integer status) {
+		SessionData session = CommonConstants.SESSION_DATA;
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
+		Result<String> result = supplyChannelService.deleteChannel(channelId, status);
+
+		if (result.getCode() == Result.SUCCESS) {
+			Inno72Machine machine = findBy("machineCode", result.getData());
+			if (machine != null) {
+				machine.setUpdateId(mUser.getId());
+				machine.setUpdateTime(LocalDateTime.now());
+				inno72MachineMapper.updateByPrimaryKeySelective(machine);
+			}
+
+		}
+		return result;
+
+	}
+
+	@Override
+	public Result<String> updateGoodsCount(String channelId, Integer count) {
+		SessionData session = CommonConstants.SESSION_DATA;
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
+		Result<String> result = supplyChannelService.updateGoodsCount(channelId, count);
+		if (result.getCode() == Result.SUCCESS) {
+			Inno72Machine machine = findBy("machineCode", result.getData());
+			if (machine != null) {
+				machine.setUpdateId(mUser.getId());
+				machine.setUpdateTime(LocalDateTime.now());
+				inno72MachineMapper.updateByPrimaryKeySelective(machine);
+			}
+
+		}
+		return result;
 
 	}
 

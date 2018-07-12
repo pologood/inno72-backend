@@ -15,6 +15,7 @@ import com.inno72.common.Result;
 import com.inno72.common.ResultPages;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
+import com.inno72.machine.vo.ChannelListVo;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
@@ -76,6 +77,44 @@ public class MachineController {
 	public Result<String> updateLocale(@RequestParam String id, @RequestParam String localeId,
 			@RequestParam(defaultValue = "") String address) {
 		return machineService.updateLocale(id, localeId, address);
+
+	}
+
+	/**
+	 * 货道详情
+	 * 
+	 * @param machineId
+	 * @return
+	 */
+	@RequestMapping(value = "/channelInfo", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<ChannelListVo>> channelInfo(@RequestParam String machineId) {
+		return machineService.channelList(machineId);
+
+	}
+
+	/**
+	 * 启用、停用货道（1停用，0请用）
+	 * 
+	 * @param channelId
+	 * @param status
+	 * @return
+	 */
+	@RequestMapping(value = "/deleteChannel", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> deleteChannel(@RequestParam String channelId, @RequestParam Integer status) {
+		return machineService.deleteChannel(channelId, status);
+
+	}
+
+	/**
+	 * 更新商品余量
+	 * 
+	 * @param channelId
+	 * @param count
+	 * @return
+	 */
+	@RequestMapping(value = "/updateGoodsCount", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> updateGoodsCount(@RequestParam String channelId, @RequestParam Integer count) {
+		return machineService.updateGoodsCount(channelId, count);
 
 	}
 
