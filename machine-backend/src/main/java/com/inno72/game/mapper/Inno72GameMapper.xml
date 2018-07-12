@@ -15,7 +15,6 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
   </resultMap>
   
   <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">

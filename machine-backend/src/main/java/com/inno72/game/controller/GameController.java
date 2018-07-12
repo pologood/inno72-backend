@@ -5,7 +5,6 @@ import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.game.model.Inno72Game;
 import com.inno72.game.service.GameService;
-import com.inno72.gameUser.model.Inno72GameUser;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import tk.mybatis.mapper.entity.Condition;
 
 
 import javax.annotation.Resource;
@@ -32,11 +30,10 @@ public class GameController {
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> add(Inno72Game game) {
     	try {
-    		gameService.save(game);
+    		return gameService.saveModel(game);
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
-        return ResultGenerator.genSuccessResult();
     }
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> delete(@RequestParam String id) {
@@ -50,11 +47,10 @@ public class GameController {
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> update(Inno72Game game) {
     	try {
-    		gameService.update(game);
+    		return gameService.updateModel(game);
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
-        return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
@@ -69,15 +65,11 @@ public class GameController {
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
     
-    
-    @RequestMapping(value = "/matchMachine", method = { RequestMethod.POST, RequestMethod.GET })
-    public Result<String> matchMachine(@RequestParam(required=false) String gameId,@RequestParam(required=false) String machineIds) {
-    	gameService.matchMachine(gameId, machineIds);
-    	try {
-    		gameService.matchMachine(gameId, machineIds);
-		} catch (Exception e) {
-			return ResultGenerator.genFailResult("操作失败！");
-		}
-        return ResultGenerator.genSuccessResult();
+    @RequestMapping(value = "/getList", method = { RequestMethod.POST,  RequestMethod.GET})
+    public Result<List<Inno72Game>> getList(Inno72Game model) {
+        List<Inno72Game> list = gameService.getList(model);
+        
+        return ResultGenerator.genSuccessResult(list);
     }
+   
 }

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.project.mapper.Inno72ActivityPlanMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.project.model.Inno72ActivityPlan">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="game_id" jdbcType="VARCHAR" property="gameId" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="prize_type" jdbcType="VARCHAR" property="prizeType" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  <resultMap id="VoResultMap" type="com.inno72.project.vo.Inno72ActivityPlanVo" extends="BaseResultMap">
+    
+    <result column="activityName" jdbcType="VARCHAR" property="activityName" />
+  </resultMap>
+  
+  <select id="selectByPage" parameterType="java.util.Map" resultMap="VoResultMap">
+		SELECT
+			ap.id,
+			ap.activity_id,
+			ap.game_id,
+			ap.start_time,
+			ap.end_time,
+			a.name AS activityName,
+			ap.remark,
+			ap.is_delete,
+			ap.create_time,
+			ap.update_time 
+		FROM
+			inno72_activity_plan ap
+			LEFT JOIN inno72_activity a ON a.id = ap.activity_id 
+			LEFT JOIN inno72_activity_plan_machine apm ON apm.id=ap.id
+			LEFT JOIN inno72_machine m ON m.id = apm.machine_id
+		WHERE
+			ap.is_delete = 0 
+		<if test="code !=null and code !='' ">  </if>
+		<if test="keyword !=null and keyword !='' ">
+			and ( a.name LIKE '%${keyword}%')
+		</if>
+		ORDER BY a.update_time DESC
+  </select>
+  
+  
+  <resultMap id="ResultAreaMachineMap" type="com.inno72.project.vo.Inno72AdminAreaVo">
+    <id column="code" jdbcType="VARCHAR" property="code" />
+    <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="district" jdbcType="VARCHAR" property="district" />
+    <result column="circle" jdbcType="VARCHAR" property="circle" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <association property="machines" resultMap="machinesResult" />
+  </resultMap>
+  
+ <resultMap id="machinesResult" type="com.inno72.project.vo.Inno72MachineVo">
+  <result column="machine_id" property="machineId" />
+  <result column="machine_code" property="machineCode"/>
+  <result column="state" property="state"/>
+ </resultMap>
+  
+  <select id="selectAreaMachineList" parameterType="String" resultMap="ResultAreaMachineMap">
+  		SELECT
+			a.*,
+			m.id AS machine_id,
+			m.machine_code AS machine_code,
+			ap.id AS state
+		FROM
+			inno72_admin_area a
+			LEFT JOIN inno72_locale locale ON LEFT ( locale.area_code, #{num}) = LEFT ( a.CODE, #{num})
+			LEFT JOIN inno72_machine m ON locale.id = m.locale_id
+			LEFT JOIN inno72_activity_plan_machine apm ON m.id = apm.machine_id
+			LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id 
+		WHERE
+		<if test="code !=null and code !='' ">a.parent_code = #{code}  </if>
+		<if test="level !=null and level !='' ">a.LEVEL = #{level}  </if>
+			AND ( NOW( ) BETWEEN ap.start_time AND ap.end_time OR ap.id IS NULL )
+  </select>
+  
+  
+  
+  
+</mapper>

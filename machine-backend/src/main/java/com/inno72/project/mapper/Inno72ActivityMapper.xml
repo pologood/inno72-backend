@@ -22,6 +22,8 @@
     
     <result column="state" jdbcType="VARCHAR" property="state" />
     <result column="prize_type" jdbcType="VARCHAR" property="prizeType" />
+    <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
+    <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
     
   </resultMap>
   
@@ -30,8 +32,10 @@
 		 SELECT
 			a.id,
 			a.name,
-			s.shop_name as shop_id,
-			m.merchant_name as seller_id,
+			s.id as shop_id,
+			m.id as seller_id,
+			s.shop_name as shop_name,
+			m.merchant_name as merchant_name,
 			CASE 
 			WHEN ap.start_time &gt; NOW() THEN '未开始'
 			WHEN ap.start_time &lt;  NOW() and ap.end_time &gt; NOW() THEN '进行中'
@@ -53,13 +57,14 @@
 			where a.is_delete = 0 
 			<if test="code !=null and code !='' ">and a.seller_id = #{code}</if>
 			<if test="keyword !=null and keyword !='' ">
-			and ( a.name LIKE '%${keyword}%' or m.name LIKE '%${keyword}%' s.name LIKE '%${keyword}%')
+			and ( a.name LIKE '%${keyword}%' or m.merchant_name LIKE '%${keyword}%' OR s.shop_name LIKE '%${keyword}%')
 			</if>
 			ORDER BY a.update_time DESC
   </select>
   
   <select id="selectIsUseing" parameterType="String" resultType="int">
-		SELECT count(1) FROM inno72_game where activity_id=#{id} and is_delete = 0 
+		SELECT count(1) FROM inno72_activity_plan
+		 where activity_id=#{id} and (NOW( ) BETWEEN start_time AND end_time)
   </select>
   
   <select id="selectById" parameterType="String" resultMap="VoResultMap">
@@ -67,8 +72,10 @@
 		 SELECT
 			a.id,
 			a.name,
-			s.shop_name as shop_id,
-			m.merchant_name as seller_id,
+			s.id as shop_id,
+			m.id as seller_id,
+			s.shop_name as shop_name,
+			m.merchant_name as merchant_name,
 			ap.prize_type,
 			u.name as manager_id,
 			a.is_delete,
@@ -84,6 +91,11 @@
 			where a.is_delete = 0
 			and a.id = #{id}
 			ORDER BY a.update_time DESC
+  </select>
+
+  
+  <select id="selectUnPlanList" parameterType="java.util.Map" resultMap="BaseResultMap">
+		 SELECT a.id,a.name FROM inno72_activity a where a.is_delete = 0 and a.id not in (SELECT activity_id from inno72_activity_plan )
   </select>
   
   
