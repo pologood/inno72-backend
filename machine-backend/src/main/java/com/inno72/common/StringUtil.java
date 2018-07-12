@@ -64,11 +64,6 @@ public class StringUtil {
 		return sb.toString();
 	}
 
-	public static void main(String[] args) {
-		System.out.println(getMachineCode());
-		System.out.println(getGoodsCode("伊利"));
-	}
-
 	/**
 	 * 判断是否为空
 	 * 

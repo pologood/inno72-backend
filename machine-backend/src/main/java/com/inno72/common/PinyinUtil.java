@@ -6,10 +6,6 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
 public class PinyinUtil {
-	public static void main(String[] args) throws BadHanyuPinyinOutputFormatCombination {
-		String a = toFirstPinYin("伊利", Type.UPPERCASE);
-		System.out.println("刘亚壮的运行测试结果为====" + a);
-	}
 
 	public static enum Type {
 		UPPERCASE, // 全部大写
