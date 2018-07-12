@@ -63,7 +63,8 @@
   </select>
   
   <select id="selectIsUseing" parameterType="String" resultType="int">
-		SELECT count(1) FROM inno72_game where activity_id=#{id} and is_delete = 0 
+		SELECT count(1) FROM inno72_activity_plan
+		 where activity_id=#{id} and (NOW( ) BETWEEN start_time AND end_time)
   </select>
   
   <select id="selectById" parameterType="String" resultMap="VoResultMap">

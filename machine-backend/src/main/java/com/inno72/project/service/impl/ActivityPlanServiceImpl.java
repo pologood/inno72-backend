@@ -3,7 +3,6 @@ package com.inno72.project.service.impl;
 import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
 import com.inno72.common.StringUtil;
-import com.inno72.mapper.Inno72AdminAreaMapper;
 import com.inno72.project.mapper.Inno72ActivityPlanMapper;
 import com.inno72.project.model.Inno72ActivityPlan;
 import com.inno72.project.service.ActivityPlanService;
@@ -67,7 +66,17 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	public List<Inno72AdminAreaVo> selectAreaMachineList(String code,String level) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("code", code);
-	   	 
+		
+		if (StringUtil.isEmpty(code)) {
+			params.put("level", 1);
+	   	}
+		if (level.equals("1")) {
+			params.put("num", 2);
+		}else if (level.equals("2")) {
+			params.put("num", 6);
+		}else if (level.equals("3")) {
+			params.put("num", 9);
+		}
 	   	return inno72ActivityPlanMapper.selectAreaMachineList(params);
 	}
 	

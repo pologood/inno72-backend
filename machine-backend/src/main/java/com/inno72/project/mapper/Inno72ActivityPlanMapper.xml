@@ -51,11 +51,6 @@
   </select>
   
   
-  
-  
-  
-  
-  
   <resultMap id="ResultAreaMachineMap" type="com.inno72.project.vo.Inno72AdminAreaVo">
     <id column="code" jdbcType="VARCHAR" property="code" />
     <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
@@ -66,12 +61,12 @@
     <result column="circle" jdbcType="VARCHAR" property="circle" />
     <result column="level" jdbcType="INTEGER" property="level" />
     <association property="machines" resultMap="machinesResult" />
-    
   </resultMap>
   
  <resultMap id="machinesResult" type="com.inno72.project.vo.Inno72MachineVo">
   <result column="machine_id" property="machineId" />
   <result column="machine_code" property="machineCode"/>
+  <result column="state" property="state"/>
  </resultMap>
   
   <select id="selectAreaMachineList" parameterType="String" resultMap="ResultAreaMachineMap">
@@ -79,17 +74,17 @@
 			a.*,
 			m.id AS machine_id,
 			m.machine_code AS machine_code,
-			ap.id 
+			case  when ap.id is null then 0 else 1 end AS state 
 		FROM
 			inno72_admin_area a
-			LEFT JOIN inno72_locale locale ON LEFT ( locale.area_code, 2 ) = LEFT ( a.CODE, 2 )
+			LEFT JOIN inno72_locale locale ON LEFT ( locale.area_code, #{num}) = LEFT ( a.CODE, #{num})
 			LEFT JOIN inno72_machine m ON locale.id = m.locale_id
 			LEFT JOIN inno72_activity_plan_machine apm ON m.id = apm.machine_id
 			LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id 
 		WHERE
-			a.LEVEL = 1 
+		<if test="code !=null and code !='' ">a.parent_code = #{code}  </if>
+		<if test="level !=null and level !='' ">a.LEVEL = #{level}  </if>
 			AND ( NOW( ) BETWEEN ap.start_time AND ap.end_time OR ap.id IS NULL )
-
   </select>
   
   

@@ -6,6 +6,8 @@ public class Inno72MachineVo {
     private String machineId;
     
     private String machineCode;
+    
+    private String state;
 
 	public String getMachineId() {
 		return machineId;
@@ -21,6 +23,14 @@ public class Inno72MachineVo {
 
 	public void setMachineCode(String machineCode) {
 		this.machineCode = machineCode;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
 
     
