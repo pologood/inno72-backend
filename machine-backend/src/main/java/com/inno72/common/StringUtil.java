@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.UUID;
 
+import com.inno72.common.PinyinUtil.Type;
+
 public class StringUtil {
 
 	public static String getUUID() {
@@ -18,12 +20,13 @@ public class StringUtil {
 		StringBuffer sb = new StringBuffer();
 		String timestamp = String.valueOf(Clock.systemUTC().millis());
 		timestamp = timestamp.substring(timestamp.length() - 5, timestamp.length());
+		sb.append("ZJ");
 		sb.append(year);
-		sb.append(timestamp);
 		String month = now.getMonthValue() < 10 ? "0" + now.getMonthValue() : String.valueOf(now.getMonthValue());
 		sb.append(month);
 		String day = now.getDayOfMonth() < 10 ? "0" + now.getDayOfMonth() : String.valueOf(now.getDayOfMonth());
 		sb.append(day);
+		sb.append(timestamp);
 		int _random = 0;
 		try {
 			_random = new Random().nextInt(89);
@@ -33,6 +36,37 @@ public class StringUtil {
 		}
 		sb.append(_random);
 		return sb.toString();
+	}
+
+	public static String getGoodsCode(String shopName) {
+		String key = PinyinUtil.toFirstPinYin(shopName, Type.UPPERCASE);
+		LocalDateTime now = LocalDateTime.now();
+		String year = String.valueOf(now.getYear());
+		year = year.substring(2, 4);
+		StringBuffer sb = new StringBuffer();
+		String timestamp = String.valueOf(Clock.systemUTC().millis());
+		timestamp = timestamp.substring(timestamp.length() - 3, timestamp.length());
+		sb.append(key);
+		sb.append(year);
+		String month = now.getMonthValue() < 10 ? "0" + now.getMonthValue() : String.valueOf(now.getMonthValue());
+		sb.append(month);
+		String day = now.getDayOfMonth() < 10 ? "0" + now.getDayOfMonth() : String.valueOf(now.getDayOfMonth());
+		sb.append(day);
+		sb.append(timestamp);
+		int _random = 0;
+		try {
+			_random = new Random().nextInt(89);
+			_random += 10;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		sb.append(_random);
+		return sb.toString();
+	}
+
+	public static void main(String[] args) {
+		System.out.println(getMachineCode());
+		System.out.println(getGoodsCode("伊利"));
 	}
 
 	/**

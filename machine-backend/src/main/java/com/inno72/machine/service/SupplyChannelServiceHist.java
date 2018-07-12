@@ -10,6 +10,7 @@ import com.inno72.machine.model.Inno72SupplyChannelHist;
 /**
  * Created by CodeGenerator on 2018/07/04.
  */
+@SuppressWarnings("rawtypes")
 public interface SupplyChannelServiceHist extends Service<Inno72SupplyChannelHist> {
 
 	Result subCount(Inno72SupplyChannelHist supplyChannel);

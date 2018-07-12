@@ -15,7 +15,7 @@ import com.inno72.common.Result;
 import com.inno72.common.ResultPages;
 import com.inno72.system.model.Inno72Function;
 import com.inno72.system.service.FunctionService;
-import com.inno72.system.vo.FunctionTreeVo;
+import com.inno72.system.vo.FunctionTreeResultVo;
 
 /**
  * Created by CodeGenerator on 2018/07/05.
@@ -34,7 +34,7 @@ public class FunctionController {
 	}
 
 	@RequestMapping(value = "/all", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<FunctionTreeVo> all() {
-		return functionService.findAllTree();
+	public Result<FunctionTreeResultVo> all(@RequestParam(required = false) String roleId) {
+		return functionService.findAllTree(roleId);
 	}
 }
