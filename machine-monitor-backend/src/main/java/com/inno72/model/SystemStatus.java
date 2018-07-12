@@ -37,7 +37,6 @@ public class SystemStatus {
     private long sdFree;
     private long sdTotle;
     private String ping;
-
     /**
      * 创建时间
      */
