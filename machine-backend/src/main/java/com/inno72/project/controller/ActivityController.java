@@ -76,7 +76,7 @@ public class ActivityController {
     
     @RequestMapping(value = "/getList", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<List<Inno72Activity>> getList(Inno72Activity activity) {
-        List<Inno72Activity> list = activityService.getList(activity);
+        List<Inno72Activity> list = activityService.getList();
         return ResultGenerator.genSuccessResult(list);
     }
     

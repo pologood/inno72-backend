@@ -1,7 +1,6 @@
 package com.inno72.game.model;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import javax.persistence.*;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -73,12 +72,6 @@ public class Inno72Game {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "update_time")
     private LocalDateTime updateTime;
-
-    /**
-     * 活动id
-     */
-    @Column(name = "activity_id")
-    private String activityId;
 
     /**
      * @return id
@@ -237,21 +230,4 @@ public class Inno72Game {
         this.updateTime = updateTime;
     }
 
-    /**
-     * 获取活动id
-     *
-     * @return activity_id - 活动id
-     */
-    public String getActivityId() {
-        return activityId;
-    }
-
-    /**
-     * 设置活动id
-     *
-     * @param activityId 活动id
-     */
-    public void setActivityId(String activityId) {
-        this.activityId = activityId;
-    }
 }
