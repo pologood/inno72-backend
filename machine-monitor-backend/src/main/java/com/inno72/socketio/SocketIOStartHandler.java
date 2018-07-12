@@ -123,8 +123,8 @@ public class SocketIOStartHandler {
 					String result = HttpClient.post(url, "");
 					JSONObject jsonObject = JSONObject.parseObject(result);
 					Integer resultCdoe = jsonObject.getInteger("code");
-					if(!CommonConstants.RESULT_SUCCESS.equals(resultCdoe)){
-						log.info("修改机器主表网络状态失败，result：{}",result);
+					if(CommonConstants.RESULT_SUCCESS.equals(resultCdoe)){
+						mongoTpl.remove(query, "NetOffMachineInfo");
 					}
 				}
 
