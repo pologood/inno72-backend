@@ -2,14 +2,12 @@ package com.inno72.machine.controller;
 
 import javax.annotation.Resource;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.inno72.common.Result;
 import com.inno72.machine.service.MachineService;
+
+import java.util.List;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
@@ -45,5 +43,18 @@ public class MachineController {
 		return machineService.updateNetStatus(machineCode, netStatus);
 
 	}
+	/**
+	 * 更新机器网络状态
+	 *
+	 * @param list
+	 * @param netStatus
+	 * @return
+	 */
+	@RequestMapping(value = "/updateMachineListNetStatus", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<String>> updateMachineListNetStatus(@RequestParam List<String> list, @RequestParam Integer netStatus) {
+		return machineService.updateMachineListNetStatus(list, netStatus);
+
+	}
+
 
 }
