@@ -1,6 +1,7 @@
 package com.inno72.machine.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,22 +19,30 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.inno72.common.AbstractService;
 import com.inno72.common.CommonConstants;
+import com.inno72.common.MachineBackendProperties;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
 import com.inno72.machine.mapper.Inno72MachineMapper;
+import com.inno72.machine.model.Inno72App;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.model.Inno72SupplyChannel;
+import com.inno72.machine.service.AppService;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.service.SupplyChannelService;
+import com.inno72.machine.vo.AppStatus;
 import com.inno72.machine.vo.ChannelListVo;
+import com.inno72.machine.vo.MachineAppStatus;
 import com.inno72.machine.vo.MachineStatus;
 import com.inno72.machine.vo.MachineStatusVo;
+import com.inno72.machine.vo.SendMessageBean;
 import com.inno72.machine.vo.SystemStatus;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
+import com.inno72.plugin.http.HttpClient;
 import com.inno72.system.model.Inno72User;
 
 /**
@@ -51,6 +60,10 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	private SupplyChannelService supplyChannelService;
 	@Autowired
 	private MongoOperations mongoTpl;
+	@Autowired
+	private AppService appService;
+	@Autowired
+	private MachineBackendProperties machineBackendProperties;
 
 	@Override
 	public Result<String> initMachine(String deviceId, String channelJson) {
@@ -219,7 +232,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<MachineStatusVo> machineStatus(String machineId) {
-
 		Inno72Machine machine = findById(machineId);
 		if (machine == null) {
 			return Results.failure("机器id传入错误");
@@ -236,6 +248,68 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			result.setSystemStatus(ss.get(0));
 		}
 		return Results.success(result);
+	}
+
+	@Override
+	public Result<MachineAppStatus> appStatus(String machineId) {
+		Inno72Machine machine = findById(machineId);
+		if (machine == null) {
+			return Results.failure("机器id传入错误");
+		}
+		Query query = new Query();
+		query.addCriteria(Criteria.where("machineId").is(machine.getMachineCode()));
+		List<MachineAppStatus> ms = mongoTpl.find(query, MachineAppStatus.class, "MachineAppStatus");
+		if (ms != null && !ms.isEmpty()) {
+			MachineAppStatus machineAppStatus = ms.get(0);
+			for (AppStatus status : machineAppStatus.getStatus()) {
+				Inno72App app = appService.findBy("appPackageName", status.getAppPackageName());
+				status.setAppType(app.getAppType());
+				if (status.getVersionCode() == -1) {
+					if (app != null) {
+						status.setAppName(app.getAppName());
+					}
+				}
+			}
+			return Results.success(machineAppStatus);
+		}
+		return Results.success();
+	}
+
+	@Override
+	public Result<String> updateInfo(String machineId, Integer updateStatus) {
+		Inno72Machine machine = findById(machineId);
+		if (machine == null) {
+			return Results.failure("机器id传入错误");
+		}
+		String url = machineBackendProperties.get("");
+		SendMessageBean msg = new SendMessageBean();
+		msg.setEventType(1);
+		msg.setSubEventType(updateStatus);
+		msg.setMachineId(machine.getMachineCode());
+		if (updateStatus == 2) {
+			List<String> names = new ArrayList<String>();
+			List<Inno72App> appAll = appService.findAll();
+			for (Inno72App app : appAll) {
+				names.add(app.getAppPackageName());
+			}
+			msg.setData(names);
+		}
+		List<SendMessageBean> msgs = new ArrayList<>();
+		msgs.add(msg);
+		try {
+			String result = HttpClient.post(url, JSON.toJSONString(msgs));
+			if (StringUtil.isEmpty(result)) {
+				JSONObject $_result = JSON.parseObject(result);
+				String r = $_result.getJSONObject("data").getString(machine.getMachineCode());
+				if (!"发送成功".equals(r)) {
+					return Results.failure(r);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Results.failure("发送失败");
+		}
+		return Results.success();
 	}
 
 }

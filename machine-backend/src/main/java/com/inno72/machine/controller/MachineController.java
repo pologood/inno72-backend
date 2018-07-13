@@ -17,6 +17,7 @@ import com.inno72.common.ResultPages;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.vo.ChannelListVo;
+import com.inno72.machine.vo.MachineAppStatus;
 import com.inno72.machine.vo.MachineStatusVo;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
 
@@ -144,6 +145,31 @@ public class MachineController {
 	@RequestMapping(value = "/machineStatus", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<MachineStatusVo> machineStatus(@RequestParam String machineId) {
 		return machineService.machineStatus(machineId);
+
+	}
+
+	/**
+	 * 查询app状态
+	 * 
+	 * @param machineId
+	 * @return
+	 */
+	@RequestMapping(value = "/appStatus", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<MachineAppStatus> appStatus(@RequestParam String machineId) {
+		return machineService.appStatus(machineId);
+
+	}
+
+	/**
+	 * 更新数据
+	 * 
+	 * @param machineId
+	 * @param updateStatus
+	 * @return
+	 */
+	@RequestMapping(value = "/updateInfo", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> updateInfo(@RequestParam String machineId, @RequestParam Integer updateStatus) {
+		return machineService.updateInfo(machineId, updateStatus);
 
 	}
 

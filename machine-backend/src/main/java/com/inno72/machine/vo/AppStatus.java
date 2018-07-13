@@ -13,6 +13,7 @@ public class AppStatus {
 	private int versionCode;
 	private String appName;
 	private int appStatus;// 0 未启动 1前台运行 2 后台运行
+	private int appType;// 1：监控 2：正常
 
 	public String getAppPackageName() {
 		return appPackageName;
@@ -61,4 +62,13 @@ public class AppStatus {
 	public void setAppStatus(int appStatus) {
 		this.appStatus = appStatus;
 	}
+
+	public int getAppType() {
+		return appType;
+	}
+
+	public void setAppType(int appType) {
+		this.appType = appType;
+	}
+
 }

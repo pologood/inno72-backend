@@ -6,6 +6,7 @@ import com.inno72.common.Result;
 import com.inno72.common.Service;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.vo.ChannelListVo;
+import com.inno72.machine.vo.MachineAppStatus;
 import com.inno72.machine.vo.MachineStatusVo;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
 
@@ -31,5 +32,9 @@ public interface MachineService extends Service<Inno72Machine> {
 	Result<String> updateGoodsCount(List<UpdateMachineChannelVo> channels);
 
 	Result<MachineStatusVo> machineStatus(String machineId);
+
+	Result<MachineAppStatus> appStatus(String machineId);
+
+	Result<String> updateInfo(String machineId, Integer updateStatus);
 
 }

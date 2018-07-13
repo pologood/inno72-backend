@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.machine.mapper.Inno72AppMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.machine.model.Inno72App">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="app_package_name" jdbcType="VARCHAR" property="appPackageName" />
+    <result column="app_type" jdbcType="INTEGER" property="appType" />
+    <result column="app_name" jdbcType="VARCHAR" property="appName" />
+  </resultMap>
+</mapper>
