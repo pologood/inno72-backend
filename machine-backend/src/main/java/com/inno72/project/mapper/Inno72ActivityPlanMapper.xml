@@ -85,8 +85,30 @@
 		WHERE
 		<if test="code !=null and code !='' ">a.parent_code = #{code}  </if>
 		<if test="level !=null and level !='' ">a.LEVEL = #{level}  </if>
-			AND ( NOW( ) BETWEEN ap.start_time AND ap.end_time OR ap.id IS NULL )
+		<if test="startTime !=null and startTime !='' ">
+		and ( <![CDATA[
+		 	#{startTime} BETWEEN ap.start_time AND ap.end_time or 
+		 	#{endTime} BETWEEN ap.start_time AND ap.end_time OR ap.id IS NULL
+		 ]]>)
+		</if>
   </select>
+  
+  <select id="selectPlanedMachine" parameterType="java.util.Map" resultType="String">
+  		SELECT machine_id FROM inno72_activity_plan ap
+			LEFT JOIN inno72_activity_plan_machine apm ON apm.activity_plan_id = ap.id
+		 where  is_delete =0 
+		 and ( <![CDATA[
+		 	#{startTime} BETWEEN ap.start_time AND ap.end_time or 
+		 	#{endTime} BETWEEN ap.start_time AND ap.end_time
+		 ]]>
+		 )
+  </select>
+  
+  
+  
+  
+  
+  
   
   
   
