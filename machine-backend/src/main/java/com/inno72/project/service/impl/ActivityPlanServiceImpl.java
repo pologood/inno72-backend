@@ -198,10 +198,17 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	}
 
 	@Override
-	public List<Inno72ActivityPlanVo> selectByPage(Object condition) {
-		// TODO Auto-generated method stub
+	public List<Inno72ActivityPlanVo> selectPlanList(String code ,String startTime,String endTime) {
 		Map<String, Object> params = new HashMap<String, Object>();
-		
+		if (StringUtil.isNotEmpty(code)) {
+			int num =getlikeCode(code);
+			if (num<4) {
+				num=3;
+			}
+			String likeCode = code.substring(0, num);
+			params.put("code", likeCode);
+			params.put("num", num);
+		}
 		return inno72ActivityPlanMapper.selectByPage(params);
 	}
 	
@@ -221,6 +228,15 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			params.put("num", 9);
 		}
 	   	return inno72ActivityPlanMapper.selectAreaMachineList(params);
+	}
+	
+	public int getlikeCode(String s){
+		for (int i = s.length()-1; i >=0; i--) {
+			if (!"0".equals(String.valueOf(s.charAt(i)))) {
+				return i+1;
+			}
+		}
+		return 0;
 	}
 	
 	

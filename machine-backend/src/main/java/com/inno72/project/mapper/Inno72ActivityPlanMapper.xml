@@ -25,7 +25,7 @@
     <result column="activityName" jdbcType="VARCHAR" property="activityName" />
   </resultMap>
   
-  <select id="selectByPage" parameterType="java.util.Map" resultMap="VoResultMap">
+  <select id="selectPlanList" parameterType="java.util.Map" resultMap="VoResultMap">
 		SELECT
 			ap.id,
 			ap.activity_id,
@@ -42,15 +42,15 @@
 			LEFT JOIN inno72_activity a ON a.id = ap.activity_id 
 			LEFT JOIN inno72_activity_plan_machine apm ON apm.id=ap.id
 			LEFT JOIN inno72_machine m ON m.id = apm.machine_id
+			LEFT JOIN inno72_locale locale ON m.locale_id = locale.id
 		WHERE
 			ap.is_delete = 0 
-		<if test="code !=null and code !='' ">  </if>
-		<if test="keyword !=null and keyword !='' ">
-			and ( a.name LIKE '%${keyword}%')
+		<if test="code !=null and code !='' ">and LEFT(locale.area_code,#{num}) = #{code}</if>
+		<if test="startTime !=null and startTime !='' ">
+			<![CDATA[and ( #{startTime} BETWEEN ap.start_time AND ap.end_time or #{endTime} BETWEEN ap.start_time AND ap.end_time ) ]]>
 		</if>
 		ORDER BY a.update_time DESC
   </select>
-  
   
   <resultMap id="ResultAreaMachineMap" type="com.inno72.project.vo.Inno72AdminAreaVo">
     <id column="code" jdbcType="VARCHAR" property="code" />

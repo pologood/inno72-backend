@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import tk.mybatis.mapper.entity.Condition;
 
 
 import javax.annotation.Resource;
@@ -53,9 +52,8 @@ public class ActivityPlanController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list() {
-   	   Condition condition = new Condition( Inno72ActivityPlan.class);
-        List<Inno72ActivityPlanVo> list = activityPlanService.selectByPage(condition);
+    public ModelAndView list(String code,String startTime,String endTime) {
+        List<Inno72ActivityPlanVo> list = activityPlanService.selectPlanList(code,startTime,endTime);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
     

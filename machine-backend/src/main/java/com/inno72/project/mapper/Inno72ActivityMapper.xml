@@ -55,7 +55,9 @@
 			LEFT JOIN inno72_activity_plan ap ON ap.activity_id = a.id
 			LEFT JOIN inno72_user u ON u.id =a.manager_id
 			where a.is_delete = 0 
-			<if test="code !=null and code !='' ">and a.seller_id = #{code}</if>
+			<if test="code ==1"> and NOW() &lt;  ap.start_time </if>
+			<if test="code ==2"> and (NOW() BETWEEN ap.start_time and ap.end_time ) </if>
+			<if test="code ==3"> and NOW() &gt; ap.end_time  </if>
 			<if test="keyword !=null and keyword !='' ">
 			and ( a.name LIKE '%${keyword}%' or m.merchant_name LIKE '%${keyword}%' OR s.shop_name LIKE '%${keyword}%')
 			</if>
