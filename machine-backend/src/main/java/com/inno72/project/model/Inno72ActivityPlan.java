@@ -50,6 +50,12 @@ public class Inno72ActivityPlan {
     private LocalDateTime endTime;
 
     /**
+     * 同一用户获得商品最大次数
+     */
+    @Column(name = "user_max_times")
+    private String userMaxTimes;
+    
+    /**
      * 奖品类型（100100商品，100200优惠券，100300商品+优惠券）
      */
     @Column(name = "prize_type")
@@ -180,7 +186,17 @@ public class Inno72ActivityPlan {
         this.endTime = endTime;
     }
 
-    /**
+    
+    
+    public String getUserMaxTimes() {
+		return userMaxTimes;
+	}
+
+	public void setUserMaxTimes(String userMaxTimes) {
+		this.userMaxTimes = userMaxTimes;
+	}
+
+	/**
      * 获取奖品类型（100100商品，100200优惠券，100300商品+优惠券）
      *
      * @return prize_type - 奖品类型（100100商品，100200优惠券，100300商品+优惠券）

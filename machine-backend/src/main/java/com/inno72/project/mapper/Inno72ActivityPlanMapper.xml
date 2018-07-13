@@ -10,6 +10,7 @@
     <result column="game_id" jdbcType="VARCHAR" property="gameId" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="user_max_times" jdbcType="INTEGER" property="userMaxTimes" />
     <result column="prize_type" jdbcType="VARCHAR" property="prizeType" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
@@ -69,7 +70,7 @@
   <result column="state" property="state"/>
  </resultMap>
   
-  <select id="selectAreaMachineList" parameterType="String" resultMap="ResultAreaMachineMap">
+  <select id="selectAreaMachineList" parameterType="java.util.Map" resultMap="ResultAreaMachineMap">
   		SELECT
 			a.*,
 			m.id AS machine_id,

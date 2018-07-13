@@ -9,6 +9,7 @@ import com.inno72.project.vo.Inno72AdminAreaVo;
 import com.inno72.common.ResultPages;
 
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +30,7 @@ public class ActivityPlanController {
     private ActivityPlanService activityPlanService;
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> add(Inno72ActivityPlan activityPlan) {
+    public Result<String> add(@RequestBody Inno72ActivityPlanVo activityPlan) {
         activityPlanService.saveActPlan(activityPlan);
         return ResultGenerator.genSuccessResult();
     }
