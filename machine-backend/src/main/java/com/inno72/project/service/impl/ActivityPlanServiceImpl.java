@@ -272,17 +272,5 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		return 0;
 	}
 	
-	
-	public static void main(String bbb[]) {		
-		
-		 Pattern pattern=Pattern.compile("^([-+]?\\d{0,6})(\\.\\d{2})?"); // 判断小数点后2位的数字的正则表达式
-	        Matcher match=pattern.matcher("10000"); 
-	           System.out.println(match.matches());
-	        
-
-		
-		
-	}
-	
 
 }
