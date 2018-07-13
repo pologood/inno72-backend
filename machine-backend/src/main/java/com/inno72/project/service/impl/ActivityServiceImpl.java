@@ -1,8 +1,6 @@
 package com.inno72.project.service.impl;
 
 
-import tk.mybatis.mapper.entity.Condition;
-
 import com.inno72.common.AbstractService;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
@@ -112,12 +110,9 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 	}
 	
 	@Override
-	public List<Inno72Activity> getList(Inno72Activity model) {
+	public List<Inno72Activity> getList() {
 		logger.info("---------------------获取活动列表-------------------");
-		model.setIsDelete(0);
-		Condition condition = new Condition( Inno72Activity.class);
-	   	condition.createCriteria().andEqualTo(model);
-		return super.findByCondition(condition);
+		return inno72ActivityMapper.selectUnPlanList();
 	}
 
 	@Override

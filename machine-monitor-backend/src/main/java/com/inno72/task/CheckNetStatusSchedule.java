@@ -43,10 +43,10 @@ public class CheckNetStatusSchedule {
 		log.info("检查并修改网络状态的定时任务，开始执行");
 		//获取当前时间10分钟后的时间
 		LocalDateTime localDateTime = LocalDateTime.now();
-		LocalDateTime after = localDateTime.plusMinutes(10);
+		LocalDateTime before = localDateTime.minusMinutes(10);
 		//查询库
 		Query query = new Query();
-		query.addCriteria(Criteria.where("createTime").lte(after));
+		query.addCriteria(Criteria.where("createTime").lte(before));
 		List<MachineLogInfo> list= mongoTpl.find(query,MachineLogInfo.class,"MachineLogInfo");
 		log.info("网络断开的机器有{}台",list.size());
 		if(null != list){

@@ -80,6 +80,7 @@ public class SupplyChannelServiceImplHist extends AbstractService<Inno72SupplyCh
 		return ResultGenerator.genSuccessResult(supplyChannel);
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Result getSupplyChannel(Inno72SupplyChannelHist supplyChannel) {
 		String machineId = supplyChannel.getMachineId();

@@ -39,8 +39,13 @@ public class SendMsgToClientController {
 			String result = GZIPUtil.compress(AesUtils.encrypt(JSON.toJSONString(msg)));
 			String machinKey = CommonConstants.REDIS_BASE_PATH + msg.getMachineId();
 			String sessionId = redisUtil.get(machinKey);
-			boolean sr = SocketHolder.send(sessionId, result);
-			map.put(msg.getMachineId(), sr ? "发送成功" : "发送失败");
+			if (!com.inno72.common.utils.StringUtil.isEmpty(sessionId)) {
+				boolean sr = SocketHolder.send(sessionId, result);
+				map.put(msg.getMachineId(), sr ? "发送成功" : "发送失败");
+			} else {
+				map.put(msg.getMachineId(), "发送失败");
+
+			}
 		}
 		return ResultGenerator.genSuccessResult(map);
 	}

@@ -7,11 +7,13 @@ import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
+import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
 import com.inno72.goods.mapper.Inno72GoodsMapper;
 import com.inno72.goods.model.Inno72Goods;
 import com.inno72.goods.service.GoodsService;
 import com.inno72.oss.OSSUtil;
+import com.inno72.system.model.Inno72User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,35 +43,72 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
     private Inno72GoodsMapper inno72GoodsMapper;
 
     @Override
-	public void save(Inno72Goods goods) {
+	public Result<String> saveModel(Inno72Goods model) {
     	logger.info("----------------商品添加--------------");
+		SessionData session = CommonConstants.SESSION_DATA;
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
+		int n = inno72GoodsMapper.getCount(model.getCode());
+		if (n>0) {
+			logger.info("商品编码已存在");
+			return Results.failure("商品编码已存在");
+		}
+		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		String id=StringUtil.getUUID();
-		goods.setId(id);
-		goods.setCreateId("");
-		goods.setUpdateId("");
+		model.setId(id);
+		model.setCreateId(userId);
+		model.setUpdateId(userId);
 		
-		super.save(goods);
+		super.save(model);
+		return Results.success("操作成功");
 	}
 
 	@Override
-	public void update(Inno72Goods model) {
+	public Result<String> updateModel(Inno72Goods model) {
 		logger.info("----------------商品修改--------------");
+		SessionData session = CommonConstants.SESSION_DATA;
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
+		int n = inno72GoodsMapper.getCount(model.getCode());
+		Inno72Goods g = inno72GoodsMapper.selectByPrimaryKey(model.getId());
+		if (n>0 && !g.getCode().equals(model.getCode())) {
+			logger.info("商品编码已存在");
+			return Results.failure("商品编码已存在,请确认");
+		}
 		
-		model.setUpdateId("");
+		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+		
+		model.setUpdateId(userId);
+		model.setUpdateTime(LocalDateTime.now());
 		super.update(model);
+		return Results.success("操作成功");
+		
 	}
 
 	@Override
 	public Result<String> delById(String id) {
 		logger.info("----------------商品删除--------------");
+		SessionData session = CommonConstants.SESSION_DATA;
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
 		int n=inno72GoodsMapper.selectIsUseing(id);
 		if (n>0) {
 			return Results.failure("商品使用中，不能删除！");
 		}
-		
+		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		Inno72Goods model = inno72GoodsMapper.selectByPrimaryKey(id);
 		model.setIsDelete(1);//0正常，1下架
-		model.setUpdateId("");
+		model.setUpdateId(userId);
+		model.setUpdateTime(LocalDateTime.now());
 		super.update(model);
 		return ResultGenerator.genSuccessResult();
 	}

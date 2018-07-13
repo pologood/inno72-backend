@@ -98,22 +98,25 @@ public class SocketIOStartHandler {
 			@Override
 			public void monitorResponse(String key, String data, Map<String, List<String>> params) {
 				log.info("推送监控消息，执行开始");
-				// 解压缩以及解密数据
+				// 将机器系统监控信息存入mongo数据库中
 				String message = AesUtils.decrypt(GZIPUtil.uncompress(data));
-				// 获取机器Id
 				SystemStatus systemStatus = JSONObject.parseObject(message, SystemStatus.class);
+				systemStatus.setCreateTime(LocalDateTime.now());
 				String machineId = systemStatus.getMachineId();
-				log.info("推送监控消息执行中，machineId：{}", machineId);
+				Query querySystemStatus = new Query();
+				querySystemStatus.addCriteria(Criteria.where("machineId").is(machineId));
+				mongoTpl.remove(querySystemStatus, "SystemStatus");
+				mongoTpl.save(systemStatus, "SystemStatus");
+				log.info("推送监控消息执行中，machineId：{}机器的系统信息已保存", machineId);
+				// 将当前时间与机器Id维护到机器日志表中
 				MachineLogInfo machineLogInfo = new MachineLogInfo();
 				machineLogInfo.setMachineId(machineId);
 				machineLogInfo.setCreateTime(LocalDateTime.now());
-				// 删除原有数据，保留最新一条
-				// 将机器Id与时间缓存到mangoDB中
 				Query query = new Query();
 				query.addCriteria(Criteria.where("machineId").is(machineId));
 				mongoTpl.remove(query, "MachineLogInfo");
 				mongoTpl.save(machineLogInfo, "MachineLogInfo");
-				//判断是否在断网机器表中存在，如果存在,修改机器主表中网络状态
+				// 判断是否在断网机器表中存在，如果存在,修改机器主表中网络状态
 				Query queryNetOffMachine = new Query();
 				queryNetOffMachine.addCriteria(Criteria.where("machineId").is(machineId));
 				Boolean flag = mongoTpl.exists(query,"NetOffMachineInfo");
@@ -123,8 +126,8 @@ public class SocketIOStartHandler {
 					String result = HttpClient.post(url, "");
 					JSONObject jsonObject = JSONObject.parseObject(result);
 					Integer resultCdoe = jsonObject.getInteger("code");
-					if(!CommonConstants.RESULT_SUCCESS.equals(resultCdoe)){
-						log.info("修改机器主表网络状态失败，result：{}",result);
+					if(CommonConstants.RESULT_SUCCESS.equals(resultCdoe)){
+						mongoTpl.remove(query, "NetOffMachineInfo");
 					}
 				}
 

@@ -1,5 +1,10 @@
 package com.inno72.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
+
+import java.time.LocalDateTime;
+
 /**
  * @package com.inno72.model
  * @auther wxt
@@ -32,6 +37,19 @@ public class SystemStatus {
     private long sdFree;
     private long sdTotle;
     private String ping;
+    /**
+     * 创建时间
+     */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    private LocalDateTime createTime;
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
 
     public String getPing() {
         return ping;

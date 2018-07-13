@@ -12,7 +12,6 @@ import com.inno72.machine.mapper.Inno72LocaleMapper;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.service.LocaleService;
 import com.inno72.machine.vo.Inno72LocaleVo;
-import com.inno72.model.Inno72AdminArea;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,21 +107,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		params.put("keyword", keyword);
 		
 		List<Inno72LocaleVo> list = inno72LocaleMapper.selectByPage(params);
-		Inno72AdminArea area= new Inno72AdminArea();
 		
-		for (Inno72LocaleVo inno72LocaleVo : list) {
-			StringBuffer areaNmae=new StringBuffer();
-			area =inno72AdminAreaMapper.selectByCode(inno72LocaleVo.getAreaCode());
-			areaNmae.append(area.getProvince());
-			areaNmae.append(area.getCity());
-			areaNmae.append(area.getDistrict());
-			if (!area.getCircle().equals("其他")) {
-				areaNmae.append(area.getCircle());
-			}
-			inno72LocaleVo.setAreaName(areaNmae.toString());
-			int userNum= inno72LocaleMapper.selectIsUseing(inno72LocaleVo.getId());
-			inno72LocaleVo.setUserNum(userNum);
-		}
 		return list;
 	}
 	

@@ -7,6 +7,12 @@ public class Inno72ActivityVo extends Inno72Activity{
     private String state;
     
     private String prizeType;
+    
+    private String shopName;
+    
+    private String merchantName;
+    
+    
 
 	public String getState() {
 		return state;
@@ -24,6 +30,23 @@ public class Inno72ActivityVo extends Inno72Activity{
 		this.prizeType = prizeType;
 	}
 
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+	public String getMerchantName() {
+		return merchantName;
+	}
+
+	public void setMerchantName(String merchantName) {
+		this.merchantName = merchantName;
+	}
+
+	
     
     
 }

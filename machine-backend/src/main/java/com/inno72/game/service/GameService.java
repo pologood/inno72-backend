@@ -15,6 +15,10 @@ public interface GameService extends Service<Inno72Game> {
 
 	Result<String> delById(String id);
 
-	Result<String> matchMachine(String gameId, String machineIds);
+	List<Inno72Game> getList(Inno72Game model);
+
+	Result<String> saveModel(Inno72Game model);
+
+	Result<String> updateModel(Inno72Game model);
 
 }

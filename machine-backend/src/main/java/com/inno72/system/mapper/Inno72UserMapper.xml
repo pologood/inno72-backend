@@ -21,7 +21,7 @@
 	<select id="selectUsersByPage" parameterType="java.util.Map"
 		resultMap="BaseResultMap">
 
-		SELECT u.*,group_concat(d.name,'') dept_name,group_concat(r.name,'') roles FROM inno72_user u
+		SELECT u.*,group_concat( distinct d.name,'') dept_name,group_concat(distinct r.name,'') roles FROM inno72_user u
 		left join inno72_user_dept ud on u.id=ud.user_id
 		left join inno72_dept d on ud.dept_id=d.id
 		left join inno72_user_role ur on u.id=ur.user_id
