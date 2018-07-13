@@ -1,14 +1,8 @@
 package com.inno72.goods.service.impl;
 
+import com.inno72.common.*;
 import tk.mybatis.mapper.entity.Condition;
 
-import com.inno72.common.AbstractService;
-import com.inno72.common.CommonConstants;
-import com.inno72.common.Result;
-import com.inno72.common.ResultGenerator;
-import com.inno72.common.Results;
-import com.inno72.common.SessionData;
-import com.inno72.common.StringUtil;
 import com.inno72.goods.mapper.Inno72GoodsMapper;
 import com.inno72.goods.model.Inno72Goods;
 import com.inno72.goods.service.GoodsService;
@@ -165,20 +159,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 	public Result<String> uploadImage(MultipartFile file) {
 		if ( file.getSize() > 0) {
 			//调用上传图片
-			try {
-				String originalFilename = file.getOriginalFilename();
-				String typeName = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
-				String name =StringUtil.getUUID()+ typeName;
-				String path = CommonConstants.OSS_PATH+"/good/"+name;
-				OSSUtil.uploadByStream(file.getInputStream(),path);
-				return Results.success(path);
-			} catch (IOException e) {
-				e.printStackTrace();
-				return Results.failure("图片处理失败！");
-			} catch (Exception e) {
-				e.printStackTrace();
-				return Results.failure("图片处理失败！");
-			}
+			UploadUtil.uploadImage(file,"goods");
 		}
 		logger.info("[out-uploadImg]-空");
 		return Results.success("");
