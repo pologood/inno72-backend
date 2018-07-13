@@ -24,7 +24,7 @@
     
     <result column="activityName" jdbcType="VARCHAR" property="activityName" />
   </resultMap>
-  
+  <!-- 计划列表-->
   <select id="selectPlanList" parameterType="java.util.Map" resultMap="VoResultMap">
 		SELECT
 			ap.id,
@@ -51,7 +51,7 @@
 		</if>
 		ORDER BY a.update_time DESC
   </select>
-  
+  <!-- 联动区域机器列表-->
   <resultMap id="ResultAreaMachineMap" type="com.inno72.project.vo.Inno72AdminAreaVo">
     <id column="code" jdbcType="VARCHAR" property="code" />
     <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
@@ -92,7 +92,7 @@
 		 ]]>)
 		</if>
   </select>
-  
+  <!-- 查询时间段内排期的机器-->
   <select id="selectPlanedMachine" parameterType="java.util.Map" resultType="String">
   		SELECT machine_id FROM inno72_activity_plan ap
 			LEFT JOIN inno72_activity_plan_machine apm ON apm.activity_plan_id = ap.id
@@ -102,6 +102,64 @@
 		 	#{endTime} BETWEEN ap.start_time AND ap.end_time
 		 ]]>
 		 )
+  </select>
+  
+  <!-- 排期计划详情-->
+  <resultMap id="ResultPlanDetailMap" type="com.inno72.project.vo.Inno72ActivityPlanVo">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="game_id" jdbcType="VARCHAR" property="gameId" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="user_max_times" jdbcType="INTEGER" property="userMaxTimes" />
+    <result column="prize_type" jdbcType="VARCHAR" property="prizeType" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="activityName" jdbcType="VARCHAR" property="activityName" />
+    <association property="goods" resultMap="goodsResult" />
+    <association property="coupons" resultMap="couponsResult" />
+  </resultMap>
+  
+  <resultMap id="goodsResult" type="com.inno72.project.model.Inno72ActivityPlanGameResult">
+	  <result column="goods_id" property="prizeId" />
+	  <result column="goods_result_code" property="resultCode"/>
+	  <result column="goods_result_remark" property="resultRemark"/>
+	  <result column="goods_result_remark" property="prizeType" />
+</resultMap>
+ 
+ <resultMap id="couponsResult" type="com.inno72.project.vo.Inno72CouponVo">
+ <result column="coupons_code" property="code" />
+	  <result column="coupons_name" property="name"/>
+	  <result column="coupons_result_code" property="resultCode"/>
+	  <result column="coupons_result_remark" property="resultRemark"/>
+	  <result column="coupons_prize_type" property="prizeType" />
+ </resultMap>
+ 
+ <select id="selectPlanDetail" parameterType="String" resultMap="ResultPlanDetailMap">
+  		SELECT
+			ap.*, 
+			rg.prize_id AS goods_id,
+			rg.result_code AS goods_result_code,
+			rg.result_remark AS goods_result_remark,
+			rg.prize_type AS goods_prize_type,
+			rc.result_code AS coupons_result_code,
+			rc.result_remark AS coupons_result_remark,
+			rc.prize_type AS coupons_prize_type,
+			co.code AS coupons_code,
+			co.name AS coupons_name,
+			a.name AS activityName
+		FROM
+			inno72_activity_plan ap
+			LEFT JOIN inno72_activity_plan_game_result rg ON rg.activity_plan_id = ap.id and rg.prize_type=1
+			LEFT JOIN inno72_activity_plan_game_result rc ON rc.activity_plan_id = ap.id and rc.prize_type=2
+			LEFT JOIN inno72_coupon co ON co.id = rc.prize_id
+			LEFT JOIN inno72_activity a ON a.id = ap.activity_id 
+		WHERE ap.is_delete =0
+			and ap.id=#{id}
   </select>
   
   
