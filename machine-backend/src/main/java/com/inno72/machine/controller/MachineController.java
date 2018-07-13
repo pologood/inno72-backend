@@ -17,9 +17,15 @@ import com.inno72.common.ResultPages;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.vo.ChannelListVo;
+import com.inno72.machine.vo.MachineNetInfo;
 import com.inno72.machine.vo.MachineAppStatus;
 import com.inno72.machine.vo.MachineStatusVo;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
@@ -60,15 +66,14 @@ public class MachineController {
 	 * 更新机器网络状态
 	 *
 	 * @param list
-	 * @param netStatus
 	 * @return
 	 */
 	@RequestMapping(value = "/updateMachineListNetStatus", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<String>> updateMachineListNetStatus(@RequestParam List<String> list,
-			@RequestParam Integer netStatus) {
-		return machineService.updateMachineListNetStatus(list, netStatus);
+	public Result<List<MachineNetInfo>> updateMachineListNetStatus(@RequestBody List<MachineNetInfo> list) {
+		return machineService.updateMachineListNetStatus(list);
 
 	}
+
 
 	/**
 	 * 查看机器列表
@@ -138,7 +143,7 @@ public class MachineController {
 
 	/**
 	 * 查询机器状态
-	 * 
+	 *
 	 * @param machineId
 	 * @return
 	 */
@@ -150,7 +155,7 @@ public class MachineController {
 
 	/**
 	 * 查询app状态
-	 * 
+	 *
 	 * @param machineId
 	 * @return
 	 */
@@ -162,7 +167,7 @@ public class MachineController {
 
 	/**
 	 * 更新数据
-	 * 
+	 *
 	 * @param machineId
 	 * @param updateStatus
 	 * @return

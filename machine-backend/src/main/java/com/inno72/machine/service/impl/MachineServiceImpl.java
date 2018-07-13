@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import javax.annotation.Resource;
 
+import com.inno72.machine.vo.MachineNetInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -217,8 +218,10 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	}
 
 	@Override
-	public Result<List<String>> updateMachineListNetStatus(List<String> list, Integer netStatus) {
-		for (String machineCode : list) {
+	public Result<List<MachineNetInfo>> updateMachineListNetStatus(List<MachineNetInfo> list) {
+		for(MachineNetInfo machineNetInfo : list){
+			String machineCode = machineNetInfo.getMachineCode();
+			Integer netStatus = machineNetInfo.getNetStatus();
 			Inno72Machine machine = findBy("machineCode", machineCode);
 			if (machine != null) {
 				if (!machine.getNetStatus().equals(netStatus)) {
