@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.inno72.common.Result;
 import com.inno72.common.ResultPages;
 import com.inno72.system.model.Inno72User;
+import com.inno72.system.model.Inno72UserRole;
 import com.inno72.system.service.UserService;
 
 /**
@@ -35,5 +36,10 @@ public class UserController {
 	@RequestMapping(value = "/auth", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> auth(@RequestParam() String userId, @RequestParam() String roleIds) {
 		return userService.auth(userId, roleIds);
+	}
+
+	@RequestMapping(value = "/queryUserRoles", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Inno72UserRole>> queryUserRoles(@RequestParam() String userId) {
+		return userService.queryUserRoles(userId);
 	}
 }

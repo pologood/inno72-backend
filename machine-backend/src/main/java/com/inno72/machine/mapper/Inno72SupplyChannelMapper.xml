@@ -1,23 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.inno72.machine.mapper.Inno72SupplyChannelMapper">
-  <resultMap id="BaseResultMap" type="com.inno72.machine.model.Inno72SupplyChannel">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="code" jdbcType="VARCHAR" property="code" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="status" jdbcType="INTEGER" property="status" />
-    <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
-    <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
-    <result column="volume_count" jdbcType="INTEGER" property="volumeCount" />
-    <result column="goods_count" jdbcType="INTEGER" property="goodsCount" />
-    <result column="create_id" jdbcType="VARCHAR" property="createId" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
-    <result column="work_status" jdbcType="INTEGER" property="workStatus" />
-  </resultMap>
+	<resultMap id="BaseResultMap" type="com.inno72.machine.model.Inno72SupplyChannel">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="code" jdbcType="VARCHAR" property="code" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="status" jdbcType="INTEGER" property="status" />
+		<result column="machine_id" jdbcType="VARCHAR" property="machineId" />
+		<result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
+		<result column="volume_count" jdbcType="INTEGER" property="volumeCount" />
+		<result column="goods_count" jdbcType="INTEGER" property="goodsCount" />
+		<result column="create_id" jdbcType="VARCHAR" property="createId" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="update_id" jdbcType="VARCHAR" property="updateId" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+		<result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+		<result column="work_status" jdbcType="INTEGER" property="workStatus" />
+	</resultMap>
+
+	<resultMap id="VoResultMap" type="com.inno72.machine.vo.ChannelListVo">
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="code" jdbcType="VARCHAR" property="code" />
+		<result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+		<result column="goods_price" jdbcType="DECIMAL" property="goodsPrice" />
+		<result column="volume_count" jdbcType="INTEGER" property="volumeCount" />
+		<result column="goods_count" jdbcType="INTEGER" property="goodsCount" />
+		<result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+		<result column="work_status" jdbcType="INTEGER" property="workStatus" />
+		<result column="reason" jdbcType="VARCHAR" property="reason" />
+	</resultMap>
+
+	<select id="selectChannelListByMachineId" parameterType="String"
+		resultMap="VoResultMap">
+		select sc.id,sc.code,g.name goods_name,g.price goods_price,sc.volume_count,
+		sc.goods_count,sc.is_delete,sc.work_status,scs.result reason from
+		inno72_supply_channel sc
+		left join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id
+		left join inno72_goods g on scg.goods_id=g.id
+		left join inno72_supply_channel_status scs on sc.work_status=scs.code
+		where sc.machine_id=#{id}
+	</select>
 </mapper>

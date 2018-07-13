@@ -80,6 +80,8 @@ public class Inno72Machine {
 	@Column(name = "device_id")
 	private String deviceId;
 
+	private String address;
+
 	public enum Machine_Status {
 		// 在厂测试
 		INFACTORY(1),
@@ -309,6 +311,14 @@ public class Inno72Machine {
 	 */
 	public void setDeviceId(String deviceId) {
 		this.deviceId = deviceId;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 }

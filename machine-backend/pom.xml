@@ -68,6 +68,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+    <groupId>com.belerweb</groupId>
+    <artifactId>pinyin4j</artifactId>
+    <version>2.5.0</version>
+</dependency>
+		<dependency>
 			<groupId>tk.mybatis</groupId>
 			<artifactId>mapper</artifactId>
 			<version>${mapper.version}</version>

@@ -13,10 +13,11 @@ import com.inno72.project.vo.Inno72AdminAreaVo;
  */
 public interface ActivityPlanService extends Service<Inno72ActivityPlan> {
 
-	Result<String> saveActPlan(Inno72ActivityPlan activityPlan);
+	Result<String> saveActPlan(Inno72ActivityPlanVo activityPlan);
 
 	List<Inno72ActivityPlanVo> selectByPage(Object condition);
 
 	List<Inno72AdminAreaVo> selectAreaMachineList(String code,String level);
+
 
 }

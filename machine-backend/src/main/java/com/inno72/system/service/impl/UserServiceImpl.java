@@ -77,6 +77,12 @@ public class UserServiceImpl extends AbstractService<Inno72User> implements User
 		return Results.success();
 	}
 
-	
+	@Override
+	public Result<List<Inno72UserRole>> queryUserRoles(String userId) {
+		Condition condition = new Condition(Inno72UserRole.class);
+		condition.createCriteria().andEqualTo("userId", userId);
+		List<Inno72UserRole> urs = inno72UserRoleMapper.selectByCondition(condition);
+		return Results.success(urs);
+	}
 
 }
