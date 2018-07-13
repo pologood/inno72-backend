@@ -11,6 +11,9 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +30,9 @@ import com.inno72.machine.model.Inno72SupplyChannel;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.service.SupplyChannelService;
 import com.inno72.machine.vo.ChannelListVo;
+import com.inno72.machine.vo.MachineStatus;
+import com.inno72.machine.vo.MachineStatusVo;
+import com.inno72.machine.vo.SystemStatus;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
 import com.inno72.system.model.Inno72User;
 
@@ -43,6 +49,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	private Inno72MachineMapper inno72MachineMapper;
 	@Autowired
 	private SupplyChannelService supplyChannelService;
+	@Autowired
+	private MongoOperations mongoTpl;
 
 	@Override
 	public Result<String> initMachine(String deviceId, String channelJson) {
@@ -195,7 +203,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<List<String>> updateMachineListNetStatus(List<String> list, Integer netStatus) {
-		for(String machineCode : list){
+		for (String machineCode : list) {
 			Inno72Machine machine = findBy("machineCode", machineCode);
 			if (machine != null) {
 				if (!machine.getNetStatus().equals(netStatus)) {
@@ -209,5 +217,25 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		return Results.success(list);
 	}
 
+	@Override
+	public Result<MachineStatusVo> machineStatus(String machineId) {
+
+		Inno72Machine machine = findById(machineId);
+		if (machine == null) {
+			return Results.failure("机器id传入错误");
+		}
+		MachineStatusVo result = new MachineStatusVo();
+		Query query = new Query();
+		query.addCriteria(Criteria.where("machineId").is(machine.getMachineCode()));
+		List<MachineStatus> ms = mongoTpl.find(query, MachineStatus.class, "MachineStatus");
+		if (ms != null && !ms.isEmpty()) {
+			result.setMachineStatus(ms.get(0));
+		}
+		List<SystemStatus> ss = mongoTpl.find(query, SystemStatus.class, "SystemStatus");
+		if (ss != null && !ss.isEmpty()) {
+			result.setSystemStatus(ss.get(0));
+		}
+		return Results.success(result);
+	}
 
 }

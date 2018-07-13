@@ -1,5 +1,7 @@
 package com.inno72.machine.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -9,16 +11,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.bind.annotation.*;
 
 import com.inno72.common.Result;
 import com.inno72.common.ResultPages;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.vo.ChannelListVo;
+import com.inno72.machine.vo.MachineStatusVo;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
-
-import java.util.List;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
@@ -54,6 +54,7 @@ public class MachineController {
 		return machineService.updateNetStatus(machineCode, netStatus);
 
 	}
+
 	/**
 	 * 更新机器网络状态
 	 *
@@ -62,11 +63,11 @@ public class MachineController {
 	 * @return
 	 */
 	@RequestMapping(value = "/updateMachineListNetStatus", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<String>> updateMachineListNetStatus(@RequestParam List<String> list, @RequestParam Integer netStatus) {
+	public Result<List<String>> updateMachineListNetStatus(@RequestParam List<String> list,
+			@RequestParam Integer netStatus) {
 		return machineService.updateMachineListNetStatus(list, netStatus);
 
 	}
-
 
 	/**
 	 * 查看机器列表
@@ -131,6 +132,18 @@ public class MachineController {
 	@RequestMapping(value = "/updateGoodsCount", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> updateGoodsCount(@RequestBody List<UpdateMachineChannelVo> channels) {
 		return machineService.updateGoodsCount(channels);
+
+	}
+
+	/**
+	 * 查询机器状态
+	 * 
+	 * @param machineId
+	 * @return
+	 */
+	@RequestMapping(value = "/machineStatus", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<MachineStatusVo> machineStatus(@RequestParam String machineId) {
+		return machineService.machineStatus(machineId);
 
 	}
 
