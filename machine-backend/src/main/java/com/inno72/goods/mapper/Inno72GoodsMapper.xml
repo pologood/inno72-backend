@@ -45,4 +45,9 @@
 		SELECT count(1) FROM inno72_supply_channel_goods where goods_id=#{id}
   </select>
   
+  <select id="getCount" parameterType="String" resultType="int">
+		SELECT count(1) FROM inno72_goods g where g.is_delete = 0
+		<if test="code !=null and code !=''">and g.code =#{code} </if>
+  </select>
+  
 </mapper>

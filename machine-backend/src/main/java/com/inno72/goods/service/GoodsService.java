@@ -24,5 +24,9 @@ public interface GoodsService extends Service<Inno72Goods> {
 
 	Result<String> uploadImage(MultipartFile file);
 
+	Result<String> saveModel(Inno72Goods model);
+
+	Result<String> updateModel(Inno72Goods model);
+
 
 }

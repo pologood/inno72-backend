@@ -36,7 +36,7 @@ public class GoodsController {
     		if(bindingResult.hasErrors()){
     			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
             }else{
-            	goodsService.save(goods);
+            	return goodsService.saveModel(goods);
             }
 		} catch (Exception e) {
 			ResultGenerator.genFailResult("操作失败！");
@@ -47,21 +47,19 @@ public class GoodsController {
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> delete(@RequestParam String id) {
     	try {
-            goodsService.delById(id);
+    		return goodsService.delById(id);
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
-        return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> update(Inno72Goods goods) {
     	try {
-    		goodsService.update(goods);
+    		return goodsService.updateModel(goods);
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
-        return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})

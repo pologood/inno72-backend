@@ -1,6 +1,5 @@
 package com.inno72.project.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.inno72.common.AbstractService;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
@@ -29,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,8 +69,6 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		}
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		try {
-			
-		
 			//保存计划信息
 			String activityPlanId = StringUtil.getUUID();
 			activityPlan.setId(activityPlanId);
