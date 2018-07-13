@@ -238,6 +238,7 @@ public class DDServiceImpl implements DDService {
 	}
 
 	private Result<String> getLoginToken() {
+		logger.info(JSON.toJSONString(machineBackendProperties.getProps()));
 		String appid = machineBackendProperties.get("ddAppid");
 		String appsecret = machineBackendProperties.get("ddAppsecret");
 		String url = MessageFormat.format("https://oapi.dingtalk.com/sns/gettoken?appid={0}&appsecret={1}", appid,
