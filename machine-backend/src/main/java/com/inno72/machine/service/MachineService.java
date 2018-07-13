@@ -6,6 +6,7 @@ import com.inno72.common.Result;
 import com.inno72.common.Service;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.vo.ChannelListVo;
+import com.inno72.machine.vo.UpdateMachineChannelVo;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
@@ -22,8 +23,8 @@ public interface MachineService extends Service<Inno72Machine> {
 
 	Result<List<ChannelListVo>> channelList(String id);
 
-	Result<String> deleteChannel(String channelId, Integer status);
+	Result<String> deleteChannel(List<UpdateMachineChannelVo> channels);
 
-	Result<String> updateGoodsCount(String channelId, Integer count);
+	Result<String> updateGoodsCount(List<UpdateMachineChannelVo> channels);
 
 }

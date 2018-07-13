@@ -22,6 +22,7 @@ import com.inno72.machine.model.Inno72SupplyChannel;
 import com.inno72.machine.model.Inno72SupplyChannelHist;
 import com.inno72.machine.service.SupplyChannelService;
 import com.inno72.machine.vo.ChannelListVo;
+import com.inno72.machine.vo.UpdateMachineChannelVo;
 import com.inno72.system.model.Inno72User;
 
 import tk.mybatis.mapper.entity.Condition;
@@ -68,22 +69,21 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	}
 
 	@Override
-	public Result<String> deleteChannel(String channelId, Integer status) {
+	public Result<String> deleteChannel(List<UpdateMachineChannelVo> channels) {
 		SessionData session = CommonConstants.SESSION_DATA;
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
 			return Results.failure("未找到用户登录信息");
 		}
-		if (StringUtil.isEmpty(channelId)) {
-			return Results.failure("货道id传入错误");
+		if (channels == null) {
+			return Results.failure("货道信息传入错误");
 		}
-		String[] channels = channelId.split(",");
 		String machineId = "";
-		for (String chan : channels) {
-			Inno72SupplyChannel channel = findById(chan);
+		for (UpdateMachineChannelVo chan : channels) {
+			Inno72SupplyChannel channel = findById(chan.getChannelId());
 			if (channel != null) {
-				channel.setIsDelete(status);
+				channel.setIsDelete(chan.getStatus());
 				channel.setUpdateTime(LocalDateTime.now());
 				channel.setUpdateId(mUser.getId());
 				inno72SupplyChannelMapper.updateByPrimaryKeySelective(channel);
@@ -95,25 +95,28 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	}
 
 	@Override
-	public Result<String> updateGoodsCount(String channelId, Integer count) {
+	public Result<String> updateGoodsCount(List<UpdateMachineChannelVo> channels) {
 		SessionData session = CommonConstants.SESSION_DATA;
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
 			return Results.failure("未找到用户登录信息");
 		}
-		Inno72SupplyChannel channel = findById(channelId);
-		if (channel == null) {
-			return Results.failure("货道id传入错误");
+		if (channels == null) {
+			return Results.failure("货道信息传入错误");
 		}
-		channel.setGoodsCount(count);
-		channel.setUpdateTime(LocalDateTime.now());
-		channel.setUpdateId(mUser.getId());
-		int result = inno72SupplyChannelMapper.updateByPrimaryKeySelective(channel);
-		if (result != 1) {
-			return Results.failure("修改商品数量失败");
-		}
-		return Results.success(channel.getMachineId());
-	}
+		String machineId = "";
+		for (UpdateMachineChannelVo chan : channels) {
+			Inno72SupplyChannel channel = findById(chan.getChannelId());
+			if (channel != null) {
+				channel.setGoodsCount(chan.getCount());
+				channel.setUpdateTime(LocalDateTime.now());
+				channel.setUpdateId(mUser.getId());
+				inno72SupplyChannelMapper.updateByPrimaryKeySelective(channel);
+				machineId = channel.getMachineId();
+			}
 
+		}
+		return Results.success(machineId);
+	}
 }
