@@ -3,6 +3,7 @@ package com.inno72.machine.controller;
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,7 @@ import com.inno72.common.ResultPages;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.vo.ChannelListVo;
+import com.inno72.machine.vo.UpdateMachineChannelVo;
 
 import java.util.List;
 
@@ -114,8 +116,8 @@ public class MachineController {
 	 * @return
 	 */
 	@RequestMapping(value = "/deleteChannel", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> deleteChannel(@RequestParam String channelId, @RequestParam Integer status) {
-		return machineService.deleteChannel(channelId, status);
+	public Result<String> deleteChannel(@RequestBody List<UpdateMachineChannelVo> channels) {
+		return machineService.deleteChannel(channels);
 
 	}
 
@@ -127,8 +129,8 @@ public class MachineController {
 	 * @return
 	 */
 	@RequestMapping(value = "/updateGoodsCount", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> updateGoodsCount(@RequestParam String channelId, @RequestParam Integer count) {
-		return machineService.updateGoodsCount(channelId, count);
+	public Result<String> updateGoodsCount(@RequestBody List<UpdateMachineChannelVo> channels) {
+		return machineService.updateGoodsCount(channels);
 
 	}
 
