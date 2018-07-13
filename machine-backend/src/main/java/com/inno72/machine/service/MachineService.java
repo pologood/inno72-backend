@@ -37,4 +37,8 @@ public interface MachineService extends Service<Inno72Machine> {
 
 	Result<String> updateInfo(String machineId, Integer updateStatus);
 
+	Result<String> cutApp(String machineId, String appPackageName);
+
+	Result<String> installApp(String machineId, String appPackageName, String url, Integer versionCode);
+
 }

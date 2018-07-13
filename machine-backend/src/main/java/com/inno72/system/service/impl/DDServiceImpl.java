@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.inno72.common.CommonConstants;
+import com.inno72.common.MachineBackendProperties;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
@@ -50,10 +51,13 @@ public class DDServiceImpl implements DDService {
 	private FunctionService functionService;
 	@Autowired
 	private IRedisUtil redisUtil;
+	@Autowired
+	private MachineBackendProperties machineBackendProperties;
 	// 需要写在配置中心
-	String appid = "dingoa25um8bzdtan7hjgw";
-	String appsecret = "z3ZGL5THRX-qW-dwKi7vrBWNmnKUcSo3R5eLoPK2hA5SR4ITEDtZ_MhD7D5zHf4G";
-	String callback = "http://47.95.217.215:30901/dd";
+	// String appid = "dingoa25um8bzdtan7hjgw";
+	// String appsecret =
+	// "z3ZGL5THRX-qW-dwKi7vrBWNmnKUcSo3R5eLoPK2hA5SR4ITEDtZ_MhD7D5zHf4G";
+	// String callback = "http://47.95.217.215:30901/dd";
 
 	@Override
 	public String process(String data, String signature, String timestamp, String nonce) {
@@ -234,6 +238,8 @@ public class DDServiceImpl implements DDService {
 	}
 
 	private Result<String> getLoginToken() {
+		String appid = machineBackendProperties.get("ddAppid");
+		String appsecret = machineBackendProperties.get("ddAppsecret");
 		String url = MessageFormat.format("https://oapi.dingtalk.com/sns/gettoken?appid={0}&appsecret={1}", appid,
 				appsecret);
 		String result = HttpClient.get(url);

@@ -173,4 +173,33 @@ public class MachineController {
 
 	}
 
+	/**
+	 * 切换app
+	 * 
+	 * @param machineId
+	 * @param appPackageName
+	 * @return
+	 */
+	@RequestMapping(value = "/cutApp", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> cutApp(@RequestParam String machineId, @RequestParam String appPackageName) {
+		return machineService.cutApp(machineId, appPackageName);
+
+	}
+
+	/**
+	 * 安装app
+	 * 
+	 * @param machineId
+	 * @param appPackageName
+	 * @param url
+	 * @param versionCode
+	 * @return
+	 */
+	@RequestMapping(value = "/installApp", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> installApp(@RequestParam String machineId, @RequestParam String appPackageName,
+			@RequestParam String url, @RequestParam Integer versionCode) {
+		return machineService.installApp(machineId, appPackageName, url, versionCode);
+
+	}
+
 }

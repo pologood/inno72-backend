@@ -37,6 +37,8 @@ import com.inno72.machine.service.SupplyChannelService;
 import com.inno72.machine.vo.AppStatus;
 import com.inno72.machine.vo.ChannelListVo;
 import com.inno72.machine.vo.MachineAppStatus;
+import com.inno72.machine.vo.MachineInstallAppBean;
+import com.inno72.machine.vo.MachineStartAppBean;
 import com.inno72.machine.vo.MachineStatus;
 import com.inno72.machine.vo.MachineStatusVo;
 import com.inno72.machine.vo.SendMessageBean;
@@ -281,7 +283,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (machine == null) {
 			return Results.failure("机器id传入错误");
 		}
-		String url = machineBackendProperties.get("sendAppMsgUrl");
 		SendMessageBean msg = new SendMessageBean();
 		msg.setEventType(1);
 		msg.setSubEventType(updateStatus);
@@ -294,14 +295,71 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			}
 			msg.setData(names);
 		}
-		List<SendMessageBean> msgs = new ArrayList<>();
-		msgs.add(msg);
+		return sendMsg(machine.getMachineCode(), msg);
+	}
+
+	@Override
+	public Result<String> cutApp(String machineId, String appPackageName) {
+		Inno72Machine machine = findById(machineId);
+		if (machine == null) {
+			return Results.failure("机器id传入错误");
+		}
+		Query query = new Query();
+		query.addCriteria(Criteria.where("machineId").is(machine.getMachineCode()));
+		List<MachineAppStatus> ms = mongoTpl.find(query, MachineAppStatus.class, "MachineAppStatus");
+		if (ms != null && !ms.isEmpty()) {
+			MachineAppStatus machineAppStatus = ms.get(0);
+			SendMessageBean msg = new SendMessageBean();
+			msg.setEventType(2);
+			msg.setSubEventType(1);
+			msg.setMachineId(machine.getMachineCode());
+			List<MachineStartAppBean> sl = new ArrayList<>();
+			for (AppStatus status : machineAppStatus.getStatus()) {
+				MachineStartAppBean bean = new MachineStartAppBean();
+				bean.setAppPackageName(status.getAppPackageName());
+				Inno72App app = appService.findBy("appPackageName", status.getAppPackageName());
+				bean.setAppType(app.getAppType());
+				if (appPackageName.equals(status.getAppPackageName()) || app.getAppType() == 2) {
+					bean.setStartStatus(1);
+				} else {
+					bean.setStartStatus(2);
+				}
+				sl.add(bean);
+			}
+			msg.setData(sl);
+			return sendMsg(machine.getMachineCode(), msg);
+		}
+		return Results.failure("发送失败");
+	}
+
+	@Override
+	public Result<String> installApp(String machineId, String appPackageName, String url, Integer versionCode) {
+		Inno72Machine machine = findById(machineId);
+		if (machine == null) {
+			return Results.failure("机器id传入错误");
+		}
+		SendMessageBean msg = new SendMessageBean();
+		msg.setEventType(2);
+		msg.setSubEventType(2);
+		msg.setMachineId(machine.getMachineCode());
+		List<MachineInstallAppBean> il = new ArrayList<>();
+		MachineInstallAppBean bean = new MachineInstallAppBean();
+		bean.setAppPackageName(appPackageName);
+		bean.setUrl(url);
+		bean.setVersionCode(versionCode);
+		il.add(bean);
+		msg.setData(il);
+		return sendMsg(machine.getMachineCode(), msg);
+	}
+
+	private Result<String> sendMsg(String machineCode, SendMessageBean... beans) {
+		String url = machineBackendProperties.get("sendAppMsgUrl");
 		try {
-			String result = HttpClient.post(url, JSON.toJSONString(msgs));
+			String result = HttpClient.post(url, JSON.toJSONString(beans));
 			if (!StringUtil.isEmpty(result)) {
 				JSONObject $_result = JSON.parseObject(result);
 				if ($_result.getInteger("code") == 0) {
-					String r = $_result.getJSONObject("data").getString(machine.getMachineCode());
+					String r = $_result.getJSONObject("data").getString(machineCode);
 					if (!"发送成功".equals(r)) {
 						return Results.failure(r);
 					}
