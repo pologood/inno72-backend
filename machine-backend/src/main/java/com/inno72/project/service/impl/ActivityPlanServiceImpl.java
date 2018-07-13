@@ -34,8 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -208,6 +206,134 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	}
 	
 	
+	
+	
+	
+	
+	
+
+	@Override
+	public Result<String> updateModel(Inno72ActivityPlanVo activityPlan) {
+		SessionData session = CommonConstants.SESSION_DATA;
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
+		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+		try {
+			//活动游戏结果 集合
+			List<Inno72ActivityPlanGameResult> insertPlanGameResultList= new ArrayList<>();
+			
+			//组合 保存计划游戏结果
+			List<Inno72ActivityPlanGameResult> goods=activityPlan.getGoods();
+			//排期计划商品管理数据
+			List<Inno72ActivityPlanGoods> insertPlanGoodList= new ArrayList<>();
+			for (Inno72ActivityPlanGameResult inno72ActivityPlanGameResult : goods) {
+				
+				//活动计划商品关联数据
+				Inno72ActivityPlanGoods planGood = new Inno72ActivityPlanGoods();
+				String planGoodId = StringUtil.getUUID();
+				planGood.setId(planGoodId);
+				planGood.setActivityPlanId(activityPlan.getId());
+				planGood.setGoodsId(inno72ActivityPlanGameResult.getPrizeId());
+				
+				//活动游戏结果数据
+				Inno72ActivityPlanGameResult  planGameResult = new Inno72ActivityPlanGameResult();
+				String planGameResultId = StringUtil.getUUID();
+				planGameResult.setId(planGameResultId);
+				planGameResult.setActivityPlanId(activityPlan.getId());
+				planGameResult.setPrizeId(planGoodId);
+				planGameResult.setPrizeType("1");
+				planGameResult.setResultCode(inno72ActivityPlanGameResult.getResultCode());
+				planGameResult.setResultRemark(inno72ActivityPlanGameResult.getResultRemark());
+				
+				insertPlanGoodList.add(planGood);
+				
+				if (insertPlanGameResultList.contains(planGameResult)) {
+					return Results.failure("添加规则有重复");
+				}
+				insertPlanGameResultList.add(planGameResult);
+			}
+			
+			//保存优惠券
+			List<Inno72CouponVo> coupons=activityPlan.getCoupons();
+			List<Inno72Coupon> insertCouponList= new ArrayList<>();
+			
+			for (Inno72CouponVo inno72CouponVo : coupons) {
+				//去重 同一 inno72CouponVo.getCode() 存一个
+				
+				//优惠券数据
+				Inno72Coupon coupon = new Inno72Coupon();
+				String couponId = StringUtil.getUUID();
+				coupon.setId(couponId);
+				coupon.setCode(inno72CouponVo.getCode());
+				coupon.setName(inno72CouponVo.getName());
+				coupon.setActivityPlanId(activityPlan.getId());
+				coupon.setCreateId(userId);
+				coupon.setUpdateId(userId);
+				//活动游戏结果数据
+				Inno72ActivityPlanGameResult  planGameResult = new Inno72ActivityPlanGameResult();
+				String planGameResultId = StringUtil.getUUID();
+				planGameResult.setId(planGameResultId);
+				planGameResult.setActivityPlanId(activityPlan.getId());
+				planGameResult.setPrizeId(couponId);
+				planGameResult.setPrizeType("2");
+				planGameResult.setResultCode(inno72CouponVo.getResultCode());
+				planGameResult.setResultRemark(inno72CouponVo.getResultRemark());
+				
+				insertCouponList.add(coupon);
+				if (insertPlanGameResultList.contains(planGameResult)) {
+					return Results.failure("更新规则有重复");
+				}
+				insertPlanGameResultList.add(planGameResult);
+				
+			}
+			//更新计划
+			int n = inno72ActivityPlanMapper.updateByPrimaryKeySelective(activityPlan);
+			if (n <1) {
+				return Results.failure("计划更新异常");
+			}
+			
+			//批量保存优惠券信息
+			int l =inno72CouponMapper.insertList(insertCouponList);
+			if (l <1) {
+				return Results.failure("优惠券处理异常");
+			}
+			//批量保存计划商品信息
+			inno72ActivityPlanGoodsMapper.insertList(insertPlanGoodList);
+			int p =inno72CouponMapper.insertList(insertCouponList);
+			if (p <1) {
+				return Results.failure("计划商品关联处理异常");
+			}
+			//批量保存计划游戏结果
+			inno72ActivityPlanGameResultMapper.insertList(insertPlanGameResultList);
+			int q =inno72CouponMapper.insertList(insertCouponList);
+			if (q <1) {
+				return Results.failure("游戏结果规则处理异常");
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		} catch (Exception e) {
+			return Results.failure("操作失败！");	
+		}
+		
+		return Results.success();
+	}
 
 	@Override
 	public Result<String> delById(String id) {

@@ -38,12 +38,6 @@ public class Inno72Activity {
     private String sellerId;
     
     /**
-     * 奖品类型
-     */
-    @Column(name = "prize_type")
-    private String prizeType;
-    
-    /**
      * 负责人ID
      */
     @Column(name = "manager_id")
@@ -151,16 +145,6 @@ public class Inno72Activity {
         this.sellerId = sellerId;
     }
     
-    
-
-    public String getPrizeType() {
-		return prizeType;
-	}
-
-	public void setPrizeType(String prizeType) {
-		this.prizeType = prizeType;
-	}
-
 	public String getManagerId() {
 		return managerId;
 	}
