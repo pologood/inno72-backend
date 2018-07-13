@@ -65,7 +65,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	public Result<String> updateNetStatus(String machineCode, Integer netStatus) {
 		Inno72Machine machine = findBy("machineCode", machineCode);
 		if (machine != null) {
-			if (machine.getNetStatus() != netStatus) {
+			if (!machine.getNetStatus().equals(netStatus)) {
 				machine.setNetStatus(netStatus);
 				inno72MachineMapper.updateByPrimaryKeySelective(machine);
 			}
@@ -74,5 +74,22 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		}
 		return Results.success();
 	}
+
+	@Override
+	public Result<List<String>> updateMachineListNetStatus(List<String> list, Integer netStatus) {
+		for(String machineCode : list){
+			Inno72Machine machine = findBy("machineCode", machineCode);
+			if (machine != null) {
+				if (!machine.getNetStatus().equals(netStatus)) {
+					machine.setNetStatus(netStatus);
+					inno72MachineMapper.updateByPrimaryKeySelective(machine);
+				}
+			} else {
+				return Results.failure("机器code传入错误");
+			}
+		}
+		return Results.success(list);
+	}
+
 
 }
