@@ -5,10 +5,9 @@ import java.util.List;
 import com.inno72.common.Result;
 import com.inno72.common.Service;
 import com.inno72.machine.model.Inno72Machine;
-import com.inno72.machine.vo.ChannelListVo;
-import com.inno72.machine.vo.MachineAppStatus;
-import com.inno72.machine.vo.MachineStatusVo;
-import com.inno72.machine.vo.UpdateMachineChannelVo;
+import com.inno72.machine.vo.*;
+
+import java.util.List;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
@@ -19,7 +18,7 @@ public interface MachineService extends Service<Inno72Machine> {
 
 	Result<String> updateNetStatus(String machineCode, Integer netStatus);
 
-	Result<List<String>> updateMachineListNetStatus(List<String> list, Integer netStatus);
+	Result<List<MachineNetInfo>> updateMachineListNetStatus(List<MachineNetInfo> list);
 
 	Result<List<Inno72Machine>> findMachines(String machineCode, String localCode);
 
