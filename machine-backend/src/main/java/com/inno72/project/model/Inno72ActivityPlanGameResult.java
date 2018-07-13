@@ -148,4 +148,22 @@ public class Inno72ActivityPlanGameResult {
     public void setResultRemark(String resultRemark) {
         this.resultRemark = resultRemark;
     }
+
+	@Override
+	public boolean equals(Object obj) {
+		
+		if (obj instanceof Inno72ActivityPlanGameResult) {
+			Inno72ActivityPlanGameResult result= (Inno72ActivityPlanGameResult) obj;
+			if (this.resultCode.equals(result.getResultCode())) {
+				return true;
+			}else {
+				return false;
+			}
+        }
+        return false;
+	}
+    
+    
+    
+    
 }
