@@ -281,7 +281,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (machine == null) {
 			return Results.failure("机器id传入错误");
 		}
-		String url = machineBackendProperties.get("");
+		String url = machineBackendProperties.get("sendAppMsgUrl");
 		SendMessageBean msg = new SendMessageBean();
 		msg.setEventType(1);
 		msg.setSubEventType(updateStatus);
@@ -298,11 +298,15 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		msgs.add(msg);
 		try {
 			String result = HttpClient.post(url, JSON.toJSONString(msgs));
-			if (StringUtil.isEmpty(result)) {
+			if (!StringUtil.isEmpty(result)) {
 				JSONObject $_result = JSON.parseObject(result);
-				String r = $_result.getJSONObject("data").getString(machine.getMachineCode());
-				if (!"发送成功".equals(r)) {
-					return Results.failure(r);
+				if ($_result.getInteger("code") == 0) {
+					String r = $_result.getJSONObject("data").getString(machine.getMachineCode());
+					if (!"发送成功".equals(r)) {
+						return Results.failure(r);
+					}
+				} else {
+					return Results.failure($_result.getString("msg"));
 				}
 			}
 		} catch (Exception e) {
