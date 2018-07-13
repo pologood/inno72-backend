@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.order.mapper.Inno72OrderGoodsMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.order.model.Inno72OrderGoods">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId"/>
+    <result column="order_num" jdbcType="VARCHAR" property="orderNum" />
+    <result column="goods_type" jdbcType="INTEGER" property="goodsType" />
+    <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
+    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="goods_code" jdbcType="VARCHAR" property="goodsCode" />
+    <result column="goods_price" jdbcType="VARCHAR" property="goodsPrice" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+
+  <sql id="Column_List">
+    id,order_id,order_num,goods_type,goods_id,goods_name,goods_code,goods_price,status
+
+  </sql>
+
+  <select id="seleByParam" resultMap="BaseResultMap">
+    select <include refid="Column_List"/>
+    from inno72_order_goods
+    <where>
+      <if test="orderId != null">
+        and order_id=#{orderId}
+      </if>
+      <if test="orderNum != null">
+        and order_num = #{orderNum}
+      </if>
+      <if test="goodsId != null">
+        and goods_id = #{goodsId}
+      </if>
+    </where>
+  </select>
+</mapper>

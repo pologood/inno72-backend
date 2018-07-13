@@ -17,12 +17,18 @@
     <result column="pay_status" jdbcType="VARCHAR" property="payStatus" />
     <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
     <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="ref_order_id" jdbcType="VARCHAR" property="refOrderId"/>
+    <result column="goods_status" jdbcType="INTEGER" property="goodsStatus"/>
     <result column="channel_code" jdbcType="VARCHAR" property="channelCode"/>
     <result column="channel_name" jdbcType="VARCHAR" property="channelName"/>
     <result column="machine_code" jdbcType="VARCHAR" property="machineCode"/>
     <result column="machine_name" jdbcType="VARCHAR" property="machineName"/>
     <result column="gameName" jdbcType="VARCHAR" property="gameName"/>
     <result column="gameRemark" jdbcType="VARCHAR" property="gameRemark"/>
+    <result column="game_user_id" jdbcType="VARCHAR" property="gameUserId"/>
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+    <result column="mer_point_address" jdbcType="VARCHAR" property="merPointAddress"/>
+    <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
 
   </resultMap>
 
@@ -32,14 +38,16 @@
   </sql>
 
   <select id="seleByParamForPage" resultMap="BaseResultMap">
-    select t1.id,t1.order_num,t1.user_id,t1.channel_id,t1.machine_id,t1.game_id,
-    t1.order_time,t1.order_price,t1.order_type,t1.pay_status,t1.pay_time,t1.activity_id,
-    t2.channel_code,t2.channel_name,t3.machine_code,t3.machine_name,
-    t4.name gameName,t4.remark gameRemark
+    select t1.id,t1.order_num,t1.user_id,t1.channel_id,t1.machine_id,
+    t1.order_time,t1.order_price,t1.order_type,t1.pay_status,t1.pay_time,
+    t1.shops_id,t1.shops_name,t1.goods_status,
+    t2.game_user_id,t2.nick_name,t2.mer_point_address,t2.machine_code,
+    t2.activity_name,
+    t4.name gameName
     from inno72_order t1
-    left join inno72_channel t2 on t1.channel_id=t2.id
-    left join inno72_machine t3 on t1.machine_id=t3.id
-    left join inno72_game t4 on t1.game_id=t4.id
+    left join inno72_game_user_life t2 on t1.id=t2.order_id
+    left join inno72_activity_plan t3 on t1.inno72_activity_plan_id=t3.id
+    left join inno72_game t4 on t3.game_id= t4.id
     <where>
       <if test="machineId != null">
         and t1.machine_id = #{machineId}
@@ -50,14 +58,13 @@
       <if test="channelId != null">
         and t1.channel_id = #{channelId}
       </if>
-      <if test="gameId != null">
-        and t1.game_id = #{gameId}
-      </if>
-      <if test="activityId != null">
-        and t1.activity_id = #{activityId}
-      </if>
       <if test="orderType != null">
         and t1.order_type = #{orderType}
+      </if>
+      <if test="keyword != null">
+        and (t2.machine_code like CONCAT('%','${keyword}','%')
+        or t2.activity_name like CONCAT('%','${keyword}','%')
+        or t1.order_num like CONCAT('%','${keyword}','%'))
       </if>
     </where>
     ORDER BY t1.order_time desc
