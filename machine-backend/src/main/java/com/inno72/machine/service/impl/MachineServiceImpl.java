@@ -219,6 +219,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<List<MachineNetInfo>> updateMachineListNetStatus(List<MachineNetInfo> list) {
+
 		for(MachineNetInfo machineNetInfo : list){
 			String machineCode = machineNetInfo.getMachineCode();
 			Integer netStatus = machineNetInfo.getNetStatus();
@@ -229,7 +230,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 					inno72MachineMapper.updateByPrimaryKeySelective(machine);
 				}
 			} else {
-				return Results.failure("机器code传入错误");
+				logger.info("机器id传入错误");
 			}
 		}
 		return Results.success(list);
