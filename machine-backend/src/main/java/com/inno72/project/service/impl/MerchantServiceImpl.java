@@ -96,7 +96,12 @@ public class MerchantServiceImpl extends AbstractService<Inno72Merchant> impleme
 			logger.info("登陆用户为空");
 			return Results.failure("未找到用户登录信息");
 		}
-		
+		if (StringUtil.isEmpty(model.getId())) {
+			return Results.failure("ID不能为空！");
+		}
+		if (StringUtil.isEmpty(model.getMerchantCode())) {
+			return Results.failure("商户编码不能为空！");
+		}
 		Inno72Merchant m = inno72MerchantMapper.selectByPrimaryKey(model.getId());
 		int n= inno72MerchantMapper.getCount(model.getMerchantCode());
 		if (n>0 && !m.getMerchantCode().equals(model.getMerchantCode())) {

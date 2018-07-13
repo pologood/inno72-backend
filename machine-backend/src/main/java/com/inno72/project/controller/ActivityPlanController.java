@@ -30,13 +30,20 @@ public class ActivityPlanController {
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> add(@RequestBody Inno72ActivityPlanVo activityPlan) {
-        activityPlanService.saveActPlan(activityPlan);
-        return ResultGenerator.genSuccessResult();
+    	try {
+    		return activityPlanService.saveActPlan(activityPlan);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
     }
+    
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> delete(@RequestParam String id) {
-        activityPlanService.deleteById(id);
-        return ResultGenerator.genSuccessResult();
+    	try {
+    		return activityPlanService.delById(id);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})

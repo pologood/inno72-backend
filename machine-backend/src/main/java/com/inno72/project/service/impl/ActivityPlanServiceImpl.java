@@ -28,11 +28,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -72,6 +75,8 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			//保存计划信息
 			String activityPlanId = StringUtil.getUUID();
 			activityPlan.setId(activityPlanId);
+			activityPlan.setCreateId(userId);
+			activityPlan.setUpdateId(userId);
 			// 查询已有排期机器
 			Map<String, Object> planingsParam = new HashMap<String, Object>();
 			planingsParam.put("startTime", activityPlan.getStartTime());
@@ -201,7 +206,29 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	public Inno72ActivityPlanVo findById(String id) {
 		return inno72ActivityPlanMapper.selectPlanDetail(id);
 	}
+	
+	
 
+	@Override
+	public Result<String> delById(String id) {
+		SessionData session = CommonConstants.SESSION_DATA;
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
+		int n =inno72ActivityPlanMapper.selectPlanIsState(id);
+		if (n>0) {
+			return Results.failure("计划进行中不能删除");
+		}
+		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+		Inno72ActivityPlan model = inno72ActivityPlanMapper.selectByPrimaryKey(id);
+		model.setUpdateId(userId);
+		model.setIsDelete(1);
+		model.setUpdateTime(LocalDateTime.now());
+		
+		return Results.success("操作成功");
+	}
 
 	@Override
 	public List<Inno72ActivityPlanVo> selectPlanList(String code ,String startTime,String endTime) {
@@ -246,8 +273,16 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	}
 	
 	
-	
-	
+	public static void main(String bbb[]) {		
+		
+		 Pattern pattern=Pattern.compile("^([-+]?\\d{0,6})(\\.\\d{2})?"); // 判断小数点后2位的数字的正则表达式
+	        Matcher match=pattern.matcher("10000"); 
+	           System.out.println(match.matches());
+	        
+
+		
+		
+	}
 	
 
 }

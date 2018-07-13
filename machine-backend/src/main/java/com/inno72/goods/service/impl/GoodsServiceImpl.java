@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -41,6 +43,8 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 	
     @Resource
     private Inno72GoodsMapper inno72GoodsMapper;
+    
+    Pattern pattern=Pattern.compile("^([-+]?\\d{0,6})(\\.\\d{2})?");
 
     @Override
 	public Result<String> saveModel(Inno72Goods model) {
@@ -56,6 +60,11 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 			logger.info("商品编码已存在");
 			return Results.failure("商品编码已存在");
 		}
+	     Matcher match=pattern.matcher(model.getPrice().toString()); 
+	     if (!match.matches()) {
+	        return Results.failure("商品价格最大整数6位，小数点后两位");
+		 }
+		
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		String id=StringUtil.getUUID();
 		model.setId(id);
@@ -81,6 +90,11 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 			logger.info("商品编码已存在");
 			return Results.failure("商品编码已存在,请确认");
 		}
+		
+	     Matcher match=pattern.matcher(model.getPrice().toString()); 
+	     if (!match.matches()) {
+	        return Results.failure("商品价格最大整数6位，小数点后两位");
+		 }
 		
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		

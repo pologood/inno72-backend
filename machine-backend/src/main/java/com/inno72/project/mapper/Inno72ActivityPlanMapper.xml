@@ -104,6 +104,10 @@
 		 )
   </select>
   
+  <select id="selectPlanIsState" parameterType="String" resultType="int">
+  		SELECT count(1) FROM inno72_activity_plan ap where  is_delete =0 and ap.id =#{id} and (NOW() BETWEEN ap.start_time AND ap.end_time)
+  </select>
+  
   <!-- 排期计划详情-->
   <resultMap id="ResultPlanDetailMap" type="com.inno72.project.vo.Inno72ActivityPlanVo">
     <id column="id" jdbcType="VARCHAR" property="id" />

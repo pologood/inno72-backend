@@ -1,7 +1,6 @@
 package com.inno72.project.model;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import javax.persistence.*;
 
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters.LocalDateTimeConverter;
@@ -81,8 +80,11 @@ public class Inno72ActivityPlan {
     /**
      * 创建时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Convert(converter = LocalDateTimeConverter.class)
     @Column(name = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 更新人
@@ -93,8 +95,11 @@ public class Inno72ActivityPlan {
     /**
      * 更新时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Convert(converter = LocalDateTimeConverter.class)
     @Column(name = "update_time")
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
     /**
      * 获取活动排期ID
@@ -273,7 +278,7 @@ public class Inno72ActivityPlan {
      *
      * @return create_time - 创建时间
      */
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
@@ -282,7 +287,7 @@ public class Inno72ActivityPlan {
      *
      * @param createTime 创建时间
      */
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
@@ -309,7 +314,7 @@ public class Inno72ActivityPlan {
      *
      * @return update_time - 更新时间
      */
-    public Date getUpdateTime() {
+    public LocalDateTime getUpdateTime() {
         return updateTime;
     }
 
@@ -318,7 +323,7 @@ public class Inno72ActivityPlan {
      *
      * @param updateTime 更新时间
      */
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
     }
 }
