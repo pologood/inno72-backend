@@ -14,6 +14,14 @@
   </resultMap>
   
   <delete id="deleteByPlanId" parameterType="String">
-		DELETE FROM inno72_activity_plan_game_result apgr WHERE apgr.activity_plan_id=#{planId}
+		DELETE FROM inno72_activity_plan_game_result WHERE activity_plan_id=#{planId}
 	</delete>
+	
+	<insert id="insertActivityPlanGameResultList" parameterType="java.util.List">
+        insert into inno72_activity_plan_game_result (id, activity_plan_id,prize_id,prize_type,result_code,result_remark)
+        values
+        <foreach collection="list" item="apgr" index="index" separator=",">
+            (#{apgr.id}, #{apgr.activityPlanId},#{apgr.prizeId},#{apgr.prizeType},#{apgr.resultCode},#{apgr.resultRemark})
+        </foreach>
+    </insert>
 </mapper>

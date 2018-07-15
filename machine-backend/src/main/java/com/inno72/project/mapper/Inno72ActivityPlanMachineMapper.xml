@@ -9,4 +9,13 @@
     <result column="activity_plan_id" jdbcType="VARCHAR" property="activityPlanId" />
     <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
   </resultMap>
+  
+  <insert id="insertActivityPlanMachineList" parameterType="java.util.List">
+        insert into inno72_activity_plan_machine (id, activity_plan_id,machine_id)
+        values
+        <foreach collection="list" item="apm" index="index" separator=",">
+            (#{apm.id},#{apm.activityPlanId},#{apm.machineId})
+        </foreach>
+    </insert>
+  
 </mapper>

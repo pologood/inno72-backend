@@ -21,6 +21,7 @@ public class Inno72Activity {
      * 活动名称
      */
     @NotEmpty(message="请填写活动名称")
+    @Column(name = "name")
     private String name;
 
     /**

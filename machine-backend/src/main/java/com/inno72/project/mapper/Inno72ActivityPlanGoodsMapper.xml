@@ -11,8 +11,16 @@
   </resultMap>
   
 	<delete id="deleteByPlanId" parameterType="String">
-		DELETE FROM inno72_activity_plan_goods apg WHERE apg.activity_plan_id=#{planId}
+		DELETE FROM inno72_activity_plan_goods WHERE activity_plan_id=#{planId}
 	</delete>
+	
+	<insert id="insertActivityPlanGoodsList" parameterType="java.util.List">
+        insert into inno72_activity_plan_goods (id, activity_plan_id,goods_id)
+        values
+        <foreach collection="list" item="apg" index="index" separator=",">
+            (#{apg.id},#{apg.activityPlanId},#{apg.goodsId})
+        </foreach>
+    </insert>
   
   
   

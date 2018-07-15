@@ -18,8 +18,16 @@
   </resultMap>
   
   <delete id="deleteByPlanId" parameterType="String">
-		DELETE FROM inno72_coupon con WHERE cons.activity_plan_id=#{planId}
+		DELETE FROM inno72_coupon WHERE activity_plan_id=#{planId}
 </delete>
+
+	<insert id="insertCouponList" parameterType="java.util.List">
+        insert into inno72_coupon (id, name,code,activity_plan_id,create_id,update_id)
+        values
+        <foreach collection="list" item="coupon" index="index" separator=",">
+            (#{coupon.id}, #{coupon.name},#{coupon.code},#{coupon.activityPlanId},#{coupon.createId},#{coupon.updateId})
+        </foreach>
+    </insert>
   
   
 </mapper>

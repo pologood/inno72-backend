@@ -9,6 +9,7 @@ public class Inno72ActivityPlanMachine {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private String id;
 
     /**

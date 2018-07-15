@@ -3,6 +3,7 @@ package com.inno72.project.model;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters.LocalDateTimeConverter;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -16,17 +17,20 @@ public class Inno72ActivityPlan {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private String id;
 
     /**
      * 活动ID
      */
+    @NotEmpty(message="请选择活动")
     @Column(name = "activity_id")
     private String activityId;
 
     /**
      * 游戏ID
      */
+    @NotEmpty(message="请选择游戏")
     @Column(name = "game_id")
     private String gameId;
 
@@ -51,6 +55,7 @@ public class Inno72ActivityPlan {
     /**
      * 同一用户获得商品最大次数
      */
+    @NotEmpty(message="请填写获得最大商品次数")
     @Column(name = "user_max_times")
     private String userMaxTimes;
     

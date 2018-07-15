@@ -10,11 +10,13 @@ public class Inno72Coupon {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private String id;
 
     /**
      * 奖券名称
      */
+    @Column(name = "name")
     private String name;
 
     /**
