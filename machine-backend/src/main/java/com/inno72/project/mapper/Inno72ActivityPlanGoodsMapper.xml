@@ -9,4 +9,12 @@
     <result column="activity_plan_id" jdbcType="VARCHAR" property="activityPlanId" />
     <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
   </resultMap>
+  
+	<delete id="deleteByPlanId" parameterType="String">
+		DELETE FROM inno72_activity_plan_goods apg WHERE apg.activity_plan_id=#{planId}
+	</delete>
+  
+  
+  
+  
 </mapper>

@@ -75,6 +75,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			activityPlan.setId(activityPlanId);
 			activityPlan.setCreateId(userId);
 			activityPlan.setUpdateId(userId);
+			
 			// 查询已有排期机器
 			Map<String, Object> planingsParam = new HashMap<String, Object>();
 			planingsParam.put("startTime", activityPlan.getStartTime());
@@ -205,12 +206,6 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		return inno72ActivityPlanMapper.selectPlanDetail(id);
 	}
 	
-	
-	
-	
-	
-	
-	
 
 	@Override
 	public Result<String> updateModel(Inno72ActivityPlanVo activityPlan) {
@@ -222,6 +217,9 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		}
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		try {
+			activityPlan.setUpdateId(userId);
+			activityPlan.setUpdateTime(LocalDateTime.now());
+			
 			//活动游戏结果 集合
 			List<Inno72ActivityPlanGameResult> insertPlanGameResultList= new ArrayList<>();
 			
@@ -289,6 +287,17 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				insertPlanGameResultList.add(planGameResult);
 				
 			}
+			
+			//删除原有添加优惠券
+			inno72CouponMapper.deleteByPlanId(activityPlan.getId());
+			
+			//删除原有商品关联结果
+			inno72ActivityPlanGoodsMapper.deleteByPlanId(activityPlan.getId());
+			
+			//删除原有活动游戏结果
+			inno72ActivityPlanGameResultMapper.deleteByPlanId(activityPlan.getId());
+			
+			
 			//更新计划
 			int n = inno72ActivityPlanMapper.updateByPrimaryKeySelective(activityPlan);
 			if (n <1) {
@@ -301,8 +310,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				return Results.failure("优惠券处理异常");
 			}
 			//批量保存计划商品信息
-			inno72ActivityPlanGoodsMapper.insertList(insertPlanGoodList);
-			int p =inno72CouponMapper.insertList(insertCouponList);
+			int p= inno72ActivityPlanGoodsMapper.insertList(insertPlanGoodList);
 			if (p <1) {
 				return Results.failure("计划商品关联处理异常");
 			}
@@ -312,21 +320,6 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			if (q <1) {
 				return Results.failure("游戏结果规则处理异常");
 			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			
 		} catch (Exception e) {
 			return Results.failure("操作失败！");	

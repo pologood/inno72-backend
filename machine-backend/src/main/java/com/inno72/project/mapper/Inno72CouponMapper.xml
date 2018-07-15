@@ -16,4 +16,10 @@
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
+  
+  <delete id="deleteByPlanId" parameterType="String">
+		DELETE FROM inno72_coupon con WHERE cons.activity_plan_id=#{planId}
+</delete>
+  
+  
 </mapper>

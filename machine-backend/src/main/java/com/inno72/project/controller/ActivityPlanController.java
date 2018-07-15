@@ -47,9 +47,13 @@ public class ActivityPlanController {
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> update(Inno72ActivityPlan activityPlan) {
-        activityPlanService.update(activityPlan);
-        return ResultGenerator.genSuccessResult();
+    public Result<String> update(@RequestBody Inno72ActivityPlanVo activityPlan) {
+    	try {
+    		return activityPlanService.updateModel(activityPlan);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
+    	
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
@@ -71,5 +75,9 @@ public class ActivityPlanController {
         List<Inno72AdminAreaVo> list = activityPlanService.selectAreaMachineList(code,level);
         return ResultGenerator.genSuccessResult(list);
     }
+    
+    
+    
+    
     
 }

@@ -12,4 +12,8 @@
     <result column="result_code" jdbcType="INTEGER" property="resultCode" />
     <result column="result_remark" jdbcType="VARCHAR" property="resultRemark" />
   </resultMap>
+  
+  <delete id="deleteByPlanId" parameterType="String">
+		DELETE FROM inno72_activity_plan_game_result apgr WHERE apgr.activity_plan_id=#{planId}
+	</delete>
 </mapper>
