@@ -18,6 +18,7 @@
     <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
     <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
     <result column="ref_order_id" jdbcType="VARCHAR" property="refOrderId"/>
+    <result column="shops_name" jdbcType="VARCHAR" property="shopsName"/>
     <result column="goods_status" jdbcType="INTEGER" property="goodsStatus"/>
     <result column="channel_code" jdbcType="VARCHAR" property="channelCode"/>
     <result column="channel_name" jdbcType="VARCHAR" property="channelName"/>

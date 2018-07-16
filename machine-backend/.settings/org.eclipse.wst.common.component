@@ -4,10 +4,23 @@
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+<<<<<<< HEAD
         <dependent-module archiveName="inno72-oss-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/inno72-oss/inno72-oss">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="inno72-mongo-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/inno72-mongo/inno72-mongo">
+=======
+        <dependent-module archiveName="inno72-msg-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/inno72-msg/inno72-msg">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="inno72-mq-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/inno72-mq/inno72-mq">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="inno72-config-client-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/inno72-config-client/inno72-config-client">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="inno72-redis-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/inno72-redis/inno72-redis">
+>>>>>>> tmp
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="machine-backend"/>
