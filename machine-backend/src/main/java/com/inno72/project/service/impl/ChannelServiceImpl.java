@@ -46,9 +46,11 @@ public class ChannelServiceImpl extends AbstractService<Inno72Channel> implement
 			logger.info("登陆用户为空");
 			return Results.failure("未找到用户登录信息");
 		}
-		int n= inno72ChannelMapper.getCount(model.getChannelCode());
-		if (n>0) {
-			return Results.failure("渠道编码已存在，请确认！");
+		if (StringUtil.isNotBlank(model.getChannelCode())) {
+			int n= inno72ChannelMapper.getCount(model.getChannelCode());
+			if (n>0) {
+				return Results.failure("渠道编码已存在，请确认！");
+			}
 		}
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		model.setId(StringUtil.getUUID());
