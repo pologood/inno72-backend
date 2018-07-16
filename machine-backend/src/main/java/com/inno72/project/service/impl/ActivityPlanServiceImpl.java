@@ -424,18 +424,5 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		return 0;
 	}
 	
-	public static void main(String bbb[]) {		
-		String time ="2018-07-01 15:04:53";
-		System.out.println(time.length());
-		String startTimeStr = time.substring(0,time.length()-2)+"00";
-		String endTimeStr = time.substring(0,time.length()-2)+"59";
-		System.out.println(startTimeStr);
-		System.out.println(endTimeStr);
-		
-		System.out.println(DateUtil.toDate(startTimeStr, DateUtil.DF_FULL_S1));
-		System.out.println(DateUtil.toDateTime(startTimeStr, DateUtil.DF_FULL_S1));
-		
-	}
-	
 
 }
