@@ -3,7 +3,7 @@ package com.inno72.project.model;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -19,14 +19,14 @@ public class Inno72Channel {
     /**
      * 渠道编码
      */
-    @NotEmpty(message="请填写渠道编码")
+    @NotBlank(message="请填写渠道编码")
     @Column(name = "channel_code")
     private String channelCode;
 
     /**
      * 渠道名称
      */
-    @NotEmpty(message="请填写渠道名称")
+    @NotBlank(message="请填写渠道名称")
     @Column(name = "channel_name")
     private String channelName;
 

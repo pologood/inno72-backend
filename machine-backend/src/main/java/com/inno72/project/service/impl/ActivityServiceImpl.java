@@ -77,7 +77,7 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 		model.setIsDelete(1);//0正常,1结束
 		model.setUpdateId(userId);
 		model.setUpdateTime(LocalDateTime.now());
-		
+		super.update(model);
 		return Results.success("操作成功");
 	}
 

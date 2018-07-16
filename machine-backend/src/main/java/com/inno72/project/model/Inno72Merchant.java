@@ -3,7 +3,7 @@ package com.inno72.project.model;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -19,35 +19,35 @@ public class Inno72Merchant {
     /**
      * 商户号
      */
-    @NotEmpty(message="请填写商户编码")
+    @NotBlank(message="请填写商户编码")
     @Column(name = "merchant_code")
     private String merchantCode;
 
     /**
      * 商户名称
      */
-    @NotEmpty(message="请填写品牌名称")
+    @NotBlank(message="请填写品牌名称")
     @Column(name = "brand_name")
     private String brandName;
     
     /**
      * 商户号
      */
-    @NotEmpty(message="请填写原始标示")
+    @NotBlank(message="请填写原始标示")
     @Column(name = "origin_flag")
     private String originFlag;
 
     /**
      * 商户名称
      */
-    @NotEmpty(message="请填写商户名称")
+    @NotBlank(message="请填写商户名称")
     @Column(name = "merchant_name")
     private String merchantName;
 
     /**
      * 商户所属渠道
      */
-    @NotEmpty(message="请选择所属渠道")
+    @NotBlank(message="请选择所属渠道")
     @Column(name = "channel_id")
     private String channelId;
 

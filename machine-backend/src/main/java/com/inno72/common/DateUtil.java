@@ -29,6 +29,14 @@ public class DateUtil {
 			return null;
 		}
 	}
+	
+	public static LocalDateTime toDateTime(String str, DateTimeFormatter dateTimeFormatter) {
+		try {
+			return LocalDateTime.parse(str, dateTimeFormatter);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
 	public static Date toDateOld(String str, SimpleDateFormat simpleDateFormat) {
 		try {

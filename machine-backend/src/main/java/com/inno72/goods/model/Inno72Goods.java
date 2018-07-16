@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import javax.persistence.*;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
@@ -22,7 +21,7 @@ public class Inno72Goods {
     /**
      * 商品名称
      */
-    @NotEmpty(message="请填写商品名称")
+    @NotBlank(message="请填写商品名称")
     private String name;
 
     /**
@@ -40,7 +39,7 @@ public class Inno72Goods {
     /**
      * 商户ID
      */
-    @NotEmpty(message="请选择商户")
+    @NotBlank(message="请选择商户")
     @Column(name = "seller_id")
     private String sellerId;
 
@@ -48,6 +47,7 @@ public class Inno72Goods {
      * 图片
      */
     @Column(name = "img")
+    @NotBlank(message="请上传图片")
     private String img;
 
     /**

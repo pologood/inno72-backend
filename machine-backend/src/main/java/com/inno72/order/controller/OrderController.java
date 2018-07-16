@@ -1,10 +1,13 @@
 package com.inno72.order.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.order.model.Inno72Order;
 import com.inno72.order.service.OrderService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import tk.mybatis.mapper.entity.Condition;
@@ -20,6 +23,8 @@ import java.util.List;
 public class OrderController {
 	@Resource
 	private OrderService orderService;
+
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> add(Inno72Order order) {
@@ -52,6 +57,7 @@ public class OrderController {
 	 */
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView list(Inno72Order order) {
+		logger.info("查询订单列表参数：{}", JSON.toJSON(order));
 		List<Inno72Order> list = orderService.getOrderList(order);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}

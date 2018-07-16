@@ -2,6 +2,7 @@ package com.inno72.project.service.impl;
 
 import com.inno72.common.AbstractService;
 import com.inno72.common.CommonConstants;
+import com.inno72.common.DateUtil;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
@@ -68,6 +69,15 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			logger.info("登陆用户为空");
 			return Results.failure("未找到用户登录信息");
 		}
+		if (StringUtil.isBlank(activityPlan.getActivityId())) {
+			return Results.failure("请选择活动");
+		}
+		if (StringUtil.isBlank(activityPlan.getGameId())) {
+			return Results.failure("请选择游戏");
+		}
+		if (StringUtil.isBlank(activityPlan.getUserMaxTimes())) {
+			return Results.failure("请填写获得最大商品次数");
+		}
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		try {
 			//保存计划信息
@@ -79,17 +89,26 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			
 			// 查询已有排期机器
 			Map<String, Object> planingsParam = new HashMap<String, Object>();
-			/*planingsParam.put("startTime", activityPlan.getStartTime());
-			planingsParam.put("endTime", activityPlan.getEndTime());*/
+			String startTimeStr = activityPlan.getStartTimeStr().substring(0,activityPlan.getStartTimeStr().length()-2)+"00";
+			String endTimeStr = activityPlan.getEndTimeStr().substring(0,activityPlan.getEndTimeStr().length()-2)+"59";
+			planingsParam.put("startTime", startTimeStr);
+			planingsParam.put("endTime", endTimeStr);
+			activityPlan.setStartTime(DateUtil.toDateTime(startTimeStr, DateUtil.DF_FULL_S1));
+			activityPlan.setEndTime(DateUtil.toDateTime(endTimeStr, DateUtil.DF_FULL_S1));
+			
 			List<String> planings =inno72ActivityPlanMapper.selectPlanedMachine(planingsParam);
 			
 			// 组合计划机器关系
 			List<Inno72MachineVo> machines=activityPlan.getMachines();
+			if (null ==machines || machines.size()==0) {
+				return Results.failure("未选择机器");
+			}
 			List<Inno72ActivityPlanMachine> insertPlanMachineList= new ArrayList<>();
 			for (Inno72MachineVo inno72MachineVo : machines) {
 				String machineId = inno72MachineVo.getMachineId();
 				//查询机器在该计划时间内是否有排期（计划时间段交集）
 				if ( planings.contains(machineId)) {
+					logger.info("机器中有包含已排期机器");
 					return Results.failure("机器中有包含已排期机器");
 				}
 				
@@ -106,67 +125,72 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			
 			//组合 保存计划游戏结果
 			List<Inno72ActivityPlanGameResult> goods=activityPlan.getGoods();
+			List<Inno72CouponVo> coupons=activityPlan.getCoupons();
+			if ((null == goods||goods.size()==0)&& (null == coupons||coupons.size()==0)) {
+				logger.info("商品优惠券不能同时不填");
+				return Results.failure("商品优惠券不能同时不填");
+			}
+			
 			//排期计划商品管理数据
 			List<Inno72ActivityPlanGoods> insertPlanGoodList= new ArrayList<>();
-			for (Inno72ActivityPlanGameResult inno72ActivityPlanGameResult : goods) {
-				
-				//活动计划商品关联数据
-				Inno72ActivityPlanGoods planGood = new Inno72ActivityPlanGoods();
-				String planGoodId = StringUtil.getUUID();
-				planGood.setId(planGoodId);
-				planGood.setActivityPlanId(activityPlanId);
-				planGood.setGoodsId(inno72ActivityPlanGameResult.getPrizeId());
-				
-				//活动游戏结果数据
-				Inno72ActivityPlanGameResult  planGameResult = new Inno72ActivityPlanGameResult();
-				String planGameResultId = StringUtil.getUUID();
-				planGameResult.setId(planGameResultId);
-				planGameResult.setActivityPlanId(activityPlanId);
-				planGameResult.setPrizeId(planGoodId);
-				planGameResult.setPrizeType("1");
-				planGameResult.setResultCode(inno72ActivityPlanGameResult.getResultCode());
-				planGameResult.setResultRemark(inno72ActivityPlanGameResult.getResultRemark());
-				
-				insertPlanGoodList.add(planGood);
-				
-				if (insertPlanGameResultList.contains(planGameResult)) {
-					return Results.failure("添加规则有重复");
+			if (null != goods) {
+				for (Inno72ActivityPlanGameResult inno72ActivityPlanGameResult : goods) {
+					//活动计划商品关联数据
+					Inno72ActivityPlanGoods planGood = new Inno72ActivityPlanGoods();
+					String planGoodId = StringUtil.getUUID();
+					planGood.setId(planGoodId);
+					planGood.setActivityPlanId(activityPlanId);
+					planGood.setGoodsId(inno72ActivityPlanGameResult.getPrizeId());
+					
+					//活动游戏结果数据
+					Inno72ActivityPlanGameResult  planGameResult = new Inno72ActivityPlanGameResult();
+					String planGameResultId = StringUtil.getUUID();
+					planGameResult.setId(planGameResultId);
+					planGameResult.setActivityPlanId(activityPlanId);
+					planGameResult.setPrizeId(planGoodId);
+					planGameResult.setPrizeType("1");
+					planGameResult.setResultCode(inno72ActivityPlanGameResult.getResultCode());
+					planGameResult.setResultRemark(inno72ActivityPlanGameResult.getResultRemark());
+					
+					insertPlanGoodList.add(planGood);
+					if (insertPlanGameResultList.contains(planGameResult)) {
+						logger.info("添加规则有重复");
+						return Results.failure("添加规则有重复");
+					}
+					insertPlanGameResultList.add(planGameResult);
 				}
-				insertPlanGameResultList.add(planGameResult);
 			}
 			
 			//保存优惠券
-			List<Inno72CouponVo> coupons=activityPlan.getCoupons();
 			List<Inno72Coupon> insertCouponList= new ArrayList<>();
-			
-			for (Inno72CouponVo inno72CouponVo : coupons) {
-				//去重 同一 inno72CouponVo.getCode() 存一个
-				
-				//优惠券数据
-				Inno72Coupon coupon = new Inno72Coupon();
-				String couponId = StringUtil.getUUID();
-				coupon.setId(couponId);
-				coupon.setCode(inno72CouponVo.getCode());
-				coupon.setName(inno72CouponVo.getName());
-				coupon.setActivityPlanId(activityPlanId);
-				coupon.setCreateId(userId);
-				coupon.setUpdateId(userId);
-				//活动游戏结果数据
-				Inno72ActivityPlanGameResult  planGameResult = new Inno72ActivityPlanGameResult();
-				String planGameResultId = StringUtil.getUUID();
-				planGameResult.setId(planGameResultId);
-				planGameResult.setActivityPlanId(activityPlanId);
-				planGameResult.setPrizeId(couponId);
-				planGameResult.setPrizeType("2");
-				planGameResult.setResultCode(inno72CouponVo.getResultCode());
-				planGameResult.setResultRemark(inno72CouponVo.getResultRemark());
-				
-				insertCouponList.add(coupon);
-				if (insertPlanGameResultList.contains(planGameResult)) {
-					return Results.failure("添加规则有重复");
+			if(null != coupons){
+				for (Inno72CouponVo inno72CouponVo : coupons) {
+					//优惠券数据
+					Inno72Coupon coupon = new Inno72Coupon();
+					String couponId = StringUtil.getUUID();
+					coupon.setId(couponId);
+					coupon.setCode(inno72CouponVo.getCode());
+					coupon.setName(inno72CouponVo.getName());
+					coupon.setActivityPlanId(activityPlanId);
+					coupon.setCreateId(userId);
+					coupon.setUpdateId(userId);
+					//活动游戏结果数据
+					Inno72ActivityPlanGameResult  planGameResult = new Inno72ActivityPlanGameResult();
+					String planGameResultId = StringUtil.getUUID();
+					planGameResult.setId(planGameResultId);
+					planGameResult.setActivityPlanId(activityPlanId);
+					planGameResult.setPrizeId(couponId);
+					planGameResult.setPrizeType("2");
+					planGameResult.setResultCode(inno72CouponVo.getResultCode());
+					planGameResult.setResultRemark(inno72CouponVo.getResultRemark());
+					
+					insertCouponList.add(coupon);
+					if (insertPlanGameResultList.contains(planGameResult)) {
+						logger.info("添加规则有重复");
+						return Results.failure("添加规则有重复");
+					}
+					insertPlanGameResultList.add(planGameResult);
 				}
-				insertPlanGameResultList.add(planGameResult);
-				
 			}
 			
 			if ((null ==coupons || coupons.size()==0)&& goods.size()>0) {
@@ -175,33 +199,33 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			if ((null ==goods || goods.size()==0) && coupons.size()>0) {
 				activityPlan.setPrizeType("100200");
 			}
-			if (null ==goods && null ==coupons && goods.size()>0 && coupons.size()>0) {
+			if (null !=goods && null !=coupons && goods.size()>0 && coupons.size()>0) {
 				activityPlan.setPrizeType("100300");
 			}
 			//保存计划
-			int n = inno72ActivityPlanMapper.insert(activityPlan);
-			if (n <1) {
-				return Results.failure("计划添加异常");
-			}
+			logger.info("计划添加数据开始——————————————————————————————");
+			
+			inno72ActivityPlanMapper.insert(activityPlan);
+			logger.info("计划添加完成");
 			//批量保存计划机器
 			int m =inno72ActivityPlanMachineMapper.insertActivityPlanMachineList(insertPlanMachineList);
-			if (m <1) {
-				return Results.failure("计划机器关联处理异常");
+			if (m >0) {
+				logger.info("计划机器关联完成");
 			}
 			//批量保存优惠券信息
-			int l =inno72CouponMapper.insertCouponList(insertCouponList);
-			if (l <1) {
-				return Results.failure("优惠券处理异常");
+			if (insertCouponList.size()>0) {
+				inno72CouponMapper.insertCouponList(insertCouponList);
+				logger.info("优惠券完成");
 			}
 			//批量保存计划商品信息
-			int p =inno72ActivityPlanGoodsMapper.insertActivityPlanGoodsList(insertPlanGoodList);
-			if (p <1) {
-				return Results.failure("计划商品关联处理异常");
+			if (insertPlanGoodList.size()>0) {
+				inno72ActivityPlanGoodsMapper.insertActivityPlanGoodsList(insertPlanGoodList);
+				logger.info("计划商品关联完成");
 			}
 			//批量保存计划游戏结果
 			int q =inno72ActivityPlanGameResultMapper.insertActivityPlanGameResultList(insertPlanGameResultList);
-			if (q <1) {
-				return Results.failure("游戏结果规则处理异常");
+			if (q >0) {
+				logger.info("游戏结果规则处理完成");
 			}
 			
 		} catch (Exception e) {
@@ -228,73 +252,76 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		try {
 			activityPlan.setUpdateId(userId);
 			activityPlan.setUpdateTime(LocalDateTime.now());
-			
+			String endTimeStr = activityPlan.getEndTimeStr().substring(0,activityPlan.getEndTimeStr().length()-2)+"59";
+			activityPlan.setEndTime(DateUtil.toDateTime(endTimeStr, DateUtil.DF_FULL_S1));
 			//活动游戏结果 集合
 			List<Inno72ActivityPlanGameResult> insertPlanGameResultList= new ArrayList<>();
 			
 			//组合 保存计划游戏结果
 			List<Inno72ActivityPlanGameResult> goods=activityPlan.getGoods();
+			List<Inno72CouponVo> coupons=activityPlan.getCoupons();
+			if ((null == goods||goods.size()==0)&& (null == coupons||coupons.size()==0)) {
+				return Results.failure("商品优惠券不能同时不填");
+			}
 			//排期计划商品管理数据
 			List<Inno72ActivityPlanGoods> insertPlanGoodList= new ArrayList<>();
-			for (Inno72ActivityPlanGameResult inno72ActivityPlanGameResult : goods) {
-				
-				//活动计划商品关联数据
-				Inno72ActivityPlanGoods planGood = new Inno72ActivityPlanGoods();
-				String planGoodId = StringUtil.getUUID();
-				planGood.setId(planGoodId);
-				planGood.setActivityPlanId(activityPlan.getId());
-				planGood.setGoodsId(inno72ActivityPlanGameResult.getPrizeId());
-				
-				//活动游戏结果数据
-				Inno72ActivityPlanGameResult  planGameResult = new Inno72ActivityPlanGameResult();
-				String planGameResultId = StringUtil.getUUID();
-				planGameResult.setId(planGameResultId);
-				planGameResult.setActivityPlanId(activityPlan.getId());
-				planGameResult.setPrizeId(planGoodId);
-				planGameResult.setPrizeType("1");
-				planGameResult.setResultCode(inno72ActivityPlanGameResult.getResultCode());
-				planGameResult.setResultRemark(inno72ActivityPlanGameResult.getResultRemark());
-				
-				insertPlanGoodList.add(planGood);
-				
-				if (insertPlanGameResultList.contains(planGameResult)) {
-					return Results.failure("添加规则有重复");
+			if (null != goods) {
+				for (Inno72ActivityPlanGameResult inno72ActivityPlanGameResult : goods) {
+					//活动计划商品关联数据
+					Inno72ActivityPlanGoods planGood = new Inno72ActivityPlanGoods();
+					String planGoodId = StringUtil.getUUID();
+					planGood.setId(planGoodId);
+					planGood.setActivityPlanId(activityPlan.getId());
+					planGood.setGoodsId(inno72ActivityPlanGameResult.getPrizeId());
+					
+					//活动游戏结果数据
+					Inno72ActivityPlanGameResult  planGameResult = new Inno72ActivityPlanGameResult();
+					String planGameResultId = StringUtil.getUUID();
+					planGameResult.setId(planGameResultId);
+					planGameResult.setActivityPlanId(activityPlan.getId());
+					planGameResult.setPrizeId(planGoodId);
+					planGameResult.setPrizeType("1");
+					planGameResult.setResultCode(inno72ActivityPlanGameResult.getResultCode());
+					planGameResult.setResultRemark(inno72ActivityPlanGameResult.getResultRemark());
+					
+					insertPlanGoodList.add(planGood);
+					
+					if (insertPlanGameResultList.contains(planGameResult)) {
+						return Results.failure("添加规则有重复");
+					}
+					insertPlanGameResultList.add(planGameResult);
 				}
-				insertPlanGameResultList.add(planGameResult);
 			}
 			
 			//保存优惠券
-			List<Inno72CouponVo> coupons=activityPlan.getCoupons();
 			List<Inno72Coupon> insertCouponList= new ArrayList<>();
-			
-			for (Inno72CouponVo inno72CouponVo : coupons) {
-				//去重 同一 inno72CouponVo.getCode() 存一个
-				
-				//优惠券数据
-				Inno72Coupon coupon = new Inno72Coupon();
-				String couponId = StringUtil.getUUID();
-				coupon.setId(couponId);
-				coupon.setCode(inno72CouponVo.getCode());
-				coupon.setName(inno72CouponVo.getName());
-				coupon.setActivityPlanId(activityPlan.getId());
-				coupon.setCreateId(userId);
-				coupon.setUpdateId(userId);
-				//活动游戏结果数据
-				Inno72ActivityPlanGameResult  planGameResult = new Inno72ActivityPlanGameResult();
-				String planGameResultId = StringUtil.getUUID();
-				planGameResult.setId(planGameResultId);
-				planGameResult.setActivityPlanId(activityPlan.getId());
-				planGameResult.setPrizeId(couponId);
-				planGameResult.setPrizeType("2");
-				planGameResult.setResultCode(inno72CouponVo.getResultCode());
-				planGameResult.setResultRemark(inno72CouponVo.getResultRemark());
-				
-				insertCouponList.add(coupon);
-				if (insertPlanGameResultList.contains(planGameResult)) {
-					return Results.failure("更新规则有重复");
+			if (null != coupons) {
+				for (Inno72CouponVo inno72CouponVo : coupons) {
+					//优惠券数据
+					Inno72Coupon coupon = new Inno72Coupon();
+					String couponId = StringUtil.getUUID();
+					coupon.setId(couponId);
+					coupon.setCode(inno72CouponVo.getCode());
+					coupon.setName(inno72CouponVo.getName());
+					coupon.setActivityPlanId(activityPlan.getId());
+					coupon.setCreateId(userId);
+					coupon.setUpdateId(userId);
+					//活动游戏结果数据
+					Inno72ActivityPlanGameResult  planGameResult = new Inno72ActivityPlanGameResult();
+					String planGameResultId = StringUtil.getUUID();
+					planGameResult.setId(planGameResultId);
+					planGameResult.setActivityPlanId(activityPlan.getId());
+					planGameResult.setPrizeId(couponId);
+					planGameResult.setPrizeType("2");
+					planGameResult.setResultCode(inno72CouponVo.getResultCode());
+					planGameResult.setResultRemark(inno72CouponVo.getResultRemark());
+					
+					insertCouponList.add(coupon);
+					if (insertPlanGameResultList.contains(planGameResult)) {
+						return Results.failure("更新规则有重复");
+					}
+					insertPlanGameResultList.add(planGameResult);
 				}
-				insertPlanGameResultList.add(planGameResult);
-				
 			}
 			
 			if ((null ==coupons || coupons.size()==0)&& goods.size()>0) {
@@ -303,7 +330,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			if ((null ==goods || goods.size()==0) && coupons.size()>0) {
 				activityPlan.setPrizeType("100200");
 			}
-			if (null ==goods && null ==coupons && goods.size()>0 && coupons.size()>0) {
+			if (null !=goods && null !=coupons && goods.size()>0 && coupons.size()>0) {
 				activityPlan.setPrizeType("100300");
 			}
 			
@@ -315,29 +342,25 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			
 			//删除原有活动游戏结果
 			inno72ActivityPlanGameResultMapper.deleteByPlanId(activityPlan.getId());
-			
-			
 			//更新计划
-			int n = inno72ActivityPlanMapper.updateByPrimaryKeySelective(activityPlan);
-			if (n <1) {
-				return Results.failure("计划更新异常");
-			}
+			logger.info("计划更新数据开始——————————————————————————————");
 			
+			inno72ActivityPlanMapper.updateByPrimaryKeySelective(activityPlan);
+			logger.info("计划更新完成");
 			//批量保存优惠券信息
-			int l =inno72CouponMapper.insertCouponList(insertCouponList);
- 
-			if (l <1) {
-				return Results.failure("优惠券处理异常");
+			if (insertCouponList.size()>0) {
+				inno72CouponMapper.insertCouponList(insertCouponList);
+				logger.info("优惠券完成");
 			}
 			//批量保存计划商品信息
-			int p= inno72ActivityPlanGoodsMapper.insertActivityPlanGoodsList(insertPlanGoodList);
-			if (p <1) {
-				return Results.failure("计划商品关联处理异常");
+			if (insertPlanGoodList.size()>0) {
+				inno72ActivityPlanGoodsMapper.insertActivityPlanGoodsList(insertPlanGoodList);
+				logger.info("计划商品关联完成");
 			}
 			//批量保存计划游戏结果
 			int q =inno72ActivityPlanGameResultMapper.insertActivityPlanGameResultList(insertPlanGameResultList);
-			if (q <1) {
-				return Results.failure("游戏结果规则处理异常");
+			if (q >0) {
+				logger.info("游戏结果规则处理完成");
 			}
 			
 		} catch (Exception e) {
@@ -365,6 +388,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		model.setIsDelete(1);
 		model.setUpdateTime(LocalDateTime.now());
 		
+		super.update(model);
 		return Results.success("操作成功");
 	}
 

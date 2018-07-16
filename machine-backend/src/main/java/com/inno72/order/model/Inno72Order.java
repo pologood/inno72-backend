@@ -147,6 +147,18 @@ public class Inno72Order {
     @Column(name="game_id")
     private String gameId;
 
+    private String activityName;
+
+    private String merPointAddress;
+
+    private String nickName;
+
+    private String gameUserId;
+
+    private String activityId;
+
+
+
     private List<Inno72OrderGoods> orderGoodsList;
 
 
@@ -392,5 +404,45 @@ public class Inno72Order {
 
     public void setPageNo(int pageNo) {
         this.pageNo = pageNo;
+    }
+
+    public String getActivityName() {
+        return activityName;
+    }
+
+    public void setActivityName(String activityName) {
+        this.activityName = activityName;
+    }
+
+    public String getMerPointAddress() {
+        return merPointAddress;
+    }
+
+    public void setMerPointAddress(String merPointAddress) {
+        this.merPointAddress = merPointAddress;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getGameUserId() {
+        return gameUserId;
+    }
+
+    public void setGameUserId(String gameUserId) {
+        this.gameUserId = gameUserId;
+    }
+
+    public String getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
     }
 }

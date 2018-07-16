@@ -2,6 +2,7 @@ package com.inno72.order.service.impl;
 
 import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
+import com.inno72.common.StringUtil;
 import com.inno72.order.mapper.Inno72OrderGoodsMapper;
 import com.inno72.order.mapper.Inno72OrderMapper;
 import com.inno72.order.model.Inno72Order;
@@ -29,6 +30,10 @@ public class OrderServiceImpl extends AbstractService<Inno72Order> implements Or
 
     @Override
     public List<Inno72Order> getOrderList(Inno72Order order) {
+        String keyword = order.getKeyword();
+        if(StringUtil.isEmpty(keyword)){
+            order.setKeyword(null);
+        }
         List<Inno72Order> orderList = inno72OrderMapper.seleByParamForPage(order);
         if(orderList != null && orderList.size()>0){
             for(Inno72Order inno72Order:orderList){

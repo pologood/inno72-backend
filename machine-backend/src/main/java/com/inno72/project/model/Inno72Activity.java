@@ -2,7 +2,8 @@ package com.inno72.project.model;
 
 import java.time.LocalDateTime;
 import javax.persistence.*;
-import org.hibernate.validator.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -20,21 +21,21 @@ public class Inno72Activity {
     /**
      * 活动名称
      */
-    @NotEmpty(message="请填写活动名称")
+    @NotBlank(message="请填写活动名称")
     @Column(name = "name")
     private String name;
 
     /**
      * 店铺ID
      */
-    @NotEmpty(message="请选择所属店铺")
+    @NotBlank(message="请选择所属店铺")
     @Column(name = "shop_id")
     private String shopId;
     
     /**
      * 商户ID
      */
-    @NotEmpty(message="请选择所属商户")
+    @NotBlank(message="请选择所属商户")
     @Column(name = "seller_id")
     private String sellerId;
     
