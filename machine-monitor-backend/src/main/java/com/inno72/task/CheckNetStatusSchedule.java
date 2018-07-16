@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * @Auther: wxt
  * @Date: 2018/7/6 18:36
- * @Description:检查并修改网络状态的定时任务
+ * @Description:检查并修改后台网络状态的定时任务
  */
 @Configuration
 @EnableScheduling
