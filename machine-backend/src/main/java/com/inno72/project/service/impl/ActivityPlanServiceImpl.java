@@ -69,6 +69,15 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			logger.info("登陆用户为空");
 			return Results.failure("未找到用户登录信息");
 		}
+		if (StringUtil.isBlank(activityPlan.getActivityId())) {
+			return Results.failure("请选择活动");
+		}
+		if (StringUtil.isBlank(activityPlan.getGameId())) {
+			return Results.failure("请选择游戏");
+		}
+		if (StringUtil.isBlank(activityPlan.getUserMaxTimes())) {
+			return Results.failure("请填写获得最大商品次数");
+		}
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		try {
 			//保存计划信息

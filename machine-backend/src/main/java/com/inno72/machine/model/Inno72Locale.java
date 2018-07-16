@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
@@ -19,12 +19,12 @@ public class Inno72Locale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     
-    @NotEmpty(message="请填写点位名称")
+    @NotBlank(message="请填写点位名称")
     @Column(name = "name")
     private String name;
     
     
-    @NotEmpty(message="请选择区域")
+    @NotBlank(message="请选择区域")
     @Column(name = "area_code")
     private String areaCode;
 
@@ -37,14 +37,14 @@ public class Inno72Locale {
     /**
      * 运营人员
      */
-    @NotEmpty(message="请填写运营人员")
+    @NotBlank(message="请填写运营人员")
     @Column(name = "manager")
     private String manager;
 
     /**
      * 运营人员手机
      */
-    @NotEmpty(message="请填写运营人手机号")
+    @NotBlank(message="请填写运营人手机号")
     @Pattern(regexp="^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\\d{8}$",message="手机格式不正确")
     @Column(name = "mobile")
     private String mobile;

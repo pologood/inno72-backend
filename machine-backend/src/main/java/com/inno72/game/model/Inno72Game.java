@@ -3,6 +3,7 @@ package com.inno72.game.model;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -17,12 +18,14 @@ public class Inno72Game {
     /**
      * 游戏名称
      */
+    @NotBlank(message="请填写游戏名称")
     @Column(name = "name")
     private String name;
 
     /**
      * 游戏版本
      */
+    @NotBlank(message="请填写游戏版本号")
     @Column(name = "version")
     private String version;
     

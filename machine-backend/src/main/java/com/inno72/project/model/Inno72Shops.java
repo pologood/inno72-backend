@@ -3,7 +3,7 @@ package com.inno72.project.model;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -21,21 +21,21 @@ public class Inno72Shops {
     /**
      * 店铺名称
      */
-    @NotEmpty(message="请填写店铺名称")
+    @NotBlank(message="请填写店铺名称")
     @Column(name = "shop_name")
     private String shopName;
 
     /**
      * 店铺编码
      */
-    @NotEmpty(message="请填写店铺编码")
+    @NotBlank(message="请填写店铺编码")
     @Column(name = "shop_code")
     private String shopCode;
 
     /**
      * 商户ID
      */
-    @NotEmpty(message="请选择所属商户")
+    @NotBlank(message="请选择所属商户")
     @Column(name = "seller_id")
     private String sellerId;
 
