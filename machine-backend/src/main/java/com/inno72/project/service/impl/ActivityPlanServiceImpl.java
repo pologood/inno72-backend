@@ -418,10 +418,13 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		if (level.equals("1")) {
 			params.put("num", 2);
 		}else if (level.equals("2")) {
-			params.put("num", 6);
+			params.put("num", 4);
 		}else if (level.equals("3")) {
+			params.put("num", 6);
+		}else if (level.equals("4")) {
 			params.put("num", 9);
 		}
+		
 	   	return inno72ActivityPlanMapper.selectAreaMachineList(params);
 	}
 	

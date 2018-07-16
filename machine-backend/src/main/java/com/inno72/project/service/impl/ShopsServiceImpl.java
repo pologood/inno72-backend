@@ -94,11 +94,14 @@ public class ShopsServiceImpl extends AbstractService<Inno72Shops> implements Sh
 			logger.info("登陆用户为空");
 			return Results.failure("未找到用户登录信息");
 		}
-		Inno72Shops m = inno72ShopsMapper.selectByPrimaryKey(model.getId());
-		int n= inno72ShopsMapper.getCount(model.getShopCode());
-		if (n>0 && !m.getShopCode().equals(model.getShopCode())) {
-			return Results.failure("店铺编码已存在，请确认！");
+		if (StringUtil.isNotBlank(model.getShopCode())) {
+			Inno72Shops m = inno72ShopsMapper.selectByPrimaryKey(model.getId());
+			int n= inno72ShopsMapper.getCount(model.getShopCode());
+			if (n>0 && !m.getShopCode().equals(model.getShopCode())) {
+				return Results.failure("店铺编码已存在，请确认！");
+			}
 		}
+		
 		
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		model.setUpdateId(userId);

@@ -36,7 +36,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
     @Resource
     private Inno72GoodsMapper inno72GoodsMapper;
     
-    Pattern pattern=Pattern.compile("^([-+]?\\d{0,6})(\\.\\d{2})?");
+    Pattern pattern=Pattern.compile("^([-+]?\\d{0,6})(\\.\\d{0,2})?");
 
     @Override
 	public Result<String> saveModel(Inno72Goods model) {
@@ -76,13 +76,14 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 			logger.info("登陆用户为空");
 			return Results.failure("未找到用户登录信息");
 		}
-		int n = inno72GoodsMapper.getCount(model.getCode());
-		Inno72Goods g = inno72GoodsMapper.selectByPrimaryKey(model.getId());
-		if (n>0 && !g.getCode().equals(model.getCode())) {
-			logger.info("商品编码已存在");
-			return Results.failure("商品编码已存在,请确认");
+		if(StringUtil.isNotBlank(model.getCode())){
+			int n = inno72GoodsMapper.getCount(model.getCode());
+			Inno72Goods g = inno72GoodsMapper.selectByPrimaryKey(model.getId());
+			if (n>0 && !g.getCode().equals(model.getCode())) {
+				logger.info("商品编码已存在");
+				return Results.failure("商品编码已存在,请确认");
+			}
 		}
-		
 	     Matcher match=pattern.matcher(model.getPrice().toString()); 
 	     if (!match.matches()) {
 	        return Results.failure("商品价格最大整数6位，小数点后两位");
@@ -147,7 +148,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 	public List<Inno72Goods> getList(Inno72Goods model) {
 		// TODO 获取商品列表
 		logger.info("---------------------获取商品列表-------------------");
-		model.setIsDelete(1);
+		model.setIsDelete(0);
 		Condition condition = new Condition( Inno72Goods.class);
 	   	condition.createCriteria().andEqualTo(model);
 		return super.findByCondition(condition);

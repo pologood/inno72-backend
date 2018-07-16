@@ -102,11 +102,14 @@ public class MerchantServiceImpl extends AbstractService<Inno72Merchant> impleme
 		if (StringUtil.isEmpty(model.getMerchantCode())) {
 			return Results.failure("商户编码不能为空！");
 		}
-		Inno72Merchant m = inno72MerchantMapper.selectByPrimaryKey(model.getId());
-		int n= inno72MerchantMapper.getCount(model.getMerchantCode());
-		if (n>0 && !m.getMerchantCode().equals(model.getMerchantCode())) {
-			return Results.failure("商户编码已存在，请确认！");
+		if (StringUtil.isNotBlank(model.getMerchantCode())) {
+			Inno72Merchant m = inno72MerchantMapper.selectByPrimaryKey(model.getId());
+			int n= inno72MerchantMapper.getCount(model.getMerchantCode());
+			if (n>0 && !m.getMerchantCode().equals(model.getMerchantCode())) {
+				return Results.failure("商户编码已存在，请确认！");
+			}
 		}
+		
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		
 		model.setUpdateId(userId);
