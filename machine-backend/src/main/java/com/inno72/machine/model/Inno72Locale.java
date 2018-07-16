@@ -19,7 +19,7 @@ public class Inno72Locale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     
-    @NotEmpty(message="点位名称")
+    @NotEmpty(message="请填写点位名称")
     @Column(name = "name")
     private String name;
     

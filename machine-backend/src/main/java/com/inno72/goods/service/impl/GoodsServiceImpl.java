@@ -6,7 +6,6 @@ import tk.mybatis.mapper.entity.Condition;
 import com.inno72.goods.mapper.Inno72GoodsMapper;
 import com.inno72.goods.model.Inno72Goods;
 import com.inno72.goods.service.GoodsService;
-import com.inno72.oss.OSSUtil;
 import com.inno72.system.model.Inno72User;
 
 import org.slf4j.Logger;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -159,7 +157,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 	public Result<String> uploadImage(MultipartFile file) {
 		if ( file.getSize() > 0) {
 			//调用上传图片
-			UploadUtil.uploadImage(file,"goods");
+			return UploadUtil.uploadImage(file,"goods");
 		}
 		logger.info("[out-uploadImg]-空");
 		return Results.success("");

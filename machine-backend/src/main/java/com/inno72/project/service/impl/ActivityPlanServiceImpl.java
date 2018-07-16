@@ -79,8 +79,12 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			
 			// 查询已有排期机器
 			Map<String, Object> planingsParam = new HashMap<String, Object>();
-			/*planingsParam.put("startTime", activityPlan.getStartTime());
-			planingsParam.put("endTime", activityPlan.getEndTime());*/
+			String startTimeStr = activityPlan.getStartTimeStr();
+			String endTimeStr = activityPlan.getEndTimeStr();
+			
+			
+			planingsParam.put("startTime", activityPlan.getStartTime());
+			planingsParam.put("endTime", activityPlan.getEndTime());
 			List<String> planings =inno72ActivityPlanMapper.selectPlanedMachine(planingsParam);
 			
 			// 组合计划机器关系

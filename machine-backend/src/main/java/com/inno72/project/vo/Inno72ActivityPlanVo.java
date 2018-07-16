@@ -15,6 +15,10 @@ public class Inno72ActivityPlanVo extends Inno72ActivityPlan{
     
     private String activityName;
     
+    private String startTimeStr;
+    
+    private String endTimeStr;
+    
     
 	public List<Inno72MachineVo> getMachines() {
 		return machines;
@@ -49,8 +53,23 @@ public class Inno72ActivityPlanVo extends Inno72ActivityPlan{
 	public void setActivityName(String activityName) {
 		this.activityName = activityName;
 	}
+
+	public String getStartTimeStr() {
+		return startTimeStr;
+	}
+
+	public void setStartTimeStr(String startTimeStr) {
+		this.startTimeStr = startTimeStr;
+	}
+
+	public String getEndTimeStr() {
+		return endTimeStr;
+	}
+
+	public void setEndTimeStr(String endTimeStr) {
+		this.endTimeStr = endTimeStr;
+	}
 	
-    
 
 	
     
