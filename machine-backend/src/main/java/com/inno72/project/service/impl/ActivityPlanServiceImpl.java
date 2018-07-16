@@ -388,6 +388,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		model.setIsDelete(1);
 		model.setUpdateTime(LocalDateTime.now());
 		
+		super.update(model);
 		return Results.success("操作成功");
 	}
 
