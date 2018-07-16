@@ -18,7 +18,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +65,6 @@ public class CheckNetStatusSchedule {
 			JSONObject jsonObject = JSONObject.parseObject(result);
 			Integer resultCdoe = jsonObject.getInteger("code");
 			List<MachineNetInfo> machineIdListInfo = JSON.parseArray(jsonObject.getString("data"), MachineNetInfo.class);
-			//List<MachineNetInfo> machineIdListInfo = (List<MachineNetInfo>) jsonObject.get("data");
 			//维护一个断网机器信息表
 			if(CommonConstants.RESULT_SUCCESS.equals(resultCdoe) && machineIdListInfo != null){
 				for(MachineNetInfo machineNetInfoOne : machineIdListInfo){
