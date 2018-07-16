@@ -7,6 +7,7 @@ import com.inno72.game.model.Inno72Game;
 import com.inno72.game.service.GameService;
 
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -28,9 +30,13 @@ public class GameController {
     private GameService gameService;
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> add(Inno72Game game) {
+    public Result<String> add(@Valid Inno72Game game,BindingResult bindingResult) {
     	try {
-    		return gameService.saveModel(game);
+    		if(bindingResult.hasErrors()){
+    			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
+            }else{
+            	return gameService.saveModel(game);
+            }
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
