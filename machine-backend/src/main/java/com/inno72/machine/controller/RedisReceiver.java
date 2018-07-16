@@ -9,9 +9,6 @@ public class RedisReceiver {
 
 	public void receiveMessage(String message) throws UnsupportedEncodingException {
 
-		System.out.println(new String(message.getBytes("GB2312"), "UTF-8") + "======================");
-		System.out.println(new String(message.getBytes("iso8859-1"), "UTF-8") + "======================");
-		System.out.println(new String(message.getBytes("GBK"), "UTF-8") + "======================");
-
+		System.out.println("收到消息" + message);
 	}
 }
