@@ -10,6 +10,8 @@ public class Inno72AdminAreaVo extends Inno72AdminArea{
 	
 	private String totalNum;
 	
+	private String planed;
+	
     private  List<Inno72MachineVo>  machines ;
 
 	public String getCanUseNum() {
@@ -34,6 +36,14 @@ public class Inno72AdminAreaVo extends Inno72AdminArea{
 
 	public void setMachines(List<Inno72MachineVo> machines) {
 		this.machines = machines;
+	}
+
+	public String getPlaned() {
+		return planed;
+	}
+
+	public void setPlaned(String planed) {
+		this.planed = planed;
 	}
 
     

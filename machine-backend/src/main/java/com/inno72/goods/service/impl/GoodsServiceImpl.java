@@ -36,7 +36,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
     @Resource
     private Inno72GoodsMapper inno72GoodsMapper;
     
-    Pattern pattern=Pattern.compile("^([-+]?\\d{0,6})(\\.\\d{0,2})?");
+    Pattern pattern=Pattern.compile("^([+]?\\d{0,6})(\\.\\d{0,2})?");
 
     @Override
 	public Result<String> saveModel(Inno72Goods model) {
@@ -164,6 +164,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 		return Results.success("");
 
 	}
+	
 
 	
 	

@@ -61,6 +61,7 @@
     <result column="district" jdbcType="VARCHAR" property="district" />
     <result column="circle" jdbcType="VARCHAR" property="circle" />
     <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="planed" jdbcType="INTEGER" property="planed" />
     <association property="machines" resultMap="machinesResult" />
   </resultMap>
   
@@ -91,6 +92,28 @@
 		 	#{endTime} BETWEEN ap.start_time AND ap.end_time OR ap.id IS NULL
 		 ]]>)
 		</if>
+  </select>
+  <select id="selectMachineList" parameterType="java.util.Map" resultMap="ResultAreaMachineMap">
+  		SELECT
+			m.id AS CODE,
+			'' AS parent_code,
+			CONCAT( area.province, area.city, area.district, area.circle, '——', m.machine_code ) AS NAME,
+			area.province,
+			area.city,
+			area.district,
+			area.circle,
+			'5' AS LEVEL,
+			 CASE 
+			 WHEN  ap.start_time BETWEEN #{startTime} AND #{endTime} OR ap.end_time BETWEEN #{startTime} AND #{endTime} THEN '1' 
+			 ELSE '0' 
+			 END AS planed
+		FROM
+			inno72_machine m
+			LEFT JOIN inno72_locale locale ON m.locale_id = locale.id
+			LEFT JOIN inno72_admin_area area ON area.CODE = locale.area_code 
+			LEFT JOIN inno72_activity_plan_machine apm ON m.id = apm.machine_id
+			LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id 
+		WHERE locale.area_code=#{code}
   </select>
   <!-- 查询时间段内排期的机器-->
   <select id="selectPlanedMachine" parameterType="java.util.Map" resultType="String">

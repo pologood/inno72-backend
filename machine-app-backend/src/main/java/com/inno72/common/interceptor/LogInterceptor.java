@@ -28,14 +28,14 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	@Resource
 	private IRedisUtil redisUtil; // memcachedClient
 
-	private static List<String> doNotCheckUs = Arrays.asList(new String[] { "/dd" });
+	private static List<String> doNotCheckUs = Arrays.asList(new String[] { "/check/user/smsCode","/check/user/login" });
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 
 		// 检查POST方法，token，url权限, 启用后删除检查参数中的token
-		// checkAuthority(request);
+		 checkAuthority(request,response);
 		@SuppressWarnings("rawtypes")
 		Enumeration enumeration = request.getParameterNames();
 		StringBuffer parm = new StringBuffer();
