@@ -62,6 +62,9 @@ public class UserServiceImpl extends AbstractService<Inno72User> implements User
 			if (array.isEmpty()) {
 				return Results.failure("角色参数错误");
 			}
+			Condition condition = new Condition(Inno72UserRole.class);
+			condition.createCriteria().andEqualTo("userId", userId);
+			inno72UserRoleMapper.deleteByCondition(condition);
 			array.forEach(role -> {
 				Inno72UserRole ur = new Inno72UserRole();
 				ur.setId(StringUtil.getUUID());
