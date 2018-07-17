@@ -19,7 +19,6 @@ import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
 import com.inno72.machine.mapper.Inno72SupplyChannelMapper;
 import com.inno72.machine.model.Inno72SupplyChannel;
-import com.inno72.machine.model.Inno72SupplyChannelHist;
 import com.inno72.machine.service.SupplyChannelService;
 import com.inno72.machine.vo.ChannelListVo;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
@@ -43,7 +42,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		if (channels == null) {
 			return Results.failure("货道信息错误");
 		}
-		Condition condition = new Condition(Inno72SupplyChannelHist.class);
+		Condition condition = new Condition(Inno72SupplyChannel.class);
 		condition.createCriteria().andEqualTo("machineId", machineCode);
 		List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectByCondition(condition);
 		if (supplyChannelList != null) {
