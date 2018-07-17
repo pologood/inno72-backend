@@ -38,6 +38,7 @@ public class CheckActivityIsExist {
         JSONObject jsonObject = JSONObject.parseObject(noPlanInfoVos);
         Integer resultCdoe = jsonObject.getInteger("code");
         List<Inno72NoPlanInfoVo> noPlanInfoVoList = JSON.parseArray(jsonObject.getString("data"), Inno72NoPlanInfoVo.class);
+        //调用发送短信接口
 
         log.info("检查机器上是否有活动排期的定时任务，查询后list：{}",noPlanInfoVoList.toString());
         log.info("检查机器上是否有活动排期的定时任务，执行结束");
