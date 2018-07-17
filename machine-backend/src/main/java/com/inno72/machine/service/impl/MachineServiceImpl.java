@@ -324,7 +324,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 				bean.setAppPackageName(status.getAppPackageName());
 				Inno72App app = appService.findBy("appPackageName", status.getAppPackageName());
 				bean.setAppType(app.getAppType());
-				if (appPackageName.equals(status.getAppPackageName()) || app.getAppType() == 2) {
+				if (appPackageName.equals(status.getAppPackageName()) || app.getAppType() == 1) {
 					bean.setStartStatus(1);
 				} else {
 					bean.setStartStatus(2);
