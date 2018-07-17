@@ -184,12 +184,23 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					planGameResult.setResultCode(inno72CouponVo.getResultCode());
 					planGameResult.setResultRemark(inno72CouponVo.getResultRemark());
 					
-					insertCouponList.add(coupon);
-					if (insertPlanGameResultList.contains(planGameResult)) {
-						logger.info("添加规则有重复");
-						return Results.failure("添加规则有重复");
+					if (!insertCouponList.contains(coupon)) {
+						insertCouponList.add(coupon);
+						if (insertPlanGameResultList.contains(planGameResult)) {
+							logger.info("添加规则有重复");
+							return Results.failure("添加规则有重复");
+						}
+						insertPlanGameResultList.add(planGameResult);
+					}else {
+						int num = insertCouponList.indexOf(coupon);
+						Inno72Coupon old = insertCouponList.get(num);
+						planGameResult.setPrizeId(old.getId());
+						if (insertPlanGameResultList.contains(planGameResult)) {
+							logger.info("添加规则有重复");
+							return Results.failure("添加规则有重复");
+						}
+						insertPlanGameResultList.add(planGameResult);
 					}
-					insertPlanGameResultList.add(planGameResult);
 				}
 			}
 			
@@ -316,11 +327,23 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					planGameResult.setResultCode(inno72CouponVo.getResultCode());
 					planGameResult.setResultRemark(inno72CouponVo.getResultRemark());
 					
-					insertCouponList.add(coupon);
-					if (insertPlanGameResultList.contains(planGameResult)) {
-						return Results.failure("更新规则有重复");
+					if (!insertCouponList.contains(coupon)) {
+						insertCouponList.add(coupon);
+						if (insertPlanGameResultList.contains(planGameResult)) {
+							logger.info("添加规则有重复");
+							return Results.failure("添加规则有重复");
+						}
+						insertPlanGameResultList.add(planGameResult);
+					}else {
+						int num = insertCouponList.indexOf(coupon);
+						Inno72Coupon old = insertCouponList.get(num);
+						planGameResult.setPrizeId(old.getId());
+						if (insertPlanGameResultList.contains(planGameResult)) {
+							logger.info("添加规则有重复");
+							return Results.failure("添加规则有重复");
+						}
+						insertPlanGameResultList.add(planGameResult);
 					}
-					insertPlanGameResultList.add(planGameResult);
 				}
 			}
 			
