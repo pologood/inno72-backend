@@ -42,6 +42,12 @@ public class Inno72Goods {
     @NotBlank(message="请选择商户")
     @Column(name = "seller_id")
     private String sellerId;
+    
+    /**
+     * 店铺ID
+     */
+    @Column(name = "shop_id")
+    private String shopId;
 
     /**
      * 图片

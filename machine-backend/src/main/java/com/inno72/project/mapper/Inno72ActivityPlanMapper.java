@@ -13,7 +13,7 @@ import java.util.Map;
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72ActivityPlanMapper extends Mapper<Inno72ActivityPlan> {
 	
-	List<Inno72ActivityPlanVo> selectByPage(Map<String, Object> params);
+	List<Inno72ActivityPlanVo> selectPlanList(Map<String, Object> params);
 	
 	List<Inno72AdminAreaVo> selectAreaMachineList(Map<String, Object> params);
 	
