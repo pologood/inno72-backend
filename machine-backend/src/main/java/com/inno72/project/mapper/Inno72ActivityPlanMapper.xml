@@ -103,7 +103,25 @@
 		 ]]>
 		 )
   </select>
-  
+
+  <!-- 查询时间段内没有排期的机器-->
+  <select id="selectNoPlanedMachine" parameterType="String" resultType="Inno72NoPlanInfoVo">
+  		SELECT
+			m.id,
+			machine_code as machineCode,
+			CONCAT( aa.province, aa.city, aa.district, aa.circle ) as area
+		FROM inno72_machine m
+		LEFT JOIN inno72_activity_plan_machine apm ON m.id = apm.machine_id
+		LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id
+		LEFT JOIN inno72_locale l ON l.id = m.locale_id
+		LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code
+		WHERE apm.machine_id IS NUL
+		and ( <![CDATA[
+		 	#{taskTime} > ap.end_time or #{taskTime} < ap.start_time
+		 ]]>
+		 )
+  </select>
+
   <select id="selectPlanIsState" parameterType="String" resultType="int">
   		SELECT count(1) FROM inno72_activity_plan ap where  is_delete =0 and ap.id =#{id} and (NOW() BETWEEN ap.start_time AND ap.end_time)
   </select>

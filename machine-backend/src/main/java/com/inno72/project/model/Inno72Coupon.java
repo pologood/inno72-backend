@@ -244,4 +244,18 @@ public class Inno72Coupon {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Inno72Coupon) {
+			Inno72Coupon result= (Inno72Coupon) obj;
+			if (this.code.equals(result.getCode())) {
+				return true;
+			}else {
+				return false;
+			}
+        }
+        return false;
+	}
+    
 }
