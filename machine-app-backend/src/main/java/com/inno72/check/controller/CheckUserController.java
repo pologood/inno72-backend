@@ -28,4 +28,9 @@ public class CheckUserController {
         Result<SessionData> result = checkUserService.login(phone,smsCode);
         return result;
     }
+
+    public Result<String> signIn(String type){
+        Result<String> result = checkUserService.signId(type);
+        return result;
+    }
 }
