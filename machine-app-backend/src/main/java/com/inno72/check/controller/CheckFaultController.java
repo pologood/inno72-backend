@@ -58,9 +58,20 @@ public class CheckFaultController {
      * @param file
      * @return
      */
-    @RequestMapping(value="upload",method = {RequestMethod.POST})
+    @RequestMapping(value="/upload",method = {RequestMethod.POST})
     public Result<String> upload(MultipartFile file){
         Result<String> result = checkFaultService.upload(file);
         return result;
+    }
+
+    /**
+     * 编辑故障
+     * @param checkFault
+     * @return
+     */
+    @RequestMapping(value="/edit",method = {RequestMethod.POST,RequestMethod.GET})
+    public Result<String> edit(Inno72CheckFault checkFault){
+        checkFaultService.update(checkFault);
+        return ResultGenerator.genSuccessResult();
     }
 }

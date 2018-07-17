@@ -1,6 +1,9 @@
 package com.inno72.common.interceptor;
 
 import com.alibaba.fastjson.JSON;
+import com.inno72.common.CommonConstants;
+import com.inno72.common.Result;
+import com.inno72.common.SessionData;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.utils.page.Pagination;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -10,6 +13,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -23,7 +28,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	@Resource
 	private IRedisUtil redisUtil; // memcachedClient
 
-	private static List<String> doNotCheckUs = Arrays.asList(new String[] { "/login.json" });
+	private static List<String> doNotCheckUs = Arrays.asList(new String[] { "/dd" });
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -142,38 +147,88 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	}
 
 	@SuppressWarnings("unused")
-	private void checkAuthority(HttpServletRequest request) throws HttpRequestMethodNotSupportedException {
+	private boolean checkAuthority(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String url = request.getServletPath();
 		boolean match = doNotCheckUs.parallelStream().anyMatch(_url -> url.indexOf(_url) != -1);
 		if (match) {
-			return;
+			return true;
 		}
-		if (request.getMethod().toUpperCase().equals("GET") || request.getMethod().toUpperCase().equals("POST")) {
+		// 获取请求方法
+		String requestMethod = request.getMethod().toUpperCase();
+		if (requestMethod.equals("GET") || requestMethod.equals("POST") || requestMethod.equals("DELETE")
+				|| requestMethod.equals("PUT")) {
 			if (!match) {
 				// lf-None-Matoh 传入token
 				String token = request.getHeader("lf-None-Matoh");
 				if (token == null) {
+					Result<String> result = new Result<>();
+					result.setCode(999);
+					result.setMsg("你未登录，请登录");
+					String origin = request.getHeader("Origin");
+					response(response, origin);
+					PrintWriter out = null;
+					try {
+						out = response.getWriter();
+						out.append(JSON.toJSONString(result));
+					} catch (IOException e) {
+						e.printStackTrace();
+					} finally {
+						if (out != null) {
+							out.close();
+						}
+					}
+					return false;
 				}
-				// Object info = clientMemcached.getAndTouch(token,
-				// CommonConstants.PMP_SESSION_DATA_EXP);
-				Object info = new Object();
+				String info = redisUtil.get(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + token);
 				if (info == null) {
+					// 判断用户是否被踢出
+					boolean checkout = redisUtil.sismember(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, token);
+					redisUtil.srem(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, token);
+					Result<String> result = new Result<>();
+					if (checkout) {
+						result.setCode(888);
+						result.setMsg("你的账号在另一处登录，你已被踢出");
+					} else {
+						result.setCode(999);
+						result.setMsg("你登录超时，请重新登录");
+					}
+					String origin = request.getHeader("Origin");
+					response(response, origin);
+					PrintWriter out = null;
+					try {
+						out = response.getWriter();
+						out.append(JSON.toJSONString(result));
+					} catch (IOException e) {
+						e.printStackTrace();
+					} finally {
+						if (out != null) {
+							out.close();
+						}
+					}
+					return false;
 				} else {
-					// String _info = info.toString();
-					// CommonConstants.PMP_SESSION_DATA =
-					// this.toSessionData(_info);
-					// List<GeneralAuthority> authorities =
-					// CommonConstants.PMP_SESSION_DATA.getThirdLevelAuth();
-					// boolean isAuth = authorities.parallelStream().anyMatch(
-					// auth -> url.indexOf(auth.getDetail() == null ?
-					// "detail字段补全" : auth.getDetail()) != -1);
-					// if (!isAuth) {
-					// throw new SystemException("permission.denied",
-					// "没有权限");
+					String _info = info.toString();
+					CommonConstants.SESSION_DATA = JSON.parseObject(_info, SessionData.class);
 				}
 			}
 		}
+		return true;
+	}
 
+	private void response(HttpServletResponse response, String origin) {
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json; charset=utf-8");
+		response.setHeader("Access-Control-Allow-Origin", origin);
+		response.setHeader("Vary", "Origin");
+		// Access-Control-Max-Age
+		response.setHeader("Access-Control-Max-Age", "3600");
+		// Access-Control-Allow-Credentials
+		response.setHeader("Access-Control-Allow-Credentials", "true");
+		// Access-Control-Allow-Methods
+		response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, HEAD, OPTIONS");
+		// Access-Control-Allow-Headers
+		response.setHeader("Access-Control-Allow-Headers",
+				"Origin, X-Requested-With, Content-Type, Accept, lf-None-Matoh");
 	}
 
 	public IRedisUtil getRedisUtil() {
