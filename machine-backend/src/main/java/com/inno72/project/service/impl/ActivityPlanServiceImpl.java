@@ -86,8 +86,8 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			
 			// 查询已有排期机器
 			Map<String, Object> planingsParam = new HashMap<String, Object>();
-			String startTimeStr = activityPlan.getStartTimeStr().substring(0,activityPlan.getStartTimeStr().length()-2)+"00";
-			String endTimeStr = activityPlan.getEndTimeStr().substring(0,activityPlan.getEndTimeStr().length()-2)+"59";
+			String startTimeStr = activityPlan.getStartTimeStr()+"00";
+			String endTimeStr = activityPlan.getEndTimeStr()+"59";
 			planingsParam.put("startTime", startTimeStr);
 			planingsParam.put("endTime", endTimeStr);
 			activityPlan.setStartTime(DateUtil.toDateTime(startTimeStr, DateUtil.DF_FULL_S1));
@@ -260,7 +260,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		try {
 			activityPlan.setUpdateId(userId);
 			activityPlan.setUpdateTime(LocalDateTime.now());
-			String endTimeStr = activityPlan.getEndTimeStr().substring(0,activityPlan.getEndTimeStr().length()-2)+"59";
+			String endTimeStr = activityPlan.getEndTimeStr()+"59";
 			activityPlan.setEndTime(DateUtil.toDateTime(endTimeStr, DateUtil.DF_FULL_S1));
 			//活动游戏结果 集合
 			List<Inno72ActivityPlanGameResult> insertPlanGameResultList= new ArrayList<>();
@@ -454,8 +454,20 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		}else if (level.equals("4")) {
 			params.put("num", 9);
 		}
+		List<Inno72AdminAreaVo> list = inno72ActivityPlanMapper.selectAreaMachineList(params);
+		for (Inno72AdminAreaVo inno72AdminAreaVo : list) {
+			int canUseNum = 0;
+			List<Inno72MachineVo> machines=inno72AdminAreaVo.getMachines();
+			for (Inno72MachineVo machineVo : machines) {
+				if (StringUtil.isBlank(machineVo.getState())) {
+					canUseNum++;
+				}
+			}
+			inno72AdminAreaVo.setCanUseNum(canUseNum+"");
+			inno72AdminAreaVo.setTotalNum(machines.size()+"");
+		}
 		
-	   	return inno72ActivityPlanMapper.selectAreaMachineList(params);
+	   	return list;
 	}
 	
 	public int getlikeCode(String s){

@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtil {
@@ -61,5 +62,20 @@ public class DateUtil {
 	public static String nowStr(){
 		return toTimeStr(LocalDateTime.now(),DF_FULL_S1);
 	}
+	
+	/**
+     * 在原日期的基础上增加天数
+     * @param date
+     * @param i
+     * @return
+     */
+    public static Date addDayOfDate(Date date,int i){
+	    Calendar c = Calendar.getInstance();
+	    c.setTime(date);
+	    c.add(Calendar.DATE, i);
+	    Date newDate = c.getTime();
+	    
+	    return newDate;
+    }
 
 }
