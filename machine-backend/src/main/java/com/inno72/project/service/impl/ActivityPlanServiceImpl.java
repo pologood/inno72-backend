@@ -451,20 +451,26 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			params.put("num", 4);
 		}else if (level.equals("3")) {
 			params.put("num", 6);
-		}else if (level.equals("4")) {
-			params.put("num", 9);
 		}
-		List<Inno72AdminAreaVo> list = inno72ActivityPlanMapper.selectAreaMachineList(params);
-		for (Inno72AdminAreaVo inno72AdminAreaVo : list) {
-			int canUseNum = 0;
-			List<Inno72MachineVo> machines=inno72AdminAreaVo.getMachines();
-			for (Inno72MachineVo machineVo : machines) {
-				if (StringUtil.isBlank(machineVo.getState())) {
-					canUseNum++;
+		List<Inno72AdminAreaVo> list = new ArrayList<>();
+		if (level.equals("4")) {
+			list = inno72ActivityPlanMapper.selectMachineList(params);
+		}else{
+			list = inno72ActivityPlanMapper.selectAreaMachineList(params);
+			for (Inno72AdminAreaVo inno72AdminAreaVo : list) {
+				int canUseNum = 0;
+				List<Inno72MachineVo> machines=inno72AdminAreaVo.getMachines();
+				for (Inno72MachineVo machineVo : machines) {
+					if (StringUtil.isBlank(machineVo.getState())) {
+						canUseNum++;
+						machineVo.setState("0");
+					}else{
+						machineVo.setState("1");
+					}
 				}
+				inno72AdminAreaVo.setCanUseNum(canUseNum+"");
+				inno72AdminAreaVo.setTotalNum(machines.size()+"");
 			}
-			inno72AdminAreaVo.setCanUseNum(canUseNum+"");
-			inno72AdminAreaVo.setTotalNum(machines.size()+"");
 		}
 		
 	   	return list;

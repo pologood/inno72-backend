@@ -92,6 +92,27 @@
 		 ]]>)
 		</if>
   </select>
+  <select id="selectMachineList" parameterType="java.util.Map" resultMap="ResultAreaMachineMap">
+  		SELECT
+			m.id AS CODE,
+			"" AS parent_code,
+			CONCAT( area.province, area.city, area.district, area.circle, '——', m.machine_code ) AS NAME,
+			area.province,
+			area.city,
+			area.district,
+			area.circle,
+			"5" AS LEVEL ,m.locale_id
+		FROM
+			inno72_machine m
+			LEFT JOIN inno72_locale locale ON m.locale_id = locale.id
+			LEFT JOIN inno72_admin_area area ON area.CODE = locale.area_code 
+			LEFT JOIN inno72_activity_plan_machine apm ON m.id = apm.machine_id
+			LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id 
+		WHERE locale.area_code=#{code}
+		and ( <![CDATA[
+		 	#{startTime} > ap.end_time OR #{endTime} < ap.start_time OR apm.machine_id IS NULL
+		 ]]>)
+  </select>
   <!-- 查询时间段内排期的机器-->
   <select id="selectPlanedMachine" parameterType="java.util.Map" resultType="String">
   		SELECT machine_id FROM inno72_activity_plan ap
