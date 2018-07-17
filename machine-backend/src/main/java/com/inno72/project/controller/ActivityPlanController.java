@@ -8,6 +8,7 @@ import com.inno72.project.vo.Inno72ActivityPlanVo;
 import com.inno72.project.vo.Inno72AdminAreaVo;
 import com.inno72.common.ResultPages;
 
+import com.inno72.project.vo.Inno72NoPlanInfoVo;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,7 +76,14 @@ public class ActivityPlanController {
         List<Inno72AdminAreaVo> list = activityPlanService.selectAreaMachineList(code,level);
         return ResultGenerator.genSuccessResult(list);
     }
-    
+
+    @RequestMapping(value = "/selectNoPlanMachines", method = { RequestMethod.POST,  RequestMethod.GET})
+    public Result<List<Inno72NoPlanInfoVo>> selectNoPlanMachines(String taskTime) {
+   	   	//联动查询
+        List<Inno72NoPlanInfoVo> list = activityPlanService.selectNoPlanMachineList(taskTime);
+        return ResultGenerator.genSuccessResult(list);
+    }
+
     
     
     

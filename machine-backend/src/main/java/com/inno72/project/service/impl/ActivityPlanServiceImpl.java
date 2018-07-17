@@ -18,10 +18,7 @@ import com.inno72.project.model.Inno72ActivityPlanGoods;
 import com.inno72.project.model.Inno72ActivityPlanMachine;
 import com.inno72.project.model.Inno72Coupon;
 import com.inno72.project.service.ActivityPlanService;
-import com.inno72.project.vo.Inno72ActivityPlanVo;
-import com.inno72.project.vo.Inno72AdminAreaVo;
-import com.inno72.project.vo.Inno72CouponVo;
-import com.inno72.project.vo.Inno72MachineVo;
+import com.inno72.project.vo.*;
 import com.inno72.system.model.Inno72User;
 
 import org.slf4j.Logger;
@@ -391,6 +388,14 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		}
 		
 		return Results.success();
+	}
+
+	@Override
+	public List<Inno72NoPlanInfoVo> selectNoPlanMachineList(String taskTime) {
+
+		List<Inno72NoPlanInfoVo> noPlanedMachineList = inno72ActivityPlanMapper.selectNoPlanedMachine(taskTime);
+
+		return noPlanedMachineList;
 	}
 
 	@Override
