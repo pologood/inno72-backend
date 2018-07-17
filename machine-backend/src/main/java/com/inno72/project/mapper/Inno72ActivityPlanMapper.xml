@@ -105,7 +105,7 @@
   </select>
 
   <!-- 查询时间段内没有排期的机器-->
-  <select id="selectNoPlanedMachine" parameterType="String" resultType="Inno72NoPlanInfoVo">
+  <select id="selectNoPlanedMachine" parameterType="String" resultType="com.inno72.project.vo.Inno72NoPlanInfoVo">
   		SELECT
 			m.id,
 			machine_code as machineCode,
@@ -115,7 +115,7 @@
 		LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
 		LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code
-		WHERE apm.machine_id IS NUL
+		WHERE apm.machine_id IS NULL
 		and ( <![CDATA[
 		 	#{taskTime} > ap.end_time or #{taskTime} < ap.start_time
 		 ]]>
