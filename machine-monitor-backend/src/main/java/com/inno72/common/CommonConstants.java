@@ -14,4 +14,8 @@ public class CommonConstants {
 
 	public final static Integer RESULT_SUCCESS = 0;
 
+	public final static Integer MACHINE_DOOR_OPEN = 1;
+
+
+
 }
