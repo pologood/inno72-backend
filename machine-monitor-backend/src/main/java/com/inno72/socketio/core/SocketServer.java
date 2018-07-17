@@ -42,6 +42,7 @@ public class SocketServer {
 		// config.setPingInterval(1100);
 		SocketConfig socketConfig = new SocketConfig();
 		socketConfig.setTcpKeepAlive(false);
+		socketConfig.setReuseAddress(true);
 		config.setSocketConfig(socketConfig);
 		server = new SocketIOServer(config);
 		server.addConnectListener(listener.connect());

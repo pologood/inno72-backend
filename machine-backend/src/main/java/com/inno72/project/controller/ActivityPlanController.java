@@ -10,6 +10,7 @@ import com.inno72.common.ResultPages;
 
 import com.inno72.project.vo.Inno72NoPlanInfoVo;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +26,7 @@ import java.util.List;
 */
 @RestController
 @RequestMapping("/project/activityPlan")
+@CrossOrigin
 public class ActivityPlanController {
     @Resource
     private ActivityPlanService activityPlanService;
