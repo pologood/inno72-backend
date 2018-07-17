@@ -17,7 +17,7 @@ public interface ActivityPlanService extends Service<Inno72ActivityPlan> {
 
 	Result<String> saveActPlan(Inno72ActivityPlanVo activityPlan);
 
-	List<Inno72AdminAreaVo> selectAreaMachineList(String code,String level);
+	List<Inno72AdminAreaVo> selectAreaMachineList(String code,String level,String startTime, String endTime);
 
 	List<Inno72ActivityPlanVo> selectPlanList(String code, String startTime, String endTime);
 
@@ -31,6 +31,7 @@ public interface ActivityPlanService extends Service<Inno72ActivityPlan> {
 	 * @param taskTime
 	 * */
 	List<Inno72NoPlanInfoVo> selectNoPlanMachineList(String taskTime);
+
 
 
 }

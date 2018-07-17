@@ -438,9 +438,16 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	}
 	
 	@Override
-	public List<Inno72AdminAreaVo> selectAreaMachineList(String code,String level) {
+	public List<Inno72AdminAreaVo> selectAreaMachineList(String code,String level,String startTime,String endTime) {
 		Map<String, Object> params = new HashMap<String, Object>();
+		
 		params.put("code", code);
+		if (StringUtil.isNotBlank(startTime)) {
+			params.put("startTime", startTime+":00");
+		}
+		if (StringUtil.isNotBlank(endTime)) {
+			params.put("endTime", endTime+":00");
+		}
 		
 		if (StringUtil.isEmpty(code)) {
 			params.put("level", 1);
@@ -460,8 +467,9 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			for (Inno72AdminAreaVo inno72AdminAreaVo : list) {
 				int canUseNum = 0;
 				List<Inno72MachineVo> machines=inno72AdminAreaVo.getMachines();
+				inno72AdminAreaVo.setTotalNum(machines.size()+"");
 				for (Inno72MachineVo machineVo : machines) {
-					if (StringUtil.isBlank(machineVo.getState())) {
+					if (StringUtil.isEmpty(machineVo.getState())) {
 						canUseNum++;
 						machineVo.setState("0");
 					}else{
@@ -469,7 +477,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					}
 				}
 				inno72AdminAreaVo.setCanUseNum(canUseNum+"");
-				inno72AdminAreaVo.setTotalNum(machines.size()+"");
+				
 			}
 		}
 		
