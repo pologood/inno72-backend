@@ -60,7 +60,7 @@ public class CodeGenerator {
 	private static final String DATE = new SimpleDateFormat("yyyy/MM/dd").format(new Date());// @date
 
 	public static void main(String[] args) {
-		genCode("inno72_app");
+		genCode("inno72_user_role");
 		// genCodeByCustomModelName("输入表名","输入自定义Model名称");
 	}
 
@@ -87,10 +87,10 @@ public class CodeGenerator {
 	 *            自定义的 Model 名称
 	 */
 	public static void genCodeByCustomModelName(String tableName, String modelName) {
-		genModelAndMapper(tableName, modelName);
+		// genModelAndMapper(tableName, modelName);
 		String newTableName = tableName.replace("inno72_", "");
 		genService(tableName, tableNameConvertUpperCamel(newTableName));
-		genController(tableName, tableNameConvertUpperCamel(newTableName));
+		// genController(tableName, tableNameConvertUpperCamel(newTableName));
 	}
 
 	public static void genModelAndMapper(String tableName, String modelName) {

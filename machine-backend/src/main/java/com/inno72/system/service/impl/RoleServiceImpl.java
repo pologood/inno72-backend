@@ -17,8 +17,10 @@ import com.inno72.common.Results;
 import com.inno72.common.StringUtil;
 import com.inno72.system.mapper.Inno72RoleFunctionMapper;
 import com.inno72.system.mapper.Inno72RoleMapper;
+import com.inno72.system.mapper.Inno72UserRoleMapper;
 import com.inno72.system.model.Inno72Role;
 import com.inno72.system.model.Inno72RoleFunction;
+import com.inno72.system.model.Inno72UserRole;
 import com.inno72.system.service.RoleService;
 
 import tk.mybatis.mapper.entity.Condition;
@@ -33,6 +35,8 @@ public class RoleServiceImpl extends AbstractService<Inno72Role> implements Role
 	private Inno72RoleMapper inno72RoleMapper;
 	@Resource
 	private Inno72RoleFunctionMapper inno72RoleFunctionMapper;
+	@Resource
+	private Inno72UserRoleMapper inno72UserRoleMapper;
 
 	@Override
 	public Result<List<Inno72Role>> findRoles(String keyword) {
@@ -96,7 +100,12 @@ public class RoleServiceImpl extends AbstractService<Inno72Role> implements Role
 
 	@Override
 	public Result<String> delete(String id) {
-
+		Condition condition1 = new Condition(Inno72UserRole.class);
+		condition1.createCriteria().andEqualTo("roleId", id);
+		List<Inno72UserRole> userRoles = inno72UserRoleMapper.selectByCondition(condition1);
+		if (userRoles != null && !userRoles.isEmpty()) {
+			return Results.failure("删除失败，角色已被使用");
+		}
 		int row = inno72RoleMapper.deleteByPrimaryKey(id);
 		if (row == 1) {
 			Condition condition = new Condition(Inno72RoleFunction.class);
