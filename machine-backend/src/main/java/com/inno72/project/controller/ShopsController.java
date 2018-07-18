@@ -37,7 +37,7 @@ public class ShopsController {
     		if(bindingResult.hasErrors()){
     			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
             }else{
-            	shopsService.saveModel(shops);
+            	return shopsService.saveModel(shops);
             }
 		} catch (Exception e) {
 			ResultGenerator.genFailResult("操作失败！");

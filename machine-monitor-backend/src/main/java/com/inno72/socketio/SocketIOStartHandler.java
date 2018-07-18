@@ -103,7 +103,6 @@ public class SocketIOStartHandler {
 
 			@Override
 			public void monitorResponse(String key, String data, Map<String, List<String>> params) {
-				log.info("推送监控消息，执行开始");
 				// 将机器系统监控信息存入mongo数据库中
 				String message = AesUtils.decrypt(GZIPUtil.uncompress(data));
 				SystemStatus systemStatus = JSONObject.parseObject(message, SystemStatus.class);
@@ -137,7 +136,6 @@ public class SocketIOStartHandler {
 					}
 				}
 
-				log.info("推送监控消息，执行结束");
 			}
 
 			@Override

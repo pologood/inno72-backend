@@ -7,6 +7,7 @@ import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.common.Results;
+import com.inno72.project.vo.Inno72AdminAreaVo;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,4 +66,15 @@ public class CheckUserController {
         List<Inno72CheckUser> list = checkUserService.findByPage(keyword);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
+    
+    @RequestMapping(value = "/selectAreaMachines", method = { RequestMethod.POST,  RequestMethod.GET})
+    public Result<List<Inno72AdminAreaVo>> selectMachines(String code,String level) {
+    	
+    	
+    	
+        List<Inno72AdminAreaVo> list = checkUserService.selectAreaMachineList(code,level);
+        return ResultGenerator.genSuccessResult(list);
+    }
+    
+    
 }

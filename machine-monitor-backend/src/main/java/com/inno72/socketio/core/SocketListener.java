@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +14,6 @@ import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.utils.StringUtil;
-import com.inno72.redis.IRedisUtil;
 
 /**
  * socket消息监听
@@ -27,8 +24,6 @@ import com.inno72.redis.IRedisUtil;
 public class SocketListener {
 
 	private SocketServerHandler handler;
-	@Resource
-	private IRedisUtil redisUtil;
 
 	Logger logger = LoggerFactory.getLogger(SocketListener.class);
 
@@ -91,7 +86,7 @@ public class SocketListener {
 		return new DataListener<String>() {
 			@Override
 			public void onData(SocketIOClient client, String data, AckRequest arg2) throws Exception {
-				//logger.info("收到监控返回数据:{}", data);
+				// logger.info("收到监控返回数据:{}", data);
 				handler.monitorResponse(client.getSessionId().toString(), data,
 						client.getHandshakeData().getUrlParams());
 			}

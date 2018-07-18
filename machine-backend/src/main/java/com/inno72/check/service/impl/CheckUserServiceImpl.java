@@ -12,6 +12,7 @@ import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
+import com.inno72.project.vo.Inno72AdminAreaVo;
 import com.inno72.project.vo.Inno72MachineVo;
 import com.inno72.system.model.Inno72User;
 
@@ -22,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -160,6 +163,35 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	@Override
 	public List<Inno72CheckUser> findByPage(String keyword) {
 		return inno72CheckUserMapper.selectByPage(keyword);
+	}
+	
+	
+	
+	@Override
+	public List<Inno72AdminAreaVo> selectAreaMachineList(String code,String level) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("code", code);
+		
+		if (StringUtil.isEmpty(code)) {
+			params.put("level", 1);
+	   	}
+		if (level.equals("1")) {
+			params.put("num", 2);
+		}else if (level.equals("2")) {
+			params.put("num", 4);
+		}else if (level.equals("3")) {
+			params.put("num", 6);
+		}else if (level.equals("4")) {
+			params.put("num", 9);
+		}
+		List<Inno72AdminAreaVo> list = new ArrayList<>();
+		if (level.equals("5")) {
+			list = inno72CheckUserMapper.selectMachineList(params);
+		}else{
+			list = inno72CheckUserMapper.selectAreaMachineList(params);
+		}
+		
+	   	return list;
 	}
     
     
