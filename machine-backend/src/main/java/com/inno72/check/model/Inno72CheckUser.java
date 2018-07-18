@@ -1,7 +1,13 @@
 package com.inno72.check.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import javax.persistence.*;
+
+import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
 @Table(name = "inno72_check_user")
 public class Inno72CheckUser {
@@ -15,21 +21,27 @@ public class Inno72CheckUser {
     /**
      * 姓名
      */
+    @NotBlank(message="请输入姓名")
+    @Column(name = "name")
     private String name;
 
     /**
      * 手机号
      */
+    @NotBlank(message="请输入手机号")
+    @Column(name = "phone")
     private String phone;
 
     /**
      * 密码（预留）
      */
+    @Column(name = "password")
     private String password;
 
     /**
      * 身份证号
      */
+    @NotBlank(message="请输入身份证号")
     @Column(name = "card_no")
     private String cardNo;
 
@@ -55,10 +67,32 @@ public class Inno72CheckUser {
     private String headImage;
 
     /**
+     * 创建人
+     */
+    @Column(name = "create_id")
+    private String createId;
+
+    /**
      * 创建时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
+
+    /**
+     * 更新人
+     */
+    @Column(name = "update_id")
+    private String updateId;
+
+    /**
+     * 更新时间
+     */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "update_time")
+    private LocalDateTime updateTime;
 
     /**
      * 是否删除（0.正常，1.删除，默认为0）
@@ -228,25 +262,39 @@ public class Inno72CheckUser {
         this.headImage = headImage;
     }
 
-    /**
-     * 获取创建时间
-     *
-     * @return create_time - 创建时间
-     */
-    public Date getCreateTime() {
-        return createTime;
-    }
+    public String getCreateId() {
+		return createId;
+	}
 
-    /**
-     * 设置创建时间
-     *
-     * @param createTime 创建时间
-     */
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
+	public void setCreateId(String createId) {
+		this.createId = createId;
+	}
 
-    /**
+	public LocalDateTime getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(LocalDateTime createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getUpdateId() {
+		return updateId;
+	}
+
+	public void setUpdateId(String updateId) {
+		this.updateId = updateId;
+	}
+
+	public LocalDateTime getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(LocalDateTime updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	/**
      * 获取是否删除（0.正常，1.删除，默认为0）
      *
      * @return is_delete - 是否删除（0.正常，1.删除，默认为0）
