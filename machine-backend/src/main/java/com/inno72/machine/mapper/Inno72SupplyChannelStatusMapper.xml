@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.machine.mapper.Inno72SupplyChannelStatusMapper">
+    <resultMap id="BaseResultMap" type="com.inno72.machine.model.Inno72SupplyChannelStatus">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="code" jdbcType="INTEGER" property="code"/>
+        <result column="result" jdbcType="VARCHAR" property="result"/>
+    </resultMap>
+    <select id="getChannelErrorDetail" resultType="com.inno72.machine.model.Inno72SupplyChannelStatus">
+		SELECT s.code,s.result FROM inno72_supply_channel_status s
+  </select>
+</mapper>
