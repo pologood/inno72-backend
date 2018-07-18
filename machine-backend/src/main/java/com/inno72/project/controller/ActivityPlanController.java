@@ -73,9 +73,9 @@ public class ActivityPlanController {
     
 
     @RequestMapping(value = "/selectAreaMachines", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<List<Inno72AdminAreaVo>> selectMachines(String code,String level) {
+    public Result<List<Inno72AdminAreaVo>> selectMachines(String code,String level,String startTime,String endTime ) {
    	   	//联动查询
-        List<Inno72AdminAreaVo> list = activityPlanService.selectAreaMachineList(code,level);
+        List<Inno72AdminAreaVo> list = activityPlanService.selectAreaMachineList(code,level,startTime,endTime);
         return ResultGenerator.genSuccessResult(list);
     }
 

@@ -94,4 +94,10 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
         redisUtil.expire(userTokenKey, CommonConstants.SESSION_DATA_EXP);
         return Results.success(sessionData);
     }
+
+    @Override
+    public Result<String> signId(String type) {
+
+        return null;
+    }
 }
