@@ -24,5 +24,9 @@ public interface LocaleService extends Service<Inno72Locale> {
 
     List<MachineLocaleInfo> selectLocaleByMachineCode(List<MachineLocaleInfo> list);
 
+	Result<String> saveModel(Inno72Locale model);
+
+	Result<String> updateModel(Inno72Locale model);
+
 
 }

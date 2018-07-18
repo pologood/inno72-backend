@@ -1,5 +1,6 @@
 package com.inno72.machine.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,9 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.common.AbstractService;
+import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
+import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
 import com.inno72.common.share.mapper.Inno72AdminAreaMapper;
 import com.inno72.machine.mapper.Inno72LocaleMapper;
@@ -24,6 +27,7 @@ import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.service.LocaleService;
 import com.inno72.machine.vo.Inno72LocaleVo;
 import com.inno72.machine.vo.MachineLocaleInfo;
+import com.inno72.system.model.Inno72User;
 
 import tk.mybatis.mapper.entity.Condition;
 
@@ -41,18 +45,41 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	private Inno72AdminAreaMapper inno72AdminAreaMapper;
 
 	@Override
-	public void save(Inno72Locale model) {
+	public Result<String> saveModel(Inno72Locale model) {
 		logger.info("---------------------点位新增-------------------");
-		model.setId(StringUtil.getUUID());
-		model.setCreateId("");
-		model.setUpdateId("");
+		try {
+			SessionData session = CommonConstants.SESSION_DATA;
+    		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+    		if (mUser == null) {
+    			logger.info("登陆用户为空");
+    			return Results.failure("未找到用户登录信息");
+    		}
+    		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+			
+			model.setId(StringUtil.getUUID());
+			model.setCreateId(userId);
+			model.setUpdateId(userId);
 
-		super.save(model);
+			super.save(model);
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+		
+		
+		return ResultGenerator.genSuccessResult();
 	}
 
 	@Override
 	public Result<String> delById(String id) {
 		logger.info("---------------------点位删除-------------------");
+		SessionData session = CommonConstants.SESSION_DATA;
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
+		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		int n = inno72LocaleMapper.selectIsUseing(id);
 		if (n > 0) {
 			return Results.failure("机器使用中，不能删除！");
@@ -60,7 +87,8 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		Inno72Locale model = inno72LocaleMapper.selectByPrimaryKey(id);
 		// 判断是否可以删除
 		model.setIsDelete(1);
-		model.setUpdateId("");
+		model.setUpdateId(userId);
+		model.setUpdateTime(LocalDateTime.now());
 
 		super.update(model);
 		return ResultGenerator.genSuccessResult();
@@ -79,12 +107,26 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	}
 
 	@Override
-	public void update(Inno72Locale model) {
+	public Result<String> updateModel(Inno72Locale model) {
 		logger.info("---------------------点位更新-------------------");
-
-		model.setCreateId("");
-		model.setUpdateId("");
-		super.update(model);
+		try {
+			SessionData session = CommonConstants.SESSION_DATA;
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+			
+			model.setUpdateId(userId);
+			model.setUpdateTime(LocalDateTime.now());
+			super.update(model);
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+		
+		return ResultGenerator.genSuccessResult();
 	}
 
 	@Override
