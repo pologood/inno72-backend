@@ -31,9 +31,11 @@ import com.inno72.model.MachineAppStatus;
 import com.inno72.model.MachineLogInfo;
 import com.inno72.model.MachineStatus;
 import com.inno72.model.MessageBean;
+import com.inno72.model.SocketAction;
 import com.inno72.model.SystemStatus;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.redis.IRedisUtil;
+import com.inno72.service.SocketService;
 import com.inno72.socketio.core.SocketServer;
 import com.inno72.socketio.core.SocketServerHandler;
 import com.inno72.util.AesUtils;
@@ -51,6 +53,8 @@ public class SocketIOStartHandler {
 
 	@Autowired
 	private MachineMonitorBackendProperties machineMonitorBackendProperties;
+	@Autowired
+	private SocketService socketService;
 
 	private SocketServerHandler socketServerHandler() {
 
@@ -103,7 +107,9 @@ public class SocketIOStartHandler {
 
 			@Override
 			public void monitorResponse(String key, String data, Map<String, List<String>> params) {
-				log.info("推送监控消息，执行开始");
+				String machineCode = Optional.ofNullable(params.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
+						.orElse("");
+				socketService.manageSocket(SocketAction.HERT, machineCode, key);
 				// 将机器系统监控信息存入mongo数据库中
 				String message = AesUtils.decrypt(GZIPUtil.uncompress(data));
 				SystemStatus systemStatus = JSONObject.parseObject(message, SystemStatus.class);
@@ -137,13 +143,13 @@ public class SocketIOStartHandler {
 					}
 				}
 
-				log.info("推送监控消息，执行结束");
 			}
 
 			@Override
 			public void connectNotify(String sessionId, Map<String, List<String>> data) {
 				String machineId = Optional.ofNullable(data.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
 						.orElse("");
+				socketService.manageSocket(SocketAction.CONNECT, machineId, sessionId);
 				log.info("socket连接到服务器，机器machineId:{}", machineId);
 				if (!StringUtils.isEmpty(machineId)) {
 					String machinKey = CommonConstants.REDIS_BASE_PATH + machineId;
@@ -155,6 +161,7 @@ public class SocketIOStartHandler {
 			public void closeNotify(String key, Map<String, List<String>> data) {
 				String machineId = Optional.ofNullable(data.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
 						.orElse("");
+				socketService.manageSocket(SocketAction.DISCONNECT, machineId, key);
 				if (!StringUtils.isEmpty(machineId)) {
 					log.info("断开连接，机器machineId:{}", machineId);
 					// String machinKey = CommonConstants.REDIS_BASE_PATH +
