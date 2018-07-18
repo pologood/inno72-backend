@@ -13,7 +13,7 @@ public class TestMsgController {
 
 	@RequestMapping(value = "/testMsg", method = { RequestMethod.POST, RequestMethod.GET })
 	public void processCustomMsg() {
-		redisUtil.publish("1111", "msg---------");
+        redisUtil.publish("moniterAlarm", "msg---------");
 
 	}
 
