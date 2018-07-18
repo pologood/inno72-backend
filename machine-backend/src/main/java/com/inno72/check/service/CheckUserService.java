@@ -5,6 +5,7 @@ import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.check.vo.Inno72CheckUserVo;
 import com.inno72.common.Result;
 import com.inno72.common.Service;
+import com.inno72.project.vo.Inno72AdminAreaVo;
 
 
 /**
@@ -19,5 +20,7 @@ public interface CheckUserService extends Service<Inno72CheckUser> {
 	Result<String> updateModel(Inno72CheckUserVo model);
 
 	List<Inno72CheckUser> findByPage(String keyword);
+
+	List<Inno72AdminAreaVo> selectAreaMachineList(String code, String level);
 
 }
