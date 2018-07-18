@@ -238,8 +238,8 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			if (q >0) {
 				logger.info("游戏结果规则处理完成");
 			}
-			
 		} catch (Exception e) {
+			logger.info(e.getMessage());
 			return Results.failure("操作失败！");		
 		}
 		return Results.success();
@@ -393,6 +393,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			}
 			
 		} catch (Exception e) {
+			logger.info(e.getMessage());
 			return Results.failure("操作失败！");	
 		}
 		

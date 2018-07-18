@@ -33,12 +33,11 @@ public class LocaleController {
 			if (bindingResult.hasErrors()) {
 				return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
 			} else {
-				localeService.save(locale);
+				return localeService.saveModel(locale);
 			}
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
-		return ResultGenerator.genSuccessResult();
 	}
 
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })
@@ -53,11 +52,10 @@ public class LocaleController {
 	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> update(Inno72Locale locale) {
 		try {
-			localeService.update(locale);
+			return localeService.updateModel(locale);
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
-		return ResultGenerator.genSuccessResult();
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
