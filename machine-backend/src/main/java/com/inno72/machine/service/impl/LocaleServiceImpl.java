@@ -8,22 +8,21 @@ import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
 import com.inno72.common.StringUtil;
 import com.inno72.common.share.mapper.Inno72AdminAreaMapper;
+import com.inno72.common.*;
 import com.inno72.machine.mapper.Inno72LocaleMapper;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.service.LocaleService;
 import com.inno72.machine.vo.Inno72LocaleVo;
-
+import com.inno72.machine.vo.MachineLocaleInfo;
+import com.inno72.mapper.Inno72AdminAreaMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
+import java.util.*;
 
 
 /**
@@ -63,6 +62,18 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		
 		super.update(model);
 		return ResultGenerator.genSuccessResult();
+	}
+
+	@Override
+	public List<MachineLocaleInfo> selectLocaleByMachineCode(List<MachineLocaleInfo> list) {
+
+		List<String> machineCodes = new ArrayList<>();
+		for (MachineLocaleInfo machineLocaleInfo : list) {
+			String machineCode = machineLocaleInfo.getMachineCode();
+			machineCodes.add(machineCode);
+		}
+		List<MachineLocaleInfo> machineLocaleInfos = inno72LocaleMapper.selectLocaleByMachineCode(machineCodes);
+		return machineLocaleInfos;
 	}
 
 	@Override

@@ -36,7 +36,8 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	private static List<String> doNotCheckUs = Arrays.asList(new String[] { "/dd/login", "/dd", "/dd/reg_call_back",
 			"/dd/update_call_back", "/dd/initDData", "/dd/token", "/dd/testLogin", "/machine/channel/out/subCount",
 			"/machine/channel/out/get", "/machine/machine/initMachine", "/machine/machine/updateNetStatus",
-			"/machine/machine/updateMachineListNetStatus", "/testMsg","/project/activityPlan/selectNoPlanMachines" });
+			"/machine/machine/updateMachineListNetStatus", "/testMsg", "/project/activityPlan/selectNoPlanMachines",
+			"/machine/locale/selectLocaleByMachineCode"});
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)

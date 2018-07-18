@@ -62,10 +62,26 @@
   <select id="selectIsUseing" parameterType="String" resultType="int">
 		SELECT count(1) FROM inno72_machine where locale_id=#{id}
   </select>
-	
-  
-  
-  
-  
-  
+
+    <select id="selectLocaleByMachineCode" parameterType="String" resultType="com.inno72.machine.vo.MachineLocaleInfo">
+        SELECT
+        machine_code AS machineCode,
+        CONCAT(
+        aa.province,
+        aa.city,
+        aa.district,
+        aa.circle
+        ) AS localeStr
+        FROM inno72_machine m
+        LEFT JOIN inno72_locale l ON l.id = m.locale_id
+        LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code
+        WHERE
+        m.machine_code IN
+        <foreach item="item" index="index" collection="list"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
 </mapper>

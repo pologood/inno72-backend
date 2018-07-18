@@ -5,12 +5,9 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import com.inno72.machine.vo.MachineLocaleInfo;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.inno72.common.Result;
@@ -79,6 +76,12 @@ public class LocaleController {
 	@RequestMapping(value = "/getList", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<List<Inno72Locale>> getList(Inno72Locale locale) {
 		List<Inno72Locale> list = localeService.getList(locale);
+		return ResultGenerator.genSuccessResult(list);
+	}
+
+	@RequestMapping(value = "/selectLocaleByMachineCode", method = {RequestMethod.POST, RequestMethod.GET})
+	public Result<List<MachineLocaleInfo>> selectLocaleByMachineCode(@RequestBody List<MachineLocaleInfo> machineCodeList) {
+		List<MachineLocaleInfo> list = localeService.selectLocaleByMachineCode(machineCodeList);
 		return ResultGenerator.genSuccessResult(list);
 	}
 }
