@@ -155,7 +155,7 @@ public class Inno72ActivityPlanGameResult {
 		
 		if (obj instanceof Inno72ActivityPlanGameResult) {
 			Inno72ActivityPlanGameResult result= (Inno72ActivityPlanGameResult) obj;
-			if (this.resultCode.equals(result.getResultCode())) {
+			if (this.resultCode.equals(result.getResultCode())&&this.prizeId.equals(result.getPrizeId())) {
 				return true;
 			}else {
 				return false;

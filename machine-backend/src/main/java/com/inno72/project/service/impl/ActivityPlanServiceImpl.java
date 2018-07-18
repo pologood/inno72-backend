@@ -66,6 +66,9 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			logger.info("登陆用户为空");
 			return Results.failure("未找到用户登录信息");
 		}
+		if (StringUtil.isBlank(activityPlan.getStartTimeStr())||StringUtil.isBlank(activityPlan.getEndTimeStr())) {
+			return Results.failure("请选择计划时间");
+		}
 		if (StringUtil.isBlank(activityPlan.getActivityId())) {
 			return Results.failure("请选择活动");
 		}
@@ -86,8 +89,8 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			
 			// 查询已有排期机器
 			Map<String, Object> planingsParam = new HashMap<String, Object>();
-			String startTimeStr = activityPlan.getStartTimeStr()+"00";
-			String endTimeStr = activityPlan.getEndTimeStr()+"59";
+			String startTimeStr = activityPlan.getStartTimeStr()+":00";
+			String endTimeStr = activityPlan.getEndTimeStr()+":59";
 			planingsParam.put("startTime", startTimeStr);
 			planingsParam.put("endTime", endTimeStr);
 			activityPlan.setStartTime(DateUtil.toDateTime(startTimeStr, DateUtil.DF_FULL_S1));
@@ -256,11 +259,12 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			logger.info("登陆用户为空");
 			return Results.failure("未找到用户登录信息");
 		}
+		
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		try {
 			activityPlan.setUpdateId(userId);
 			activityPlan.setUpdateTime(LocalDateTime.now());
-			String endTimeStr = activityPlan.getEndTimeStr()+"59";
+			String endTimeStr = activityPlan.getEndTimeStr()+":59";
 			activityPlan.setEndTime(DateUtil.toDateTime(endTimeStr, DateUtil.DF_FULL_S1));
 			//活动游戏结果 集合
 			List<Inno72ActivityPlanGameResult> insertPlanGameResultList= new ArrayList<>();
@@ -440,13 +444,12 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	@Override
 	public List<Inno72AdminAreaVo> selectAreaMachineList(String code,String level,String startTime,String endTime) {
 		Map<String, Object> params = new HashMap<String, Object>();
-		
 		params.put("code", code);
 		if (StringUtil.isNotBlank(startTime)) {
 			params.put("startTime", startTime+":00");
 		}
 		if (StringUtil.isNotBlank(endTime)) {
-			params.put("endTime", endTime+":00");
+			params.put("endTime", endTime+":59");
 		}
 		
 		if (StringUtil.isEmpty(code)) {
