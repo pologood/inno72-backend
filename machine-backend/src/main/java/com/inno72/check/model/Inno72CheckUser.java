@@ -99,6 +99,12 @@ public class Inno72CheckUser {
      */
     @Column(name = "is_delete")
     private Integer isDelete;
+    
+    /**
+     * 备注描述
+     */
+    @Column(name = "remark")
+    private String remark;
 
     /**
      * 获取主键
@@ -311,4 +317,14 @@ public class Inno72CheckUser {
     public void setIsDelete(Integer isDelete) {
         this.isDelete = isDelete;
     }
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+    
+    
 }
