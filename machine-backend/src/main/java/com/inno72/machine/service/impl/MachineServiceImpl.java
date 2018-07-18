@@ -170,7 +170,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (machine == null) {
 			return Results.failure("机器id传入错误");
 		}
-		return supplyChannelService.findChannelListByMachineId(machine.getMachineCode());
+		return supplyChannelService.findChannelListByMachineId(id);
 	}
 
 	@Override
@@ -184,7 +184,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		Result<String> result = supplyChannelService.deleteChannel(channels);
 
 		if (result.getCode() == Result.SUCCESS) {
-			Inno72Machine machine = findBy("machineCode", result.getData());
+			Inno72Machine machine = findBy("id", result.getData());
 			if (machine != null) {
 				machine.setUpdateId(mUser.getId());
 				machine.setUpdateTime(LocalDateTime.now());
