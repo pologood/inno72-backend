@@ -7,7 +7,8 @@ import com.inno72.project.service.ActivityPlanService;
 import com.inno72.project.vo.Inno72ActivityPlanVo;
 import com.inno72.project.vo.Inno72AdminAreaVo;
 import com.inno72.common.ResultPages;
-
+import com.inno72.common.Results;
+import com.inno72.common.StringUtil;
 import com.inno72.project.vo.Inno72NoPlanInfoVo;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -75,6 +76,9 @@ public class ActivityPlanController {
     @RequestMapping(value = "/selectAreaMachines", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<List<Inno72AdminAreaVo>> selectMachines(String code,String level,String startTime,String endTime ) {
    	   	//联动查询
+    	if (StringUtil.isBlank(startTime)||StringUtil.isBlank(endTime)) {
+			return Results.failure("请选择计划时间");
+		}
         List<Inno72AdminAreaVo> list = activityPlanService.selectAreaMachineList(code,level,startTime,endTime);
         return ResultGenerator.genSuccessResult(list);
     }
