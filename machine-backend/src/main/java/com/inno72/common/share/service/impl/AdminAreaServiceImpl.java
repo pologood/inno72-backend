@@ -1,4 +1,4 @@
-package com.inno72.common.service.impl;
+package com.inno72.common.share.service.impl;
 
 
 import tk.mybatis.mapper.entity.Condition;
