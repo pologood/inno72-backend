@@ -3,11 +3,16 @@ package com.inno72.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
+
 public class SocketConnectionBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String machineCode;
 	private String sessionId;
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
 	private LocalDateTime connectTime;
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
 	private LocalDateTime disConnectTime;
 	private Integer status;// 1;正常连接 2；暂时断开
 
