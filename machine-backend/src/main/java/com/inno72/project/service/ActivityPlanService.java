@@ -8,6 +8,7 @@ import com.inno72.project.vo.Inno72AdminAreaVo;
 import com.inno72.project.vo.Inno72NoPlanInfoVo;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -31,6 +32,8 @@ public interface ActivityPlanService extends Service<Inno72ActivityPlan> {
 	 * @param taskTime
 	 * */
 	List<Inno72NoPlanInfoVo> selectNoPlanMachineList(String taskTime);
+
+	List<Map<String, Object>> selectPlanMachinDetailList(String planId);
 
 
 

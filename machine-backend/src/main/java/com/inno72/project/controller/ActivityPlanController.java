@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
 * Created by CodeGenerator on 2018/07/11.
@@ -64,6 +65,12 @@ public class ActivityPlanController {
     public Result<Inno72ActivityPlan> detail(@RequestParam String id) {
         Inno72ActivityPlan activityPlan = activityPlanService.findById(id);
         return ResultGenerator.genSuccessResult(activityPlan);
+    }
+    
+    @RequestMapping(value = "/planMachineDetailList", method = { RequestMethod.POST,  RequestMethod.GET})
+    public Result<List<Map<String, Object>>> planMachineDetailList(@RequestParam String id) {
+    	List<Map<String, Object>> list = activityPlanService.selectPlanMachinDetailList(id);
+        return ResultGenerator.genSuccessResult(list);
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})

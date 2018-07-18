@@ -249,6 +249,11 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	public Inno72ActivityPlanVo findById(String id) {
 		return inno72ActivityPlanMapper.selectPlanDetail(id);
 	}
+	@Override
+	public List<Map<String, Object>> selectPlanMachinDetailList(String planId) {
+		
+		return inno72ActivityPlanMachineMapper.selectPlanMachinDetailList(planId);
+	}
 	
 
 	@Override
