@@ -41,59 +41,71 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
     @Override
 	public Result<String> saveModel(Inno72Goods model) {
     	logger.info("----------------商品添加--------------");
-		SessionData session = CommonConstants.SESSION_DATA;
-		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
-		if (mUser == null) {
-			logger.info("登陆用户为空");
-			return Results.failure("未找到用户登录信息");
+    	try {
+    		SessionData session = CommonConstants.SESSION_DATA;
+    		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+    		if (mUser == null) {
+    			logger.info("登陆用户为空");
+    			return Results.failure("未找到用户登录信息");
+    		}
+    		int n = inno72GoodsMapper.getCount(model.getCode());
+    		if (n>0) {
+    			logger.info("商品编码已存在");
+    			return Results.failure("商品编码已存在");
+    		}
+    	     Matcher match=pattern.matcher(model.getPrice().toString()); 
+    	     if (!match.matches()) {
+    	        return Results.failure("商品价格最大整数6位，小数点后两位");
+    		 }
+    		
+    		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+    		String id=StringUtil.getUUID();
+    		model.setId(id);
+    		model.setCreateId(userId);
+    		model.setUpdateId(userId);
+    		
+    		super.save(model);
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
 		}
-		int n = inno72GoodsMapper.getCount(model.getCode());
-		if (n>0) {
-			logger.info("商品编码已存在");
-			return Results.failure("商品编码已存在");
-		}
-	     Matcher match=pattern.matcher(model.getPrice().toString()); 
-	     if (!match.matches()) {
-	        return Results.failure("商品价格最大整数6位，小数点后两位");
-		 }
-		
-		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-		String id=StringUtil.getUUID();
-		model.setId(id);
-		model.setCreateId(userId);
-		model.setUpdateId(userId);
-		
-		super.save(model);
+    	
 		return Results.success("操作成功");
 	}
 
 	@Override
 	public Result<String> updateModel(Inno72Goods model) {
 		logger.info("----------------商品修改--------------");
-		SessionData session = CommonConstants.SESSION_DATA;
-		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
-		if (mUser == null) {
-			logger.info("登陆用户为空");
-			return Results.failure("未找到用户登录信息");
-		}
-		if(StringUtil.isNotBlank(model.getCode())){
-			int n = inno72GoodsMapper.getCount(model.getCode());
-			Inno72Goods g = inno72GoodsMapper.selectByPrimaryKey(model.getId());
-			if (n>0 && !g.getCode().equals(model.getCode())) {
-				logger.info("商品编码已存在");
-				return Results.failure("商品编码已存在,请确认");
+		try {
+			SessionData session = CommonConstants.SESSION_DATA;
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
 			}
+			if(StringUtil.isNotBlank(model.getCode())){
+				int n = inno72GoodsMapper.getCount(model.getCode());
+				Inno72Goods g = inno72GoodsMapper.selectByPrimaryKey(model.getId());
+				if (n>0 && !g.getCode().equals(model.getCode())) {
+					logger.info("商品编码已存在");
+					return Results.failure("商品编码已存在,请确认");
+				}
+			}
+		     Matcher match=pattern.matcher(model.getPrice().toString()); 
+		     if (!match.matches()) {
+		        return Results.failure("商品价格最大整数6位，小数点后两位");
+			 }
+			
+			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+			
+			model.setUpdateId(userId);
+			model.setUpdateTime(LocalDateTime.now());
+			super.update(model);
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
 		}
-	     Matcher match=pattern.matcher(model.getPrice().toString()); 
-	     if (!match.matches()) {
-	        return Results.failure("商品价格最大整数6位，小数点后两位");
-		 }
 		
-		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-		
-		model.setUpdateId(userId);
-		model.setUpdateTime(LocalDateTime.now());
-		super.update(model);
 		return Results.success("操作成功");
 		
 	}

@@ -41,20 +41,24 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 	@Override
 	public Result<String> saveModel(Inno72Activity model) {
 		logger.info("--------------------活动新增-------------------");
-		SessionData session = CommonConstants.SESSION_DATA;
-		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
-		if (mUser == null) {
-			logger.info("登陆用户为空");
-			return Results.failure("未找到用户登录信息");
+		try {
+			SessionData session = CommonConstants.SESSION_DATA;
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+			
+			model.setId(StringUtil.getUUID());
+			model.setManagerId(userId);//负责人
+			model.setCreateId(userId);
+			model.setUpdateId(userId);
+			super.save(model);
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
 		}
-		
-		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-		
-		model.setId(StringUtil.getUUID());
-		model.setManagerId(userId);//负责人
-		model.setCreateId(userId);
-		model.setUpdateId(userId);
-		super.save(model);
 		return Results.success("操作成功");
 	}
 
@@ -84,17 +88,22 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 	@Override
 	public Result<String> updateModel(Inno72Activity model) {
 		logger.info("--------------------活动更新-------------------");
-		SessionData session = CommonConstants.SESSION_DATA;
-		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
-		if (mUser == null) {
-			logger.info("登陆用户为空");
-			return Results.failure("未找到用户登录信息");
+		try{
+			SessionData session = CommonConstants.SESSION_DATA;
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+			model.setUpdateId(userId);
+			model.setUpdateTime(LocalDateTime.now());
+			
+			super.update(model);
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
 		}
-		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-		model.setUpdateId(userId);
-		model.setUpdateTime(LocalDateTime.now());
-		
-		super.update(model);
 		return Results.success("操作成功");
 	}
 
