@@ -1,11 +1,10 @@
-package com.inno72.controller;
+package com.inno72.common.share.controller;
 
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
-import com.inno72.model.Inno72AdminArea;
-import com.inno72.service.AdminAreaService;
 import com.inno72.common.ResultPages;
-import com.inno72.common.StringUtil;
+import com.inno72.common.share.model.Inno72AdminArea;
+import com.inno72.common.share.service.AdminAreaService;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.CrossOrigin;

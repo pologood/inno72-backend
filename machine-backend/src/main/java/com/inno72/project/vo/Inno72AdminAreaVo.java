@@ -2,7 +2,8 @@ package com.inno72.project.vo;
 
 import java.util.List;
 
-import com.inno72.model.Inno72AdminArea;
+import com.inno72.common.share.model.Inno72AdminArea;
+
 
 public class Inno72AdminAreaVo extends Inno72AdminArea{
 	

@@ -1,14 +1,13 @@
-package com.inno72.service.impl;
+package com.inno72.common.service.impl;
 
-import com.inno72.mapper.Inno72AdminAreaMapper;
-import com.inno72.model.Inno72AdminArea;
-import com.inno72.service.AdminAreaService;
 
 import tk.mybatis.mapper.entity.Condition;
 
 import com.inno72.common.AbstractService;
-import com.inno72.common.Result;
 import com.inno72.common.StringUtil;
+import com.inno72.common.share.mapper.Inno72AdminAreaMapper;
+import com.inno72.common.share.model.Inno72AdminArea;
+import com.inno72.common.share.service.AdminAreaService;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,4 +1,4 @@
-package com.inno72.model;
+package com.inno72.common.share.model;
 
 import javax.persistence.*;
 
