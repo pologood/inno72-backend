@@ -2,12 +2,14 @@ package com.inno72.machine.vo;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
+import com.inno72.machine.model.Inno72SupplyChannelHistory;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class WorkOrderVo {
 
@@ -30,6 +32,9 @@ public class WorkOrderVo {
 
 
     private int status;
+
+
+    private List<Inno72SupplyChannelHistory> historyList;
 
     public String getBatchNo() {
         return batchNo;
@@ -77,5 +82,13 @@ public class WorkOrderVo {
 
     public void setMachineId(String machineId) {
         this.machineId = machineId;
+    }
+
+    public List<Inno72SupplyChannelHistory> getHistoryList() {
+        return historyList;
+    }
+
+    public void setHistoryList(List<Inno72SupplyChannelHistory> historyList) {
+        this.historyList = historyList;
     }
 }

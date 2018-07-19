@@ -476,6 +476,25 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         return ResultGenerator.genSuccessResult(workOrderVoList);
     }
 
+    @Override
+    public Result<WorkOrderVo> workOrderDetail(String checkUserId, String machineId, String batchNo) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("checkUserId",checkUserId);
+        map.put("machineId",machineId);
+        map.put("batchNo",batchNo);
+        WorkOrderVo workOrderVo = new WorkOrderVo();
+        List<Inno72SupplyChannelHistory> historyList = inno72SupplyChannelHistoryMapper.getWorkOrderGoods(map);
+        if(historyList != null && historyList.size()>0){
+            workOrderVo.setBatchNo(batchNo);
+            workOrderVo.setMachineCode(historyList.get(0).getMachineCode());
+            workOrderVo.setCreateTime(historyList.get(0).getCreateTime());
+            workOrderVo.setLocaleStr(historyList.get(0).getLocaleStr());
+            workOrderVo.setMachineId(machineId);
+            workOrderVo.setHistoryList(historyList);
+        }
+        return ResultGenerator.genSuccessResult(workOrderVo);
+    }
+
 
     public void addSupplyChannelToMongo(Inno72SupplyChannel supplyChannel) {
         DBCollection dbCollection = mongoTpl.getCollection("supplyChannel");

@@ -41,6 +41,12 @@ public class Inno72SupplyChannelHistory {
     @Column(name = "create_time")
     private LocalDateTime createTime;
 
+    private String machineCode;
+
+    private String localeStr;
+
+    private int subCount;
+
     public String getId() {
         return id;
     }
@@ -111,5 +117,29 @@ public class Inno72SupplyChannelHistory {
 
     public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
+    }
+
+    public String getMachineCode() {
+        return machineCode;
+    }
+
+    public void setMachineCode(String machineCode) {
+        this.machineCode = machineCode;
+    }
+
+    public String getLocaleStr() {
+        return localeStr;
+    }
+
+    public void setLocaleStr(String localeStr) {
+        this.localeStr = localeStr;
+    }
+
+    public int getSubCount() {
+        return subCount;
+    }
+
+    public void setSubCount(int subCount) {
+        this.subCount = subCount;
     }
 }

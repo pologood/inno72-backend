@@ -11,4 +11,6 @@ import java.util.Map;
 public interface Inno72SupplyChannelHistoryMapper extends Mapper<Inno72SupplyChannelHistory> {
 
 	List<WorkOrderVo> getWorkOrderVoList(String checkUserId);
+
+    List<Inno72SupplyChannelHistory> getWorkOrderGoods(Map<String,Object> map);
 }

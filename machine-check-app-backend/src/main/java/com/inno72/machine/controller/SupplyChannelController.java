@@ -205,4 +205,17 @@ public class SupplyChannelController {
 		return result;
 	}
 
+	/**
+	 * 工单详情
+	 * @param checkUserId
+	 * @param machineId
+	 * @param batchNo
+	 * @return
+	 */
+	@RequestMapping(value="workOrderDetail",method = {RequestMethod.POST,RequestMethod.GET})
+	public Result<WorkOrderVo> workOrderDetail(String checkUserId,String machineId,String batchNo){
+		Result<WorkOrderVo> result = supplyChannelService.workOrderDetail(checkUserId,machineId,batchNo);
+		return result;
+	}
+
 }
