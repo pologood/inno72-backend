@@ -480,11 +480,9 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				List<Inno72MachineVo> machines=inno72AdminAreaVo.getMachines();
 				List<Inno72MachineVo> temp = new ArrayList<>();
 				for (Inno72MachineVo machineVo : machines) {
-					if (StringUtil.isEmpty(machineVo.getState())) {
+					if ("0".equals(machineVo.getState())) {
 						canUseNum++;
-						machineVo.setState("0");
 					}else{
-						machineVo.setState("1");
 						temp.add(machineVo);
 					}
 				}

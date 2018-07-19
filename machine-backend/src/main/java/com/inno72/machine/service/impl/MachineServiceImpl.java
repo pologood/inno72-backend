@@ -86,7 +86,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		machine.setCreateId("machine-backend");
 		machine.setCreateTime(now);
 		machine.setUpdateTime(now);
-		machine.setNetStatus(1);
+		machine.setNetStatus(0);
 		int result = inno72MachineMapper.insert(machine);
 		if (result != 1) {
 			return Results.failure("生成machineCode失败");

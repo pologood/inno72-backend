@@ -16,6 +16,7 @@ import com.inno72.machine.model.Inno72SupplyChannel;
 import com.inno72.machine.model.Inno72SupplyChannelHistory;
 import com.inno72.machine.service.SupplyChannelService;
 import com.inno72.machine.vo.SupplyChannelVo;
+import com.inno72.machine.vo.WorkOrderVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -466,7 +467,13 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
             }
         }
-        return null;
+        return ResultGenerator.genSuccessResult();
+    }
+
+    @Override
+    public Result<List<WorkOrderVo>> workOrderList(String checkUserId) {
+        List<WorkOrderVo> workOrderVoList = inno72SupplyChannelHistoryMapper.getWorkOrderVoList(checkUserId);
+        return ResultGenerator.genSuccessResult(workOrderVoList);
     }
 
 
