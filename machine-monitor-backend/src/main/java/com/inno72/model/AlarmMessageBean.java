@@ -5,6 +5,8 @@ public class AlarmMessageBean<T> {
     private String system;
     private String type;
 
+    private T data;
+
     public String getSystem() {
         return system;
     }
@@ -20,8 +22,6 @@ public class AlarmMessageBean<T> {
     public void setType(String type) {
         this.type = type;
     }
-
-    private T data;
 
     public T getData() {
         return data;
