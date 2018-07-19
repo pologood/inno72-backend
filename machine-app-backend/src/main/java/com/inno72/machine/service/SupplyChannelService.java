@@ -5,6 +5,7 @@ import com.inno72.common.Service;
 import com.inno72.machine.model.Inno72Goods;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.model.Inno72SupplyChannel;
+import com.inno72.machine.vo.WorkOrderVo;
 
 import java.util.List;
 import java.util.Map;
@@ -48,4 +49,6 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 	Result<String> supplyAll(String machineId);
 
 	Result<String> submit(List<Inno72SupplyChannel> supplyChannelList);
+
+	Result<List<WorkOrderVo>> workOrderList(String checkUserId);
 }

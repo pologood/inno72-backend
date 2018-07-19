@@ -7,6 +7,7 @@ import com.inno72.machine.model.Inno72Goods;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.model.Inno72SupplyChannel;
 import com.inno72.machine.service.SupplyChannelService;
+import com.inno72.machine.vo.WorkOrderVo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -190,6 +191,17 @@ public class SupplyChannelController {
 	@RequestMapping(value="submit",method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> submit(List<Inno72SupplyChannel> supplyChannelList){
 		Result<String> result = supplyChannelService.submit(supplyChannelList);
+		return result;
+	}
+
+	/**
+	 * 工单列表
+	 * @param checkUserId
+	 * @return
+	 */
+	@RequestMapping(value="workOrderList",method = {RequestMethod.POST, RequestMethod.GET })
+	public Result<List<WorkOrderVo>> workOrderList(String checkUserId){
+		Result<List<WorkOrderVo>> result = supplyChannelService.workOrderList(checkUserId);
 		return result;
 	}
 
