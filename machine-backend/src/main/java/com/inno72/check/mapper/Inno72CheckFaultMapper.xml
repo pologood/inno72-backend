@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.inno72.test.mapper.Inno72CheckFaultMapper">
-  <resultMap id="BaseResultMap" type="com.inno72.test.model.Inno72CheckFault">
+<mapper namespace="com.inno72.check.mapper.Inno72CheckFaultMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.check.model.Inno72CheckFault">
     <!--
       WARNING - @mbg.generated
     -->
