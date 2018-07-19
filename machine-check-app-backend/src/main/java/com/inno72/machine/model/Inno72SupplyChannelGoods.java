@@ -26,11 +26,6 @@ public class Inno72SupplyChannelGoods {
     @Column(name="goods_id")
     private String goodsId;
 
-    /**
-     * 是否删除（0。正常，1.删除）
-     */
-    @Column(name="is_delete")
-    private int isDelete;
 
     public String getId() {
         return id;
@@ -56,11 +51,4 @@ public class Inno72SupplyChannelGoods {
         this.goodsId = goodsId;
     }
 
-    public int getIsDelete() {
-        return isDelete;
-    }
-
-    public void setIsDelete(int isDelete) {
-        this.isDelete = isDelete;
-    }
 }
