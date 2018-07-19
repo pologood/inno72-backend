@@ -1,3 +1,8 @@
-/target/
-/.settings/
-/.gitignore
+/**/.DS_Store
+/.idea/
+/**/**.iml
+/**/target/
+/**/.settings
+/**/.classpath
+/**/.project
+/**/WEB-INF
