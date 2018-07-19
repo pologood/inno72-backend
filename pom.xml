@@ -153,5 +153,6 @@
     <module>machine-check-app-backend</module>
     <module>machine-alarm</module>
     <module>machine-app-backend</module>
+    <module>zuul</module>
   </modules>
 </project>
