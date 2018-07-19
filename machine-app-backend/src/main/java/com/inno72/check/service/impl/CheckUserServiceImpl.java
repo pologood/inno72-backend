@@ -96,8 +96,16 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
     }
 
     @Override
-    public Result<String> signId(String type) {
-
-        return null;
+    public Result<String> upload(MultipartFile file) {
+        UploadUtil.uploadImage(file,"headImage");
+        return ResultGenerator.genSuccessResult();
     }
+
+    @Override
+    public Result<Inno72CheckUser> updateUser(Inno72CheckUser inno72CheckUser) {
+        mapper.updateByPrimaryKeySelective(inno72CheckUser);
+        inno72CheckUser = mapper.selectByPrimaryKey(inno72CheckUser.getId());
+        return ResultGenerator.genSuccessResult(inno72CheckUser);
+    }
+
 }

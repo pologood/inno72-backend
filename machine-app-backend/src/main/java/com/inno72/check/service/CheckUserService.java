@@ -15,5 +15,7 @@ public interface CheckUserService extends Service<Inno72CheckUser> {
 
     Result<SessionData> login(String phone, String smsCode);
 
-    Result<String> signId(String type);
+    Result<String> upload(MultipartFile file);
+
+    Result<Inno72CheckUser> updateUser(Inno72CheckUser inno72CheckUser);
 }

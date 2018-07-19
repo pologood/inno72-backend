@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.machine.mapper.Inno72MachineMapper">
+	<resultMap id="BaseResultMap" type="com.inno72.machine.model.Inno72Machine">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+		<result column="machine_name" jdbcType="VARCHAR" property="machineName" />
+		<result column="locale_id" jdbcType="VARCHAR" property="localeId" />
+		<result column="tag" jdbcType="VARCHAR" property="tag" />
+		<result column="create_id" jdbcType="VARCHAR" property="createId" />
+		<result column="update_id" jdbcType="VARCHAR" property="updateId" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+		<result column="machine_status" jdbcType="INTEGER" property="machineStatus" />
+		<result column="net_status" jdbcType="INTEGER" property="netStatus" />
+		<result column="device_id" jdbcType="VARCHAR" property="deviceId" />
+		<result column="address" jdbcType="VARCHAR" property="address" />
+		<association property="supplyChannelVoList" resultMap="supplyChannelVoList"/>
+	</resultMap>
+
+	<resultMap id="supplyChannelVoList" type="com.inno72.machine.vo.SupplyChannelVo">
+		<result column="channelCode" jdbcType="VARCHAR" property="channelCode" />
+		<result column="channelName" jdbcType="VARCHAR" property="channelName" />
+		<result column="channelStatus" jdbcType="INTEGER" property="channelStatus" />
+		<result column="machine_id" jdbcType="VARCHAR" property="machineId" />
+		<result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
+		<result column="volume_count" jdbcType="INTEGER" property="volumeCount" />
+		<result column="goods_count" jdbcType="INTEGER" property="goodsCount" />
+	</resultMap>
+
+	<select id="getMachine" resultMap="BaseResultMap">
+
+		select t1.*,
+		t3.code channelCode,
+		t3.name channelName,
+		t3.status channelStatus,
+		t3.machine_id,
+		t3.parent_code,
+		t3.volume_count,
+		t3.goods_count
+		from inno72_machine t1
+		left join inno72_check_user_machine t2 on t1.id=t2.machine_id
+		left join inno72_supply_channel t3 on t2.machine_id = t3.machine_id
+		where t2.check_user_id=#{checkUserId,jdbcType=VARCHAR}
+		and t3.status=0 and t3.is_delete=0
+	</select>
+
+
+
+	<select id="getMachineByLackGoods" resultMap="BaseResultMap">
+		select t1.*,
+		t3.code channelCode,
+		t3.name channelName,
+		t3.status channelStatus,
+		t3.machine_id,
+		t3.parent_code,
+		t3.volume_count,
+		t3.goods_count
+		from inno72_machine t1
+		left join inno72_check_user_machine t2 on t1.id=t2.machine_id
+		left join inno72_supply_channel t3 on t2.machine_id = t3.machine_id
+		left join inno72_supply_channel_goods t4 on t4.supply_channel_id=t3.id
+		where t2.check_user_id=#{checkUserId,jdbcType=VARCHAR}
+		and t3.status=0 and t3.is_delete=0 and t4.goods_id=#{goodsId}
+	</select>
+</mapper>

@@ -2,6 +2,8 @@ package com.inno72.machine.service;
 
 import com.inno72.common.Result;
 import com.inno72.common.Service;
+import com.inno72.machine.model.Inno72Goods;
+import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.model.Inno72SupplyChannel;
 
 import java.util.List;
@@ -31,4 +33,19 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
 	List<Inno72SupplyChannel> getListForPage(Inno72SupplyChannel supplyChannel);
 
+	List<Inno72SupplyChannel> getList(String machineId);
+
+    List<Inno72Machine> getMachineLackGoods(String checkUserId);
+
+	List<Inno72Goods> getGoodsLack(String checkUserId);
+
+	List<Inno72Machine> getMachineByLackGoods(String checkUserId,String goodsId);
+
+	List<Inno72Goods> getGoodsByMachineId(String machineId);
+
+    Result<String> clearAll(String machineId);
+
+	Result<String> supplyAll(String machineId);
+
+	Result<String> submit(List<Inno72SupplyChannel> supplyChannelList);
 }

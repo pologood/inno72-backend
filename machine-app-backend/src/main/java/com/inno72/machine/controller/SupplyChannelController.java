@@ -3,6 +3,8 @@ package com.inno72.machine.controller;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
+import com.inno72.machine.model.Inno72Goods;
+import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.model.Inno72SupplyChannel;
 import com.inno72.machine.service.SupplyChannelService;
 import org.springframework.web.bind.annotation.*;
@@ -49,12 +51,12 @@ public class SupplyChannelController {
 	/**
 	 * 货道列表
 	 * 
-	 * @param supplyChannel
+	 * @param machineId
 	 * @return
 	 */
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list(Inno72SupplyChannel supplyChannel) {
-		List<Inno72SupplyChannel> list = supplyChannelService.getListForPage(supplyChannel);
+	public ModelAndView list(String machineId) {
+		List<Inno72SupplyChannel> list = supplyChannelService.getList(machineId);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 
@@ -115,6 +117,79 @@ public class SupplyChannelController {
 	@RequestMapping(value = "history", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<Map<String, Object>> history(Inno72SupplyChannel supplyChannel) {
 		Result<Map<String, Object>> result = supplyChannelService.history(supplyChannel);
+		return result;
+	}
+
+	/**
+	 * 机器维度缺货
+	 * @param checkUserId
+	 * @return
+	 */
+	@RequestMapping(value="machineLack",method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Inno72Machine>> getMachineLack(String checkUserId){
+		List<Inno72Machine> machineList = supplyChannelService.getMachineLackGoods(checkUserId);
+		return ResultGenerator.genSuccessResult(machineList);
+	}
+
+	/**
+	 * 商品维度缺货
+	 * @param checkUserId
+	 * @return
+	 */
+	@RequestMapping(value="goodsLack",method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Inno72Goods>> getGoodsLack(String checkUserId){
+		List<Inno72Goods> goodsList = supplyChannelService.getGoodsLack(checkUserId);
+		return ResultGenerator.genSuccessResult(goodsList);
+	}
+
+	/**
+	 * 查询单个商品缺货的机器
+	 * @param checkUserId
+	 * @param goodsId
+	 * @return
+	 */
+	@RequestMapping(value="machineByLackGoods",method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Inno72Machine>> getMachineByLackGoods(String checkUserId,String goodsId){
+		List<Inno72Machine> machineList = supplyChannelService.getMachineByLackGoods(checkUserId,goodsId);
+		return ResultGenerator.genSuccessResult(machineList);
+	}
+
+	/**
+	 * 根据机器查询可用商品
+	 * @param machineId
+	 * @return
+	 */
+	@RequestMapping(value="getGoodsByMachineId",method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Inno72Goods>> getGoodsByMachineId(String machineId){
+		List<Inno72Goods> goodsList = supplyChannelService.getGoodsByMachineId(machineId);
+		return ResultGenerator.genSuccessResult(goodsList);
+	}
+
+	/**
+	 * 一键清空
+	 * @param machineId
+	 * @return
+	 */
+	@RequestMapping(value="clearAll")
+	public Result<String> clearAll(String machineId){
+		Result<String> result = supplyChannelService.clearAll(machineId);
+		return result;
+	}
+
+	/**
+	 * 一键补货
+	 * @param machineId
+	 * @return
+	 */
+	@RequestMapping(value="supplyAll")
+	public Result<String> supplyAll(String machineId){
+		Result<String> result = supplyChannelService.supplyAll(machineId);
+		return result;
+	}
+
+	@RequestMapping(value="submit",method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> submit(List<Inno72SupplyChannel> supplyChannelList){
+		Result<String> result = supplyChannelService.submit(supplyChannelList);
 		return result;
 	}
 

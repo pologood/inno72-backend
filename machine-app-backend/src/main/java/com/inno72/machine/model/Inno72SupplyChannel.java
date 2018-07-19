@@ -1,5 +1,10 @@
 package com.inno72.machine.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -60,6 +65,9 @@ public class Inno72SupplyChannel {
 	/**
 	 * 创建时间
 	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	@Column(name = "create_time")
 	private LocalDateTime createTime;
 
@@ -72,6 +80,9 @@ public class Inno72SupplyChannel {
 	/**
 	 * 修改时间
 	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	@Column(name = "update_time")
 	private LocalDateTime updateTime;
 
@@ -101,6 +112,12 @@ public class Inno72SupplyChannel {
 
 	@Transient
 	private String toCode;
+
+	@Transient
+	private String goodsId;
+
+	@Transient
+	private String goodsCode;
 
 
 	/**
@@ -388,5 +405,21 @@ public class Inno72SupplyChannel {
 
 	public void setToCode(String toCode) {
 		this.toCode = toCode;
+	}
+
+	public String getGoodsId() {
+		return goodsId;
+	}
+
+	public void setGoodsId(String goodsId) {
+		this.goodsId = goodsId;
+	}
+
+	public String getGoodsCode() {
+		return goodsCode;
+	}
+
+	public void setGoodsCode(String goodsCode) {
+		this.goodsCode = goodsCode;
 	}
 }
