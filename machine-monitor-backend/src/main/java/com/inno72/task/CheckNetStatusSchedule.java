@@ -67,6 +67,7 @@ public class CheckNetStatusSchedule {
 			List<MachineNetInfo> machineIdListInfo = JSON.parseArray(jsonObject.getString("data"), MachineNetInfo.class);
 			//维护一个断网机器信息表
 			if(CommonConstants.RESULT_SUCCESS.equals(resultCdoe) && machineIdListInfo != null){
+                log.info("修改后台机器网络状态为成功，个数：{}", machineIdListInfo.size());
 				for(MachineNetInfo machineNetInfoOne : machineIdListInfo){
 					NetOffMachineInfo netOffMachineInfo = new NetOffMachineInfo();
 					netOffMachineInfo.setMachineId(machineNetInfoOne.getMachineCode());
