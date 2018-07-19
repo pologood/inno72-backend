@@ -20,7 +20,17 @@
   
   <select id="selectByPage" parameterType="String" resultMap="BaseResultMap">
   
- 		SELECT f.*,m.machine_code from inno72_check_fault f
+ 		SELECT f.id,
+ 		m.machine_code AS machine_id,
+ 		submit_user,
+ 		finish_user,
+ 		submit_time,
+ 		finish_time,
+ 		status,
+ 		finish_remark,
+ 		remind_status,
+ 		remark
+ 		 from inno72_check_fault f
 		LEFT JOIN inno72_machine m ON m.id = f.machine_id
 		WHERE 1=1
 		<where>
