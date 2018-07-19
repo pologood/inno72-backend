@@ -150,7 +150,7 @@
 	<modules>
 		<module>machine-backend</module>
     <module>machine-monitor-backend</module>
-    <module>machine-app-backend</module>
+    <module>machine-check-app-backend</module>
     <module>machine-alarm</module>
   </modules>
 </project>

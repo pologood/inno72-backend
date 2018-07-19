@@ -7,8 +7,8 @@
     <artifactId>inno72-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>machine-app-backend</artifactId>
-  <name>machine-app-backend</name>
+  <artifactId>machine-check-app-backend</artifactId>
+  <name>machine-check-app-backend</name>
   <url>http://maven.apache.org</url>
  <packaging>war</packaging>
 	<properties>
