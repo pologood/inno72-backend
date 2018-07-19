@@ -16,6 +16,7 @@
 		<result column="net_status" jdbcType="INTEGER" property="netStatus" />
 		<result column="device_id" jdbcType="VARCHAR" property="deviceId" />
 		<result column="address" jdbcType="VARCHAR" property="address" />
+		<result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
 		<association property="supplyChannelVoList" resultMap="supplyChannelVoList"/>
 	</resultMap>
 
@@ -38,10 +39,18 @@
 		t3.machine_id,
 		t3.parent_code,
 		t3.volume_count,
-		t3.goods_count
+		t3.goods_count,
+		CONCAT(
+            t5.province,
+            t5.city,
+            t5.district,
+            t5.circle
+            ) AS localeStr
 		from inno72_machine t1
 		left join inno72_check_user_machine t2 on t1.id=t2.machine_id
 		left join inno72_supply_channel t3 on t2.machine_id = t3.machine_id
+		LEFT JOIN inno72_locale t4 ON t4.id = t1.locale_id
+    	LEFT JOIN inno72_admin_area t5 ON t5.CODE = t4.area_code
 		where t2.check_user_id=#{checkUserId,jdbcType=VARCHAR}
 		and t3.status=0 and t3.is_delete=0
 	</select>

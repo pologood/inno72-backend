@@ -34,11 +34,11 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
 	List<Inno72SupplyChannel> getList(String machineId);
 
-    List<Inno72Machine> getMachineLackGoods(String checkUserId);
+    List<Inno72Machine> getMachineLackGoods();
 
-	List<Inno72Goods> getGoodsLack(String checkUserId);
+	List<Inno72Goods> getGoodsLack();
 
-	List<Inno72Machine> getMachineByLackGoods(String checkUserId,String goodsId);
+	List<Inno72Machine> getMachineByLackGoods(String goodsId);
 
 	List<Inno72Goods> getGoodsByMachineId(String machineId);
 
@@ -48,7 +48,7 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
 	Result<String> submit(List<Inno72SupplyChannel> supplyChannelList);
 
-	List<WorkOrderVo> workOrderList(String checkUserId,String keyword,String findTime);
+	List<WorkOrderVo> workOrderList(String keyword,String findTime);
 
-    Result<WorkOrderVo> workOrderDetail(String checkUserId, String machineId, String batchNo);
+    Result<WorkOrderVo> workOrderDetail(String machineId, String batchNo);
 }

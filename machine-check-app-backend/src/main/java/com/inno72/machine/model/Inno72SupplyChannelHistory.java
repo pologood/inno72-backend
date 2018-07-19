@@ -47,6 +47,8 @@ public class Inno72SupplyChannelHistory {
 
     private int subCount;
 
+    private String goodsName;
+
     public String getId() {
         return id;
     }
@@ -141,5 +143,13 @@ public class Inno72SupplyChannelHistory {
 
     public void setSubCount(int subCount) {
         this.subCount = subCount;
+    }
+
+    public String getGoodsName() {
+        return goodsName;
+    }
+
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
     }
 }

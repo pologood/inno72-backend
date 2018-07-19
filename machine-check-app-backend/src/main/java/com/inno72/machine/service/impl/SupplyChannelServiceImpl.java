@@ -1,13 +1,11 @@
 package com.inno72.machine.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.common.*;
 import com.inno72.machine.mapper.*;
 import com.inno72.machine.model.*;
@@ -282,7 +280,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     }
 
     @Override
-    public List<Inno72Machine> getMachineLackGoods(String checkUserId) {
+    public List<Inno72Machine> getMachineLackGoods() {
+        Inno72CheckUser checkUser = getUser();
+        String checkUserId = checkUser.getId();
         List<Inno72Machine> machineList = inno72MachineMapper.getMachine(checkUserId);
         if(machineList != null && machineList.size()>0){
             for(Inno72Machine machine:machineList){
@@ -299,13 +299,16 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                     }
                 }
                 machine.setLackGoodsStatus(lackGoodsStatus);
+                machine.setSupplyChannelVoList(null);
             }
         }
         return machineList;
     }
 
     @Override
-    public List<Inno72Goods> getGoodsLack(String checkUserId) {
+    public List<Inno72Goods> getGoodsLack() {
+        Inno72CheckUser checkUser = getUser();
+        String checkUserId = checkUser.getId();
         List<Inno72Goods> inno72GoodsList = inno72GoodsMapper.getLackGoods(checkUserId);
         List<Inno72Goods> resultList = new ArrayList<>();
         if(inno72GoodsList != null && inno72GoodsList.size()>0){
@@ -323,6 +326,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                     if(totalGoodsCount/totalVolumeCount<0.2){
                         inno72Goods.setLackGoodsStatus(1);
                         inno72Goods.setLackGoodsCount(totalVolumeCount-totalGoodsCount);
+                        inno72Goods.setSupplyChannelVoList(null);
                         resultList.add(inno72Goods);
                     }
                 }
@@ -332,7 +336,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     }
 
     @Override
-    public List<Inno72Machine> getMachineByLackGoods(String checkUserId, String goodsId) {
+    public List<Inno72Machine> getMachineByLackGoods(String goodsId) {
+        Inno72CheckUser checkUser = getUser();
+        String checkUserId = checkUser.getId();
         List<Inno72Machine> machineList = inno72MachineMapper.getMachineByLackGoods(checkUserId,goodsId);
         List<Inno72Machine> resultList = new ArrayList<>();
         if(machineList != null && machineList.size()>0){
@@ -348,6 +354,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 }
                 if(totalVolumeCount-totalGoodsCount>0){
                     machine.setLackGoodsCount(totalVolumeCount-totalGoodsCount);
+                    machine.setSupplyChannelVoList(null);
                     resultList.add(machine);
                 }
 
@@ -448,7 +455,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     }
 
     @Override
-    public List<WorkOrderVo> workOrderList(String checkUserId,String keyword,String findTime) {
+    public List<WorkOrderVo> workOrderList(String keyword,String findTime) {
+        Inno72CheckUser checkUser = getUser();
+        String checkUserId = checkUser.getId();
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("checkUserId",checkUserId);
         if(StringUtil.isNotEmpty(keyword) && StringUtil.isNotEmpty(keyword.trim())){
@@ -463,7 +472,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     }
 
     @Override
-    public Result<WorkOrderVo> workOrderDetail(String checkUserId, String machineId, String batchNo) {
+    public Result<WorkOrderVo> workOrderDetail(String machineId, String batchNo) {
+        Inno72CheckUser checkUser = getUser();
+        String checkUserId = checkUser.getId();
         Map<String,Object> map = new HashMap<>();
         map.put("checkUserId",checkUserId);
         map.put("machineId",machineId);
@@ -489,6 +500,12 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         }
         supplyChannel.setId(null);
         mongoTpl.save(supplyChannel, "supplyChannel");
+    }
+
+    public Inno72CheckUser getUser(){
+        SessionData session = CommonConstants.SESSION_DATA;
+        Inno72CheckUser checkUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+        return checkUser;
     }
 
 }
