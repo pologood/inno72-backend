@@ -1,5 +1,9 @@
 package com.inno72.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 import javax.persistence.*;
 
@@ -17,8 +21,19 @@ public class Inno72AlarmMsg {
 
     private String detail;
 
-    @Column(name = "create_time")
-    private Date createTime;
+    /**
+     * 创建时间
+     */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    private LocalDateTime createTime;
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
 
     /**
      * @return id
@@ -90,17 +105,5 @@ public class Inno72AlarmMsg {
         this.detail = detail;
     }
 
-    /**
-     * @return create_time
-     */
-    public Date getCreateTime() {
-        return createTime;
-    }
 
-    /**
-     * @param createTime
-     */
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
 }
