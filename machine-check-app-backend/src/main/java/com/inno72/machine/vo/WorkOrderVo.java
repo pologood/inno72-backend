@@ -1,5 +1,12 @@
 package com.inno72.machine.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import java.time.LocalDateTime;
 
 public class WorkOrderVo {
@@ -13,7 +20,13 @@ public class WorkOrderVo {
     private String localeStr;
 
 
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
+    @Column(name = "create_time")
     private LocalDateTime createTime;
+
+    private String machineId;
 
 
     private int status;
@@ -56,5 +69,13 @@ public class WorkOrderVo {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getMachineId() {
+        return machineId;
+    }
+
+    public void setMachineId(String machineId) {
+        this.machineId = machineId;
     }
 }
