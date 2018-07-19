@@ -14,4 +14,12 @@ public class CommonConstants {
 
     public final static Integer BETWEEN_EIGHT = 8;
 
+    public final static String XUNJIAN_APP = "xunJianApp";
+
+    public final static String DOUBLE_ALARM = "doubleAlarm";
+
+    public final static String MESSAGE = "message";
+
+    public final static String DINGDING_APP = "dingDingApp";
+
 }
