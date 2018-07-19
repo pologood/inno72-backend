@@ -128,12 +128,14 @@ public class SocketIOStartHandler {
 				queryNetOffMachine.addCriteria(Criteria.where("machineId").is(machineId));
 				Boolean flag = mongoTpl.exists(query, "NetOffMachineInfo");
 				if (true == flag) {
+                    log.info("断网机器表中存在该machineCode:{}的数据", machineId);
 					String urlProp = machineMonitorBackendProperties.getProps().get("updateNetStatusUrl");
 					String url = MessageFormat.format(urlProp, machineId, CommonConstants.NET_OPEN);
 					String result = HttpClient.post(url, "");
 					JSONObject jsonObject = JSONObject.parseObject(result);
 					Integer resultCdoe = jsonObject.getInteger("code");
 					if (CommonConstants.RESULT_SUCCESS.equals(resultCdoe)) {
+                        log.info("machineCode:{}修改后台管理系统，网络状态数据为：已连接", machineId);
 						mongoTpl.remove(query, "NetOffMachineInfo");
 					}
 				}

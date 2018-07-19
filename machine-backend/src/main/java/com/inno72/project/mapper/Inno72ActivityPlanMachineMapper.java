@@ -15,4 +15,6 @@ public interface Inno72ActivityPlanMachineMapper extends Mapper<Inno72ActivityPl
 	
 	
 	List<Map<String, Object>> selectPlanMachinDetailList(@Param("planId") String planId);
+	
+	int deleteByPlanId(@Param("planId")String planId);
 }

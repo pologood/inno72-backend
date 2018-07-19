@@ -9,6 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.inno72.check.model.Inno72CheckFault;
 import com.inno72.check.service.CheckFaultService;
+import com.inno72.check.vo.Inno72CheckFaultVo;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
@@ -35,9 +36,10 @@ public class CheckFaultController {
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<Inno72CheckFault> detail(@RequestParam String id) {
-        Inno72CheckFault checkFault = checkFaultService.findById(id);
+        Inno72CheckFaultVo checkFault = checkFaultService.selectFaultDetail(id);
         return ResultGenerator.genSuccessResult(checkFault);
     }
+
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
     public ModelAndView list(String keyword,String status,String type,String startTime,String endTime) {

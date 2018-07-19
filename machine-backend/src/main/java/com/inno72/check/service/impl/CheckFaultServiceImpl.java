@@ -10,13 +10,13 @@ import com.inno72.check.mapper.Inno72CheckFaultRemarkMapper;
 import com.inno72.check.model.Inno72CheckFault;
 import com.inno72.check.model.Inno72CheckFaultRemark;
 import com.inno72.check.service.CheckFaultService;
+import com.inno72.check.vo.Inno72CheckFaultVo;
 import com.inno72.common.AbstractService;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
-import com.inno72.project.service.impl.ChannelServiceImpl;
 import com.inno72.system.model.Inno72User;
 
 import java.util.HashMap;
@@ -85,5 +85,11 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		}
 		return Results.success("操作成功");
 	}
+	
+	@Override
+	public Inno72CheckFaultVo selectFaultDetail(String id) {
+		return inno72CheckFaultMapper.selectFaultDetail(id);
+	}
+
 
 }
