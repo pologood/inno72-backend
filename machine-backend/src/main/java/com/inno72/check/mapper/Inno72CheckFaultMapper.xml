@@ -47,4 +47,32 @@
 		
   </select>
   
+  <resultMap id="ResultFaultDetailMap" extends="BaseResultMap" type="com.inno72.check.vo.Inno72CheckFaultVo">
+	    <association property="imgList" resultMap="imgResult" />
+	    <association property="answerList" resultMap="answerResult" />
+	</resultMap>
+	<resultMap id="imgResult" type="String">
+ 		<result column="image" property="image" />
+ 	</resultMap>
+ 	<resultMap id="answerResult" type="String">
+  		<result column="answer" property="answer" />
+ 	</resultMap>
+  <select id="selectFaultDetail" parameterType="String" resultMap="ResultFaultDetailMap">
+  
+ 		SELECT f.id,
+ 		m.machine_code AS machine_id,
+ 		submit_user,
+ 		finish_user,
+ 		submit_time,
+		fr.remark AS answer,
+		img.image AS image
+ 		
+ 		 from inno72_check_fault f
+		LEFT JOIN inno72_machine m ON m.id = f.machine_id
+		LEFT JOIN inno72_check_fault_remark fr ON fr.fault_id = f.id
+		LEFT JOIN inno72_check_fault_image img ON img.fault_id = f.id
+		WHERE f.id=#{id}
+		ORDER BY fr.create_time
+  </select>
+  
 </mapper>
