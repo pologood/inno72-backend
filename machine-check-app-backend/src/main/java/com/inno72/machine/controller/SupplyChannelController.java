@@ -25,29 +25,6 @@ public class SupplyChannelController {
 	@Resource
 	private SupplyChannelService supplyChannelService;
 
-	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> add(Inno72SupplyChannel supplyChannel) {
-		supplyChannelService.save(supplyChannel);
-		return ResultGenerator.genSuccessResult();
-	}
-
-	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> delete(@RequestParam String id) {
-		supplyChannelService.deleteById(id);
-		return ResultGenerator.genSuccessResult();
-	}
-
-	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> update(Inno72SupplyChannel supplyChannel) {
-		supplyChannelService.update(supplyChannel);
-		return ResultGenerator.genSuccessResult();
-	}
-
-	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<Inno72SupplyChannel> detail(@RequestParam String id) {
-		Inno72SupplyChannel supplyChannel = supplyChannelService.findById(id);
-		return ResultGenerator.genSuccessResult(supplyChannel);
-	}
 
 	/**
 	 * 货道列表
@@ -94,18 +71,6 @@ public class SupplyChannelController {
 	@RequestMapping(value = "/clear", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> clear(Inno72SupplyChannel supplyChannel) {
 		Result<String> result = supplyChannelService.clear(supplyChannel);
-		return result;
-	}
-
-	/**
-	 * 一键下架
-	 * 
-	 * @param supplyChannel
-	 * @return
-	 */
-	@RequestMapping(value = "downAll", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> downAll(Inno72SupplyChannel supplyChannel) {
-		Result<String> result = supplyChannelService.downAll(supplyChannel);
 		return result;
 	}
 
@@ -205,9 +170,9 @@ public class SupplyChannelController {
 	 * @return
 	 */
 	@RequestMapping(value="workOrderList",method = {RequestMethod.POST, RequestMethod.GET })
-	public Result<List<WorkOrderVo>> workOrderList(String checkUserId,String keyword,String findTime){
-		Result<List<WorkOrderVo>> result = supplyChannelService.workOrderList(checkUserId,keyword,findTime);
-		return result;
+	public ModelAndView workOrderList(String checkUserId,String keyword,String findTime){
+		List<WorkOrderVo> list = supplyChannelService.workOrderList(checkUserId,keyword,findTime);
+		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 
 	/**

@@ -44,4 +44,9 @@ public class CheckFaultController {
     	List<Inno72CheckFault> list =checkFaultService.findByPage(keyword, status, type, startTime, endTime);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
+    
+    @RequestMapping(value = "/answer", method = { RequestMethod.POST,  RequestMethod.GET})
+    public Result<String> answer(String id, String remark) {
+    	return checkFaultService.faultAnswer(id,remark);
+    }
 }
