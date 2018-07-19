@@ -20,7 +20,7 @@
     <result column="is_delete" jdbcType="INTEGER" property="isDelete"/>
     <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
     <result column="goodsCode" jdbcType="VARCHAR" property="goodsCode"/>
-    <result column="goodsId" jdbcType="goodsId" property="goodsId"/>
+    <result column="goodsId" jdbcType="VARCHAR" property="goodsId"/>
     <result column="goodsStatus" jdbcType="INTEGER" property="goodsStatus"/>
   </resultMap>
 

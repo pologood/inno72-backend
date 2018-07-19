@@ -76,10 +76,7 @@
 			a.*,
 			m.id AS machine_id,
 			m.machine_code AS machine_code,
-			CASE 
-			 WHEN  ap.start_time BETWEEN #{startTime} AND #{endTime} OR ap.end_time BETWEEN #{startTime} AND #{endTime} THEN '1' 
-			 ELSE '0' 
-			 END AS state
+			ap.id AS state
 		FROM
 			inno72_admin_area a
 			LEFT JOIN inno72_locale locale ON LEFT ( locale.area_code, #{num}) = LEFT ( a.CODE, #{num})
@@ -89,6 +86,11 @@
 		WHERE
 		<if test="code !=null and code !='' ">a.parent_code = #{code}  </if>
 		<if test="level !=null and level !='' ">a.LEVEL = #{level}  </if>
+		<if test="startTime !=null and startTime !='' ">
+		and ( <![CDATA[
+		 	ap.start_time >#{endTime} OR ap.end_time < #{startTime} OR ap.id IS NULL
+		 ]]>)
+		</if>
   </select>
   <select id="selectMachineList" parameterType="java.util.Map" resultMap="ResultAreaMachineMap">
   		SELECT
