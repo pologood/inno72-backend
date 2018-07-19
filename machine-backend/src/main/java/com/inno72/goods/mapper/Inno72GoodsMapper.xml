@@ -10,6 +10,7 @@
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="price" jdbcType="DECIMAL" property="price" />
     <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
+    <result column="shop_id" jdbcType="VARCHAR" property="shopId" />
     <result column="img" jdbcType="VARCHAR" property="img" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
@@ -31,10 +32,12 @@
 		g.update_id,
 		g.create_time,
 		g.update_time,
-		m.merchant_name as seller_id
+		m.merchant_name as seller_id,
+		s.shop_name AS shop_id
 		
 		from inno72_goods g 
 		LEFT JOIN inno72_merchant m on m.id=g.seller_id
+		LEFT JOIN inno72_shops s ON s.id = g.shop_id
 		WHERE g.is_delete=0 
 		<if test="keyword !=null and keyword !=''">and ( g.name LIKE '%${keyword}%' or g.code LIKE '%${keyword}%' )</if>
 		<if test="code !=null and code !=''">and g.seller_id = #{code}</if>

@@ -1,17 +1,17 @@
 package com.inno72.socketio;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
-import com.inno72.common.CommonConstants;
-import com.inno72.common.MachineMonitorBackendProperties;
-import com.inno72.model.*;
-import com.inno72.plugin.http.HttpClient;
-import com.inno72.redis.IRedisUtil;
-import com.inno72.socketio.core.SocketServer;
-import com.inno72.socketio.core.SocketServerHandler;
-import com.inno72.util.AesUtils;
-import com.inno72.util.GZIPUtil;
+import static com.inno72.model.MessageBean.EventType.CHECKSTATUS;
+import static com.inno72.model.MessageBean.SubEventType.APPSTATUS;
+import static com.inno72.model.MessageBean.SubEventType.MACHINESTATUS;
+
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +22,22 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
-import java.text.MessageFormat;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static com.inno72.model.MessageBean.EventType.CHECKSTATUS;
-import static com.inno72.model.MessageBean.SubEventType.APPSTATUS;
-import static com.inno72.model.MessageBean.SubEventType.MACHINESTATUS;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
+import com.inno72.common.CommonConstants;
+import com.inno72.common.MachineMonitorBackendProperties;
+import com.inno72.model.MachineAppStatus;
+import com.inno72.model.MachineLogInfo;
+import com.inno72.model.MachineStatus;
+import com.inno72.model.MessageBean;
+import com.inno72.model.SystemStatus;
+import com.inno72.plugin.http.HttpClient;
+import com.inno72.redis.IRedisUtil;
+import com.inno72.socketio.core.SocketServer;
+import com.inno72.socketio.core.SocketServerHandler;
+import com.inno72.util.AesUtils;
+import com.inno72.util.GZIPUtil;
 
 @Configuration
 public class SocketIOStartHandler {
@@ -97,7 +103,6 @@ public class SocketIOStartHandler {
 
 			@Override
 			public void monitorResponse(String key, String data, Map<String, List<String>> params) {
-				log.info("推送监控消息，执行开始");
 				// 将机器系统监控信息存入mongo数据库中
 				String message = AesUtils.decrypt(GZIPUtil.uncompress(data));
 				SystemStatus systemStatus = JSONObject.parseObject(message, SystemStatus.class);
@@ -119,19 +124,18 @@ public class SocketIOStartHandler {
 				// 判断是否在断网机器表中存在，如果存在,修改机器主表中网络状态
 				Query queryNetOffMachine = new Query();
 				queryNetOffMachine.addCriteria(Criteria.where("machineId").is(machineId));
-				Boolean flag = mongoTpl.exists(query,"NetOffMachineInfo");
-				if(true == flag){
+				Boolean flag = mongoTpl.exists(query, "NetOffMachineInfo");
+				if (true == flag) {
 					String urlProp = machineMonitorBackendProperties.getProps().get("updateNetStatusUrl");
-					String url = MessageFormat.format(urlProp,machineId,CommonConstants.NET_OPEN);
+					String url = MessageFormat.format(urlProp, machineId, CommonConstants.NET_OPEN);
 					String result = HttpClient.post(url, "");
 					JSONObject jsonObject = JSONObject.parseObject(result);
 					Integer resultCdoe = jsonObject.getInteger("code");
-					if(CommonConstants.RESULT_SUCCESS.equals(resultCdoe)){
+					if (CommonConstants.RESULT_SUCCESS.equals(resultCdoe)) {
 						mongoTpl.remove(query, "NetOffMachineInfo");
 					}
 				}
 
-				log.info("推送监控消息，执行结束");
 			}
 
 			@Override
@@ -151,8 +155,10 @@ public class SocketIOStartHandler {
 						.orElse("");
 				if (!StringUtils.isEmpty(machineId)) {
 					log.info("断开连接，机器machineId:{}", machineId);
-					String machinKey = CommonConstants.REDIS_BASE_PATH + machineId;
-					redisUtil.del(machinKey);
+					// String machinKey = CommonConstants.REDIS_BASE_PATH +
+					// machineId;
+					// 暂时不删除
+					// redisUtil.del(machinKey);
 				}
 				log.info("socket 断开了");
 			}

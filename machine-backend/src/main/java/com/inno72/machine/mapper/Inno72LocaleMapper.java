@@ -6,6 +6,7 @@ import java.util.Map;
 import com.inno72.common.Mapper;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.vo.Inno72LocaleVo;
+import com.inno72.machine.vo.MachineLocaleInfo;
 
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72LocaleMapper extends Mapper<Inno72Locale> {
@@ -15,4 +16,13 @@ public interface Inno72LocaleMapper extends Mapper<Inno72Locale> {
 	int selectIsUseing(String id);
 	
 	List<Inno72LocaleVo> selectByPage(Map<String, Object> params);
+
+	/**
+	 * @param :machineCodeStr
+	 * @return :List
+	 * @author :wxt
+	 */
+	List<MachineLocaleInfo> selectLocaleByMachineCode(List<String> machineCodes);
+
+
 }

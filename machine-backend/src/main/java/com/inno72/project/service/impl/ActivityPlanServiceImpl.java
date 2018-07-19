@@ -18,10 +18,7 @@ import com.inno72.project.model.Inno72ActivityPlanGoods;
 import com.inno72.project.model.Inno72ActivityPlanMachine;
 import com.inno72.project.model.Inno72Coupon;
 import com.inno72.project.service.ActivityPlanService;
-import com.inno72.project.vo.Inno72ActivityPlanVo;
-import com.inno72.project.vo.Inno72AdminAreaVo;
-import com.inno72.project.vo.Inno72CouponVo;
-import com.inno72.project.vo.Inno72MachineVo;
+import com.inno72.project.vo.*;
 import com.inno72.system.model.Inno72User;
 
 import org.slf4j.Logger;
@@ -69,6 +66,9 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			logger.info("登陆用户为空");
 			return Results.failure("未找到用户登录信息");
 		}
+		if (StringUtil.isBlank(activityPlan.getStartTimeStr())||StringUtil.isBlank(activityPlan.getEndTimeStr())) {
+			return Results.failure("请选择计划时间");
+		}
 		if (StringUtil.isBlank(activityPlan.getActivityId())) {
 			return Results.failure("请选择活动");
 		}
@@ -89,8 +89,8 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			
 			// 查询已有排期机器
 			Map<String, Object> planingsParam = new HashMap<String, Object>();
-			String startTimeStr = activityPlan.getStartTimeStr().substring(0,activityPlan.getStartTimeStr().length()-2)+"00";
-			String endTimeStr = activityPlan.getEndTimeStr().substring(0,activityPlan.getEndTimeStr().length()-2)+"59";
+			String startTimeStr = activityPlan.getStartTimeStr()+":00";
+			String endTimeStr = activityPlan.getEndTimeStr()+":59";
 			planingsParam.put("startTime", startTimeStr);
 			planingsParam.put("endTime", endTimeStr);
 			activityPlan.setStartTime(DateUtil.toDateTime(startTimeStr, DateUtil.DF_FULL_S1));
@@ -184,12 +184,23 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					planGameResult.setResultCode(inno72CouponVo.getResultCode());
 					planGameResult.setResultRemark(inno72CouponVo.getResultRemark());
 					
-					insertCouponList.add(coupon);
-					if (insertPlanGameResultList.contains(planGameResult)) {
-						logger.info("添加规则有重复");
-						return Results.failure("添加规则有重复");
+					if (!insertCouponList.contains(coupon)) {
+						insertCouponList.add(coupon);
+						if (insertPlanGameResultList.contains(planGameResult)) {
+							logger.info("添加规则有重复");
+							return Results.failure("添加规则有重复");
+						}
+						insertPlanGameResultList.add(planGameResult);
+					}else {
+						int num = insertCouponList.indexOf(coupon);
+						Inno72Coupon old = insertCouponList.get(num);
+						planGameResult.setPrizeId(old.getId());
+						if (insertPlanGameResultList.contains(planGameResult)) {
+							logger.info("添加规则有重复");
+							return Results.failure("添加规则有重复");
+						}
+						insertPlanGameResultList.add(planGameResult);
 					}
-					insertPlanGameResultList.add(planGameResult);
 				}
 			}
 			
@@ -227,8 +238,8 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			if (q >0) {
 				logger.info("游戏结果规则处理完成");
 			}
-			
 		} catch (Exception e) {
+			logger.info(e.getMessage());
 			return Results.failure("操作失败！");		
 		}
 		return Results.success();
@@ -237,6 +248,11 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	@Override
 	public Inno72ActivityPlanVo findById(String id) {
 		return inno72ActivityPlanMapper.selectPlanDetail(id);
+	}
+	@Override
+	public List<Map<String, Object>> selectPlanMachinDetailList(String planId) {
+		
+		return inno72ActivityPlanMachineMapper.selectPlanMachinDetailList(planId);
 	}
 	
 
@@ -248,11 +264,12 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			logger.info("登陆用户为空");
 			return Results.failure("未找到用户登录信息");
 		}
+		
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		try {
 			activityPlan.setUpdateId(userId);
 			activityPlan.setUpdateTime(LocalDateTime.now());
-			String endTimeStr = activityPlan.getEndTimeStr().substring(0,activityPlan.getEndTimeStr().length()-2)+"59";
+			String endTimeStr = activityPlan.getEndTimeStr()+":59";
 			activityPlan.setEndTime(DateUtil.toDateTime(endTimeStr, DateUtil.DF_FULL_S1));
 			//活动游戏结果 集合
 			List<Inno72ActivityPlanGameResult> insertPlanGameResultList= new ArrayList<>();
@@ -316,11 +333,23 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					planGameResult.setResultCode(inno72CouponVo.getResultCode());
 					planGameResult.setResultRemark(inno72CouponVo.getResultRemark());
 					
-					insertCouponList.add(coupon);
-					if (insertPlanGameResultList.contains(planGameResult)) {
-						return Results.failure("更新规则有重复");
+					if (!insertCouponList.contains(coupon)) {
+						insertCouponList.add(coupon);
+						if (insertPlanGameResultList.contains(planGameResult)) {
+							logger.info("添加规则有重复");
+							return Results.failure("添加规则有重复");
+						}
+						insertPlanGameResultList.add(planGameResult);
+					}else {
+						int num = insertCouponList.indexOf(coupon);
+						Inno72Coupon old = insertCouponList.get(num);
+						planGameResult.setPrizeId(old.getId());
+						if (insertPlanGameResultList.contains(planGameResult)) {
+							logger.info("添加规则有重复");
+							return Results.failure("添加规则有重复");
+						}
+						insertPlanGameResultList.add(planGameResult);
 					}
-					insertPlanGameResultList.add(planGameResult);
 				}
 			}
 			
@@ -364,10 +393,19 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			}
 			
 		} catch (Exception e) {
+			logger.info(e.getMessage());
 			return Results.failure("操作失败！");	
 		}
 		
 		return Results.success();
+	}
+
+	@Override
+	public List<Inno72NoPlanInfoVo> selectNoPlanMachineList(String taskTime) {
+
+		List<Inno72NoPlanInfoVo> noPlanedMachineList = inno72ActivityPlanMapper.selectNoPlanedMachine(taskTime);
+
+		return noPlanedMachineList;
 	}
 
 	@Override
@@ -395,6 +433,8 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	@Override
 	public List<Inno72ActivityPlanVo> selectPlanList(String code ,String startTime,String endTime) {
 		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("startTime", startTime);
+		params.put("endTime", endTime);
 		if (StringUtil.isNotEmpty(code)) {
 			int num =getlikeCode(code);
 			if (num<4) {
@@ -404,13 +444,19 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			params.put("code", likeCode);
 			params.put("num", num);
 		}
-		return inno72ActivityPlanMapper.selectByPage(params);
+		return inno72ActivityPlanMapper.selectPlanList(params);
 	}
 	
 	@Override
-	public List<Inno72AdminAreaVo> selectAreaMachineList(String code,String level) {
+	public List<Inno72AdminAreaVo> selectAreaMachineList(String code,String level,String startTime,String endTime) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("code", code);
+		if (StringUtil.isNotBlank(startTime)) {
+			params.put("startTime", startTime+":00");
+		}
+		if (StringUtil.isNotBlank(endTime)) {
+			params.put("endTime", endTime+":59");
+		}
 		
 		if (StringUtil.isEmpty(code)) {
 			params.put("level", 1);
@@ -424,8 +470,31 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		}else if (level.equals("4")) {
 			params.put("num", 9);
 		}
+		List<Inno72AdminAreaVo> list = new ArrayList<>();
+		if (level.equals("5")) {
+			list = inno72ActivityPlanMapper.selectMachineList(params);
+		}else{
+			list = inno72ActivityPlanMapper.selectAreaMachineList(params);
+			for (Inno72AdminAreaVo inno72AdminAreaVo : list) {
+				int canUseNum = 0;
+				List<Inno72MachineVo> machines=inno72AdminAreaVo.getMachines();
+				List<Inno72MachineVo> temp = new ArrayList<>();
+				for (Inno72MachineVo machineVo : machines) {
+					if (StringUtil.isEmpty(machineVo.getState())) {
+						canUseNum++;
+						machineVo.setState("0");
+					}else{
+						machineVo.setState("1");
+						temp.add(machineVo);
+					}
+				}
+				inno72AdminAreaVo.setTotalNum(machines.size()+"");
+				inno72AdminAreaVo.setCanUseNum(canUseNum+"");
+				machines.removeAll(temp);
+			}
+		}
 		
-	   	return inno72ActivityPlanMapper.selectAreaMachineList(params);
+	   	return list;
 	}
 	
 	public int getlikeCode(String s){

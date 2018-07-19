@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.check.mapper.Inno72CheckUserMachineMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.check.model.Inno72CheckUserMachine">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="check_user_id" jdbcType="VARCHAR" property="checkUserId" />
+    <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
+  </resultMap>
+  
+  <delete id="deleteByUserId" parameterType="String">
+		DELETE FROM inno72_check_user_machine WHERE check_user_id=#{userId}
+  </delete>
+	
+	<insert id="insertUserMachineList" parameterType="java.util.List">
+        insert into inno72_check_user_machine (id, check_user_id,machine_id)
+        values
+        <foreach collection="list" item="um" index="index" separator=",">
+            (#{um.id},#{um.checkUserId},#{um.machineId})
+        </foreach>
+   </insert>
+  
+</mapper>

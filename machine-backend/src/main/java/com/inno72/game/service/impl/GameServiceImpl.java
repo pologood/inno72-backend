@@ -43,60 +43,75 @@ public class GameServiceImpl extends AbstractService<Inno72Game> implements Game
 	@Override
 	public Result<String> saveModel(Inno72Game model) {
 		logger.info("----------------游戏添加--------------");
-		SessionData session = CommonConstants.SESSION_DATA;
-		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
-		if (mUser == null) {
-			logger.info("登陆用户为空");
-			return Results.failure("未找到用户登录信息");
+		try {
+			SessionData session = CommonConstants.SESSION_DATA;
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+			
+			model.setId(StringUtil.getUUID());
+			model.setCreateId(userId);
+			model.setUpdateId(userId);
+			
+			super.save(model);
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 		
-		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-		
-		model.setId(StringUtil.getUUID());
-		model.setCreateId(userId);
-		model.setUpdateId(userId);
-		
-		super.save(model);
 		return Results.success("操作成功");
 	}
 
 	@Override
 	public Result<String> delById(String id) {
 		logger.info("----------------游戏删除--------------");
-		SessionData session = CommonConstants.SESSION_DATA;
-		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
-		if (mUser == null) {
-			logger.info("登陆用户为空");
-			return Results.failure("未找到用户登录信息");
+		try {
+			SessionData session = CommonConstants.SESSION_DATA;
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+			
+			int nmu=inno72GameMapper.selectIsUseing(id);
+			if (nmu > 0) {
+				return ResultGenerator.genFailResult("游戏使用中，不能删除！");
+			}
+			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+			Inno72Game model = inno72GameMapper.selectByPrimaryKey(id);
+			model.setIsDelete(1);
+			model.setUpdateId(userId);
+			model.setUpdateTime(LocalDateTime.now());
+			super.update(model);
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
 		}
-		
-		int nmu=inno72GameMapper.selectIsUseing(id);
-		if (nmu > 0) {
-			return ResultGenerator.genFailResult("游戏使用中，不能删除！");
-		}
-		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-		Inno72Game model = inno72GameMapper.selectByPrimaryKey(id);
-		model.setIsDelete(1);
-		model.setUpdateId(userId);
-		model.setUpdateTime(LocalDateTime.now());
-		super.update(model);
 		return ResultGenerator.genSuccessResult();
 	}
 
 	@Override
 	public Result<String> updateModel(Inno72Game model) {
 		logger.info("----------------游戏更新--------------");
-		SessionData session = CommonConstants.SESSION_DATA;
-		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
-		if (mUser == null) {
-			logger.info("登陆用户为空");
-			return Results.failure("未找到用户登录信息");
-		}
-		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+		try {
+			SessionData session = CommonConstants.SESSION_DATA;
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 
-		model.setUpdateId(userId);
-		model.setUpdateTime(LocalDateTime.now());
-		super.update(model);
+			model.setUpdateId(userId);
+			model.setUpdateTime(LocalDateTime.now());
+			super.update(model);
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+		
 		return ResultGenerator.genSuccessResult();
 	}
 

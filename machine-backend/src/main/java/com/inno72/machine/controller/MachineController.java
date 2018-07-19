@@ -17,15 +17,10 @@ import com.inno72.common.ResultPages;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.vo.ChannelListVo;
-import com.inno72.machine.vo.MachineNetInfo;
 import com.inno72.machine.vo.MachineAppStatus;
+import com.inno72.machine.vo.MachineNetInfo;
 import com.inno72.machine.vo.MachineStatusVo;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
@@ -73,7 +68,6 @@ public class MachineController {
 		return machineService.updateMachineListNetStatus(list);
 
 	}
-
 
 	/**
 	 * 查看机器列表

@@ -41,22 +41,27 @@ public class ShopsServiceImpl extends AbstractService<Inno72Shops> implements Sh
 	@Override
 	public Result<String> saveModel(Inno72Shops model) {
 		logger.info("--------------------活动新增-------------------");
-		SessionData session = CommonConstants.SESSION_DATA;
-		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
-		if (mUser == null) {
-			logger.info("登陆用户为空");
-			return Results.failure("未找到用户登录信息");
+		try {
+			SessionData session = CommonConstants.SESSION_DATA;
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+			
+			int n= inno72ShopsMapper.getCount(model.getShopCode());
+			if (n>0) {
+				return Results.failure("店铺编码已存在，请确认！");
+			}
+			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+			model.setId(StringUtil.getUUID());
+			model.setCreateId(userId);
+			model.setUpdateId(userId);
+			super.save(model);
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
 		}
-		
-		int n= inno72ShopsMapper.getCount(model.getShopCode());
-		if (n>0) {
-			return Results.failure("店铺编码已存在，请确认！");
-		}
-		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-		model.setId(StringUtil.getUUID());
-		model.setCreateId(userId);
-		model.setUpdateId(userId);
-		super.save(model);
 		
 		return Results.success("操作成功");
 	}
@@ -88,25 +93,29 @@ public class ShopsServiceImpl extends AbstractService<Inno72Shops> implements Sh
 	@Override
 	public Result<String> updateModel(Inno72Shops model) {
 		logger.info("--------------------店铺更新-------------------");
-		SessionData session = CommonConstants.SESSION_DATA;
-		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
-		if (mUser == null) {
-			logger.info("登陆用户为空");
-			return Results.failure("未找到用户登录信息");
-		}
-		if (StringUtil.isNotBlank(model.getShopCode())) {
-			Inno72Shops m = inno72ShopsMapper.selectByPrimaryKey(model.getId());
-			int n= inno72ShopsMapper.getCount(model.getShopCode());
-			if (n>0 && !m.getShopCode().equals(model.getShopCode())) {
-				return Results.failure("店铺编码已存在，请确认！");
+		try {
+			SessionData session = CommonConstants.SESSION_DATA;
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
 			}
+			if (StringUtil.isNotBlank(model.getShopCode())) {
+				Inno72Shops m = inno72ShopsMapper.selectByPrimaryKey(model.getId());
+				int n= inno72ShopsMapper.getCount(model.getShopCode());
+				if (n>0 && !m.getShopCode().equals(model.getShopCode())) {
+					return Results.failure("店铺编码已存在，请确认！");
+				}
+			}
+			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+			model.setUpdateId(userId);
+			model.setUpdateTime(LocalDateTime.now());
+			super.update(model);
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
 		}
 		
-		
-		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-		model.setUpdateId(userId);
-		model.setUpdateTime(LocalDateTime.now());
-		super.update(model);
 		return Results.success("操作成功");
 	}
     

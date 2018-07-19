@@ -7,6 +7,7 @@ import com.inno72.common.Result;
 import com.inno72.common.Service;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.vo.Inno72LocaleVo;
+import com.inno72.machine.vo.MachineLocaleInfo;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
@@ -20,6 +21,12 @@ public interface LocaleService extends Service<Inno72Locale> {
 	List<Inno72LocaleVo> findByPage(String code, String keyword);
 
 	Result<String> delById(String id);
+
+    List<MachineLocaleInfo> selectLocaleByMachineCode(List<MachineLocaleInfo> list);
+
+	Result<String> saveModel(Inno72Locale model);
+
+	Result<String> updateModel(Inno72Locale model);
 
 
 }

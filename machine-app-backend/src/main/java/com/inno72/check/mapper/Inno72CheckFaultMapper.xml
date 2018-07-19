@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.check.mapper.Inno72CheckFaultMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.check.model.Inno72CheckFault">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    <result column="submit_user" jdbcType="VARCHAR" property="submitUser" />
+    <result column="finish_user" jdbcType="VARCHAR" property="finishUser" />
+    <result column="submit_time" jdbcType="TIMESTAMP" property="submitTime"/>
+    <result column="finish_time" jdbcType="TIMESTAMP" property="finishTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="finish_remark" jdbcType="VARCHAR" property="finishRemark"/>
+    <result column="remind_status" jdbcType="INTEGER" property="remindStatus"/>
+  </resultMap>
+
+
+</mapper>

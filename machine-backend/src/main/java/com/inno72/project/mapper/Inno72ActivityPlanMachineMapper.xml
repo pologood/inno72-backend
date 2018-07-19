@@ -17,5 +17,18 @@
             (#{apm.id},#{apm.activityPlanId},#{apm.machineId})
         </foreach>
     </insert>
+    <select id="selectPlanMachinDetailList" parameterType="String" resultType="java.util.Map">
+		 SELECT
+			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.name,""),IFNULL( m.address,"")  ) AS machineLocale,
+			m.machine_code AS machineCode
+		FROM inno72_machine m
+			LEFT JOIN inno72_activity_plan_machine apm ON apm.machine_id=m.id
+			LEFT JOIN inno72_locale l ON l.id = m.locale_id
+			LEFT JOIN inno72_admin_area area ON area.code = l.area_code
+			WHERE apm.activity_plan_id = #{planId}
+  	</select>
+  
+    
+    
   
 </mapper>

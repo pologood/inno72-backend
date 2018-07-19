@@ -10,6 +10,7 @@
     <result column="shop_id" jdbcType="VARCHAR" property="shopId" />
     <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
     <result column="manager_id" jdbcType="VARCHAR" property="managerId" />
+    <result column="is_default" jdbcType="INTEGER" property="isDefault" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
@@ -32,6 +33,7 @@
 		 SELECT
 			a.id,
 			a.name,
+			a.is_default,
 			s.id as shop_id,
 			m.id as seller_id,
 			s.shop_name as shop_name,
@@ -54,7 +56,7 @@
 			LEFT JOIN inno72_merchant m ON m.id = s.seller_id
 			LEFT JOIN inno72_activity_plan ap ON ap.activity_id = a.id
 			LEFT JOIN inno72_user u ON u.id =a.manager_id
-			where a.is_delete = 0 
+			where a.is_delete = 0 and a.is_default=0
 			<if test="code ==1"> and NOW() &lt;  ap.start_time </if>
 			<if test="code ==2"> and (NOW() BETWEEN ap.start_time and ap.end_time ) </if>
 			<if test="code ==3"> and NOW() &gt; ap.end_time  </if>
@@ -74,6 +76,7 @@
 		 SELECT
 			a.id,
 			a.name,
+			a.is_default,
 			s.id as shop_id,
 			m.id as seller_id,
 			s.shop_name as shop_name,
@@ -90,14 +93,14 @@
 			LEFT JOIN inno72_merchant m ON m.id = s.seller_id
 			LEFT JOIN inno72_activity_plan ap ON ap.activity_id = a.id
 			LEFT JOIN inno72_user u ON u.id =a.manager_id
-			where a.is_delete = 0
+			where a.is_delete = 0 and a.is_default=0
 			and a.id = #{id}
 			ORDER BY a.update_time DESC
   </select>
 
   
   <select id="selectUnPlanList" parameterType="java.util.Map" resultMap="BaseResultMap">
-		 SELECT a.id,a.name FROM inno72_activity a where a.is_delete = 0 and a.id not in (SELECT activity_id from inno72_activity_plan )
+		 SELECT a.id,a.name,seller_id,shop_id FROM inno72_activity a where a.is_delete = 0 and a.is_default=0 and a.id not in (SELECT activity_id from inno72_activity_plan )
   </select>
   
   

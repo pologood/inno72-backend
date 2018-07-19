@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import javax.annotation.Resource;
 
-import com.inno72.machine.vo.MachineNetInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +38,7 @@ import com.inno72.machine.vo.AppStatus;
 import com.inno72.machine.vo.ChannelListVo;
 import com.inno72.machine.vo.MachineAppStatus;
 import com.inno72.machine.vo.MachineInstallAppBean;
+import com.inno72.machine.vo.MachineNetInfo;
 import com.inno72.machine.vo.MachineStartAppBean;
 import com.inno72.machine.vo.MachineStatus;
 import com.inno72.machine.vo.MachineStatusVo;
@@ -77,8 +77,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		String machineCode = StringUtil.getMachineCode();
 		LocalDateTime now = LocalDateTime.now();
 		Inno72Machine machine = new Inno72Machine();
+		String machineId = StringUtil.getUUID();
 		machine.setDeviceId(deviceId);
-		machine.setId(StringUtil.getUUID());
+		machine.setId(machineId);
 		machine.setMachineCode(machineCode);
 		machine.setMachineStatus(Inno72Machine.Machine_Status.INFACTORY.v());
 		machine.setUpdateId("machine-backend");
@@ -91,7 +92,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			return Results.failure("生成machineCode失败");
 		}
 		List<Inno72SupplyChannel> channels = JSON.parseArray(channelJson, Inno72SupplyChannel.class);
-		Result<String> initResult = supplyChannelService.initChannel(machineCode, channels);
+		Result<String> initResult = supplyChannelService.initChannel(machineId, channels);
 		if (initResult.getCode() != Result.SUCCESS) {
 			return initResult;
 		}
@@ -169,7 +170,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (machine == null) {
 			return Results.failure("机器id传入错误");
 		}
-		return supplyChannelService.findChannelListByMachineId(machine.getMachineCode());
+		return supplyChannelService.findChannelListByMachineId(id);
 	}
 
 	@Override
@@ -183,7 +184,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		Result<String> result = supplyChannelService.deleteChannel(channels);
 
 		if (result.getCode() == Result.SUCCESS) {
-			Inno72Machine machine = findBy("machineCode", result.getData());
+			Inno72Machine machine = findBy("id", result.getData());
 			if (machine != null) {
 				machine.setUpdateId(mUser.getId());
 				machine.setUpdateTime(LocalDateTime.now());
@@ -220,7 +221,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	@Override
 	public Result<List<MachineNetInfo>> updateMachineListNetStatus(List<MachineNetInfo> list) {
 
-		for(MachineNetInfo machineNetInfo : list){
+		for (MachineNetInfo machineNetInfo : list) {
 			String machineCode = machineNetInfo.getMachineCode();
 			Integer netStatus = machineNetInfo.getNetStatus();
 			Inno72Machine machine = findBy("machineCode", machineCode);
@@ -323,7 +324,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 				bean.setAppPackageName(status.getAppPackageName());
 				Inno72App app = appService.findBy("appPackageName", status.getAppPackageName());
 				bean.setAppType(app.getAppType());
-				if (appPackageName.equals(status.getAppPackageName()) || app.getAppType() == 2) {
+				if (appPackageName.equals(status.getAppPackageName()) || app.getAppType() == 1) {
 					bean.setStartStatus(1);
 				} else {
 					bean.setStartStatus(2);

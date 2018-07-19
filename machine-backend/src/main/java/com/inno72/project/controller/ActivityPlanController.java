@@ -7,8 +7,11 @@ import com.inno72.project.service.ActivityPlanService;
 import com.inno72.project.vo.Inno72ActivityPlanVo;
 import com.inno72.project.vo.Inno72AdminAreaVo;
 import com.inno72.common.ResultPages;
-
+import com.inno72.common.Results;
+import com.inno72.common.StringUtil;
+import com.inno72.project.vo.Inno72NoPlanInfoVo;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,12 +21,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
 * Created by CodeGenerator on 2018/07/11.
 */
 @RestController
 @RequestMapping("/project/activityPlan")
+@CrossOrigin
 public class ActivityPlanController {
     @Resource
     private ActivityPlanService activityPlanService;
@@ -62,6 +67,12 @@ public class ActivityPlanController {
         return ResultGenerator.genSuccessResult(activityPlan);
     }
     
+    @RequestMapping(value = "/planMachineDetailList", method = { RequestMethod.POST,  RequestMethod.GET})
+    public Result<List<Map<String, Object>>> planMachineDetailList(@RequestParam String id) {
+    	List<Map<String, Object>> list = activityPlanService.selectPlanMachinDetailList(id);
+        return ResultGenerator.genSuccessResult(list);
+    }
+    
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
     public ModelAndView list(String code,String startTime,String endTime) {
         List<Inno72ActivityPlanVo> list = activityPlanService.selectPlanList(code,startTime,endTime);
@@ -70,12 +81,22 @@ public class ActivityPlanController {
     
 
     @RequestMapping(value = "/selectAreaMachines", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<List<Inno72AdminAreaVo>> selectMachines(String code,String level) {
+    public Result<List<Inno72AdminAreaVo>> selectMachines(String code,String level,String startTime,String endTime ) {
    	   	//联动查询
-        List<Inno72AdminAreaVo> list = activityPlanService.selectAreaMachineList(code,level);
+    	if (StringUtil.isBlank(startTime)||StringUtil.isBlank(endTime)) {
+			return Results.failure("请选择计划时间");
+		}
+        List<Inno72AdminAreaVo> list = activityPlanService.selectAreaMachineList(code,level,startTime,endTime);
         return ResultGenerator.genSuccessResult(list);
     }
-    
+
+    @RequestMapping(value = "/selectNoPlanMachines", method = { RequestMethod.POST,  RequestMethod.GET})
+    public Result<List<Inno72NoPlanInfoVo>> selectNoPlanMachines(@RequestBody String taskTime) {
+   	   	//联动查询
+        List<Inno72NoPlanInfoVo> list = activityPlanService.selectNoPlanMachineList(taskTime);
+        return ResultGenerator.genSuccessResult(list);
+    }
+
     
     
     

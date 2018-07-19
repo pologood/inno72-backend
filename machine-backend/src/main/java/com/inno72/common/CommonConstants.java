@@ -16,14 +16,14 @@ public class CommonConstants {
 	public static final String USER_LOGIN_TOKEN_CACHE_KEY_PREF = "machine-backend:login_user_token:";
 
 	/** 被踢出用户集合 **/
-	public static final String CHECK_OUT_USER_TOKEN_SET_KEY = "machine-backend::checkout_user_token_set";
+	public static final String CHECK_OUT_USER_TOKEN_SET_KEY = "machine-backend:checkout_user_token_set";
 
 	/** 用户sessionData有效期 **/
 	public static final int SESSION_DATA_EXP = 3600 * 24;
 
 	/** 用户登录对象 **/
 	public static SessionData SESSION_DATA = new SessionData();
-	
+
 	/** OSS基础路径 **/
 	public static final String OSS_PATH = "backend";
 	/** OSS基础路径 **/

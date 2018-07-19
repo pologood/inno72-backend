@@ -40,5 +40,6 @@
 		left join inno72_goods g on scg.goods_id=g.id
 		left join inno72_supply_channel_status scs on sc.work_status=scs.code
 		where sc.machine_id=#{id}
+		order by sc.code*1
 	</select>
 </mapper>

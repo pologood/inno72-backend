@@ -45,6 +45,12 @@ public class Inno72Activity {
     @Column(name = "manager_id")
     private String managerId;
     
+    /**
+     * 活动类型
+     */
+    @Column(name = "is_default")
+    private String isDefault;
+    
 
     /**
      * 状态：0正常，1停止
@@ -155,8 +161,15 @@ public class Inno72Activity {
 		this.managerId = managerId;
 	}
 
+    public String getIsDefault() {
+		return isDefault;
+	}
 
-    /**
+	public void setIsDefault(String isDefault) {
+		this.isDefault = isDefault;
+	}
+
+	/**
      * 获取状态：0正常，1停止
      *
      * @return is_delete - 状态：0正常，1停止

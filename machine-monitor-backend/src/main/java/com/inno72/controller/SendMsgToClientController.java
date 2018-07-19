@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,6 +30,7 @@ import com.inno72.util.GZIPUtil;
 @RestController
 @RequestMapping("/sendMsgToClient")
 public class SendMsgToClientController {
+	private static Logger logger = LoggerFactory.getLogger(SendMsgToClientController.class);
 
 	@Resource
 	private IRedisUtil redisUtil;
@@ -36,6 +39,7 @@ public class SendMsgToClientController {
 	public Result<Map<String, Object>> sendMsg(@RequestBody SendMessageBean... msgs) {
 		Map<String, Object> map = new HashMap<>();
 		for (SendMessageBean msg : msgs) {
+			logger.info("客户端发送消息：{}", JSON.toJSONString(msg));
 			String result = GZIPUtil.compress(AesUtils.encrypt(JSON.toJSONString(msg)));
 			String machinKey = CommonConstants.REDIS_BASE_PATH + msg.getMachineId();
 			String sessionId = redisUtil.get(machinKey);
