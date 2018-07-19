@@ -100,7 +100,8 @@
 
   
   <select id="selectUnPlanList" parameterType="java.util.Map" resultMap="BaseResultMap">
-		 SELECT a.id,a.name,seller_id,shop_id FROM inno72_activity a where a.is_delete = 0 and a.is_default=0 and a.id not in (SELECT activity_id from inno72_activity_plan and a.is_delete = 0)
+		 SELECT a.id,a.name,seller_id,shop_id FROM inno72_activity a where a.is_delete = 0 and a.is_default=0 
+		 and a.id not in (SELECT activity_id from inno72_activity_plan and is_delete = 0)
   </select>
   
   
