@@ -50,7 +50,7 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
 	Result<String> submit(List<Inno72SupplyChannel> supplyChannelList);
 
-	Result<List<WorkOrderVo>> workOrderList(String checkUserId);
+	Result<List<WorkOrderVo>> workOrderList(String checkUserId,String keyword,String findTime);
 
     Result<WorkOrderVo> workOrderDetail(String checkUserId, String machineId, String batchNo);
 }

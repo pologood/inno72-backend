@@ -188,6 +188,11 @@ public class SupplyChannelController {
 		return result;
 	}
 
+	/**
+	 * 提交补货
+	 * @param supplyChannelList
+	 * @return
+	 */
 	@RequestMapping(value="submit",method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> submit(List<Inno72SupplyChannel> supplyChannelList){
 		Result<String> result = supplyChannelService.submit(supplyChannelList);
@@ -200,8 +205,8 @@ public class SupplyChannelController {
 	 * @return
 	 */
 	@RequestMapping(value="workOrderList",method = {RequestMethod.POST, RequestMethod.GET })
-	public Result<List<WorkOrderVo>> workOrderList(String checkUserId){
-		Result<List<WorkOrderVo>> result = supplyChannelService.workOrderList(checkUserId);
+	public Result<List<WorkOrderVo>> workOrderList(String checkUserId,String keyword,String findTime){
+		Result<List<WorkOrderVo>> result = supplyChannelService.workOrderList(checkUserId,keyword,findTime);
 		return result;
 	}
 

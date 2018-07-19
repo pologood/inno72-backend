@@ -10,10 +10,7 @@ import javax.annotation.Resource;
 
 import com.inno72.common.*;
 import com.inno72.machine.mapper.*;
-import com.inno72.machine.model.Inno72Goods;
-import com.inno72.machine.model.Inno72Machine;
-import com.inno72.machine.model.Inno72SupplyChannel;
-import com.inno72.machine.model.Inno72SupplyChannelHistory;
+import com.inno72.machine.model.*;
 import com.inno72.machine.service.SupplyChannelService;
 import com.inno72.machine.vo.SupplyChannelVo;
 import com.inno72.machine.vo.WorkOrderVo;
@@ -255,9 +252,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         for (int i = 0; i < supplyChannelList.size(); i++) {
             supplyChannelIds[i] = supplyChannelList.get(i).getId();
         }
-        map.put("supplyChannelIds", supplyChannelIds);
-        map.put("isDelete", 1);
-        inno72SupplyChannelGoodsMapper.updateGoodsRelation(map);
+        inno72SupplyChannelGoodsMapper.deleteBySupplyChannelIds(supplyChannelIds);
         for (Inno72SupplyChannel channel : supplyChannelList) {
             channel.setIsDelete(1);
             channel.setRemark("货道商品全部下架");
@@ -400,19 +395,8 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectByCondition(condition);
         if(supplyChannelList != null && supplyChannelList.size()>0){
             StringBuffer idBuffer= new StringBuffer();
-            String batchNo = StringUtil.getUUID();
-            List<Inno72SupplyChannelHistory> historyList = new ArrayList<>();
             LocalDateTime now = LocalDateTime.now();
             for(Inno72SupplyChannel supplyChannel:supplyChannelList){
-                Inno72SupplyChannelHistory history = new Inno72SupplyChannelHistory();
-                history.setId(StringUtil.getUUID());
-                history.setBeforeCount(supplyChannel.getGoodsCount());
-                history.setAfterCount(0);
-                history.setBatchNo(batchNo);
-                history.setMachineId(supplyChannel.getMachineId());
-                history.setUserId("");
-                history.setCreateTime(now);
-                historyList.add(history);
                 supplyChannel.setUpdateTime(LocalDateTime.now());
                 supplyChannel.setGoodsCount(0);
                 inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
@@ -420,7 +404,6 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 idBuffer.append(",");
             }
             inno72SupplyChannelGoodsMapper.deleteByIds(idBuffer.substring(0,idBuffer.length()));
-            inno72SupplyChannelHistoryMapper.insertList(historyList);
         }
         return ResultGenerator.genSuccessResult();
     }
@@ -462,17 +445,45 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     public Result<String> submit(List<Inno72SupplyChannel> supplyChannelList) {
         LocalDateTime now = LocalDateTime.now();
         if(supplyChannelList != null && supplyChannelList.size()>0){
+            String batchNo = StringUtil.getUUID();
+            List<Inno72SupplyChannelHistory> historyList = new ArrayList<>();
             for(Inno72SupplyChannel supplyChannel:supplyChannelList){
                 supplyChannel.setUpdateTime(LocalDateTime.now());
                 inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
+                Inno72SupplyChannelGoods goods = new Inno72SupplyChannelGoods();
+                goods.setGoodsId(supplyChannel.getGoodsId());
+                goods.setSupplyChannelId(supplyChannel.getId());
+                Condition condition = new Condition(Inno72SupplyChannelGoods.class);
+                condition.createCriteria().andEqualTo("supplyChannelId",supplyChannel.getId());
+                inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
+                inno72SupplyChannelGoodsMapper.updateByConditionSelective(goods,condition);
+                Inno72SupplyChannelHistory history = new Inno72SupplyChannelHistory();
+                history.setId(StringUtil.getUUID());
+                history.setBeforeCount(supplyChannel.getGoodsCount());
+                history.setAfterCount(supplyChannel.getVolumeCount());
+                history.setBatchNo(batchNo);
+                history.setMachineId(supplyChannel.getMachineId());
+                history.setUserId("");
+                history.setCreateTime(now);
+                historyList.add(history);
             }
+            inno72SupplyChannelHistoryMapper.insertList(historyList);
         }
         return ResultGenerator.genSuccessResult();
     }
 
     @Override
-    public Result<List<WorkOrderVo>> workOrderList(String checkUserId) {
-        List<WorkOrderVo> workOrderVoList = inno72SupplyChannelHistoryMapper.getWorkOrderVoList(checkUserId);
+    public Result<List<WorkOrderVo>> workOrderList(String checkUserId,String keyword,String findTime) {
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("checkUserId",checkUserId);
+        if(StringUtil.isNotEmpty(keyword)){
+            map.put("keyword",keyword);
+        }
+        if(StringUtil.isNotEmpty(findTime)){
+            map.put("beginTime",findTime+" 00:00:00");
+            map.put("endTime",findTime+" 23:59:59");
+        }
+        List<WorkOrderVo> workOrderVoList = inno72SupplyChannelHistoryMapper.getWorkOrderVoList(map);
         return ResultGenerator.genSuccessResult(workOrderVoList);
     }
 

@@ -43,6 +43,15 @@
     LEFT JOIN inno72_admin_area t4 ON t4.CODE = t3.area_code
     left join inno72_check_user_machine t5 on t2.id=t5.machine_id
     where t5.check_user_id=#{checkUserId}
+    <if test="keyword != null">
+      and (
+      t2.machine_code like CONCAT('%','${keyword}','%')
+      OR t4.circle like CONCAT('%','${keyword}','%')
+      )
+    </if>
+    <if test="beginTime != null and endTime != null">
+      and t1.create_time between #{beginTime} and #{endTime}
+    </if>
     group by t1.machine_id,t1.create_time,t1.batch_no order by t1.create_time desc
   </select>
 
