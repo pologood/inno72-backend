@@ -47,7 +47,7 @@
 			ap.is_delete = 0 
 		<if test="code !=null and code !='' ">and LEFT(locale.area_code,#{num}) = #{code}</if>
 		<if test="startTime !=null and startTime !='' ">
-			<![CDATA[and ( #{startTime} BETWEEN ap.start_time AND ap.end_time or #{endTime} BETWEEN ap.start_time AND ap.end_time ) ]]>
+			<![CDATA[and ( ap.start_time  BETWEEN #{startTime} AND #{endTime} OR ap.end_time BETWEEN #{startTime} AND #{endTime} ) ]]>
 		</if>
 		ORDER BY a.update_time DESC
   </select>
