@@ -1,5 +1,8 @@
 package com.inno72.app.log.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,11 +16,13 @@ public class LogController {
 	private MsgUtil msgUtil;
 
 	@GetMapping("test2")
-	public String test2() {
-		// String code = "push_monitor_code";
-		// Map<String, String> params = new HashMap<>();
-		// params.put("asd", "哈哈哈哈哈哈哈哈哈哈或或或或或或或或或");
-		// msgUtil.sendPush(code, params, "1111", "test", "要放假了", "傻子才信");
+	public String test2(int a) throws InterruptedException {
+		String code = "push_monitor_code";
+		Map<String, String> params = new HashMap<>();
+		params.put("machineCode", "111");
+		msgUtil.sendPush(code, params, "machineCode", "项目名-类名", "title", "content");
+		msgUtil.sendSMS(code, params, "手机号", "项目名-类名");
+		Thread.sleep(a);
 		return "test2";
 	}
 
