@@ -152,5 +152,6 @@
     <module>machine-monitor-backend</module>
     <module>machine-check-app-backend</module>
     <module>machine-alarm</module>
+    <module>machine-app-backend</module>
   </modules>
 </project>
