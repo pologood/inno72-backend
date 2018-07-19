@@ -1,6 +1,7 @@
 package com.inno72.check.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -13,6 +14,8 @@ public interface Inno72CheckUserMachineMapper extends Mapper<Inno72CheckUserMach
 	int deleteByUserId(@Param("userId")String userId);
 	
 	int insertUserMachineList(@Param("list") List<Inno72CheckUserMachine> list);
+	
+	List<Map<String, Object>> selectUserMachinDetailList(@Param("userId") String userId);
 	
 	
 }

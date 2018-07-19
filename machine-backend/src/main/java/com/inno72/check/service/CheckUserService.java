@@ -1,5 +1,6 @@
 package com.inno72.check.service;
 import java.util.List;
+import java.util.Map;
 
 import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.check.vo.Inno72CheckUserVo;
@@ -24,5 +25,7 @@ public interface CheckUserService extends Service<Inno72CheckUser> {
 	List<Inno72AdminAreaVo> selectAreaMachineList(String code, String level);
 
 	Inno72CheckUserVo findDetail(String id);
+
+	List<Map<String, Object>> getUserMachinDetailList(String userId);
 
 }

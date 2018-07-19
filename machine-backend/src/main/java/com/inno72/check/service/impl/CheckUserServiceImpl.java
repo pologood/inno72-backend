@@ -172,6 +172,11 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	}
 	
 	@Override
+	public List<Map<String, Object>> getUserMachinDetailList(String userId) {
+		return inno72CheckUserMachineMapper.selectUserMachinDetailList(userId);
+	}
+	
+	@Override
 	public List<Inno72AdminAreaVo> selectAreaMachineList(String code,String level) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("code", code);

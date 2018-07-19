@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
 * Created by CodeGenerator on 2018/07/18.
@@ -59,6 +60,12 @@ public class CheckUserController {
     public Result<Inno72CheckUserVo> detail(@RequestParam String id) {
     	Inno72CheckUserVo checkUser = checkUserService.findDetail(id);
         return ResultGenerator.genSuccessResult(checkUser);
+    }
+    
+    @RequestMapping(value = "/getUserMachinDetailList", method = { RequestMethod.POST,  RequestMethod.GET})
+    public Result<List<Map<String, Object>>> getUserMachinDetailList(@RequestParam String id) {
+    	List<Map<String, Object>> list = checkUserService.getUserMachinDetailList(id);
+        return ResultGenerator.genSuccessResult(list);
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
