@@ -27,7 +27,7 @@ public class CheckActivityIsExistTask {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Scheduled(cron = "0 0 10 * * ?")
+    //@Scheduled(cron = "0 0 10 * * ?")
     //@Scheduled(cron = "0/5 * * * * ?")
     public void checkActivityIsExist() {
 
