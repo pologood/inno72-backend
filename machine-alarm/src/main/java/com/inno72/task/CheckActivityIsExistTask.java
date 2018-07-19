@@ -23,7 +23,7 @@ import static com.inno72.common.DateUtil.DF_FULL_S1;
  */
 @Configuration
 @EnableScheduling
-public class CheckActivityIsExist {
+public class CheckActivityIsExistTask {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 

@@ -13,8 +13,6 @@ import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 
-import tk.mybatis.mapper.entity.Condition;
-
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -42,9 +40,8 @@ public class CheckFaultController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list() {
-   	   Condition condition = new Condition( Inno72CheckFault.class);
-        List<Inno72CheckFault> list = checkFaultService.findByPage(condition);
+    public ModelAndView list(String keyword,String status,String type,String startTime,String endTime) {
+    	List<Inno72CheckFault> list =checkFaultService.findByPage(keyword, status, type, startTime, endTime);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
 }
