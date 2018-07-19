@@ -161,11 +161,15 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	}
 
 	@Override
+	public Inno72CheckUserVo findDetail(String id) {
+		
+		return inno72CheckUserMapper.selectUserDetail(id);
+	}
+
+	@Override
 	public List<Inno72CheckUser> findByPage(String keyword) {
 		return inno72CheckUserMapper.selectByPage(keyword);
 	}
-	
-	
 	
 	@Override
 	public List<Inno72AdminAreaVo> selectAreaMachineList(String code,String level) {

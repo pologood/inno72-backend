@@ -56,8 +56,8 @@ public class CheckUserController {
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<Inno72CheckUser> detail(@RequestParam String id) {
-        Inno72CheckUser checkUser = checkUserService.findById(id);
+    public Result<Inno72CheckUserVo> detail(@RequestParam String id) {
+    	Inno72CheckUserVo checkUser = checkUserService.findDetail(id);
         return ResultGenerator.genSuccessResult(checkUser);
     }
     

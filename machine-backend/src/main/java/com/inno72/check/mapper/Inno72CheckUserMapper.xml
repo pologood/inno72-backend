@@ -38,13 +38,30 @@
 		ORDER BY u.update_time DESC
   </select>
   
-  
-  
-  
-  
-  
-  
-  
+  <!-- 人员详情-->
+	  <resultMap id="ResultUserDetailMap" extends="BaseResultMap" type="com.inno72.check.vo.Inno72CheckUserVo">
+	    <association property="machines" resultMap="machinesResult" />
+	  </resultMap>
+	<select id="selectUserDetail" parameterType="String" resultMap="ResultUserDetailMap">
+		SELECT
+			u.id,
+			u.name,
+			u.phone,
+			u.card_no,
+			u.enterprise,
+			u.sex,
+			u.head_image,
+			u.is_delete,
+			m.id AS machine_id,
+			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.name,""), '—', m.machine_code ) AS machine_code
+		from inno72_check_user  u
+		LEFT JOIN inno72_check_user_machine um ON um.check_user_id = u.id
+		LEFT JOIN inno72_machine m ON m.id = um.machine_id
+		LEFT JOIN inno72_locale l ON l.id = m.locale_id
+		LEFT JOIN inno72_admin_area area ON area.code = l.area_code
+		WHERE u.is_delete=0 
+		AND u.id = #{id}
+  </select>
   
   <!-- 联动区域机器列表-->
   <resultMap id="ResultAreaMachineMap" type="com.inno72.project.vo.Inno72AdminAreaVo">
