@@ -1,17 +1,17 @@
 package com.inno72.socketio;
 
-import static com.inno72.model.MessageBean.EventType.CHECKSTATUS;
-import static com.inno72.model.MessageBean.SubEventType.APPSTATUS;
-import static com.inno72.model.MessageBean.SubEventType.MACHINESTATUS;
-
-import java.text.MessageFormat;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.annotation.Resource;
-
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
+import com.inno72.common.CommonConstants;
+import com.inno72.common.MachineMonitorBackendProperties;
+import com.inno72.model.*;
+import com.inno72.plugin.http.HttpClient;
+import com.inno72.redis.IRedisUtil;
+import com.inno72.socketio.core.SocketServer;
+import com.inno72.socketio.core.SocketServerHandler;
+import com.inno72.util.AesUtils;
+import com.inno72.util.GZIPUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,22 +22,16 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
-import com.inno72.common.CommonConstants;
-import com.inno72.common.MachineMonitorBackendProperties;
-import com.inno72.model.MachineAppStatus;
-import com.inno72.model.MachineLogInfo;
-import com.inno72.model.MachineStatus;
-import com.inno72.model.MessageBean;
-import com.inno72.model.SystemStatus;
-import com.inno72.plugin.http.HttpClient;
-import com.inno72.redis.IRedisUtil;
-import com.inno72.socketio.core.SocketServer;
-import com.inno72.socketio.core.SocketServerHandler;
-import com.inno72.util.AesUtils;
-import com.inno72.util.GZIPUtil;
+import javax.annotation.Resource;
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static com.inno72.model.MessageBean.EventType.CHECKSTATUS;
+import static com.inno72.model.MessageBean.SubEventType.APPSTATUS;
+import static com.inno72.model.MessageBean.SubEventType.MACHINESTATUS;
 
 @Configuration
 public class SocketIOStartHandler {
@@ -77,6 +71,14 @@ public class SocketIOStartHandler {
 						MachineStatus machineStatus = messageBean.getData();
 						String machineId = machineStatus.getMachineId();
 						machineStatus.setCreateTime(LocalDateTime.now());
+                        //将货道故障信息推送到预警系统
+						/*if(!StringUtils.isEmpty(machineStatus.getGoodsChannelStatus())){
+							AlarmMessageBean alarmMessageBean = new AlarmMessageBean();
+							alarmMessageBean.setSystem("machineChannel");
+							alarmMessageBean.setType("machineChannelException");
+							alarmMessageBean.setData(machineStatus);
+							redisUtil.publish("moniterAlarm",JSONObject.toJSONString(alarmMessageBean));
+						}*/
 						// 保存到mongo表中--先删除再保存
 						Query query = new Query();
 						query.addCriteria(Criteria.where("machineId").is(machineId));
