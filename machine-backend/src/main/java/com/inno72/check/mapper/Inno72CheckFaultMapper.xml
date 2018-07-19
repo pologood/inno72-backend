@@ -64,9 +64,9 @@
  		submit_user,
  		finish_user,
  		submit_time,
+ 		finish_time,
 		fr.remark AS answer,
 		img.image AS image
- 		
  		 from inno72_check_fault f
 		LEFT JOIN inno72_machine m ON m.id = f.machine_id
 		LEFT JOIN inno72_check_fault_remark fr ON fr.fault_id = f.id
