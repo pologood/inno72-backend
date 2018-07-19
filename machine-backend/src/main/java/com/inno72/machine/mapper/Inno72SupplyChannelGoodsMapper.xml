@@ -8,19 +8,6 @@
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="supply_channel_id" jdbcType="VARCHAR" property="supplyChannelId" />
     <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
-    <result column="is_delete" jdbcType="INTEGER" property="isDelete"/>
   </resultMap>
 
-  <update id="updateGoodsRelation">
-    update inno72_supply_channel_goods
-    set is_delete = #{isDelete}
-    <where>
-      <if test="supplyChannelIds !=null">
-        and
-        <foreach collection="supplyChannelIds" item="item" separator="or" open="(" close=")">
-          supply_channel_id = #{item,jdbcType=VARCHAR}
-        </foreach>
-      </if>
-    </where>
-  </update>
 </mapper>
