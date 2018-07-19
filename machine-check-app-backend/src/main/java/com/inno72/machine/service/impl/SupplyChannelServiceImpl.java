@@ -237,31 +237,6 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     }
 
     @Override
-    public Result<String> downAll(Inno72SupplyChannel supplyChannel) {
-        String machineId = supplyChannel.getMachineId();
-        if (StringUtil.isEmpty(machineId)) {
-            return Results.failure("参数有误");
-        }
-        Map<String, Object> map = new HashMap<>();
-        map.put("machineId", machineId);
-        List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectListByParam(map);
-        if (supplyChannelList == null || supplyChannelList.size() <= 0) {
-            return Results.failure("本机器未设置货道");
-        }
-        String[] supplyChannelIds = new String[supplyChannelList.size()];
-        for (int i = 0; i < supplyChannelList.size(); i++) {
-            supplyChannelIds[i] = supplyChannelList.get(i).getId();
-        }
-        inno72SupplyChannelGoodsMapper.deleteBySupplyChannelIds(supplyChannelIds);
-        for (Inno72SupplyChannel channel : supplyChannelList) {
-            channel.setIsDelete(1);
-            channel.setRemark("货道商品全部下架");
-            channel.setUpdateTime(LocalDateTime.now());
-        }
-        return ResultGenerator.genSuccessResult();
-    }
-
-    @Override
     public Result<Map<String, Object>> history(Inno72SupplyChannel supplyChannel) {
         String machineId = supplyChannel.getMachineId();
         String code = supplyChannel.getCode();
@@ -473,18 +448,18 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     }
 
     @Override
-    public Result<List<WorkOrderVo>> workOrderList(String checkUserId,String keyword,String findTime) {
+    public List<WorkOrderVo> workOrderList(String checkUserId,String keyword,String findTime) {
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("checkUserId",checkUserId);
-        if(StringUtil.isNotEmpty(keyword)){
-            map.put("keyword",keyword);
+        if(StringUtil.isNotEmpty(keyword) && StringUtil.isNotEmpty(keyword.trim())){
+            map.put("keyword",keyword.trim());
         }
-        if(StringUtil.isNotEmpty(findTime)){
-            map.put("beginTime",findTime+" 00:00:00");
-            map.put("endTime",findTime+" 23:59:59");
+        if(StringUtil.isNotEmpty(findTime) && StringUtil.isNotEmpty(findTime.trim())){
+            map.put("beginTime",findTime.trim()+" 00:00:00");
+            map.put("endTime",findTime.trim()+" 23:59:59");
         }
         List<WorkOrderVo> workOrderVoList = inno72SupplyChannelHistoryMapper.getWorkOrderVoList(map);
-        return ResultGenerator.genSuccessResult(workOrderVoList);
+        return workOrderVoList;
     }
 
     @Override

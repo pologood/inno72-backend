@@ -28,8 +28,6 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
 	Result<String> clear(Inno72SupplyChannel supplyChannel);
 
-	Result<String> downAll(Inno72SupplyChannel supplyChannel);
-
 	Result<Map<String, Object>> history(Inno72SupplyChannel supplyChannel);
 
 	List<Inno72SupplyChannel> getListForPage(Inno72SupplyChannel supplyChannel);
@@ -50,7 +48,7 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
 	Result<String> submit(List<Inno72SupplyChannel> supplyChannelList);
 
-	Result<List<WorkOrderVo>> workOrderList(String checkUserId,String keyword,String findTime);
+	List<WorkOrderVo> workOrderList(String checkUserId,String keyword,String findTime);
 
     Result<WorkOrderVo> workOrderDetail(String checkUserId, String machineId, String batchNo);
 }
