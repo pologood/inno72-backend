@@ -1,8 +1,9 @@
+/**/.DS_Store
 /.idea/
-/inno72-backend.iml
-/machine-backend/machine-backend.iml
-/machine-monitor-backend/machine-monitor-backend.iml
-settings
-/.DS_Store
-/machine-alarm/machine-alarm.iml
-/machine-app-backend/machine-app-backend.iml
+/**/**.iml
+/**/target/
+/**/.settings
+/**/.classpath
+/**/.project
+/**/WEB-INF
+

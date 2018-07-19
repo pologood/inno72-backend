@@ -1,9 +1,8 @@
 package com.inno72.service.impl;
 
-import com.inno72.service.AppStatusService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Component;
+
+import com.inno72.service.AppStatusService;
 
 /**
  * @Auther: wxt
@@ -12,9 +11,4 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AppStatusServiceImpl implements AppStatusService {
-
-    @Autowired
-    private MongoOperations mongoTpl;
 }
-
-
