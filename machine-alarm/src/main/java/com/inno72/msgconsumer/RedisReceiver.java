@@ -19,7 +19,10 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author wxt
@@ -73,11 +76,15 @@ public class RedisReceiver {
 
         } else if ((CommonConstants.SYS_MACHINE_DROPGOODS).equals(system)) {
             //接收并转数据类型
-            AlarmMessageBean<String> alarmMessageBean = JSONObject.parseObject(message,
-                    new TypeReference<AlarmMessageBean<String>>() {
+            AlarmMessageBean<Map<String, String>> alarmMessageBean = JSONObject.parseObject(message,
+                    new TypeReference<AlarmMessageBean<Map<String, String>>>() {
                     });
-            String machineCode = alarmMessageBean.getData();
-            log.info("机器掉货异常，machineCode:{}", machineCode);
+            Map<String, String> dropGoodsInfo = alarmMessageBean.getData();
+            String machineCode = "";
+            for (String key : dropGoodsInfo.keySet()) {
+                log.info("机器掉货异常，machineCode:{},channelCode:{}", key, dropGoodsInfo.get(key));
+                machineCode = key;
+            }
             //保存消息次数等信息
             Query query = new Query();
             query.addCriteria(Criteria.where("machineCode").is(machineCode));
