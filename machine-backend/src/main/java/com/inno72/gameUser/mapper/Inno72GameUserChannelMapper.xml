@@ -35,6 +35,13 @@
       <if test="channelName != null">
         and channel_name like CONCAT('%','${channelName}')
       </if>
+      <if test="keyword != null">
+        and (
+        user_nick like CONCAT('%','${keyword}','%')
+        or phone like CONCAT('%','${keyword}','%')
+        or channel_name like CONCAT('%','${keyword}','%')
+        )
+      </if>
     </where>
     order by create_time desc
   </select>
