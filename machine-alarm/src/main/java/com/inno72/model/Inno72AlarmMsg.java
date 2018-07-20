@@ -3,9 +3,11 @@ package com.inno72.model;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.Date;
-import javax.persistence.*;
 
 @Table(name = "inno72_alarm_msg")
 public class Inno72AlarmMsg {
@@ -20,6 +22,16 @@ public class Inno72AlarmMsg {
     private String type;
 
     private String detail;
+
+    private String machineCode;
+
+    public String getMachineCode() {
+        return machineCode;
+    }
+
+    public void setMachineCode(String machineCode) {
+        this.machineCode = machineCode;
+    }
 
     /**
      * 创建时间
