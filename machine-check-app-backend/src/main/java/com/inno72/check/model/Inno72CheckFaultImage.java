@@ -38,8 +38,11 @@ public class Inno72CheckFaultImage {
     /**
      * 创建时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
     @Column(name="create_time")
-    private String createTime;
+    private LocalDateTime createTime;
 
     public String getId() {
         return id;
@@ -73,11 +76,11 @@ public class Inno72CheckFaultImage {
         this.isDelete = isDelete;
     }
 
-    public String getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 }

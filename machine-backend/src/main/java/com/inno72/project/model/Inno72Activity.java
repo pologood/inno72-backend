@@ -28,14 +28,12 @@ public class Inno72Activity {
     /**
      * 店铺ID
      */
-    @NotBlank(message="请选择所属店铺")
     @Column(name = "shop_id")
     private String shopId;
     
     /**
      * 商户ID
      */
-    @NotBlank(message="请选择所属商户")
     @Column(name = "seller_id")
     private String sellerId;
     

@@ -1,448 +1,445 @@
 package com.inno72.order.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
 public class Inno72Order {
 
-    /**
-     * 主键
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
-
-    /**
-     * 订单号
-     */
-    @Column(name="order_num")
-    private String orderNum;
-
-    /**
-     * 用户ID
-     */
-    @Column(name="user_id")
-    private String userId;
-
-    /**
-     * 渠道ID
-     */
-    @Column(name="channel_id")
-    private String channelId;
-
-    /**
-     * 机器ID
-     */
-    @Column(name="machine_id")
-    private String machineId;
-
-    /**
-     * 店铺ID
-     */
-    @Column(name="shops_id")
-    private String shopsId;
-
-    /**
-     * 店铺名称
-     */
-    @Column(name="shops_name")
-    private String shopsName;
+	/**
+	 * 主键
+	 */
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private String id;
+
+	/**
+	 * 订单号
+	 */
+	@Column(name = "order_num")
+	private String orderNum;
+
+	/**
+	 * 用户ID
+	 */
+	@Column(name = "user_id")
+	private String userId;
+
+	/**
+	 * 渠道ID
+	 */
+	@Column(name = "channel_id")
+	private String channelId;
+
+	/**
+	 * 机器ID
+	 */
+	@Column(name = "machine_id")
+	private String machineId;
+
+	/**
+	 * 店铺ID
+	 */
+	@Column(name = "shops_id")
+	private String shopsId;
+
+	/**
+	 * 店铺名称
+	 */
+	@Column(name = "shops_name")
+	private String shopsName;
+
+	@Column(name = "merchant_id")
+	private String merchantId;
+
+	@Column(name = "inno72_activity_id")
+	private String inno72ActivityId;
+
+	@Column(name = "inno72_activity_plan_id")
+	private String inno72ActivityPlanId;
+
+	/**
+	 * 下单时间
+	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
+	@Column(name = "order_time")
+	private LocalDateTime orderTime;
+
+	/**
+	 * 订单价格
+	 */
+	@Column(name = "order_price")
+	private BigDecimal orderPrice;
+
+	@Column(name = "pay_price")
+	private BigDecimal payPrice;
+	/**
+	 * 订单类型
+	 */
+	@Column(name = "order_type")
+	private String orderType;
+
+	/**
+	 * 支付状态
+	 */
+	@Column(name = "pay_status")
+	private String payStatus;
+
+	@Column(name = "goods_status")
+	private int goodsStatus;
+
+	/**
+	 * 支付时间
+	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
+	@Column(name = "pay_time")
+	private LocalDateTime payTime;
+
+	@Column(name = "ref_order_status")
+	private String refOrderStatus;
+
+	@Column(name = "ref_order_id")
+	private String refOrderId;
+
+	@Column(name = "repetition")
+	private int repetition;
 
-    @Column(name="merchant_id")
-    private String merchantId;
+	@Transient
+	private String channelCode;
 
-    @Column(name="inno72_activity_id")
-    private String inno72ActivityId;
+	@Transient
+	private String channelName;
 
-    @Column(name="inno72_activity_plan_id")
-    private String inno72ActivityPlanId;
+	@Transient
+	private String machineCode;
 
+	@Transient
+	private String machineName;
 
-    /**
-     * 下单时间
-     */
-    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
-    @Column(name="order_time")
-    private LocalDateTime orderTime;
+	@Transient
+	private String gameName;
 
-    /**
-     * 订单价格
-     */
-    @Column(name="order_price")
-    private BigDecimal orderPrice;
+	@Transient
+	private String gameRemark;
 
+	@Transient
+	private String keyword;
 
-    @Column(name="pay_price")
-    private BigDecimal payPrice;
-    /**
-     * 订单类型
-     */
-    @Column(name="order_type")
-    private String orderType;
+	/**
+	 * 游戏ID
+	 */
+	@Column(name = "game_id")
+	private String gameId;
 
-    /**
-     * 支付状态
-     */
-    @Column(name="pay_status")
-    private String payStatus;
+	private String activityName;
 
-    @Column(name="goods_status")
-    private int goodsStatus;
+	private String merPointAddress;
 
-    /**
-     * 支付时间
-     */
-    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
-    @Column(name="pay_time")
-    private LocalDateTime payTime;
+	private String nickName;
 
+	private String gameUserId;
 
-    @Column(name="ref_order_status")
-    private String refOrderStatus;
+	private String activityId;
 
-    @Column(name="ref_order_id")
-    private String refOrderId;
+	private List<Inno72OrderGoods> orderGoodsList;
 
+	@Transient
+	private int pageNo;
 
-    @Column(name="repetition")
-    private int repetition;
+	public String getId() {
+		return id;
+	}
 
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    @Transient
-    private String channelCode;
+	public String getOrderNum() {
+		return orderNum;
+	}
 
-    @Transient
-    private String channelName;
+	public void setOrderNum(String orderNum) {
+		this.orderNum = orderNum;
+	}
 
-    @Transient
-    private String machineCode;
+	public String getUserId() {
+		return userId;
+	}
 
-    @Transient
-    private String machineName;
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
-    @Transient
-    private String gameName;
+	public String getChannelId() {
+		return channelId;
+	}
 
-    @Transient
-    private String gameRemark;
+	public void setChannelId(String channelId) {
+		this.channelId = channelId;
+	}
 
-    @Transient
-    private String keyword;
+	public String getMachineId() {
+		return machineId;
+	}
 
-    /**
-     * 游戏ID
-     */
-    @Column(name="game_id")
-    private String gameId;
+	public void setMachineId(String machineId) {
+		this.machineId = machineId;
+	}
 
-    private String activityName;
+	public String getShopsId() {
+		return shopsId;
+	}
 
-    private String merPointAddress;
+	public void setShopsId(String shopsId) {
+		this.shopsId = shopsId;
+	}
 
-    private String nickName;
+	public String getShopsName() {
+		return shopsName;
+	}
 
-    private String gameUserId;
+	public void setShopsName(String shopsName) {
+		this.shopsName = shopsName;
+	}
 
-    private String activityId;
+	public String getMerchantId() {
+		return merchantId;
+	}
 
+	public void setMerchantId(String merchantId) {
+		this.merchantId = merchantId;
+	}
 
+	public String getInno72ActivityId() {
+		return inno72ActivityId;
+	}
 
-    private List<Inno72OrderGoods> orderGoodsList;
+	public void setInno72ActivityId(String inno72ActivityId) {
+		this.inno72ActivityId = inno72ActivityId;
+	}
 
+	public String getInno72ActivityPlanId() {
+		return inno72ActivityPlanId;
+	}
 
-    @Transient
-    private int pageNo;
+	public void setInno72ActivityPlanId(String inno72ActivityPlanId) {
+		this.inno72ActivityPlanId = inno72ActivityPlanId;
+	}
 
+	public LocalDateTime getOrderTime() {
+		return orderTime;
+	}
 
-    public String getId() {
-        return id;
-    }
+	public void setOrderTime(LocalDateTime orderTime) {
+		this.orderTime = orderTime;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public BigDecimal getOrderPrice() {
+		return orderPrice;
+	}
 
-    public String getOrderNum() {
-        return orderNum;
-    }
+	public void setOrderPrice(BigDecimal orderPrice) {
+		this.orderPrice = orderPrice;
+	}
 
-    public void setOrderNum(String orderNum) {
-        this.orderNum = orderNum;
-    }
+	public BigDecimal getPayPrice() {
+		return payPrice;
+	}
 
-    public String getUserId() {
-        return userId;
-    }
+	public void setPayPrice(BigDecimal payPrice) {
+		this.payPrice = payPrice;
+	}
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+	public String getOrderType() {
+		return orderType;
+	}
 
-    public String getChannelId() {
-        return channelId;
-    }
+	public void setOrderType(String orderType) {
+		this.orderType = orderType;
+	}
 
-    public void setChannelId(String channelId) {
-        this.channelId = channelId;
-    }
+	public String getPayStatus() {
+		return payStatus;
+	}
 
-    public String getMachineId() {
-        return machineId;
-    }
+	public void setPayStatus(String payStatus) {
+		this.payStatus = payStatus;
+	}
 
-    public void setMachineId(String machineId) {
-        this.machineId = machineId;
-    }
+	public int getGoodsStatus() {
+		return goodsStatus;
+	}
 
-    public String getShopsId() {
-        return shopsId;
-    }
+	public void setGoodsStatus(int goodsStatus) {
+		this.goodsStatus = goodsStatus;
+	}
 
-    public void setShopsId(String shopsId) {
-        this.shopsId = shopsId;
-    }
+	public LocalDateTime getPayTime() {
+		return payTime;
+	}
 
-    public String getShopsName() {
-        return shopsName;
-    }
+	public void setPayTime(LocalDateTime payTime) {
+		this.payTime = payTime;
+	}
 
-    public void setShopsName(String shopsName) {
-        this.shopsName = shopsName;
-    }
+	public String getRefOrderStatus() {
+		return refOrderStatus;
+	}
 
-    public String getMerchantId() {
-        return merchantId;
-    }
+	public void setRefOrderStatus(String refOrderStatus) {
+		this.refOrderStatus = refOrderStatus;
+	}
 
-    public void setMerchantId(String merchantId) {
-        this.merchantId = merchantId;
-    }
+	public String getRefOrderId() {
+		return refOrderId;
+	}
 
-    public String getInno72ActivityId() {
-        return inno72ActivityId;
-    }
+	public void setRefOrderId(String refOrderId) {
+		this.refOrderId = refOrderId;
+	}
 
-    public void setInno72ActivityId(String inno72ActivityId) {
-        this.inno72ActivityId = inno72ActivityId;
-    }
+	public int getRepetition() {
+		return repetition;
+	}
 
-    public String getInno72ActivityPlanId() {
-        return inno72ActivityPlanId;
-    }
+	public void setRepetition(int repetition) {
+		this.repetition = repetition;
+	}
 
-    public void setInno72ActivityPlanId(String inno72ActivityPlanId) {
-        this.inno72ActivityPlanId = inno72ActivityPlanId;
-    }
+	public String getChannelCode() {
+		return channelCode;
+	}
 
-    public LocalDateTime getOrderTime() {
-        return orderTime;
-    }
+	public void setChannelCode(String channelCode) {
+		this.channelCode = channelCode;
+	}
 
-    public void setOrderTime(LocalDateTime orderTime) {
-        this.orderTime = orderTime;
-    }
+	public String getChannelName() {
+		return channelName;
+	}
 
-    public BigDecimal getOrderPrice() {
-        return orderPrice;
-    }
+	public void setChannelName(String channelName) {
+		this.channelName = channelName;
+	}
 
-    public void setOrderPrice(BigDecimal orderPrice) {
-        this.orderPrice = orderPrice;
-    }
+	public String getMachineCode() {
+		return machineCode;
+	}
 
-    public BigDecimal getPayPrice() {
-        return payPrice;
-    }
+	public void setMachineCode(String machineCode) {
+		this.machineCode = machineCode;
+	}
 
-    public void setPayPrice(BigDecimal payPrice) {
-        this.payPrice = payPrice;
-    }
+	public String getMachineName() {
+		return machineName;
+	}
 
-    public String getOrderType() {
-        return orderType;
-    }
+	public void setMachineName(String machineName) {
+		this.machineName = machineName;
+	}
 
-    public void setOrderType(String orderType) {
-        this.orderType = orderType;
-    }
+	public String getGameName() {
+		return gameName;
+	}
 
-    public String getPayStatus() {
-        return payStatus;
-    }
+	public void setGameName(String gameName) {
+		this.gameName = gameName;
+	}
 
-    public void setPayStatus(String payStatus) {
-        this.payStatus = payStatus;
-    }
+	public String getGameRemark() {
+		return gameRemark;
+	}
 
-    public int getGoodsStatus() {
-        return goodsStatus;
-    }
+	public void setGameRemark(String gameRemark) {
+		this.gameRemark = gameRemark;
+	}
 
-    public void setGoodsStatus(int goodsStatus) {
-        this.goodsStatus = goodsStatus;
-    }
+	public String getKeyword() {
+		return keyword;
+	}
 
-    public LocalDateTime getPayTime() {
-        return payTime;
-    }
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
 
-    public void setPayTime(LocalDateTime payTime) {
-        this.payTime = payTime;
-    }
+	public String getGameId() {
+		return gameId;
+	}
 
-    public String getRefOrderStatus() {
-        return refOrderStatus;
-    }
+	public void setGameId(String gameId) {
+		this.gameId = gameId;
+	}
 
-    public void setRefOrderStatus(String refOrderStatus) {
-        this.refOrderStatus = refOrderStatus;
-    }
+	public List<Inno72OrderGoods> getOrderGoodsList() {
+		return orderGoodsList;
+	}
 
-    public String getRefOrderId() {
-        return refOrderId;
-    }
+	public void setOrderGoodsList(List<Inno72OrderGoods> orderGoodsList) {
+		this.orderGoodsList = orderGoodsList;
+	}
 
-    public void setRefOrderId(String refOrderId) {
-        this.refOrderId = refOrderId;
-    }
+	public int getPageNo() {
+		return pageNo;
+	}
 
-    public int getRepetition() {
-        return repetition;
-    }
+	public void setPageNo(int pageNo) {
+		this.pageNo = pageNo;
+	}
 
-    public void setRepetition(int repetition) {
-        this.repetition = repetition;
-    }
+	public String getActivityName() {
+		return activityName;
+	}
 
-    public String getChannelCode() {
-        return channelCode;
-    }
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
+	}
 
-    public void setChannelCode(String channelCode) {
-        this.channelCode = channelCode;
-    }
+	public String getMerPointAddress() {
+		return merPointAddress;
+	}
 
-    public String getChannelName() {
-        return channelName;
-    }
+	public void setMerPointAddress(String merPointAddress) {
+		this.merPointAddress = merPointAddress;
+	}
 
-    public void setChannelName(String channelName) {
-        this.channelName = channelName;
-    }
+	public String getNickName() {
+		return nickName;
+	}
 
-    public String getMachineCode() {
-        return machineCode;
-    }
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
 
-    public void setMachineCode(String machineCode) {
-        this.machineCode = machineCode;
-    }
+	public String getGameUserId() {
+		return gameUserId;
+	}
 
-    public String getMachineName() {
-        return machineName;
-    }
+	public void setGameUserId(String gameUserId) {
+		this.gameUserId = gameUserId;
+	}
 
-    public void setMachineName(String machineName) {
-        this.machineName = machineName;
-    }
+	public String getActivityId() {
+		return activityId;
+	}
 
-    public String getGameName() {
-        return gameName;
-    }
-
-    public void setGameName(String gameName) {
-        this.gameName = gameName;
-    }
-
-    public String getGameRemark() {
-        return gameRemark;
-    }
-
-    public void setGameRemark(String gameRemark) {
-        this.gameRemark = gameRemark;
-    }
-
-    public String getKeyword() {
-        return keyword;
-    }
-
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
-    }
-
-    public String getGameId() {
-        return gameId;
-    }
-
-    public void setGameId(String gameId) {
-        this.gameId = gameId;
-    }
-
-    public List<Inno72OrderGoods> getOrderGoodsList() {
-        return orderGoodsList;
-    }
-
-    public void setOrderGoodsList(List<Inno72OrderGoods> orderGoodsList) {
-        this.orderGoodsList = orderGoodsList;
-    }
-
-    public int getPageNo() {
-        return pageNo;
-    }
-
-    public void setPageNo(int pageNo) {
-        this.pageNo = pageNo;
-    }
-
-    public String getActivityName() {
-        return activityName;
-    }
-
-    public void setActivityName(String activityName) {
-        this.activityName = activityName;
-    }
-
-    public String getMerPointAddress() {
-        return merPointAddress;
-    }
-
-    public void setMerPointAddress(String merPointAddress) {
-        this.merPointAddress = merPointAddress;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public String getGameUserId() {
-        return gameUserId;
-    }
-
-    public void setGameUserId(String gameUserId) {
-        this.gameUserId = gameUserId;
-    }
-
-    public String getActivityId() {
-        return activityId;
-    }
-
-    public void setActivityId(String activityId) {
-        this.activityId = activityId;
-    }
+	public void setActivityId(String activityId) {
+		this.activityId = activityId;
+	}
 }

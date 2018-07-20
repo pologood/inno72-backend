@@ -275,7 +275,11 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     public List<Inno72SupplyChannel> getList(String machineId) {
         Condition condition = new Condition(Inno72SupplyChannel.class);
         condition.createCriteria().andEqualTo("machineId",machineId).andEqualTo("status",0);
-        List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectByCondition(condition);
+        condition.orderBy("code");
+        Map<String,Object> map= new HashMap<>();
+        map.put("machineId",machineId);
+        map.put("status",0);
+        List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectListByParam(map);
         return list;
     }
 

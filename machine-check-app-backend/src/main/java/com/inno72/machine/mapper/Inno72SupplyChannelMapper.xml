@@ -95,6 +95,7 @@
       </if>
       and t1.is_delete=0
     </where>
+    order by code
   </select>
 
 

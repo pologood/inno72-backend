@@ -5,9 +5,11 @@ import java.util.List;
 import com.inno72.common.Result;
 import com.inno72.common.Service;
 import com.inno72.machine.model.Inno72Machine;
-import com.inno72.machine.vo.*;
-
-import java.util.List;
+import com.inno72.machine.vo.ChannelListVo;
+import com.inno72.machine.vo.MachineAppStatus;
+import com.inno72.machine.vo.MachineNetInfo;
+import com.inno72.machine.vo.MachineStatusVo;
+import com.inno72.machine.vo.UpdateMachineChannelVo;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
