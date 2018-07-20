@@ -127,28 +127,23 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			model.setUpdateId(mUserId);
 			model.setUpdateTime(LocalDateTime.now());
-			//获取寻选择机器
+			
 			List<Inno72MachineVo> machines=model.getMachines();
-			if (null ==machines || machines.size()==0) {
-				return Results.failure("未选择机器");
-			}
-			
-			List<Inno72CheckUserMachine> insertUserMachineList= new ArrayList<>();
-			for (Inno72MachineVo inno72MachineVo : machines) {
+			if (null !=machines && machines.size()>0) {
+				List<Inno72CheckUserMachine> insertUserMachineList= new ArrayList<>();
 				
-				Inno72CheckUserMachine userMachine = new Inno72CheckUserMachine();
-				userMachine.setId(StringUtil.getUUID());
-				userMachine.setCheckUserId(model.getId());
-				userMachine.setMachineId(inno72MachineVo.getMachineId());
+				for (Inno72MachineVo inno72MachineVo : machines) {
+					Inno72CheckUserMachine userMachine = new Inno72CheckUserMachine();
+					userMachine.setId(StringUtil.getUUID());
+					userMachine.setCheckUserId(model.getId());
+					userMachine.setMachineId(inno72MachineVo.getMachineId());
+					insertUserMachineList.add(userMachine);
+				}
+				//先删除关联关系
+				inno72CheckUserMachineMapper.deleteByUserId(model.getId());
 				
-				insertUserMachineList.add(userMachine);
+				inno72CheckUserMachineMapper.insertUserMachineList(insertUserMachineList);
 			}
-			
-			//先删除关联关系
-			inno72CheckUserMachineMapper.deleteByUserId(model.getId());
-			
-			//插入新关联关系
-			inno72CheckUserMachineMapper.insertUserMachineList(insertUserMachineList);
 			
 			super.update(model);
 		} catch (Exception e) {
