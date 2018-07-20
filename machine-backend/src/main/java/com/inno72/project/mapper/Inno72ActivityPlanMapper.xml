@@ -72,25 +72,25 @@
  </resultMap>
   
   <select id="selectAreaMachineList" parameterType="java.util.Map" resultMap="ResultAreaMachineMap">
-  		SELECT
-			a.*,
-			m.id AS machine_id,
-			m.machine_code AS machine_code,
-			ap.id AS state
-		FROM
-			inno72_admin_area a
-			LEFT JOIN inno72_locale locale ON LEFT ( locale.area_code, #{num}) = LEFT ( a.CODE, #{num})
+  		SELECT a.*, 
+  			m.id AS machine_id,
+  			m.machine_code AS machine_code,
+  		 	aa.machine_id AS state
+		FROM inno72_admin_area a
+			LEFT JOIN inno72_locale locale ON LEFT(locale.area_code, 2) = LEFT(a.CODE, 2)
 			LEFT JOIN inno72_machine m ON locale.id = m.locale_id
-			LEFT JOIN inno72_activity_plan_machine apm ON m.id = apm.machine_id
-			LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id 
+			LEFT JOIN (	select distinct apm.machine_id from inno72_activity_plan app left join inno72_activity_plan_machine apm on app.id=apm.activity_plan_id
+				where app.id not in (
+				select id from inno72_activity_plan ap where 
+				 <![CDATA[(
+				ap.start_time > #{endTime}
+				OR ap.end_time < #{startTime})]]>and is_delete=0) and 
+				app.is_delete=0 and apm.machine_id is not null  and length(apm.machine_id)>0 and app.start_time is not null 
+				) aa on m.id=aa.machine_id
 		WHERE
 		<if test="code !=null and code !='' ">a.parent_code = #{code}  </if>
 		<if test="level !=null and level !='' ">a.LEVEL = #{level}  </if>
-		<if test="startTime !=null and startTime !='' ">
-		and ( <![CDATA[
-		 	ap.start_time >#{endTime} OR ap.end_time < #{startTime} OR ap.id IS NULL
-		 ]]>)
-		</if>
+		
   </select>
   <select id="selectMachineList" parameterType="java.util.Map" resultMap="ResultAreaMachineMap">
   		SELECT
@@ -165,6 +165,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="activityName" jdbcType="VARCHAR" property="activityName" />
     <result column="merchantName" jdbcType="VARCHAR" property="merchantName" />
+    <result column="shop_id" jdbcType="VARCHAR" property="shopId" />
     <result column="shopName" jdbcType="VARCHAR" property="shopName" />
     <result column="gameName" jdbcType="VARCHAR" property="gameName" />
     <association property="goods" resultMap="goodsResult" />
@@ -203,6 +204,7 @@
 			a.name AS activityName,
 			m.merchant_name AS merchantName,
 			s.shop_name AS shopName,
+			a.shop_id AS shop_id,
 			gm.name AS gameName
 		FROM
 			inno72_activity_plan ap

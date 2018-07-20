@@ -27,6 +27,10 @@
 			LEFT JOIN inno72_admin_area area ON area.code = l.area_code
 			WHERE apm.activity_plan_id = #{planId}
   	</select>
+  	
+  	<delete id="deleteByPlanId" parameterType="String">
+		DELETE FROM inno72_activity_plan_machine WHERE activity_plan_id=#{planId}
+	</delete>
   
     
     

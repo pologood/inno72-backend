@@ -57,6 +57,8 @@ public class Inno72GameUserChannel {
     @Column(name="create_time")
     private Date createTime;
 
+    private String keyword;
+
 
     public String getId() {
         return id;
@@ -120,5 +122,13 @@ public class Inno72GameUserChannel {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
     }
 }

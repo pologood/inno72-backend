@@ -94,6 +94,8 @@ public class Inno72Machine {
 
 	private int lackGoodsCount;
 
+	private String localeStr;
+
 	private List<SupplyChannelVo> supplyChannelVoList;
 
 	public enum Machine_Status {
@@ -360,7 +362,11 @@ public class Inno72Machine {
 		this.lackGoodsCount = lackGoodsCount;
 	}
 
+	public String getLocaleStr() {
+		return localeStr;
+	}
 
-
-
+	public void setLocaleStr(String localeStr) {
+		this.localeStr = localeStr;
+	}
 }

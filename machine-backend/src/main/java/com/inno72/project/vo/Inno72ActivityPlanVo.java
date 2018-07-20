@@ -19,6 +19,8 @@ public class Inno72ActivityPlanVo extends Inno72ActivityPlan{
     
     private String shopName;
     
+    private String shopId;
+    
     private String gameName;
     
     private String startTimeStr;
@@ -76,6 +78,14 @@ public class Inno72ActivityPlanVo extends Inno72ActivityPlan{
 		this.shopName = shopName;
 	}
 	
+	
+	public String getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(String shopId) {
+		this.shopId = shopId;
+	}
 
 	public String getGameName() {
 		return gameName;

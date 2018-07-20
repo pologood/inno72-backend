@@ -10,12 +10,12 @@ import com.inno72.common.Results;
 import com.inno72.project.vo.Inno72AdminAreaVo;
 
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -26,6 +26,7 @@ import java.util.Map;
 */
 @RestController
 @RequestMapping("/check/user")
+@CrossOrigin
 public class CheckUserController {
     @Resource
     private CheckUserService checkUserService;

@@ -88,35 +88,32 @@ public class SupplyChannelController {
 
 	/**
 	 * 机器维度缺货
-	 * @param checkUserId
 	 * @return
 	 */
 	@RequestMapping(value="machineLack",method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72Machine>> getMachineLack(String checkUserId){
-		List<Inno72Machine> machineList = supplyChannelService.getMachineLackGoods(checkUserId);
+	public Result<List<Inno72Machine>> getMachineLack(){
+		List<Inno72Machine> machineList = supplyChannelService.getMachineLackGoods();
 		return ResultGenerator.genSuccessResult(machineList);
 	}
 
 	/**
 	 * 商品维度缺货
-	 * @param checkUserId
 	 * @return
 	 */
 	@RequestMapping(value="goodsLack",method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72Goods>> getGoodsLack(String checkUserId){
-		List<Inno72Goods> goodsList = supplyChannelService.getGoodsLack(checkUserId);
+	public Result<List<Inno72Goods>> getGoodsLack(){
+		List<Inno72Goods> goodsList = supplyChannelService.getGoodsLack();
 		return ResultGenerator.genSuccessResult(goodsList);
 	}
 
 	/**
 	 * 查询单个商品缺货的机器
-	 * @param checkUserId
 	 * @param goodsId
 	 * @return
 	 */
 	@RequestMapping(value="machineByLackGoods",method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72Machine>> getMachineByLackGoods(String checkUserId,String goodsId){
-		List<Inno72Machine> machineList = supplyChannelService.getMachineByLackGoods(checkUserId,goodsId);
+	public Result<List<Inno72Machine>> getMachineByLackGoods(String goodsId){
+		List<Inno72Machine> machineList = supplyChannelService.getMachineByLackGoods(goodsId);
 		return ResultGenerator.genSuccessResult(machineList);
 	}
 
@@ -166,25 +163,25 @@ public class SupplyChannelController {
 
 	/**
 	 * 工单列表
-	 * @param checkUserId
+	 * @param keyword
+	 * @param findTime
 	 * @return
 	 */
 	@RequestMapping(value="workOrderList",method = {RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView workOrderList(String checkUserId,String keyword,String findTime){
-		List<WorkOrderVo> list = supplyChannelService.workOrderList(checkUserId,keyword,findTime);
+	public ModelAndView workOrderList(String keyword,String findTime){
+		List<WorkOrderVo> list = supplyChannelService.workOrderList(keyword,findTime);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 
 	/**
 	 * 工单详情
-	 * @param checkUserId
 	 * @param machineId
 	 * @param batchNo
 	 * @return
 	 */
 	@RequestMapping(value="workOrderDetail",method = {RequestMethod.POST,RequestMethod.GET})
-	public Result<WorkOrderVo> workOrderDetail(String checkUserId,String machineId,String batchNo){
-		Result<WorkOrderVo> result = supplyChannelService.workOrderDetail(checkUserId,machineId,batchNo);
+	public Result<WorkOrderVo> workOrderDetail(String machineId,String batchNo){
+		Result<WorkOrderVo> result = supplyChannelService.workOrderDetail(machineId,batchNo);
 		return result;
 	}
 

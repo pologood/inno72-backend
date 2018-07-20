@@ -433,6 +433,8 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			return Results.failure("计划进行中不能删除");
 		}
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+		//删除机器关联关系
+		inno72ActivityPlanMachineMapper.deleteByPlanId(id);
 		Inno72ActivityPlan model = inno72ActivityPlanMapper.selectByPrimaryKey(id);
 		model.setUpdateId(userId);
 		model.setIsDelete(1);
