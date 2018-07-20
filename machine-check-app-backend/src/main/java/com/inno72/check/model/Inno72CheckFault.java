@@ -25,6 +25,12 @@ public class Inno72CheckFault {
     private String machineId;
 
     /**
+     * 故障编号
+     */
+    @Column(name="code")
+    private String code;
+
+    /**
      * 类型
      */
     @Column(name="type")
@@ -90,8 +96,15 @@ public class Inno72CheckFault {
     @Transient
     private List<Inno72CheckFaultImage> imageList;
 
+
+    @Transient
+    private List<Inno72CheckFaultRemark> remarkList;
+
     @Transient
     private String[] images;
+
+    @Transient
+    private String[] machineIds;
 
     public String getId() {
         return id;
@@ -107,6 +120,14 @@ public class Inno72CheckFault {
 
     public void setMachineId(String machineId) {
         this.machineId = machineId;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public int getType() {
@@ -203,5 +224,21 @@ public class Inno72CheckFault {
 
     public void setImages(String[] images) {
         this.images = images;
+    }
+
+    public List<Inno72CheckFaultRemark> getRemarkList() {
+        return remarkList;
+    }
+
+    public void setRemarkList(List<Inno72CheckFaultRemark> remarkList) {
+        this.remarkList = remarkList;
+    }
+
+    public String[] getMachineIds() {
+        return machineIds;
+    }
+
+    public void setMachineIds(String[] machineIds) {
+        this.machineIds = machineIds;
     }
 }

@@ -2,9 +2,11 @@ package com.inno72.check.service.impl;
 
 import com.inno72.check.mapper.Inno72CheckFaultImageMapper;
 import com.inno72.check.mapper.Inno72CheckFaultMapper;
+import com.inno72.check.mapper.Inno72CheckFaultRemarkMapper;
 import com.inno72.check.mapper.Inno72CheckUserMapper;
 import com.inno72.check.model.Inno72CheckFault;
 import com.inno72.check.model.Inno72CheckFaultImage;
+import com.inno72.check.model.Inno72CheckFaultRemark;
 import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.check.service.CheckFaultService;
 import com.inno72.common.*;
@@ -17,11 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("checkFaultService")
 public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> implements CheckFaultService {
@@ -38,40 +38,66 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
     @Resource
     private Inno72CheckUserMapper inno72CheckUserMapper;
 
+    @Resource
+    private Inno72CheckFaultRemarkMapper inno72CheckFaultRemarkMapper;
+
     @Autowired
     private MsgUtil msgUtil;
 
     @Override
     public Result addCheckFault(Inno72CheckFault checkFault) {
-        String id = StringUtil.getUUID();
-        checkFault.setId(id);
-        checkFault.setSubmitTime(LocalDateTime.now());
-        inno72CheckFaultMapper.insertSelective(checkFault);
-        String [] images = checkFault.getImages();
-        if(images != null && images.length>0){
-            List<Inno72CheckFaultImage> imageList = new ArrayList<>();
-            for(int i=0;i<images.length;i++){
-                Inno72CheckFaultImage image = new Inno72CheckFaultImage();
-                image.setId(StringUtil.getUUID());
-                image.setFaultId(id);
-                image.setImage(images[i]);
-                image.setCreateTime(LocalDateTime.now());
-                imageList.add(image);
+        String[] machineIds = checkFault.getMachineIds();
+        StringBuffer mIds = new StringBuffer();
+        if(machineIds != null && machineIds.length>0){
+            for(int index=0;index<machineIds.length;index++){
+                mIds.append(machineIds[index]);
+                mIds.append(",");
+                String id = StringUtil.getUUID();
+                checkFault.setId(id);
+                String time = DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S2);
+                checkFault.setCode("F"+StringUtil.createRandomCode(6)+time);
+                checkFault.setSubmitTime(LocalDateTime.now());
+                checkFault.setMachineId(machineIds[index]);
+                inno72CheckFaultMapper.insertSelective(checkFault);
+                String [] images = checkFault.getImages();
+                if(images != null && images.length>0){
+                    List<Inno72CheckFaultImage> imageList = new ArrayList<>();
+                    for(int i=0;i<images.length;i++){
+                        Inno72CheckFaultImage image = new Inno72CheckFaultImage();
+                        image.setId(StringUtil.getUUID());
+                        image.setFaultId(id);
+                        image.setImage(images[i]);
+                        image.setCreateTime(LocalDateTime.now());
+                        imageList.add(image);
+                    }
+                    inno72CheckFaultImageMapper.insertList(imageList);
+
+                }
+
             }
-            inno72CheckFaultImageMapper.insertList(imageList);
+            List<Inno72Machine>machines = inno72MachineMapper.selectByIds(mIds.substring(0,mIds.length()-1));
+            if(machines != null && machines.size()>0){
+                for(Inno72Machine machine:machines){
+                    String pushCode = "push_check_app_code";
+                    Map<String,String> params = new HashMap<>();
+                    params.put("machineCode",machine.getMachineCode());
+                    params.put("machineId",machine.getId());
+                    List<Inno72CheckUser> checkUserList = inno72CheckUserMapper.selectByMachineId(machine.getId());
+                    if(checkUserList != null && checkUserList.size()>0){
+                        for(Inno72CheckUser checkUser:checkUserList){
+                            String phone = checkUser.getPhone();
+                            if(StringUtil.isNotEmpty(phone)){
+                                msgUtil.sendPush(pushCode,params,phone,"互动管家","故障","您有一条故障信息");
+                                msgUtil.sendSMS(pushCode,params,phone,"互动管家");
+                            }
+                        }
+                    }
+                }
+
+            }
 
         }
-        Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(checkFault.getMachineId());
-        String pushCode = "push_check_app_code";
-        Map<String,String> params = new HashMap<>();
-        params.put("machineCode",machine.getMachineCode());
-        params.put("machineId",machine.getId());
-        List<Inno72CheckUser> checkUserList = inno72CheckUserMapper.selectByMachineId(machine.getId());
-        if(checkUserList != null && checkUserList.size()>0){
-        }
-        String alias = "54321";
-        msgUtil.sendPush("push_monitor_code", params, "54321", "项目名-类名", "title", "content");
-        msgUtil.sendPush(pushCode,params,alias,"互动管家","故障","您有一条故障信息");
+
         return ResultGenerator.genSuccessResult();
     }
 
@@ -88,9 +114,14 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
     }
 
     @Override
-    public List<Inno72CheckFault> findForPage(Condition condition) {
-        condition.orderBy("submitTime").desc();
-        List<Inno72CheckFault> list = mapper.selectByConditionByPage(condition);
+    public List<Inno72CheckFault> findForPage(Integer status) {
+        Inno72CheckUser checkUser = getUser();
+        Map<String,Object> map = new HashMap<>();
+        map.put("checkUserId",checkUser.getId());
+        if(status != null){
+            map.put("status",status);
+        }
+        List<Inno72CheckFault> list = inno72CheckFaultMapper.selectForPage(map);
         if(list != null && list.size()>0){
             for(Inno72CheckFault checkFault:list){
                 String id = checkFault.getId();
@@ -106,5 +137,23 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         return UploadUtil.uploadImage(file,"check");
     }
 
+    @Override
+    public Result<String> editRemark(String faultId, String remark) {
+        Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
+        faultRemark.setId(StringUtil.getUUID());
+        faultRemark.setFaultId(faultId);
+        faultRemark.setUserId(getUser().getId());
+        faultRemark.setType(1);
+        faultRemark.setRemark(remark);
+        faultRemark.setCreateTime(LocalDateTime.now());
+        inno72CheckFaultRemarkMapper.insertSelective(faultRemark);
+        return ResultGenerator.genSuccessResult();
+    }
+
+    public Inno72CheckUser getUser(){
+        SessionData session = CommonConstants.SESSION_DATA;
+        Inno72CheckUser checkUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+        return checkUser;
+    }
 
 }

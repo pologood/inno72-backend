@@ -88,14 +88,19 @@ public class Inno72Machine {
 	@Column(name = "device_id")
 	private String deviceId;
 
+	@Transient
 	private String address;
 
+	@Transient
 	private Integer lackGoodsStatus;
 
+	@Transient
 	private int lackGoodsCount;
 
+	@Transient
 	private String localeStr;
 
+	@Transient
 	private List<SupplyChannelVo> supplyChannelVoList;
 
 	public enum Machine_Status {

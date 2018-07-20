@@ -13,7 +13,9 @@ public interface CheckFaultService extends Service<Inno72CheckFault> {
 
     Result finish(Inno72CheckFault checkFault);
 
-    List<Inno72CheckFault> findForPage(Condition condition);
+    List<Inno72CheckFault> findForPage(Integer status);
 
     Result<String> upload(MultipartFile file);
+
+    Result<String> editRemark(String faultId, String remark);
 }

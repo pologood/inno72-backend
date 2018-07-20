@@ -47,9 +47,8 @@ public class CheckFaultController {
     }
 
     @RequestMapping(value="/list",method = {RequestMethod.POST,RequestMethod.GET})
-    public ModelAndView list(){
-        Condition condition = new Condition(Inno72CheckFault.class);
-        List<Inno72CheckFault> list = checkFaultService.findForPage(condition);
+    public ModelAndView list(Integer status){
+        List<Inno72CheckFault> list = checkFaultService.findForPage(status);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
 
@@ -66,12 +65,13 @@ public class CheckFaultController {
 
     /**
      * 编辑故障
-     * @param checkFault
+     * @param faultId
+     * @param remark
      * @return
      */
     @RequestMapping(value="/edit",method = {RequestMethod.POST,RequestMethod.GET})
-    public Result<String> edit(Inno72CheckFault checkFault){
-        checkFaultService.update(checkFault);
+    public Result<String> edit(String faultId,String remark){
+        checkFaultService.editRemark(faultId,remark);
         return ResultGenerator.genSuccessResult();
     }
 }

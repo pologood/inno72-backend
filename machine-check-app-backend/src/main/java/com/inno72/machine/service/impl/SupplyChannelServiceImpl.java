@@ -389,7 +389,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 idBuffer.append(supplyChannel.getId());
                 idBuffer.append(",");
             }
-            inno72SupplyChannelGoodsMapper.deleteByIds(idBuffer.substring(0,idBuffer.length()));
+            inno72SupplyChannelGoodsMapper.deleteByIds(idBuffer.substring(0,idBuffer.length()-1));
         }
         return ResultGenerator.genSuccessResult();
     }
