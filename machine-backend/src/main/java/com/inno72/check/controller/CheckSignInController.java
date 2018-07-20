@@ -33,7 +33,7 @@ public class CheckSignInController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list(String code ,String keyword) {
+    public ModelAndView list(@RequestParam(required=false) String code,@RequestParam(required=false) String keyword) {
         List<Inno72CheckUserVo> list = checkSignInService.findByPage(code,keyword);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
