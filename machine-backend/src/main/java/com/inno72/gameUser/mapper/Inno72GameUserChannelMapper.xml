@@ -35,7 +35,7 @@
       <if test="channelName != null">
         and channel_name like CONCAT('%','${channelName}')
       </if>
-      <if test="keyword != null">
+      <if test="keyword != null and keyword !=''">
         and (
         user_nick like CONCAT('%','${keyword}','%')
         or phone like CONCAT('%','${keyword}','%')
