@@ -3,6 +3,7 @@ package com.inno72.check.mapper;
 import java.util.List;
 import java.util.Map;
 
+import com.inno72.check.model.Inno72CheckUserPhone;
 import org.apache.ibatis.annotations.Param;
 
 import com.inno72.check.model.Inno72CheckUser;
@@ -20,4 +21,8 @@ public interface Inno72CheckUserMapper extends Mapper<Inno72CheckUser> {
 	List<Inno72AdminAreaVo> selectAreaMachineList(Map<String, Object> params);
 	
 	List<Inno72AdminAreaVo> selectMachineList(Map<String, Object> params);
+
+	List<Inno72CheckUserPhone> selectPhoneByMachineCode(String machineCode);
+
+
 }

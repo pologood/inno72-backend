@@ -101,17 +101,11 @@
 			area.city,
 			area.district,
 			area.circle,
-			'5' AS LEVEL,
-			 CASE 
-			 WHEN  ap.start_time BETWEEN #{startTime} AND #{endTime} OR ap.end_time BETWEEN #{startTime} AND #{endTime} THEN '1' 
-			 ELSE '0' 
-			 END AS planed
+			'5' AS LEVEL
 		FROM
 			inno72_machine m
 			LEFT JOIN inno72_locale locale ON m.locale_id = locale.id
 			LEFT JOIN inno72_admin_area area ON area.CODE = locale.area_code 
-			LEFT JOIN inno72_activity_plan_machine apm ON m.id = apm.machine_id
-			LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id 
 		WHERE locale.area_code=#{code}
   </select>
   <!-- 查询时间段内排期的机器-->

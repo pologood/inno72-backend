@@ -24,6 +24,7 @@
   
   <select id="selectByPage" parameterType="java.util.Map" resultMap="SignInResultMap">
 		SELECT
+			sin.id,
 			u.NAME,
 			u.phone,
 			u.enterprise,
@@ -38,12 +39,12 @@
 			LEFT JOIN inno72_admin_area area ON area.code = l.area_code
 			where 1=1
 			<if test="code !=null and code !=''">and LEFT(l.area_code,#{num}) = #{code}</if>
-		<if test="keyword !=null and keyword !='' ">
-			AND ( u.name LIKE '%${keyword}%' 
-			or u.phone LIKE '%${keyword}%' 
-			or u.enterprise LIKE '%${keyword}%'
-			)
-		</if>
+			<if test="keyword !=null and keyword !='' ">
+				AND ( u.name LIKE '%${keyword}%' 
+				or u.phone LIKE '%${keyword}%' 
+				or u.enterprise LIKE '%${keyword}%'
+				)
+			</if>
   </select>
   
   

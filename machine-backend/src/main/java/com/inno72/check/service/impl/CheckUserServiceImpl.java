@@ -4,6 +4,7 @@ import com.inno72.check.mapper.Inno72CheckUserMachineMapper;
 import com.inno72.check.mapper.Inno72CheckUserMapper;
 import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.check.model.Inno72CheckUserMachine;
+import com.inno72.check.model.Inno72CheckUserPhone;
 import com.inno72.check.service.CheckUserService;
 import com.inno72.check.vo.Inno72CheckUserVo;
 import com.inno72.common.AbstractService;
@@ -55,10 +56,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
-			List<Inno72MachineVo> machines=model.getMachines();
-			if (null ==machines || machines.size()==0) {
-				return Results.failure("未选择机器");
-			}
+			
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			String checkUserId = StringUtil.getUUID();
 			model.setId(checkUserId);
@@ -68,16 +66,17 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 			model.setUpdateTime(LocalDateTime.now());
 			//获取寻选择机器
 			List<Inno72CheckUserMachine> insertUserMachineList= new ArrayList<>();
-			for (Inno72MachineVo inno72MachineVo : machines) {
-				
-				Inno72CheckUserMachine userMachine = new Inno72CheckUserMachine();
-				userMachine.setId(StringUtil.getUUID());
-				userMachine.setCheckUserId(checkUserId);
-				userMachine.setMachineId(inno72MachineVo.getMachineId());
-				
-				insertUserMachineList.add(userMachine);
+			List<Inno72MachineVo> machines=model.getMachines();
+			if (null !=machines && machines.size()>0) {
+				for (Inno72MachineVo inno72MachineVo : machines) {
+					Inno72CheckUserMachine userMachine = new Inno72CheckUserMachine();
+					userMachine.setId(StringUtil.getUUID());
+					userMachine.setCheckUserId(checkUserId);
+					userMachine.setMachineId(inno72MachineVo.getMachineId());
+					insertUserMachineList.add(userMachine);
+				}
+				inno72CheckUserMachineMapper.insertUserMachineList(insertUserMachineList);
 			}
-			inno72CheckUserMachineMapper.insertUserMachineList(insertUserMachineList);
 			super.save(model);
 		} catch (Exception e) {
 			logger.info(e.getMessage());
@@ -175,7 +174,15 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	public List<Map<String, Object>> getUserMachinDetailList(String userId) {
 		return inno72CheckUserMachineMapper.selectUserMachinDetailList(userId);
 	}
-	
+
+	@Override
+	public List<Inno72CheckUserPhone> selectPhoneByMachineCode(Inno72CheckUserPhone inno72CheckUserPhone) {
+
+		String machineCode = inno72CheckUserPhone.getMachineCode();
+		List<Inno72CheckUserPhone> inno72CheckUserPhones = inno72CheckUserMapper.selectPhoneByMachineCode(machineCode);
+		return inno72CheckUserPhones;
+	}
+
 	@Override
 	public List<Inno72AdminAreaVo> selectAreaMachineList(String code,String level) {
 		Map<String, Object> params = new HashMap<String, Object>();

@@ -28,5 +28,8 @@ public class CommonConstants {
 	public static final String OSS_PATH = "backend";
 	/** OSS基础路径 **/
 	public static final String ALI_OSS = "https://inno72.oss-cn-beijing.aliyuncs.com/";
+	
+	/** 每次下载条数 **/
+	public final static int ONE_THOUSAND = 10000;
 
 }

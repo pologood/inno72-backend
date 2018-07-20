@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.inno72.check.model.Inno72CheckUser;
+import com.inno72.check.model.Inno72CheckUserPhone;
 import com.inno72.check.vo.Inno72CheckUserVo;
 import com.inno72.common.Result;
 import com.inno72.common.Service;
@@ -27,5 +28,7 @@ public interface CheckUserService extends Service<Inno72CheckUser> {
 	Inno72CheckUserVo findDetail(String id);
 
 	List<Map<String, Object>> getUserMachinDetailList(String userId);
+
+	List<Inno72CheckUserPhone> selectPhoneByMachineCode(Inno72CheckUserPhone inno72CheckUserPhone);
 
 }
