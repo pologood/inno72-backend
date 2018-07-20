@@ -21,6 +21,13 @@
 
 	<dependencies>
 
+        <!-- 消息中心引入-->
+        <dependency>
+            <groupId>com.inno72</groupId>
+            <artifactId>inno72-msg</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
 		<dependency>
 			<groupId>com.github.pagehelper</groupId>
 			<artifactId>pagehelper</artifactId>
