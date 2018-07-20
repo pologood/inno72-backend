@@ -186,19 +186,6 @@ public class ExportExcel<T> {
 							// 其它数据类型都当作字符串简单处理
 							textValue = value.toString();
 						}
-
-						//针对个别属性做相应处理
-						if(fieldName.equals("investType")){
-							if(value != null && value.equals(2)){
-								textValue = "复投";
-							}else if(value != null && value.equals(3)){
-								textValue = "首投";
-							}else if(value != null && value.equals(9)){
-								textValue = "使用体验金";
-							}else{
-								textValue = "-";
-							}
-						}
 						
 						if (textValue != null) {
 							Pattern p = Pattern.compile("^//d+(//.//d+)?$");
@@ -231,14 +218,7 @@ public class ExportExcel<T> {
 		inStream.close();
 	}
 
-	// 获取文件名字
-	// public static String getFileName(){
-	// // 文件名获取
-	// Date date = new Date();
-	// SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-	// String f = title + format.format(date);
-	// return f;
-	// }
+	
 	// 压缩文件
 	public static void ZipFiles(File[] srcfile, File zipfile) {
 		byte[] buf = new byte[1024];
@@ -267,7 +247,7 @@ public class ExportExcel<T> {
 		try {
 			String titles = title + fileName;
 			response.reset();// 清空输出流
-			response.setContentType("application/octet-stream;charset=UTF-8");
+			response.setContentType("application/vnd.ms-excel;charset=UTF-8");
 			response.setHeader("Content-Disposition", "attachment;filename="
 					+ new String(titles.getBytes("GB2312"), "8859_1") + ".zip");
 			response.addHeader("Pargam", "no-cache");
