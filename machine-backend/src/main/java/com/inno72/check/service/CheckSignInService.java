@@ -1,6 +1,8 @@
 package com.inno72.check.service;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.inno72.check.model.Inno72CheckSignIn;
 import com.inno72.check.vo.Inno72CheckUserVo;
 import com.inno72.common.Service;
@@ -12,5 +14,7 @@ import com.inno72.common.Service;
 public interface CheckSignInService extends Service<Inno72CheckSignIn> {
 
 	List<Inno72CheckUserVo> findByPage(String code, String keyword);
+
+	void getExportExcel(String code, String keywords, HttpServletResponse response);
 
 }
