@@ -18,7 +18,7 @@
     <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
   </resultMap>
   
-  <select id="selectByPage" parameterType="String" resultMap="BaseResultMap">
+  <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
   
  		SELECT f.id,
  		m.machine_code AS machine_id,

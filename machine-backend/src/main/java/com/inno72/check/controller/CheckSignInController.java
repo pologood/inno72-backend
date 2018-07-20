@@ -2,6 +2,7 @@ package com.inno72.check.controller;
 
 import com.inno72.check.model.Inno72CheckSignIn;
 import com.inno72.check.service.CheckSignInService;
+import com.inno72.check.vo.Inno72CheckUserVo;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import tk.mybatis.mapper.entity.Condition;
 
 
 import javax.annotation.Resource;
@@ -20,7 +20,7 @@ import java.util.List;
 * Created by CodeGenerator on 2018/07/20.
 */
 @RestController
-@RequestMapping("/check/sign/in")
+@RequestMapping("/check/signIn")
 public class CheckSignInController {
     @Resource
     private CheckSignInService checkSignInService;
@@ -33,9 +33,8 @@ public class CheckSignInController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list() {
-   	   Condition condition = new Condition( Inno72CheckSignIn.class);
-        List<Inno72CheckSignIn> list = checkSignInService.findByPage(condition);
+    public ModelAndView list(String code ,String keyword) {
+        List<Inno72CheckUserVo> list = checkSignInService.findByPage(code,keyword);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
 }
