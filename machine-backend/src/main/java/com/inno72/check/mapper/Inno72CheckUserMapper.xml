@@ -53,7 +53,7 @@
 			u.head_image,
 			u.is_delete,
 			m.id AS machine_id,
-			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.name,""), '—', m.machine_code ) AS machine_code
+			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL( l.name,""), '—', m.machine_code ) AS machine_code
 		from inno72_check_user  u
 		LEFT JOIN inno72_check_user_machine um ON um.check_user_id = u.id
 		LEFT JOIN inno72_machine m ON m.id = um.machine_id
@@ -100,7 +100,7 @@
   		SELECT
 			m.id AS CODE,
 			'' AS parent_code,
-			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( locale.name,""), '—', m.machine_code ) AS NAME,
+			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL( locale.name,""), '—', m.machine_code ) AS NAME,
 			area.province,
 			area.city,
 			area.district,
