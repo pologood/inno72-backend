@@ -11,6 +11,7 @@
     <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
     <result column="manager_id" jdbcType="VARCHAR" property="managerId" />
     <result column="is_default" jdbcType="INTEGER" property="isDefault" />
+    <result column="game_id" jdbcType="INTEGER" property="gameId" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />

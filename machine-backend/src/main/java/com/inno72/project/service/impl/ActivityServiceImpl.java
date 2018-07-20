@@ -48,6 +48,15 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
+			
+			if(0==model.getIsDefault()){//常规活动选择商户，店铺
+				if (StringUtil.isBlank(model.getSellerId())) {
+					return Results.failure("请选择所属商户");
+				}
+				if (StringUtil.isBlank(model.getSellerId())) {
+					return Results.failure("请选择所属店铺");
+				}
+			}
 			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			
 			model.setId(StringUtil.getUUID());

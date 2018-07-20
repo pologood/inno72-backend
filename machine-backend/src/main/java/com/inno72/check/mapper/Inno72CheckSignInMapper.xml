@@ -16,6 +16,8 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="enterprise" jdbcType="VARCHAR" property="enterprise" />
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+    
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
      <result column="localeName" jdbcType="VARCHAR" property="localeName" />
   </resultMap>

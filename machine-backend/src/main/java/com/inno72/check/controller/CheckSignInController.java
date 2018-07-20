@@ -37,4 +37,10 @@ public class CheckSignInController {
         List<Inno72CheckUserVo> list = checkSignInService.findByPage(code,keyword);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
+    
+    @RequestMapping(value = "/userExcel", method = { RequestMethod.POST,  RequestMethod.GET})
+    public ModelAndView userExcel(@RequestParam(required=false) String code,@RequestParam(required=false) String keyword) {
+        List<Inno72CheckUserVo> list = checkSignInService.findByPage(code,keyword);
+        return ResultPages.page(ResultGenerator.genSuccessResult(list));
+    }
 }

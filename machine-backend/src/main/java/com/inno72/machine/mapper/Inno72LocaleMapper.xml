@@ -67,11 +67,8 @@
         SELECT
         machine_code AS machineCode,
         CONCAT(
-        aa.province,
-        aa.city,
-        aa.district,
-        aa.circle
-        ) AS localeStr
+        area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mail,""),IFNULL(
+        l.name,"") ) AS localeStr
         FROM inno72_machine m
         LEFT JOIN inno72_locale l ON l.id = m.locale_id
         LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code

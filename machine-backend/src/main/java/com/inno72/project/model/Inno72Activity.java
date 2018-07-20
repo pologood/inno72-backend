@@ -49,7 +49,14 @@ public class Inno72Activity {
      * 活动类型
      */
     @Column(name = "is_default")
-    private String isDefault;
+    private Integer isDefault;
+    
+    
+    /**
+     * 游戏ID
+     */
+    @Column(name = "game_id")
+    private String gameId;
     
 
     /**
@@ -161,12 +168,20 @@ public class Inno72Activity {
 		this.managerId = managerId;
 	}
 
-    public String getIsDefault() {
+    public Integer getIsDefault() {
 		return isDefault;
 	}
 
-	public void setIsDefault(String isDefault) {
+	public void setIsDefault(Integer isDefault) {
 		this.isDefault = isDefault;
+	}
+	
+	public String getGameId() {
+		return gameId;
+	}
+
+	public void setGameId(String gameId) {
+		this.gameId = gameId;
 	}
 
 	/**
