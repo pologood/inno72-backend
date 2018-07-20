@@ -4,6 +4,7 @@ import com.inno72.check.mapper.Inno72CheckUserMachineMapper;
 import com.inno72.check.mapper.Inno72CheckUserMapper;
 import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.check.model.Inno72CheckUserMachine;
+import com.inno72.check.model.Inno72CheckUserPhone;
 import com.inno72.check.service.CheckUserService;
 import com.inno72.check.vo.Inno72CheckUserVo;
 import com.inno72.common.AbstractService;
@@ -173,7 +174,15 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	public List<Map<String, Object>> getUserMachinDetailList(String userId) {
 		return inno72CheckUserMachineMapper.selectUserMachinDetailList(userId);
 	}
-	
+
+	@Override
+	public List<Inno72CheckUserPhone> selectPhoneByMachineCode(Inno72CheckUserPhone inno72CheckUserPhone) {
+
+		String machineCode = inno72CheckUserPhone.getMachineCode();
+		List<Inno72CheckUserPhone> inno72CheckUserPhones = inno72CheckUserMapper.selectPhoneByMachineCode(machineCode);
+		return inno72CheckUserPhones;
+	}
+
 	@Override
 	public List<Inno72AdminAreaVo> selectAreaMachineList(String code,String level) {
 		Map<String, Object> params = new HashMap<String, Object>();

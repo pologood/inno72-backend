@@ -1,6 +1,7 @@
 package com.inno72.check.controller;
 
 import com.inno72.check.model.Inno72CheckUser;
+import com.inno72.check.model.Inno72CheckUserPhone;
 import com.inno72.check.service.CheckUserService;
 import com.inno72.check.vo.Inno72CheckUserVo;
 import com.inno72.common.Result;
@@ -74,7 +75,13 @@ public class CheckUserController {
         List<Inno72CheckUser> list = checkUserService.findByPage(keyword);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
-    
+
+    @RequestMapping(value = "/selectPhoneByMachineCode", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result<List<Inno72CheckUserPhone>> selectPhoneByMachineCode(@RequestBody Inno72CheckUserPhone inno72CheckUserPhone) {
+        List<Inno72CheckUserPhone> list = checkUserService.selectPhoneByMachineCode(inno72CheckUserPhone);
+        return ResultGenerator.genSuccessResult(list);
+    }
+
     @RequestMapping(value = "/selectAreaMachines", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<List<Inno72AdminAreaVo>> selectMachines(String code,String level) {
     	

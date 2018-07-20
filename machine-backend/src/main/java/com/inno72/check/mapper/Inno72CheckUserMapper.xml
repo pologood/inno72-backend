@@ -112,12 +112,19 @@
 			LEFT JOIN inno72_admin_area area ON area.CODE = locale.area_code
 		WHERE locale.area_code=#{code}
   </select>
-  
-  
-  
-  
-  
-  
-  
-  
+
+	<select id="selectPhoneByMachineCode" parameterType="String"
+			resultType="com.inno72.check.model.Inno72CheckUserPhone">
+		SELECT
+		 icu.phone,
+		 im.machine_code as machineCode
+		FROM
+		inno72_machine im
+		LEFT JOIN inno72_check_user_machine cum ON im.id = cum.machine_id
+		LEFT JOIN inno72_check_user icu ON cum.check_user_id = icu.id
+	WHERE
+		im.machine_code = #{machineCode}
+  </select>
+
+
 </mapper>
