@@ -7,7 +7,8 @@
     -->
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
-    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="child_type" jdbcType="VARCHAR" property="childType"/>
     <result column="remark" jdbcType="VARCHAR" property="remark"/>
     <result column="submit_user" jdbcType="VARCHAR" property="submitUser" />
     <result column="finish_user" jdbcType="VARCHAR" property="finishUser" />

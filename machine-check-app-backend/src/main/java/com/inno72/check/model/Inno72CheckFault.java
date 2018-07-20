@@ -28,7 +28,10 @@ public class Inno72CheckFault {
      * 类型
      */
     @Column(name="type")
-    private String type;
+    private int type;
+
+    @Column(name="child_type")
+    private String childType;
 
     /**
      * 备注
@@ -87,6 +90,9 @@ public class Inno72CheckFault {
     @Transient
     private List<Inno72CheckFaultImage> imageList;
 
+    @Transient
+    private String[] images;
+
     public String getId() {
         return id;
     }
@@ -103,12 +109,20 @@ public class Inno72CheckFault {
         this.machineId = machineId;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
+    }
+
+    public String getChildType() {
+        return childType;
+    }
+
+    public void setChildType(String childType) {
+        this.childType = childType;
     }
 
     public String getRemark() {
@@ -181,5 +195,13 @@ public class Inno72CheckFault {
 
     public void setImageList(List<Inno72CheckFaultImage> imageList) {
         this.imageList = imageList;
+    }
+
+    public String[] getImages() {
+        return images;
+    }
+
+    public void setImages(String[] images) {
+        this.images = images;
     }
 }
