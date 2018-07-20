@@ -30,7 +30,7 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
     private Inno72CheckSignInMapper inno72CheckSignInMapper;
     //表格
     public static final String[] USERCHARGE={"用户名","手机号","公司","点位","机器编码","打卡时间"};
-    public static final String[] USERCOLUMN={"name","phone","enterprise","localeName","machineCode"};
+    public static final String[] USERCOLUMN={"name","phone","enterprise","localeName","machineCode","createTime"};
 
 
 	@Override

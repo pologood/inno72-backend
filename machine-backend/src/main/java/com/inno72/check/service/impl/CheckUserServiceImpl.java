@@ -55,10 +55,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
-			List<Inno72MachineVo> machines=model.getMachines();
-			if (null ==machines || machines.size()==0) {
-				return Results.failure("未选择机器");
-			}
+			
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			String checkUserId = StringUtil.getUUID();
 			model.setId(checkUserId);
@@ -68,16 +65,17 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 			model.setUpdateTime(LocalDateTime.now());
 			//获取寻选择机器
 			List<Inno72CheckUserMachine> insertUserMachineList= new ArrayList<>();
-			for (Inno72MachineVo inno72MachineVo : machines) {
-				
-				Inno72CheckUserMachine userMachine = new Inno72CheckUserMachine();
-				userMachine.setId(StringUtil.getUUID());
-				userMachine.setCheckUserId(checkUserId);
-				userMachine.setMachineId(inno72MachineVo.getMachineId());
-				
-				insertUserMachineList.add(userMachine);
+			List<Inno72MachineVo> machines=model.getMachines();
+			if (null !=machines && machines.size()>0) {
+				for (Inno72MachineVo inno72MachineVo : machines) {
+					Inno72CheckUserMachine userMachine = new Inno72CheckUserMachine();
+					userMachine.setId(StringUtil.getUUID());
+					userMachine.setCheckUserId(checkUserId);
+					userMachine.setMachineId(inno72MachineVo.getMachineId());
+					insertUserMachineList.add(userMachine);
+				}
+				inno72CheckUserMachineMapper.insertUserMachineList(insertUserMachineList);
 			}
-			inno72CheckUserMachineMapper.insertUserMachineList(insertUserMachineList);
 			super.save(model);
 		} catch (Exception e) {
 			logger.info(e.getMessage());
