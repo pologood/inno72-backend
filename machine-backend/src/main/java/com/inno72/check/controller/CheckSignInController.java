@@ -7,6 +7,7 @@ import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
 import java.util.List;
 
 /**
@@ -21,6 +24,7 @@ import java.util.List;
 */
 @RestController
 @RequestMapping("/check/signIn")
+@CrossOrigin
 public class CheckSignInController {
     @Resource
     private CheckSignInService checkSignInService;
@@ -39,8 +43,9 @@ public class CheckSignInController {
     }
     
     @RequestMapping(value = "/userExcel", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView userExcel(@RequestParam(required=false) String code,@RequestParam(required=false) String keyword) {
-        List<Inno72CheckUserVo> list = checkSignInService.findByPage(code,keyword);
-        return ResultPages.page(ResultGenerator.genSuccessResult(list));
+    public void userExcel(HttpServletResponse response,@RequestParam(required=false) String code,@RequestParam(required=false) String keyword) {
+    	checkSignInService.getExportExcel(code, keyword, response);
+    	
+    	return ;
     }
 }
