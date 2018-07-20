@@ -1,7 +1,13 @@
 package com.inno72.check.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import javax.persistence.*;
+
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters.LocalDateTimeConverter;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
 @Table(name = "inno72_check_fault")
 public class Inno72CheckFault {
@@ -38,14 +44,20 @@ public class Inno72CheckFault {
     /**
      * 提交时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Convert(converter = LocalDateTimeConverter.class)
     @Column(name = "submit_time")
-    private Date submitTime;
+    private LocalDateTime submitTime;
 
     /**
      * 解决时间
      */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Convert(converter = LocalDateTimeConverter.class)
     @Column(name = "finish_time")
-    private Date finishTime;
+    private LocalDateTime finishTime;
 
     /**
      * 状态（0.未解决，1.已解决，默认0）
@@ -164,7 +176,7 @@ public class Inno72CheckFault {
      *
      * @return submit_time - 提交时间
      */
-    public Date getSubmitTime() {
+    public LocalDateTime getSubmitTime() {
         return submitTime;
     }
 
@@ -173,7 +185,7 @@ public class Inno72CheckFault {
      *
      * @param submitTime 提交时间
      */
-    public void setSubmitTime(Date submitTime) {
+    public void setSubmitTime(LocalDateTime submitTime) {
         this.submitTime = submitTime;
     }
 
@@ -182,7 +194,7 @@ public class Inno72CheckFault {
      *
      * @return finish_time - 解决时间
      */
-    public Date getFinishTime() {
+    public LocalDateTime getFinishTime() {
         return finishTime;
     }
 
@@ -191,7 +203,7 @@ public class Inno72CheckFault {
      *
      * @param finishTime 解决时间
      */
-    public void setFinishTime(Date finishTime) {
+    public void setFinishTime(LocalDateTime finishTime) {
         this.finishTime = finishTime;
     }
 
