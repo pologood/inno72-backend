@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -45,6 +47,9 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
     @Resource
     private Inno72CheckUserMachineMapper inno72CheckUserMachineMapper;
     
+    Pattern phone=Pattern.compile("^(1[0-9])\\d{9}$");
+    Pattern cardNo=Pattern.compile("^\\d{6}(18|19|20)?\\d{2}(0[1-9]|1[012])(0[1-9]|[12]\\d|3[01])\\d{3}(\\d|[xX])$");
+    
 
 	@Override
 	public Result<String>  saveModel(Inno72CheckUserVo model) {
@@ -56,6 +61,24 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
+			if (StringUtil.isBlank(model.getName())) {
+	   	        return Results.failure("请填写姓名");
+	   		 }
+			if (StringUtil.isBlank(model.getEnterprise())) {
+	   	        return Results.failure("请填写公司");
+	   		 }
+			Matcher match1=phone.matcher(model.getPhone()); 
+	   	    if (!match1.matches()) {
+	   	       return Results.failure("手机号格式有误");
+	   		}
+	   	    Matcher match2=cardNo.matcher(model.getCardNo()); 
+	   	    if (!match2.matches()) {
+	   	       return Results.failure("身份证号格式有误");
+	   		}
+	   	    int n =inno72CheckUserMapper.getCount(model.getCardNo());
+	   	    if (n>0){
+	   	    	return Results.failure("身份证号已存在");
+	   	    }
 			
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			String checkUserId = StringUtil.getUUID();
@@ -123,7 +146,13 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
-		
+			if (StringUtil.isNotBlank(model.getCardNo())) {
+				Inno72CheckUser old = inno72CheckUserMapper.selectByPrimaryKey(model.getId());
+				int n =inno72CheckUserMapper.getCount(model.getCardNo());
+		   	    if (n>0 && !model.getCardNo().equals(old.getCardNo())){
+		   	    	return Results.failure("更新身份证号已存在");
+		   	    }
+			}
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			model.setUpdateId(mUserId);
 			model.setUpdateTime(LocalDateTime.now());

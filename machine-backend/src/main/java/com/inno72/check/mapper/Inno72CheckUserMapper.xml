@@ -38,6 +38,10 @@
 		ORDER BY u.update_time DESC
   </select>
   
+  <select id="getCount" parameterType="String" resultType="int">
+		SELECT count(1) from inno72_check_user  u WHERE u.is_delete=0 and u.card_no=#{cardNo}
+  </select>
+  
   <!-- 人员详情-->
 	  <resultMap id="ResultUserDetailMap" extends="BaseResultMap" type="com.inno72.check.vo.Inno72CheckUserVo">
 	    <association property="machines" resultMap="machinesResult" />

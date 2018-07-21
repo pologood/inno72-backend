@@ -45,7 +45,7 @@ public class Inno72Locale {
      * 运营人员手机
      */
     @NotBlank(message="请填写运营人手机号")
-    @Pattern(regexp="^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\\d{8}$",message="手机格式不正确")
+    @Pattern(regexp="^(1[0-9])\\d{9}$",message="手机格式不正确")
     @Column(name = "mobile")
     private String mobile;
 
