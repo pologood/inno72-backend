@@ -94,8 +94,10 @@
 			m.machine_code AS machine_code
 		FROM
 			inno72_admin_area a
-			LEFT JOIN inno72_locale locale ON LEFT ( locale.area_code, #{num}) = LEFT ( a.CODE, #{num})
-			LEFT JOIN inno72_machine m ON locale.id = m.locale_id
+			LEFT JOIN (
+				SELECT m.machine_code,	m.id, locale.area_code FROM inno72_machine m
+				LEFT JOIN inno72_locale locale ON locale.id = m.locale_id
+			) m ON LEFT ( m.area_code,#{num}) = LEFT ( a.CODE,#{num})
 		WHERE
 		<if test="code !=null and code !='' ">a.parent_code = #{code}  </if>
 		<if test="level !=null and level !='' ">a.LEVEL = #{level}  </if>
