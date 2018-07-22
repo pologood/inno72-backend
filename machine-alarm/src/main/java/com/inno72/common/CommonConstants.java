@@ -20,8 +20,11 @@ public class CommonConstants {
     //机器缺货
     public final static String SYS_MACHINE_LACKGOODS = "machineLackGoods";
 
-    public final static Integer BETWEEN_FIVE = 5;
+    //商品缺货类型
+    public final static int LACKGOODS_TWENTYPERCENT = 2;
 
-    public final static Integer BETWEEN_EIGHT = 8;
+    public final static int LACKGOODS_TENPERCENT = 1;
+
+
 
 }
