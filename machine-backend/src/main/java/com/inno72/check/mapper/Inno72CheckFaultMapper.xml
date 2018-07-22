@@ -29,8 +29,9 @@
  		status,
  		finish_remark,
  		remind_status,
- 		remark
- 		 from inno72_check_fault f
+ 		CONCAT(IFNULL(ft.name,''),' ',f.remark) AS remark
+ 		 FROM inno72_check_fault f
+ 		LEFT JOIN inno72_check_fault_type ft ON ft.CODE = f.type
 		LEFT JOIN inno72_machine m ON m.id = f.machine_id
 		WHERE 1=1
 		<if test="status !=null and status !=''">f.status =#{status} </if>
