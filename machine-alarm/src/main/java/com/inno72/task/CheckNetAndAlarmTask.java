@@ -83,7 +83,7 @@ public class CheckNetAndAlarmTask {
                 long between = duration.toMinutes();
                 if (between == 5) {
                     //巡检app
-                    String code = "push_monitor_checkNetClose";
+                    String code = "push_alarm_common";
                     Map<String, String> params = new HashMap<>();
                     params.put("machineCode", machineLogInfo.getMachineId());
                     params.put("localStr", localStr);
