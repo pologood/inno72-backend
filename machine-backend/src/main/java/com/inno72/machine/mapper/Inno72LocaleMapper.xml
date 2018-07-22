@@ -67,11 +67,11 @@
         SELECT
         machine_code AS machineCode,
         CONCAT(
-        area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mail,""),IFNULL(
+        area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL(
         l.name,"") ) AS localeStr
         FROM inno72_machine m
         LEFT JOIN inno72_locale l ON l.id = m.locale_id
-        LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code
+        LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
         WHERE
         m.machine_code IN
         <foreach item="item" index="index" collection="list"
