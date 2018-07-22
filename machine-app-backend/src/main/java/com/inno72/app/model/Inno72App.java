@@ -1,4 +1,4 @@
-package com.inno72.machine.model;
+package com.inno72.app.model;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;

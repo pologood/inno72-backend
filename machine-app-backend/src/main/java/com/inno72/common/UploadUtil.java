@@ -15,11 +15,9 @@ public class UploadUtil {
 	 * @param type
 	 * @return
 	 */
-	public static Result<String> uploadImage(MultipartFile file, String type) {
-		String originalFilename = file.getOriginalFilename();
-		String typeName = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
-		String name = StringUtil.getUUID() + typeName;
-		String path = CommonConstants.OSS_LOG_PATH + "/" + type + "/" + name;
+	public static Result<String> uploadImage(MultipartFile file, String type, String basePath) {
+		String name = StringUtil.getUUID() + "." + type;
+		String path = basePath + "/" + name;
 		try {
 			OSSUtil.uploadByStream(file.getInputStream(), path);
 			return Results.success(path);
@@ -31,4 +29,5 @@ public class UploadUtil {
 			return Results.failure("图片处理失败！");
 		}
 	}
+
 }
