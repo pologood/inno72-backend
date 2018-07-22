@@ -18,7 +18,7 @@ import com.inno72.util.AesUtils;
 public class ProcessDataFilter extends OncePerRequestFilter {
 	Logger logger = LoggerFactory.getLogger(ProcessDataFilter.class);
 	private static List<String> doNotCheckUs = Arrays
-			.asList(new String[] { "/machine/encrypt", "/machine/decrypt", "/upload/uploadImage" });
+			.asList(new String[] { "/machine/encrypt", "/machine/decrypt", "/upload/upload", "/push/pushMsg" });
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

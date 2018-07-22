@@ -17,12 +17,14 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.inno72.app.service.AppLogService;
 import com.inno72.app.service.UploadService;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
@@ -35,13 +37,34 @@ public class UploadController {
 	@Resource
 	private UploadService uploadService;
 
-	@RequestMapping(value = "/uploadImage", method = { RequestMethod.POST, RequestMethod.GET })
+	@Resource
+	private AppLogService appLogService;
+
+	/**
+	 * 上传文件
+	 * 
+	 * @param file
+	 * @param req
+	 * @return
+	 */
+	@RequestMapping(value = "/upload", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> uploadImage(@RequestParam(value = "upfile", required = false) MultipartFile file,
 			HttpServletRequest req) {
 		String fileName = file.getOriginalFilename();
 		String prefix = fileName.substring(fileName.lastIndexOf(".") + 1);
 		String bashPath = "log".equals(prefix) ? CommonConstants.OSS_LOG_PATH : CommonConstants.OSS_IMG_PATH;
 		return UploadUtil.uploadImage(file, prefix, bashPath);
+	}
+
+	/**
+	 * 发送日志信息
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	@RequestMapping(value = "/sendLogInfo", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> sendLogInfo(@RequestBody Map<String, Object> msg) {
+		return appLogService.sendLogInfo(msg);
 	}
 
 	public static void main(String[] args) {

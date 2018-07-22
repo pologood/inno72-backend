@@ -1,22 +1,14 @@
-2018-07-22 00:17:37.864  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
-2018-07-22 00:17:38.099  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
-2018-07-22 00:41:17.743  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
-2018-07-22 00:41:17.748  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
-2018-07-22 00:41:41.963  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
-2018-07-22 00:41:41.966  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
-2018-07-22 00:43:48.588  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
-2018-07-22 00:43:48.594  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
-2018-07-22 00:45:03.525  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
-2018-07-22 00:45:03.530  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
-2018-07-22 00:46:46.865  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
-2018-07-22 00:46:46.868  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
-2018-07-22 00:57:14.350  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
-2018-07-22 00:57:14.355  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
-2018-07-22 00:59:46.153  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
-2018-07-22 00:59:46.156  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
-2018-07-22 01:02:23.718  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
-2018-07-22 01:02:23.726  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
-2018-07-22 01:04:27.498  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
-2018-07-22 01:04:27.524  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
-2018-07-22 01:09:26.672  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
-2018-07-22 01:09:26.684  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
+2018-07-22 20:16:00.200  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
+2018-07-22 20:16:00.203  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
+2018-07-22 20:24:58.169  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
+2018-07-22 20:24:58.173  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
+2018-07-22 20:36:40.819  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
+2018-07-22 20:36:40.822  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
+2018-07-22 21:10:37.923  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
+2018-07-22 21:10:37.928  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
+2018-07-22 21:11:45.462  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
+2018-07-22 21:11:45.465  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
+2018-07-22 21:13:38.014  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
+2018-07-22 21:13:38.017  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
+2018-07-22 21:18:57.548  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 获取spring_profiles_active：null
+2018-07-22 21:18:57.551  INFO [machine-app-backend,,,] ???? --- [           main] c.i.s.w.SpringApplicationBuilder         : 未读取到spring_profiles_active的环境变量,使用默认值: dev
