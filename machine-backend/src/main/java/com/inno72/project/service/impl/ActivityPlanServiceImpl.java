@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -55,6 +56,10 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
     
     @Resource
     private Inno72ActivityPlanGameResultMapper inno72ActivityPlanGameResultMapper;
+    //yyyy-MM-dd HH:mm
+    private String timeRegex = "^((([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))|((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[3579][26])00))-02-29))\\s+([0-1]?[0-9]|2[0-3]):([0-5][0-9])$";
+
+
     
 
 	@Override
@@ -68,6 +73,11 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		}
 		if (StringUtil.isBlank(activityPlan.getStartTimeStr())||StringUtil.isBlank(activityPlan.getEndTimeStr())) {
 			return Results.failure("请选择计划时间");
+		}
+		boolean b1 = Pattern.matches(timeRegex, activityPlan.getStartTimeStr());
+		boolean b2 = Pattern.matches(timeRegex, activityPlan.getEndTimeStr());
+		if (!b1 || !b2) {
+			return Results.failure("计划时间应格式化到分");
 		}
 		if (StringUtil.isBlank(activityPlan.getActivityId())) {
 			return Results.failure("请选择活动");
@@ -473,6 +483,11 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	public List<Inno72AdminAreaVo> selectAreaMachineList(String code,String level,String startTime,String endTime) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("code", code);
+		boolean b1 = Pattern.matches(timeRegex, startTime);
+		boolean b2 = Pattern.matches(timeRegex, endTime);
+		if (!b1 || !b2) {
+			return null;
+		}
 		if (StringUtil.isNotBlank(startTime)) {
 			params.put("startTime", startTime+":00");
 		}
@@ -506,7 +521,6 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 						canUseNum++;
 						machineVo.setState("0");
 					}else{
-						machineVo.setState("1");
 						temp.add(machineVo);
 					}
 				}
