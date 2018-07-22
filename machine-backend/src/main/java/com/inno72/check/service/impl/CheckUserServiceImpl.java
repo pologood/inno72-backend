@@ -229,6 +229,10 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 			list = inno72CheckUserMapper.selectMachineList(params);
 		}else{
 			list = inno72CheckUserMapper.selectAreaMachineList(params);
+			for (Inno72AdminAreaVo inno72AdminAreaVo : list) {
+				List<Inno72MachineVo> machines=inno72AdminAreaVo.getMachines();
+				inno72AdminAreaVo.setTotalNum(machines.size()+"");
+			}
 		}
 		
 	   	return list;

@@ -279,7 +279,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		try {
 			activityPlan.setUpdateId(userId);
 			activityPlan.setUpdateTime(LocalDateTime.now());
-			//是否开始
+			//是否开始 大于0 已开始
 			int n =inno72ActivityPlanMapper.selectPlanIsState(activityPlan.getId());
 			if (StringUtil.isNotBlank(activityPlan.getStartTimeStr())) {
 				String startTimeStr = activityPlan.getStartTimeStr()+":00";
@@ -292,8 +292,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				LocalDateTime oldEndTime =inno72ActivityPlanMapper.selectByPrimaryKey(activityPlan).getEndTime();
 				String endTimeStr = activityPlan.getEndTimeStr()+":59";
 				LocalDateTime newEndTime = DateUtil.toDateTime(endTimeStr, DateUtil.DF_FULL_S1);
-				if (n==0) {
-					newEndTime.isBefore(oldEndTime);
+				if (n>0) {
 					if (!newEndTime.isBefore(oldEndTime)) {
 						return Results.failure("活动已开始结束时间只能向前修改");
 					}
