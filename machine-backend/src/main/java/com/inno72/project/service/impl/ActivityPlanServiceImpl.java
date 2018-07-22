@@ -105,6 +105,9 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			planingsParam.put("endTime", endTimeStr);
 			activityPlan.setStartTime(DateUtil.toDateTime(startTimeStr, DateUtil.DF_FULL_S1));
 			activityPlan.setEndTime(DateUtil.toDateTime(endTimeStr, DateUtil.DF_FULL_S1));
+			if (!activityPlan.getEndTime().isAfter(activityPlan.getStartTime())) {
+				return Results.failure("结束时间须小于开始时间");
+			}
 			
 			List<String> planings =inno72ActivityPlanMapper.selectPlanedMachine(planingsParam);
 			
@@ -298,6 +301,9 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					}
 				}
 				activityPlan.setEndTime(newEndTime);
+			}
+			if (!activityPlan.getEndTime().isAfter(activityPlan.getStartTime())) {
+				return Results.failure("结束时间须小于开始时间");
 			}
 			
 			//活动游戏结果 集合
