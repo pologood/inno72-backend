@@ -115,7 +115,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 
     @Override
     public List<Inno72CheckFault> findForPage(Integer status) {
-        Inno72CheckUser checkUser = getUser();
+        Inno72CheckUser checkUser = UserUtil.getUser();
         Map<String,Object> map = new HashMap<>();
         map.put("checkUserId",checkUser.getId());
         if(status != null){
@@ -142,7 +142,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
         faultRemark.setId(StringUtil.getUUID());
         faultRemark.setFaultId(faultId);
-        faultRemark.setUserId(getUser().getId());
+        faultRemark.setUserId(UserUtil.getUser().getId());
         faultRemark.setType(1);
         faultRemark.setRemark(remark);
         faultRemark.setCreateTime(LocalDateTime.now());
@@ -150,10 +150,5 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         return ResultGenerator.genSuccessResult();
     }
 
-    public Inno72CheckUser getUser(){
-        SessionData session = CommonConstants.SESSION_DATA;
-        Inno72CheckUser checkUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
-        return checkUser;
-    }
 
 }

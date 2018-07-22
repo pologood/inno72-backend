@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service("checkUserService")
-public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> implements CheckUserService {
+public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> implements CheckUserService {
 
     @Resource
     private Inno72CheckUserMapper inno72CheckUserMapper;
