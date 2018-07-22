@@ -1,11 +1,17 @@
 package com.inno72.task;
 
-import com.inno72.common.CommonConstants;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.inno72.common.MachineAlarmProperties;
+import com.inno72.model.Inno72CheckUserPhone;
 import com.inno72.model.MachineLocaleInfo;
 import com.inno72.model.MachineLogInfo;
+import com.inno72.msg.MsgUtil;
+import com.inno72.plugin.http.HttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -16,7 +22,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Auther: wxt
@@ -32,7 +40,17 @@ public class CheckNetAndAlarmTask {
     @Autowired
     private MongoOperations mongoTpl;
 
-    //@Scheduled(cron = "0 0/1 * * * ?")
+    @Autowired
+    private MachineAlarmProperties machineAlarmProperties;
+
+    @Value("${inno72.dingding.groupId}")
+    private String groupId;
+
+    @Autowired
+    private MsgUtil msgUtil;
+
+    @Scheduled(cron = "0 0/1 * * * ?")
+    //@Scheduled(cron = "0/5 * * * * ?")
     public void checkNetStatus() {
 
         log.info("检查网络状态并预警的定时任务，开始执行");
@@ -44,38 +62,64 @@ public class CheckNetAndAlarmTask {
         query.addCriteria(Criteria.where("createTime").lte(before));
         List<MachineLogInfo> list = mongoTpl.find(query, MachineLogInfo.class, "MachineLogInfo");
         if (null != list) {
-            //TODO   调用报警
-            List<MachineLocaleInfo> fileAlarm = new ArrayList<>();
-            List<MachineLocaleInfo> eightAlarm = new ArrayList<>();
-            List<MachineLocaleInfo> bigEightAlarm = new ArrayList<>();
             for (MachineLogInfo machineLogInfo : list) {
-                LocalDateTime createTime = machineLogInfo.getCreateTime();
-                Duration duration = Duration.between(LocalDateTime.now(), createTime);
-                long between = duration.toMinutes();
-
-                if (CommonConstants.BETWEEN_FIVE == between) {
-                    MachineLocaleInfo machineLocaleInfo = new MachineLocaleInfo();
-                    machineLocaleInfo.setMachineCode(machineLogInfo.getMachineId());
-                    fileAlarm.add(machineLocaleInfo);
-                    //调用查询点位信息的接口
-                } else if (CommonConstants.BETWEEN_EIGHT == between) {
-                    MachineLocaleInfo machineLocaleInfo = new MachineLocaleInfo();
-                    machineLocaleInfo.setMachineCode(machineLogInfo.getMachineId());
-                    eightAlarm.add(machineLocaleInfo);
-                } else if (CommonConstants.BETWEEN_EIGHT < between && (between - CommonConstants.BETWEEN_EIGHT) % 2 == 0) {
-                    MachineLocaleInfo machineLocaleInfo = new MachineLocaleInfo();
-                    machineLocaleInfo.setMachineCode(machineLogInfo.getMachineId());
-                    bigEightAlarm.add(machineLocaleInfo);
+                //根据机器编码查询点位接口
+                List<MachineLocaleInfo> machineLocaleInfos = new ArrayList<>();
+                MachineLocaleInfo machineLocale = new MachineLocaleInfo();
+                machineLocale.setMachineCode(machineLogInfo.getMachineId());
+                machineLocaleInfos.add(machineLocale);
+                String machineLocaleInfoString = JSONObject.toJSON(machineLocaleInfos).toString();
+                String url = machineAlarmProperties.getProps().get("findLocalByMachineCode");
+                String returnMsg = HttpClient.post(url, machineLocaleInfoString);
+                JSONObject jsonObject1 = JSONObject.parseObject(returnMsg);
+                List<MachineLocaleInfo> MachineLocaleInfos = JSON.parseArray(jsonObject1.getString("data"), MachineLocaleInfo.class);
+                String localStr = "";
+                for (MachineLocaleInfo machineLocaleInfo : MachineLocaleInfos) {
+                    localStr = machineLocaleInfo.getLocaleStr();
                 }
-            }
-            if (fileAlarm.size() > 0) {
-                //发巡检app报警
-            }
-            if (eightAlarm.size() > 0) {
-                //发短信和巡检app报警
-            }
-            if (bigEightAlarm.size() > 0) {
-                //发钉钉报警
+
+                LocalDateTime createTime = machineLogInfo.getCreateTime();
+                Duration duration = Duration.between(createTime, LocalDateTime.now());
+                long between = duration.toMinutes();
+                if (between == 5) {
+                    //巡检app
+                    String code = "push_monitor_checkNetClose";
+                    Map<String, String> params = new HashMap<>();
+                    params.put("machineCode", machineLogInfo.getMachineId());
+                    params.put("localStr", localStr);
+                    params.put("text", "出现网络连接不上的情况，请及时处理");
+                    msgUtil.sendPush(code, params, machineLogInfo.getMachineId(), "machineAlarm-CheckNetAndAlarmTask", "【报警】您负责的机器出现网络异常", "");
+                } else if (between == 8) {
+                    //组合报警接口
+                    Map<String, String> params = new HashMap<>();
+                    params.put("machineCode", machineLogInfo.getMachineId());
+                    params.put("localStr", localStr);
+                    params.put("text", "出现网络连接不上的情况，请及时处理");
+                    //查询巡检人员手机号
+                    Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
+                    inno72CheckUserPhone.setMachineCode(machineLogInfo.getMachineId());
+                    String inno72CheckUserPhoneInfo = JSONObject.toJSON(inno72CheckUserPhone).toString();
+                    String url1 = machineAlarmProperties.getProps().get("selectPhoneByMachineCode");
+                    String res = HttpClient.post(url1, inno72CheckUserPhoneInfo);
+                    JSONObject jsonObject2 = JSONObject.parseObject(res);
+                    List<Inno72CheckUserPhone> inno72CheckUserPhones = JSON.parseArray(jsonObject2.getString("data"), Inno72CheckUserPhone.class);
+                    for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                        String code = "sms_alarm_common";
+                        String phone = inno72CheckUserPhone1.getPhone();
+                        msgUtil.sendSMS(code, params, phone, "machineAlarm-CheckNetAndAlarmTask");
+                    }
+                    String code = "push_alarm_common";
+                    msgUtil.sendPush(code, params, machineLogInfo.getMachineId(), "machineAlarm-CheckNetAndAlarmTask", "【报警】您负责的机器出现网络异常", "");
+
+                } else if (between > 8 && (between - 8) % 2 == 0) {
+                    //钉钉报警接口
+                    String code = "push_dingding_checkNetClose";
+                    Map<String, String> params = new HashMap<>();
+                    params.put("machineCode", machineLogInfo.getMachineId());
+                    params.put("localStr", localStr);
+                    params.put("text", "出现网络连接不上的情况，请及时处理");
+                    msgUtil.sendDDTextByGroup(code, params, groupId, "machineAlarm-CheckNetAndAlarmTask");
+                }
             }
 
             log.info("检查网络状态并预警的定时任务，执行结束");
