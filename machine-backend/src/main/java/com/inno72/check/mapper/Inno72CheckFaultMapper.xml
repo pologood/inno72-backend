@@ -40,7 +40,7 @@
 		<if test="type =='2'">
 			<![CDATA[ and ( f.finish_time  BETWEEN #{startTime} AND #{endTime} ) ]]>
 		</if>
-		<if test="keyword !=null and keyword !=''"> and ( m.machine_code LIKE '%${keyword}%' or f.finish_user LIKE '%${keyword}%' or f.submit_user LIKE '%${keyword}%)</if>
+		<if test="keyword !=null and keyword !=''"> and ( m.machine_code LIKE '%${keyword}%' or f.finish_user LIKE '%${keyword}%' or f.submit_user LIKE '%${keyword}%')</if>
 		ORDER BY f.submit_time DESC
 		
   </select>
