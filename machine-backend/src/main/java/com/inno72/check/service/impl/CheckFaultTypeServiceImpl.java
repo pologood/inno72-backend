@@ -112,9 +112,7 @@ public class CheckFaultTypeServiceImpl extends AbstractService<Inno72CheckFaultT
 				return Results.failure("请填写解决方案");
 			}
 			//类型code
-			String code = StringUtil.getUUID();
-			model.setCode(code);
-			model.setLevel(1);
+			
 			model.setUpdateId(mUserId);
 			model.setUpdateTime(LocalDateTime.now());
 			//子级解决方案
@@ -122,7 +120,7 @@ public class CheckFaultTypeServiceImpl extends AbstractService<Inno72CheckFaultT
 			for (Inno72CheckFaultType solutionType : solutions) {
 				String childcode = StringUtil.getUUID();
 				solutionType.setCode(childcode);
-				solutionType.setParentCode(code);
+				solutionType.setParentCode(model.getCode());
 				solutionType.setParentName(model.getName());
 				solutionType.setLevel(2);
 				solutionType.setCreateId(mUserId);
