@@ -139,7 +139,7 @@
 		LEFT JOIN inno72_activity_plan_machine apm ON m.id = apm.machine_id
 		LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
-		LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code
+		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
 		WHERE apm.machine_id IS NULL
 		and ( <![CDATA[
 		 	#{taskTime} > ap.end_time or #{taskTime} < ap.start_time
