@@ -1,4 +1,4 @@
-package com.inno72.machine.model;
+package com.inno72.app.model;
 
 import java.time.LocalDateTime;
 
@@ -324,6 +324,14 @@ public class Inno72Machine {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public String getBluetoothAddress() {
+		return bluetoothAddress;
+	}
+
+	public void setBluetoothAddress(String bluetoothAddress) {
+		this.bluetoothAddress = bluetoothAddress;
 	}
 
 }

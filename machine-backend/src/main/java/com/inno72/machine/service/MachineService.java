@@ -16,7 +16,7 @@ import com.inno72.machine.vo.UpdateMachineChannelVo;
  */
 public interface MachineService extends Service<Inno72Machine> {
 
-	Result<String> initMachine(String deviceId, String channelJson);
+	// Result<String> initMachine(String deviceId, String channelJson);
 
 	Result<String> updateNetStatus(String machineCode, Integer netStatus);
 

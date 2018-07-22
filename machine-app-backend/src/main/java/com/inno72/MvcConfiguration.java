@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -20,6 +21,9 @@ import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inno72.common.filter.ProcessDataFilter;
+import com.inno72.common.interceptor.LogInterceptor;
+import com.inno72.common.interceptor.PageListAttrHandlerInterceptor;
 import com.inno72.common.spring.JsonView;
 import com.inno72.redis.IRedisUtil;
 
@@ -84,11 +88,43 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		// registry.addInterceptor(new
-		// PageListAttrHandlerInterceptor()).addPathPatterns("/**");
-		// LogInterceptor logInterceptor = new LogInterceptor();
-		// logInterceptor.setRedisUtil(redisUtil);
-		// registry.addInterceptor(logInterceptor).addPathPatterns("/**");
+		registry.addInterceptor(new PageListAttrHandlerInterceptor()).addPathPatterns("/**");
+		LogInterceptor logInterceptor = new LogInterceptor();
+		registry.addInterceptor(logInterceptor).addPathPatterns("/**");
 	}
+
+	@Bean
+	public FilterRegistrationBean someFilterRegistration() {
+		FilterRegistrationBean registration = new FilterRegistrationBean();
+		registration.setFilter(new ProcessDataFilter());
+		registration.addUrlPatterns("/*");
+		return registration;
+	}
+
+	// @Override
+	// public void configureMessageConverters(List<HttpMessageConverter<?>>
+	// converters) {
+	// converters.add(mappingJackson2HttpMessageConverter());
+	// }
+	//
+	// @Bean
+	// public MappingJackson2HttpMessageConverter
+	// mappingJackson2HttpMessageConverter() {
+	// return new MappingJackson2HttpMessageConverter() {
+	// // 重写 writeInternal 方法，在返回内容前首先进行加密
+	// @Override
+	// protected void writeInternal(Object object, HttpOutputMessage
+	// outputMessage)
+	// throws IOException, HttpMessageNotWritableException {
+	// // 使用 Jackson 的 ObjectMapper 将 Java 对象转换成 Json String
+	// ObjectMapper mapper = new ObjectMapper();
+	// String json = mapper.writeValueAsString(object);
+	// // 加密
+	// String result = json + "加密了！";
+	// // 输出
+	// outputMessage.getBody().write(result.getBytes());
+	// }
+	// };
+	// }
 
 }

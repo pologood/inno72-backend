@@ -34,7 +34,7 @@
 			u.is_delete
 		from inno72_check_user  u
 		WHERE u.is_delete=0 
-		<if test="keyword !=null and keyword !=''">and ( u.name LIKE '%${keyword}%' or u.phone LIKE '%${keyword}%' or u.enterprise LIKE '%${keyword}%)</if>
+		<if test="keyword !=null and keyword !=''">and ( u.name LIKE '%${keyword}%' or u.phone LIKE '%${keyword}%' or u.enterprise LIKE '%${keyword}%' )</if>
 		ORDER BY u.update_time DESC
   </select>
   

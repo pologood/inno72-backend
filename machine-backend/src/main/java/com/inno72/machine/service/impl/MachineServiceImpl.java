@@ -30,7 +30,6 @@ import com.inno72.common.StringUtil;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72App;
 import com.inno72.machine.model.Inno72Machine;
-import com.inno72.machine.model.Inno72SupplyChannel;
 import com.inno72.machine.service.AppService;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.service.SupplyChannelService;
@@ -68,36 +67,38 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	@Autowired
 	private MachineBackendProperties machineBackendProperties;
 
-	@Override
-	public Result<String> initMachine(String deviceId, String channelJson) {
-		Inno72Machine initMachine = findBy("deviceId", deviceId);
-		if (initMachine != null) {
-			return Results.success(initMachine.getMachineCode());
-		}
-		String machineCode = StringUtil.getMachineCode();
-		LocalDateTime now = LocalDateTime.now();
-		Inno72Machine machine = new Inno72Machine();
-		String machineId = StringUtil.getUUID();
-		machine.setDeviceId(deviceId);
-		machine.setId(machineId);
-		machine.setMachineCode(machineCode);
-		machine.setMachineStatus(Inno72Machine.Machine_Status.INFACTORY.v());
-		machine.setUpdateId("machine-backend");
-		machine.setCreateId("machine-backend");
-		machine.setCreateTime(now);
-		machine.setUpdateTime(now);
-		machine.setNetStatus(0);
-		int result = inno72MachineMapper.insert(machine);
-		if (result != 1) {
-			return Results.failure("生成machineCode失败");
-		}
-		List<Inno72SupplyChannel> channels = JSON.parseArray(channelJson, Inno72SupplyChannel.class);
-		Result<String> initResult = supplyChannelService.initChannel(machineId, channels);
-		if (initResult.getCode() != Result.SUCCESS) {
-			return initResult;
-		}
-		return Results.success(machineCode);
-	}
+	// @Override
+	// public Result<String> initMachine(String deviceId, String channelJson) {
+	// Inno72Machine initMachine = findBy("deviceId", deviceId);
+	// if (initMachine != null) {
+	// return Results.success(initMachine.getMachineCode());
+	// }
+	// String machineCode = StringUtil.getMachineCode();
+	// LocalDateTime now = LocalDateTime.now();
+	// Inno72Machine machine = new Inno72Machine();
+	// String machineId = StringUtil.getUUID();
+	// machine.setDeviceId(deviceId);
+	// machine.setId(machineId);
+	// machine.setMachineCode(machineCode);
+	// machine.setMachineStatus(Inno72Machine.Machine_Status.INFACTORY.v());
+	// machine.setUpdateId("machine-backend");
+	// machine.setCreateId("machine-backend");
+	// machine.setCreateTime(now);
+	// machine.setUpdateTime(now);
+	// machine.setNetStatus(0);
+	// int result = inno72MachineMapper.insert(machine);
+	// if (result != 1) {
+	// return Results.failure("生成machineCode失败");
+	// }
+	// List<Inno72SupplyChannel> channels = JSON.parseArray(channelJson,
+	// Inno72SupplyChannel.class);
+	// Result<String> initResult = supplyChannelService.initChannel(machineId,
+	// channels);
+	// if (initResult.getCode() != Result.SUCCESS) {
+	// return initResult;
+	// }
+	// return Results.success(machineCode);
+	// }
 
 	@Override
 	public Result<String> updateNetStatus(String machineCode, Integer netStatus) {
