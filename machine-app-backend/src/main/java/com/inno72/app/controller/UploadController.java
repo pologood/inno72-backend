@@ -48,7 +48,7 @@ public class UploadController {
 	 * @return
 	 */
 	@RequestMapping(value = "/upload", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> uploadImage(@RequestParam(value = "upfile", required = false) MultipartFile file,
+	public Result<String> uploadImage(@RequestParam(value = "file", required = false) MultipartFile file,
 			HttpServletRequest req) {
 		String fileName = file.getOriginalFilename();
 		String prefix = fileName.substring(fileName.lastIndexOf(".") + 1);
