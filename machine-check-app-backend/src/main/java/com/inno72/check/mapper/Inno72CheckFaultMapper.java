@@ -9,4 +9,6 @@ import java.util.Map;
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72CheckFaultMapper extends Mapper<Inno72CheckFault> {
     List<Inno72CheckFault> selectForPage(Map<String,Object> map);
+
+    Inno72CheckFault selectDetail(String faultId);
 }

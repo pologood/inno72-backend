@@ -51,4 +51,6 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 	List<WorkOrderVo> workOrderList(String keyword,String findTime);
 
     Result<WorkOrderVo> workOrderDetail(String machineId, String batchNo);
+
+    List<Inno72SupplyChannel> findByTaskParam();
 }

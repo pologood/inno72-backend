@@ -22,8 +22,14 @@
     <result column="goodsCode" jdbcType="VARCHAR" property="goodsCode"/>
     <result column="goodsId" jdbcType="VARCHAR" property="goodsId"/>
     <result column="goodsStatus" jdbcType="INTEGER" property="goodsStatus"/>
+    <association property="checkUserList" resultMap="CheckUserList"/>
   </resultMap>
 
+  <resultMap id="CheckUserList" type="com.inno72.check.model.Inno72CheckUser">
+    <result column="checkUserId" jdbcType="VARCHAR" property="id"/>
+    <result column="checkUserName" jdbcType="VARCHAR" property="name"/>
+    <result column="checkUserPhone" jdbcType="VARCHAR" property="phone"/>
+  </resultMap>
 
 
   <update id="subCount">
@@ -216,5 +222,19 @@
       </if>
       and t1.is_delete=0
     </where>
+  </select>
+
+  <select id="selectTaskParam" resultMap="BaseResultMap">
+    select t1.*,
+    t3.name goodsName,
+    t5.name checkUserName,
+    t5.id checkUserId,
+    t5.phone checkUserPhone
+    from inno72_supply_channel t1
+    inner join inno72_supply_channel_goods t2 on t1.id=t2.supply_channel_id
+    inner join inno72_goods t3 on t2.goods_id=t3.id
+    left join inno72_check_user_machine t4 on t1.machine_id=t4.machine_id
+    left join inno72_check_user t5 on t5.id=t4.check_user_id
+    where (t1.goods_count/t1.volume_count) <![CDATA[ <= ]]> 0.2
   </select>
 </mapper>

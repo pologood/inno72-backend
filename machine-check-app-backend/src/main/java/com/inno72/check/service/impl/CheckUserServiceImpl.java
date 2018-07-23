@@ -97,12 +97,12 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
 
     @Override
     public Result<String> upload(MultipartFile file) {
-        UploadUtil.uploadImage(file,"headImage");
-        return ResultGenerator.genSuccessResult();
+        return UploadUtil.uploadImage(file,"headImage");
     }
 
     @Override
     public Result<Inno72CheckUser> updateUser(Inno72CheckUser inno72CheckUser) {
+        inno72CheckUser.setId(UserUtil.getUser().getId());
         mapper.updateByPrimaryKeySelective(inno72CheckUser);
         inno72CheckUser = mapper.selectByPrimaryKey(inno72CheckUser.getId());
         return ResultGenerator.genSuccessResult(inno72CheckUser);

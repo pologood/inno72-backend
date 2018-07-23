@@ -18,8 +18,10 @@
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="finish_remark" jdbcType="VARCHAR" property="finishRemark"/>
     <result column="remind_status" jdbcType="INTEGER" property="remindStatus"/>
+    <result column = "typeName" jdbcType="VARCHAR" property="typeName"/>
     <association property="imageList" resultMap="ImageList"/>
     <association property="remarkList" resultMap="RemarkList"/>
+    <association property="typeList" resultMap="TypeList"/>
   </resultMap>
 
   <resultMap id="ImageList" type="com.inno72.check.model.Inno72CheckFaultImage">
@@ -29,20 +31,43 @@
   <resultMap id="RemarkList" type="com.inno72.check.model.Inno72CheckFaultRemark">
     <result column="remarkStr" jdbcType="VARCHAR" property="remark"/>
   </resultMap>
-
+  <resultMap id="TypeList" type="com.inno72.check.model.Inno72CheckFaultType">
+    <result column="childTypeName" jdbcType="VARCHAR"  property="name"/>
+  </resultMap>
   <select id="selectForPage" resultMap="BaseResultMap">
     select t1.*,
     t4.image,
-    t5.remark remarkStr
+    t5.remark remarkStr,
+    t6.name typeName,
+    t7.name childTypeName
     from inno72_check_fault t1
     left join inno72_machine t2 on t1.machine_id=t2.id
     left join inno72_check_user_machine t3 on t2.id=t3.machine_id
     left join inno72_check_fault_image t4 on t1.id=t4.fault_id
     left join inno72_check_fault_remark t5 on t1.id=t5.fault_id
+    left join inno72_check_fault_type t6 on t1.type=t6.code
+    left join inno72_check_fault_type t7 on t1.type = t7.parent_code
+
     where t3.check_user_id=#{checkUserId}
     <if test="status != null">
       and t1.status=#{status}
     </if>
     order by t1.submit_time desc,t4.create_time desc,t5.create_time desc
+  </select>
+
+  <select id="selectDetail" resultMap="BaseResultMap">
+    select t1.*,
+    t4.image,
+    t5.remark remarkStr,
+    t6.name typeName,
+    t7.name childTypeName
+    from inno72_check_fault t1
+    left join inno72_machine t2 on t1.machine_id=t2.id
+    left join inno72_check_user_machine t3 on t2.id=t3.machine_id
+    left join inno72_check_fault_image t4 on t1.id=t4.fault_id
+    left join inno72_check_fault_remark t5 on t1.id=t5.fault_id
+    left join inno72_check_fault_type t6 on t1.type=t6.code
+    left join inno72_check_fault_type t7 on t1.type = t7.parent_code
+    where t1.id = #{faultId}
   </select>
 </mapper>

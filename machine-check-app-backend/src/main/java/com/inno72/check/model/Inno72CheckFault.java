@@ -106,6 +106,12 @@ public class Inno72CheckFault {
     @Transient
     private String[] machineIds;
 
+    @Transient
+    private List<Inno72CheckFaultType> typeList;
+
+    @Transient
+    private String typeName;
+
     public String getId() {
         return id;
     }
@@ -240,5 +246,21 @@ public class Inno72CheckFault {
 
     public void setMachineIds(String[] machineIds) {
         this.machineIds = machineIds;
+    }
+
+    public List<Inno72CheckFaultType> getTypeList() {
+        return typeList;
+    }
+
+    public void setTypeList(List<Inno72CheckFaultType> typeList) {
+        this.typeList = typeList;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 }

@@ -496,6 +496,12 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         return ResultGenerator.genSuccessResult(workOrderVo);
     }
 
+    @Override
+    public List<Inno72SupplyChannel> findByTaskParam() {
+        List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectTaskParam();
+        return list;
+    }
+
 
     public void addSupplyChannelToMongo(Inno72SupplyChannel supplyChannel) {
         DBCollection dbCollection = mongoTpl.getCollection("supplyChannel");

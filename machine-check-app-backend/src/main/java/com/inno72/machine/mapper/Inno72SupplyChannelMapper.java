@@ -23,4 +23,6 @@ public interface Inno72SupplyChannelMapper extends Mapper<Inno72SupplyChannel> {
 	Inno72SupplyChannel selectByParentCode(Map<String, Object> map);
 
 	List<Inno72SupplyChannel> selectListForPage(Inno72SupplyChannel supplyChannel);
+
+    List<Inno72SupplyChannel> selectTaskParam();
 }

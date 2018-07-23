@@ -1,13 +1,7 @@
 package com.inno72.check.service.impl;
 
-import com.inno72.check.mapper.Inno72CheckFaultImageMapper;
-import com.inno72.check.mapper.Inno72CheckFaultMapper;
-import com.inno72.check.mapper.Inno72CheckFaultRemarkMapper;
-import com.inno72.check.mapper.Inno72CheckUserMapper;
-import com.inno72.check.model.Inno72CheckFault;
-import com.inno72.check.model.Inno72CheckFaultImage;
-import com.inno72.check.model.Inno72CheckFaultRemark;
-import com.inno72.check.model.Inno72CheckUser;
+import com.inno72.check.mapper.*;
+import com.inno72.check.model.*;
 import com.inno72.check.service.CheckFaultService;
 import com.inno72.common.*;
 import com.inno72.machine.mapper.Inno72MachineMapper;
@@ -15,6 +9,7 @@ import com.inno72.machine.model.Inno72Machine;
 import com.inno72.msg.MsgUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Condition;
 
@@ -40,6 +35,9 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 
     @Resource
     private Inno72CheckFaultRemarkMapper inno72CheckFaultRemarkMapper;
+
+    @Resource
+    private Inno72CheckFaultTypeMapper inno72CheckFaultTypeMapper;
 
     @Autowired
     private MsgUtil msgUtil;
@@ -78,7 +76,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
             List<Inno72Machine>machines = inno72MachineMapper.selectByIds(mIds.substring(0,mIds.length()-1));
             if(machines != null && machines.size()>0){
                 for(Inno72Machine machine:machines){
-                    String pushCode = "push_check_app_code";
+                    String pushCode = "push_check_app_fault";
                     Map<String,String> params = new HashMap<>();
                     params.put("machineCode",machine.getMachineCode());
                     params.put("machineId",machine.getId());
@@ -122,13 +120,6 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
             map.put("status",status);
         }
         List<Inno72CheckFault> list = inno72CheckFaultMapper.selectForPage(map);
-        if(list != null && list.size()>0){
-            for(Inno72CheckFault checkFault:list){
-                String id = checkFault.getId();
-                List<Inno72CheckFaultImage> images = inno72CheckFaultImageMapper.selectByFaultId(id);
-                checkFault.setImageList(images);
-            }
-        }
         return list;
     }
 
@@ -148,6 +139,24 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         faultRemark.setCreateTime(LocalDateTime.now());
         inno72CheckFaultRemarkMapper.insertSelective(faultRemark);
         return ResultGenerator.genSuccessResult();
+    }
+
+    @Override
+    public Result<Inno72CheckFault> getDetail(String faultId) {
+        Inno72CheckFault fault = inno72CheckFaultMapper.selectDetail(faultId);
+        return ResultGenerator.genSuccessResult(fault);
+    }
+
+    @Override
+    public Result<List<Inno72CheckFaultType>> getTypeList(String parentCode) {
+        Condition condition = new Condition(Inno72CheckFaultType.class);
+        if(StringUtil.isEmpty(parentCode)){
+            condition.createCriteria().andEqualTo("level",1);
+        }else{
+            condition.createCriteria().andEqualTo("parentCode",parentCode);
+        }
+        List<Inno72CheckFaultType> list = inno72CheckFaultTypeMapper.selectByCondition(condition);
+        return ResultGenerator.genSuccessResult(list);
     }
 
 

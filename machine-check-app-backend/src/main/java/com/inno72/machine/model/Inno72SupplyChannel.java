@@ -1,12 +1,14 @@
 package com.inno72.machine.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Table(name = "inno72_supply_channel")
 public class Inno72SupplyChannel {
@@ -119,6 +121,11 @@ public class Inno72SupplyChannel {
 	@Transient
 	private String goodsCode;
 
+	@Transient
+	private String goodsName;
+
+	@Transient
+	private List<Inno72CheckUser> checkUserList;
 
 	/**
 	 * 获取uuid
@@ -421,5 +428,21 @@ public class Inno72SupplyChannel {
 
 	public void setGoodsCode(String goodsCode) {
 		this.goodsCode = goodsCode;
+	}
+
+	public String getGoodsName() {
+		return goodsName;
+	}
+
+	public void setGoodsName(String goodsName) {
+		this.goodsName = goodsName;
+	}
+
+	public List<Inno72CheckUser> getCheckUserList() {
+		return checkUserList;
+	}
+
+	public void setCheckUserList(List<Inno72CheckUser> checkUserList) {
+		this.checkUserList = checkUserList;
 	}
 }

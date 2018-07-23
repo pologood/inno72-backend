@@ -1,6 +1,7 @@
 package com.inno72.check.controller;
 
 import com.inno72.check.model.Inno72CheckFault;
+import com.inno72.check.model.Inno72CheckFaultType;
 import com.inno72.check.service.CheckFaultService;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
@@ -46,6 +47,11 @@ public class CheckFaultController {
         return result;
     }
 
+    /**
+     * 故障集合
+     * @param status
+     * @return
+     */
     @RequestMapping(value="/list",method = {RequestMethod.POST,RequestMethod.GET})
     public ModelAndView list(Integer status){
         List<Inno72CheckFault> list = checkFaultService.findForPage(status);
@@ -73,5 +79,27 @@ public class CheckFaultController {
     public Result<String> edit(String faultId,String remark){
         checkFaultService.editRemark(faultId,remark);
         return ResultGenerator.genSuccessResult();
+    }
+
+    /**
+     * 查询详情
+     * @param faultId
+     * @return
+     */
+    @RequestMapping(value="/detail",method = {RequestMethod.POST,RequestMethod.GET})
+    public Result<Inno72CheckFault> detail(String faultId){
+        Result<Inno72CheckFault> result = checkFaultService.getDetail(faultId);
+        return result;
+    }
+
+    /**
+     * 查询故障类型
+     * @param parentCode
+     * @return
+     */
+    @RequestMapping(value = "/typeList")
+    public Result<List<Inno72CheckFaultType>> typeList(String parentCode){
+        Result<List<Inno72CheckFaultType>> result = checkFaultService.getTypeList(parentCode);
+        return result;
     }
 }
