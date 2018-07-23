@@ -303,7 +303,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				}
 				activityPlan.setEndTime(newEndTime);
 			}
-			if (!activityPlan.getEndTime().isAfter(activityPlan.getStartTime())) {
+			if (!activityPlan.getEndTime().isAfter(DateUtil.toDateTime(activityPlan.getStartTimeStr()+":00", DateUtil.DF_FULL_S1))) {
 				return Results.failure("结束时间须小于开始时间");
 			}
 			
