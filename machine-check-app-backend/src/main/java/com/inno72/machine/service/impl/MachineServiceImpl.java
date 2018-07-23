@@ -4,11 +4,16 @@ import com.inno72.check.mapper.Inno72CheckUserMachineMapper;
 import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.check.model.Inno72CheckUserMachine;
 import com.inno72.common.*;
+import com.inno72.machine.mapper.Inno72AdminAreaMapper;
+import com.inno72.machine.mapper.Inno72LocaleMapper;
 import com.inno72.machine.mapper.Inno72MachineMapper;
+import com.inno72.machine.model.Inno72AdminArea;
+import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ResponseBody;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
@@ -23,6 +28,12 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
     @Resource
     private Inno72CheckUserMachineMapper inno72CheckUserMachineMapper;
+
+    @Resource
+    private Inno72AdminAreaMapper inno72AdminAreaMapper;
+
+    @Resource
+    private Inno72LocaleMapper inno72LocaleMapper;
     @Override
     public Result<String> setMachine(String machineId, String localeId) {
         Inno72Machine machine = new Inno72Machine();
@@ -51,4 +62,38 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
         List<Inno72Machine> list = inno72MachineMapper.machineList(chekUserId);
         return ResultGenerator.genSuccessResult(list);
     }
+
+    /**
+     * 查询一级地址
+     * @return
+     */
+    @Override
+    public Result<List<Inno72AdminArea>> findFistLevelArea() {
+        List<Inno72AdminArea> list = inno72AdminAreaMapper.selectFistLevelArea();
+        return ResultGenerator.genSuccessResult(list);
+    }
+
+    /**
+     * 查询单个一级地址及以下地址
+     * @param code
+     * @return
+     */
+    @Override
+    public Result<Inno72AdminArea> findByFirstLevelCode(String code) {
+        Inno72AdminArea adminArea = inno72AdminAreaMapper.selectByFirstLevelCode(code);
+        return ResultGenerator.genSuccessResult(adminArea);
+    }
+
+    @Override
+    public Result<List<Inno72Locale>> findMallByCode(String areaCode) {
+        List<Inno72Locale> list = inno72LocaleMapper.selectByAreaCode(areaCode);
+        return ResultGenerator.genSuccessResult(list);
+    }
+
+    @Override
+    public Result<List<Inno72Locale>> findLocalByMall(String mall) {
+        List<Inno72Locale> list = inno72LocaleMapper.selectByMall(mall);
+        return ResultGenerator.genSuccessResult(list);
+    }
+
 }

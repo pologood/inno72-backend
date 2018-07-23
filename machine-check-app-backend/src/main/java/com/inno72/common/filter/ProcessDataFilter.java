@@ -16,7 +16,8 @@ import java.util.List;
 public class ProcessDataFilter extends OncePerRequestFilter {
 	Logger logger = LoggerFactory.getLogger(ProcessDataFilter.class);
 	private static List<String> doNotCheckUs = Arrays
-			.asList(new String[] {"/check/fault/upload", "/check/user/upload" ,"/check/user/jiami"});
+			.asList(new String[] {"/check/fault/upload", "/check/user/upload" ,"/check/user/jiami",
+					"/machine/channel/split","/machine/channel/merge"});
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

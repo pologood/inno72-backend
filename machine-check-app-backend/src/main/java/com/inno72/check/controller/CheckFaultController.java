@@ -1,5 +1,6 @@
 package com.inno72.check.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.check.model.Inno72CheckFault;
 import com.inno72.check.model.Inno72CheckFaultType;
 import com.inno72.check.service.CheckFaultService;
@@ -33,7 +34,9 @@ public class CheckFaultController {
      */
     @RequestMapping(value="/add" , method = {RequestMethod.POST,RequestMethod.GET})
     public Result add(@RequestBody Inno72CheckFault checkFault){
+        logger.info("上报故障接口参数：{}", JSON.toJSON(checkFault));
         Result result = checkFaultService.addCheckFault(checkFault);
+        logger.info("上报故障接口结果：{}",JSON.toJSON(result));
         return result;
     }
 
@@ -44,7 +47,9 @@ public class CheckFaultController {
      */
     @RequestMapping(value="/finish",method = {RequestMethod.POST,RequestMethod.GET})
     public Result finish(@RequestBody Inno72CheckFault checkFault){
+        logger.info("解决故障接口参数：{}", JSON.toJSON(checkFault));
         Result result = checkFaultService.finish(checkFault);
+        logger.info("解决故障接口结果：{}", JSON.toJSON(result));
         return result;
     }
 
@@ -53,8 +58,10 @@ public class CheckFaultController {
      * @return
      */
     @RequestMapping(value="/list",method = {RequestMethod.POST,RequestMethod.GET})
-    public ModelAndView list(@RequestBody Inno72CheckFault inno72CheckFault){
-        List<Inno72CheckFault> list = checkFaultService.findForPage(inno72CheckFault.getStatus());
+    public ModelAndView list(@RequestBody Inno72CheckFault checkFault){
+        logger.info("查询故障分页列表接口参数：{}", JSON.toJSON(checkFault));
+        List<Inno72CheckFault> list = checkFaultService.findForPage(checkFault.getStatus());
+        logger.info("查询故障分页列表接口结果：{}", JSON.toJSON(list));
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
 
@@ -65,7 +72,9 @@ public class CheckFaultController {
      */
     @RequestMapping(value="/upload",method = {RequestMethod.POST})
     public Result<String> upload(MultipartFile file){
+        logger.info("上传头像接口开始上传");
         Result<String> result = checkFaultService.upload(file);
+        logger.info("上传头像接口返回图片路径：{}",JSON.toJSON(result));
         return result;
     }
 
@@ -75,8 +84,10 @@ public class CheckFaultController {
      */
     @RequestMapping(value="/edit",method = {RequestMethod.POST,RequestMethod.GET})
     public Result<String> edit(@RequestBody Inno72CheckFault inno72CheckFault){
-        checkFaultService.editRemark(inno72CheckFault.getId(),inno72CheckFault.getFinishRemark());
-        return ResultGenerator.genSuccessResult();
+        logger.info("编辑回复故障备注接口参数：{}",JSON.toJSON(inno72CheckFault));
+        Result<String> result = checkFaultService.editRemark(inno72CheckFault.getId(),inno72CheckFault.getFinishRemark());
+        logger.info("编辑回复故障备注接口结果：{}",JSON.toJSON(result));
+        return result;
     }
 
     /**
@@ -85,7 +96,9 @@ public class CheckFaultController {
      */
     @RequestMapping(value="/detail",method = {RequestMethod.POST,RequestMethod.GET})
     public Result<Inno72CheckFault> detail(@RequestBody Inno72CheckFault inno72CheckFault){
+        logger.info("查询故障详情接口参数：{}",JSON.toJSON(inno72CheckFault));
         Result<Inno72CheckFault> result = checkFaultService.getDetail(inno72CheckFault.getId());
+        logger.info("查询故障详情接口结果：{}",JSON.toJSON(result));
         return result;
     }
 
@@ -95,7 +108,9 @@ public class CheckFaultController {
      */
     @RequestMapping(value = "/typeList", method = {RequestMethod.POST,RequestMethod.GET})
     public Result<List<Inno72CheckFaultType>> typeList(@RequestBody Inno72CheckFault inno72CheckFault){
+        logger.info("查询故障类型接口参数：{}",JSON.toJSON(inno72CheckFault));
         Result<List<Inno72CheckFaultType>> result = checkFaultService.getTypeList(inno72CheckFault.getType());
+        logger.info("查询故障类型接口结果：{}",JSON.toJSON(result));
         return result;
     }
 }
