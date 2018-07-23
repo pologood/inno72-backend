@@ -32,29 +32,36 @@
 
 	<select id="selectMachinesByPage" parameterType="java.util.Map"
 		resultMap="VoResultMap">
-select id,machine_code,local_desc,net_status,activity_name,channel_status, goods_status from (
-		select m.id,m.machine_code,
-if(aa.province=aa.city,CONCAT_WS('-',aa.province,aa.district,if(aa.circle='其他','',aa.circle),l.mall,m.address),
-CONCAT_WS('-',aa.province,aa.city,aa.district,if(aa.circle='其他','',aa.circle),l.mall,m.address)) local_desc
-,m.net_status,a.name activity_name,m.machine_status,
+
+select m.id,m.machine_code,
+if(aa.province=aa.city,CONCAT_WS('-',aa.province,aa.district,if(aa.circle='其他','',aa.circle),l.mall),
+CONCAT_WS('-',aa.province,aa.city,aa.district,if(aa.circle='其他','',aa.circle),l.mall)) local_desc,
+m.net_status,mm.name,mm.activity_plan_id,
 (
 select GROUP_CONCAT(CONCAT( sc.name, '', scs.result))  from 
 inno72_supply_channel sc left join inno72_supply_channel_status scs on sc.work_status=scs.code
-where sc.machine_id=m.machine_code and sc.work_status!=0) channel_status
-,(select  GROUP_CONCAT(CONCAT( g.name, '剩余', aa.cou)) from (
-select sum(sc.goods_count) cou,goods_id,apgr.activity_plan_id,sc.machine_id from inno72_activity_plan_game_result apgr  
-left join inno72_supply_channel_goods scg on apgr.prize_id=scg.goods_id
+where sc.machine_id=m.id and sc.work_status!=0) channel_status,
+(
+select GROUP_CONCAT(CONCAT( g.name, '剩余', aa.goods_count))  from 	(
+select    
+sum(sc.goods_count)   goods_count,apg.activity_plan_id,apg.goods_id,sc.machine_id from inno72_activity_plan_goods  apg 
+left join inno72_supply_channel_goods scg  on  scg.goods_id=apg.goods_id
 left join inno72_supply_channel sc on sc.id=scg.supply_channel_id
- where  apgr.prize_type=1
-group by scg.goods_id,apgr.activity_plan_id,sc.machine_id) aa left join inno72_goods g on aa.goods_id=g.id 
-where aa.cou<![CDATA[<]]>10 and activity_plan_id=ap.id and machine_id=m.id
+
+group by apg.activity_plan_id,apg.goods_id,sc.machine_id
+) aa left  join inno72_goods g on aa.goods_id=g.id
+
+where aa.goods_count<![CDATA[<]]>10  and activity_plan_id=mm.activity_plan_id and machine_id=mm.machine_id
 ) goods_status
+
  from inno72_machine m left join inno72_locale l on m.locale_id=l.id
 	left join inno72_admin_area aa on l.area_code=aa.code
-	left join inno72_activity_plan_machine apm on m.id=apm.machine_id
-	left join inno72_activity_plan ap on apm.activity_plan_id=ap.id  
-	left join inno72_activity a on ap.activity_id=a.id
-where( NOW() BETWEEN ap.start_time and ap.end_time or ap.id is null )
+left join (
+select ap.id activity_plan_id,apm.machine_id,a.name from inno72_activity_plan  ap 
+left join inno72_activity_plan_machine apm on ap.id=apm.activity_plan_id
+left join inno72_activity a on ap.activity_id=a.id
+ where NOW() BETWEEN ap.start_time and ap.end_time and ap.is_delete!=1
+) mm on m.id=mm.machine_id
 <if test="code !=null and code !='' ">and LEFT(l.area_code,#{num})='${code}'</if>
 		<if test="machineCode !=null and machineCode !=''">
 			AND m.machine_code=#{machineCode}
