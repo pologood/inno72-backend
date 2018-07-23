@@ -52,7 +52,7 @@ public class UploadController {
 			HttpServletRequest req) {
 		String fileName = file.getOriginalFilename();
 		String prefix = fileName.substring(fileName.lastIndexOf(".") + 1);
-		String bashPath = "log".equals(prefix) ? CommonConstants.OSS_LOG_PATH : CommonConstants.OSS_IMG_PATH;
+		String bashPath = "zip".equals(prefix) ? CommonConstants.OSS_LOG_PATH : CommonConstants.OSS_IMG_PATH;
 		return UploadUtil.uploadImage(file, prefix, bashPath);
 	}
 
