@@ -10,7 +10,15 @@ public class ChannelGoodsAlarmBean {
     private String goodsName;
     private String machineCode;
     private int lackGoodsType;//1.缺货10% 2.缺货20%
-    private int channelNum;
+    private String channelNum;
+
+    public String getChannelNum() {
+        return channelNum;
+    }
+
+    public void setChannelNum(String channelNum) {
+        this.channelNum = channelNum;
+    }
 
     public String getGoodsName() {
         return goodsName;
@@ -36,12 +44,5 @@ public class ChannelGoodsAlarmBean {
         this.lackGoodsType = lackGoodsType;
     }
 
-    public int getChannelNum() {
-        return channelNum;
-    }
-
-    public void setChannelNum(int channelNum) {
-        this.channelNum = channelNum;
-    }
 }
 
