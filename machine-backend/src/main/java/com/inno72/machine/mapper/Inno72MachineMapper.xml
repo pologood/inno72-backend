@@ -28,12 +28,13 @@
 		<result column="activity_name" jdbcType="VARCHAR" property="activityName" />
 		<result column="channel_status" jdbcType="VARCHAR" property="channelStatus" />
 		<result column="goods_status" jdbcType="VARCHAR" property="goodsStatus" />
+		<result column="machine_status" jdbcType="VARCHAR" property="machineStatus" />
 	</resultMap>
 
 	<select id="selectMachinesByPage" parameterType="java.util.Map"
 		resultMap="VoResultMap">
 select * from (
-select m.id,m.machine_code,
+select m.id,m.machine_code,m.machine_status,
 if(aa.province=aa.city,CONCAT_WS('-',aa.province,aa.district,if(aa.circle='其他','',aa.circle),l.mall),
 CONCAT_WS('-',aa.province,aa.city,aa.district,if(aa.circle='其他','',aa.circle),l.mall)) local_desc,
 m.net_status,mm.name,mm.activity_plan_id,

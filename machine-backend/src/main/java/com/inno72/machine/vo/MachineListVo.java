@@ -8,6 +8,7 @@ public class MachineListVo {
 	private String activityName;
 	private String channelStatus;
 	private String goodsStatus;
+	private String machineStatus;
 
 	public String getId() {
 		return id;
@@ -63,6 +64,14 @@ public class MachineListVo {
 
 	public void setGoodsStatus(String goodsStatus) {
 		this.goodsStatus = goodsStatus;
+	}
+
+	public String getMachineStatus() {
+		return machineStatus;
+	}
+
+	public void setMachineStatus(String machineStatus) {
+		this.machineStatus = machineStatus;
 	}
 
 }
