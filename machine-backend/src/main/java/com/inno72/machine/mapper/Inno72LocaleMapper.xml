@@ -62,6 +62,20 @@
   <select id="selectIsUseing" parameterType="String" resultType="int">
 		SELECT count(1) FROM inno72_machine where locale_id=#{id}
   </select>
+  
+   <select id="selectIsUseingPlan" parameterType="String" resultType="int">
+		SELECT
+			count(1)
+		FROM
+			inno72_locale l
+			LEFT JOIN inno72_machine m ON m.locale_id = l.id
+			LEFT JOIN inno72_activity_plan_machine pm ON pm.machine_id = m.id
+			LEFT JOIN inno72_activity_plan p ON p.id = pm.activity_plan_id 
+		WHERE
+			l.id = #{id} and <![CDATA[NOW() <= p.end_time ]]>
+  </select>
+  
+  
 
     <select id="selectLocaleByMachineCode" parameterType="String" resultType="com.inno72.machine.vo.MachineLocaleInfo">
         SELECT

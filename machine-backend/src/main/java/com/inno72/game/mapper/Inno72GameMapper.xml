@@ -34,9 +34,10 @@
 		<if test="keyword !=null and keyword !='' ">and ( g.name LIKE '%${keyword}%' or g.remark LIKE '%${keyword}%'  )</if>
 		ORDER BY g.update_time DESC
   </select>
-  
+ 
   <select id="selectIsUseing" parameterType="String" resultType="int">
-		SELECT count(1) FROM inno72_machine_game where game_id=#{id}
+  	SELECT count(1) FROM inno72_activity_plan
+		 where game_id=#{id} <![CDATA[and NOW() <= end_time ]]>
   </select>
   
   <delete id="deleteMachineGameByMachineId">
