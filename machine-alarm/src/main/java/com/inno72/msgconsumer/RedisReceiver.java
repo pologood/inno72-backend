@@ -132,15 +132,11 @@ public class RedisReceiver {
 
         } else if ((CommonConstants.SYS_MACHINE_DROPGOODS).equals(system)) {
             //接收并转数据类型
-            AlarmMessageBean<Map<String, String>> alarmMessageBean = JSONObject.parseObject(message,
-                    new TypeReference<AlarmMessageBean<Map<String, String>>>() {
+            AlarmMessageBean<MachineDropGoodsBean> alarmMessageBean = JSONObject.parseObject(message,
+                    new TypeReference<AlarmMessageBean<MachineDropGoodsBean>>() {
                     });
-            Map<String, String> dropGoodsInfo = alarmMessageBean.getData();
-            String machineCode = "";
-            for (String key : dropGoodsInfo.keySet()) {
-                log.info("机器掉货异常，machineCode:{},channelCode:{}", key, dropGoodsInfo.get(key));
-                machineCode = key;
-            }
+            MachineDropGoodsBean machineDropGoods = alarmMessageBean.getData();
+            String machineCode = machineDropGoods.getMachineCode();
             //根据机器编码查询点位接口
             List<MachineLocaleInfo> machineLocaleInfos = new ArrayList<>();
             MachineLocaleInfo machineLocale = new MachineLocaleInfo();
