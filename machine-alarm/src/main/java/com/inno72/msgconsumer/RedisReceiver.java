@@ -195,7 +195,7 @@ public class RedisReceiver {
                         msgUtil.sendPush(code, params, "machineCode", "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
                     } else if (updateNum > 5 && (updateNum - 5) % 2 == 0) {
                         //钉钉报警接口
-                        String code = "push_dingding_checkNetClose";
+                        String code = "dingding_alarm_common";
                         Map<String, String> params = new HashMap<>();
                         params.put("machineCode", machineCode);
                         params.put("localStr", localStr);
