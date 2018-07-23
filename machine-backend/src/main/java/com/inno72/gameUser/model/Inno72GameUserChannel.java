@@ -1,9 +1,11 @@
 package com.inno72.gameUser.model;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
 import java.util.Date;
 
 public class Inno72GameUserChannel {
@@ -55,6 +57,9 @@ public class Inno72GameUserChannel {
      * 创建时间
      */
     @Column(name="create_time")
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
     private Date createTime;
 
     private String keyword;
