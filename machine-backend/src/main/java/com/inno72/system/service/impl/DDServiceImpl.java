@@ -209,6 +209,9 @@ public class DDServiceImpl implements DDService {
 			}
 			// 历经九九八十一难终于拿到用户的一个标识
 			Inno72User user = userService.findBy("dingId", dingIdResult.getData());
+			if (user == null) {
+				return Results.failure("未找到用户");
+			}
 			// List<Inno72Function> functions = functionService.findAll();
 			List<Inno72Function> functions = functionService.findFunctionsByUserId(user.getId());
 			String token = StringUtil.getUUID();

@@ -26,6 +26,7 @@ public class CustomerHttpServletRequestWrapper extends HttpServletRequestWrapper
 		try {
 			byte[] encryptRequestBodyBytes = StreamUtils.copyToByteArray(request.getInputStream());
 			String encryptRequestBody = new String(encryptRequestBodyBytes);
+			logger.info("请求{}接口加密参数为{}", request.getRequestURI(), encryptRequestBody);
 			String message = AesUtils.decrypt(encryptRequestBody);
 			logger.info("请求{}接口参数为{}", request.getRequestURI(), new String(message));
 			requestBody = message.getBytes();
