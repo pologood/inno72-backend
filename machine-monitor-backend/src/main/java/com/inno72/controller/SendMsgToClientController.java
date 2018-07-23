@@ -44,6 +44,7 @@ public class SendMsgToClientController {
 			String machinKey = CommonConstants.REDIS_BASE_PATH + msg.getMachineId();
 			String sessionId = redisUtil.get(machinKey);
 			if (!com.inno72.common.utils.StringUtil.isEmpty(sessionId)) {
+                logger.info("发送数据: {} --> {}", sessionId, result);
 				boolean sr = SocketHolder.send(sessionId, result);
 				map.put(msg.getMachineId(), sr ? "发送成功" : "发送失败");
 			} else {

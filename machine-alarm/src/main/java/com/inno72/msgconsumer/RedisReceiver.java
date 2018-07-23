@@ -85,20 +85,17 @@ public class RedisReceiver {
                 localStr = machineLocale.getLocaleStr();
             }
             //调用接口查询故障信息
-            JSONObject jsonObj = JSONObject.parseObject(goodsChannelStatus);
-            JSONArray jsonArray = jsonObj.getJSONArray("goodsChannelStatus");
-            String js = JSONObject.toJSONString(jsonArray, SerializerFeature.WriteClassName);
-            List<GoodsChannelBean> collection = JSONObject.parseArray(js, GoodsChannelBean.class);
-            String machineNetInfoString = JSONObject.toJSON(collection).toString();
+            List<GoodsChannelBean> goodsChannelBean = JSON.parseArray(goodsChannelStatus, GoodsChannelBean.class);
+            String machineNetInfoString = JSONObject.toJSON(goodsChannelBean).toString();
             String urlProp = machineAlarmProperties.getProps().get("findChannelError");
             String result = HttpClient.post(urlProp, machineNetInfoString);
             JSONObject json = JSONObject.parseObject(result);
             List<GoodsChannelBean> goodsChannelBeans = JSON.parseArray(json.getString("data"), GoodsChannelBean.class);
 
             //获取货道号与故障描述
-            for (GoodsChannelBean goodsChannelBean : goodsChannelBeans) {
-                int channelNum = goodsChannelBean.getGoodsChannelNum();
-                String describtion = goodsChannelBean.getDescription();
+            for (GoodsChannelBean goodsChannel : goodsChannelBeans) {
+                int channelNum = goodsChannel.getGoodsChannelNum();
+                String describtion = goodsChannel.getDescription();
                 String code = "sms_alarm_common";
                 Map<String, String> params = new HashMap<>();
                 params.put("machineCode", machineId);

@@ -46,6 +46,7 @@ public class Inno72Goods {
     /**
      * 店铺ID
      */
+    @NotBlank(message="请选择店铺")
     @Column(name = "shop_id")
     private String shopId;
 
@@ -182,8 +183,18 @@ public class Inno72Goods {
     public void setSellerId(String sellerId) {
         this.sellerId = sellerId;
     }
+    
+    
 
-    /**
+    public String getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(String shopId) {
+		this.shopId = shopId;
+	}
+
+	/**
      * 获取图片
      *
      * @return img - 图片

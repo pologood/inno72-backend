@@ -80,13 +80,16 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (machine == null) {
 			return Results.failure("machineCode传入错误");
 		}
+		List<Inno72SupplyChannel> channels = JSON.parseArray(JSON.toJSONString(msg.get("channelJson")),
+				Inno72SupplyChannel.class);
+		if (channels == null || channels.isEmpty()) {
+			return Results.failure("货道信息传入错误");
+		}
 		machine.setBluetoothAddress(bluetoothAddress);
 		machine.setUpdateId("initMachine");
 		machine.setUpdateTime(LocalDateTime.now());
 		machine.setMachineStatus(Inno72Machine.Machine_Status.INIT.v());
 		inno72MachineMapper.updateByPrimaryKeySelective(machine);
-		List<Inno72SupplyChannel> channels = JSON.parseArray(JSON.toJSONString(msg.get("channelJson")),
-				Inno72SupplyChannel.class);
 		Result<String> initResult = supplyChannelService.initChannel(machine.getId(), channels);
 		if (initResult.getCode() != Result.SUCCESS) {
 			return initResult;

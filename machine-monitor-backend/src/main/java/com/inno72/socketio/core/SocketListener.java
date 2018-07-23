@@ -71,7 +71,7 @@ public class SocketListener {
 		return new DataListener<String>() {
 			@Override
 			public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
-				logger.info("连接ID【{}】接收到【{}】发送的数据【{}】", client.getSessionId(), client.getRemoteAddress(), data);
+                logger.info("连接ID【{}】接收到【{}】发送的数据", client.getSessionId(), client.getRemoteAddress());
 				handler.process(client.getSessionId().toString(), data, client.getHandshakeData().getUrlParams());
 			}
 		};
