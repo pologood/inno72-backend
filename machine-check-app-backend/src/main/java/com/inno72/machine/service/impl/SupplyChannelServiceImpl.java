@@ -497,8 +497,8 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     }
 
     @Override
-    public List<Inno72SupplyChannel> findByTaskParam() {
-        List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectTaskParam();
+    public List<Inno72SupplyChannel> findByTaskParam(int lackGoodsType) {
+        List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectTaskParam(lackGoodsType);
         return list;
     }
 

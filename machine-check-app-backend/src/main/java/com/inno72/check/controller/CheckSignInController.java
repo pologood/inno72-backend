@@ -4,9 +4,7 @@ import com.inno72.check.model.Inno72CheckSignIn;
 import com.inno72.check.service.CheckSignInService;
 import com.inno72.check.vo.MachineSignInVo;
 import com.inno72.common.Result;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -25,24 +23,23 @@ public class CheckSignInController {
      * @param signIn
      * @return
      */
-    @RequestMapping(value="add")
-    public Result<String> add(Inno72CheckSignIn signIn){
+    @RequestMapping(value="add", method = {RequestMethod.POST,RequestMethod.GET})
+    public Result<String> add(@RequestBody Inno72CheckSignIn signIn){
         Result<String> result = checkSignInService.add(signIn);
         return result;
     }
 
     /**
      * 查询本月打卡记录
-     * @param machineId
      * @return
      */
-    @RequestMapping(value="list")
-    public Result<List<Inno72CheckSignIn>> list(String machineId){
-        Result<List<Inno72CheckSignIn>> result = checkSignInService.findThisMonth(machineId);
+    @RequestMapping(value="list", method = {RequestMethod.POST,RequestMethod.GET})
+    public Result<List<Inno72CheckSignIn>> list(@RequestBody Inno72CheckSignIn signIn){
+        Result<List<Inno72CheckSignIn>> result = checkSignInService.findThisMonth(signIn.getMachineId());
         return result;
     }
 
-    @RequestMapping(value="machineList")
+    @RequestMapping(value="machineList", method = {RequestMethod.POST,RequestMethod.GET})
     public Result<List<MachineSignInVo>> machineSignInList(){
         Result<List<MachineSignInVo>> result = checkSignInService.findMachineSignList();
         return result;

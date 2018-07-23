@@ -125,6 +125,9 @@ public class Inno72SupplyChannel {
 	private String goodsName;
 
 	@Transient
+	private String machineCode;
+
+	@Transient
 	private List<Inno72CheckUser> checkUserList;
 
 	/**
@@ -436,6 +439,14 @@ public class Inno72SupplyChannel {
 
 	public void setGoodsName(String goodsName) {
 		this.goodsName = goodsName;
+	}
+
+	public String getMachineCode() {
+		return machineCode;
+	}
+
+	public void setMachineCode(String machineCode) {
+		this.machineCode = machineCode;
 	}
 
 	public List<Inno72CheckUser> getCheckUserList() {

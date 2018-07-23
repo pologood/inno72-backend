@@ -28,7 +28,8 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	@Resource
 	private IRedisUtil redisUtil; // memcachedClient
 
-	private static List<String> doNotCheckUs = Arrays.asList(new String[] { "/check/user/smsCode","/check/user/login" });
+	private static List<String> doNotCheckUs = Arrays.asList(new String[] { "/check/user/smsCode","/check/user/login",
+	"/check/user/jiami"});
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)

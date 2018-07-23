@@ -3,10 +3,9 @@ package com.inno72.machine.controller;
 import com.inno72.common.Result;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import com.inno72.machine.vo.SupplyChannelVo;
+import com.inno72.machine.vo.SupplyRequestVo;
+import org.springframework.web.bind.annotation.*;
 import sun.misc.Request;
 
 import javax.annotation.Resource;
@@ -22,13 +21,11 @@ public class MachineController {
 
     /**
      * 设置机器点位及管理人
-     * @param machineId
-     * @param localeId
      * @return
      */
     @RequestMapping(value="set" ,method = {RequestMethod.POST,RequestMethod.GET})
-    public Result<String> setMachine(String machineId, String localeId){
-        Result<String> result = machineService.setMachine(machineId,localeId);
+    public Result<String> setMachine(@RequestBody SupplyRequestVo vo){
+        Result<String> result = machineService.setMachine(vo.getMachineId(),vo.getLocaleId());
         return result;
     }
 
@@ -36,7 +33,7 @@ public class MachineController {
      * 查询管理的机器
      * @return
      */
-    @RequestMapping(value="list")
+    @RequestMapping(value="list", method = {RequestMethod.POST,RequestMethod.GET})
     public Result<List<Inno72Machine>> list(){
         Result<List<Inno72Machine>> result = machineService.getMachineList();
         return result;

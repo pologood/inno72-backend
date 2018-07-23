@@ -34,7 +34,7 @@ public class Inno72CheckFault {
      * 类型
      */
     @Column(name="type")
-    private int type;
+    private String type;
 
     @Column(name="child_type")
     private String childType;
@@ -136,11 +136,11 @@ public class Inno72CheckFault {
         this.code = code;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
     }
 

@@ -83,6 +83,8 @@ public class Inno72CheckUser {
     @Column(name="is_delete")
     private int isDelete;
 
+    private String smsCode;
+
     public String getId() {
         return id;
     }
@@ -169,5 +171,13 @@ public class Inno72CheckUser {
 
     public void setIsDelete(int isDelete) {
         this.isDelete = isDelete;
+    }
+
+    public String getSmsCode() {
+        return smsCode;
+    }
+
+    public void setSmsCode(String smsCode) {
+        this.smsCode = smsCode;
     }
 }

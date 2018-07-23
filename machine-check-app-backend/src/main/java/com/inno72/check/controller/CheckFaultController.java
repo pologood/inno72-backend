@@ -15,6 +15,7 @@ import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/check/fault")
 @CrossOrigin
@@ -31,7 +32,7 @@ public class CheckFaultController {
      * @return
      */
     @RequestMapping(value="/add" , method = {RequestMethod.POST,RequestMethod.GET})
-    public Result add(Inno72CheckFault checkFault){
+    public Result add(@RequestBody Inno72CheckFault checkFault){
         Result result = checkFaultService.addCheckFault(checkFault);
         return result;
     }
@@ -42,19 +43,18 @@ public class CheckFaultController {
      * @return
      */
     @RequestMapping(value="/finish",method = {RequestMethod.POST,RequestMethod.GET})
-    public Result finish(Inno72CheckFault checkFault){
+    public Result finish(@RequestBody Inno72CheckFault checkFault){
         Result result = checkFaultService.finish(checkFault);
         return result;
     }
 
     /**
      * 故障集合
-     * @param status
      * @return
      */
     @RequestMapping(value="/list",method = {RequestMethod.POST,RequestMethod.GET})
-    public ModelAndView list(Integer status){
-        List<Inno72CheckFault> list = checkFaultService.findForPage(status);
+    public ModelAndView list(@RequestBody Inno72CheckFault inno72CheckFault){
+        List<Inno72CheckFault> list = checkFaultService.findForPage(inno72CheckFault.getStatus());
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
 
@@ -71,35 +71,31 @@ public class CheckFaultController {
 
     /**
      * 编辑故障
-     * @param faultId
-     * @param remark
      * @return
      */
     @RequestMapping(value="/edit",method = {RequestMethod.POST,RequestMethod.GET})
-    public Result<String> edit(String faultId,String remark){
-        checkFaultService.editRemark(faultId,remark);
+    public Result<String> edit(@RequestBody Inno72CheckFault inno72CheckFault){
+        checkFaultService.editRemark(inno72CheckFault.getId(),inno72CheckFault.getFinishRemark());
         return ResultGenerator.genSuccessResult();
     }
 
     /**
      * 查询详情
-     * @param faultId
      * @return
      */
     @RequestMapping(value="/detail",method = {RequestMethod.POST,RequestMethod.GET})
-    public Result<Inno72CheckFault> detail(String faultId){
-        Result<Inno72CheckFault> result = checkFaultService.getDetail(faultId);
+    public Result<Inno72CheckFault> detail(@RequestBody Inno72CheckFault inno72CheckFault){
+        Result<Inno72CheckFault> result = checkFaultService.getDetail(inno72CheckFault.getId());
         return result;
     }
 
     /**
      * 查询故障类型
-     * @param parentCode
      * @return
      */
-    @RequestMapping(value = "/typeList")
-    public Result<List<Inno72CheckFaultType>> typeList(String parentCode){
-        Result<List<Inno72CheckFaultType>> result = checkFaultService.getTypeList(parentCode);
+    @RequestMapping(value = "/typeList", method = {RequestMethod.POST,RequestMethod.GET})
+    public Result<List<Inno72CheckFaultType>> typeList(@RequestBody Inno72CheckFault inno72CheckFault){
+        Result<List<Inno72CheckFaultType>> result = checkFaultService.getTypeList(inno72CheckFault.getType());
         return result;
     }
 }

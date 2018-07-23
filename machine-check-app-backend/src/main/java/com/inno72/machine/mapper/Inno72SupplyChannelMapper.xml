@@ -22,6 +22,7 @@
     <result column="goodsCode" jdbcType="VARCHAR" property="goodsCode"/>
     <result column="goodsId" jdbcType="VARCHAR" property="goodsId"/>
     <result column="goodsStatus" jdbcType="INTEGER" property="goodsStatus"/>
+    <result column="machineCode" jdbcType="VARCHAR" property="machineCode"/>
     <association property="checkUserList" resultMap="CheckUserList"/>
   </resultMap>
 
@@ -229,12 +230,20 @@
     t3.name goodsName,
     t5.name checkUserName,
     t5.id checkUserId,
-    t5.phone checkUserPhone
+    t5.phone checkUserPhone,
+    t6.machine_code machineCode
     from inno72_supply_channel t1
     inner join inno72_supply_channel_goods t2 on t1.id=t2.supply_channel_id
     inner join inno72_goods t3 on t2.goods_id=t3.id
     left join inno72_check_user_machine t4 on t1.machine_id=t4.machine_id
     left join inno72_check_user t5 on t5.id=t4.check_user_id
-    where (t1.goods_count/t1.volume_count) <![CDATA[ <= ]]> 0.2
+    left join inno72_machine t6 on t1.machine_id=t6.id
+    where
+     <if test="lackGoodsType==1">
+       (t1.goods_count/t1.volume_count) <![CDATA[ <= ]]> 0.1
+     </if>
+    <if test="lackGoodsType==2">
+      (t1.goods_count/t1.volume_count) <![CDATA[ <= ]]> 0.2
+    </if>
   </select>
 </mapper>
