@@ -34,8 +34,12 @@
 			u.is_delete
 		from inno72_check_user  u
 		WHERE u.is_delete=0 
-		<if test="keyword !=null and keyword !=''">and ( u.name LIKE '%${keyword}%' or u.phone LIKE '%${keyword}%' or u.enterprise LIKE '%${keyword}%)</if>
+		<if test="keyword !=null and keyword !=''">and ( u.name LIKE '%${keyword}%' or u.phone LIKE '%${keyword}%' or u.enterprise LIKE '%${keyword}%' )</if>
 		ORDER BY u.update_time DESC
+  </select>
+  
+  <select id="getCount" parameterType="String" resultType="int">
+		SELECT count(1) from inno72_check_user  u WHERE u.is_delete=0 and u.card_no=#{cardNo}
   </select>
   
   <!-- 人员详情-->
@@ -90,8 +94,10 @@
 			m.machine_code AS machine_code
 		FROM
 			inno72_admin_area a
-			LEFT JOIN inno72_locale locale ON LEFT ( locale.area_code, #{num}) = LEFT ( a.CODE, #{num})
-			LEFT JOIN inno72_machine m ON locale.id = m.locale_id
+			LEFT JOIN (
+				SELECT m.machine_code,	m.id, locale.area_code FROM inno72_machine m
+				LEFT JOIN inno72_locale locale ON locale.id = m.locale_id
+			) m ON LEFT ( m.area_code,#{num}) = LEFT ( a.CODE,#{num})
 		WHERE
 		<if test="code !=null and code !='' ">a.parent_code = #{code}  </if>
 		<if test="level !=null and level !='' ">a.LEVEL = #{level}  </if>

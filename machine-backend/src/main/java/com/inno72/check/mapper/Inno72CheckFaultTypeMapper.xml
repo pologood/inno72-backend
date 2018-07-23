@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.check.mapper.Inno72CheckFaultTypeMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.check.model.Inno72CheckFaultType">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="code" jdbcType="VARCHAR" property="code" />
+    <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="parent_name" jdbcType="VARCHAR" property="parentName" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  <select id="selectByPage" parameterType="String" resultMap="BaseResultMap">
+		SELECT t.`code`,t.`name`,
+		group_concat(tt.`name`) AS parent_name,
+		t.create_time,
+		u.`name` AS create_id
+		from
+		inno72_check_fault_type t
+		LEFT JOIN inno72_check_fault_type tt ON tt.parent_code = t.code
+		LEFT JOIN inno72_user u ON u.id = t.create_id
+		WHERE t.level=1
+		<if test="keyword !=null and keyword !='' ">
+			AND ( t.name LIKE '%${keyword}%' 
+			or tt.name LIKE '%${keyword}%'
+			or u.name LIKE '%${keyword}%'  
+			)
+		</if>
+		
+		GROUP BY t.`code`
+  </select>
+  
+  <insert id="insertFaultTypeList" parameterType="java.util.List">
+        insert into inno72_check_fault_type (code, parent_code,name,parent_name,level,create_id,create_time,update_id,update_time)
+        values
+        <foreach collection="list" item="type" index="index" separator=",">
+            (#{type.code},#{type.parentCode},#{type.name},#{type.parentName},#{type.level},#{type.createId},#{type.createTime},#{type.updateId},#{type.updateTime})
+        </foreach>
+   </insert>
+   
+   <delete id="deleteByParentCode" parameterType="String">
+		DELETE FROM inno72_check_fault_type WHERE parent_code=#{code}
+  </delete>
+  
+  
+  	<resultMap id="ResultTypeDetailMap" extends="BaseResultMap" type="com.inno72.check.vo.Inno72CheckFaultTypeVo">
+	    <association property="solutions" resultMap="solutionResult" />
+	</resultMap>
+	<resultMap id="solutionResult" type="com.inno72.check.model.Inno72CheckFaultType">
+    	<id column="child_code" jdbcType="VARCHAR" property="code" />
+    	<result column="child_name" jdbcType="VARCHAR" property="name" />
+  	</resultMap>
+	
+	
+	<select id="selectTypeDetail" parameterType="String" resultMap="ResultTypeDetailMap">
+		SELECT 
+			t.`code`,t.`name`,
+			tt.code AS child_code,
+			tt.name AS child_name
+		from
+		inno72_check_fault_type t
+		LEFT JOIN inno72_check_fault_type tt ON tt.parent_code = t.code
+		WHERE t.level=1
+		AND t.code = #{code}
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+</mapper>

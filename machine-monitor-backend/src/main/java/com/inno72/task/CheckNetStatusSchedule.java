@@ -1,11 +1,9 @@
 package com.inno72.task;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.MachineMonitorBackendProperties;
 import com.inno72.model.MachineLogInfo;
-import com.inno72.model.NetOffMachineInfo;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.vo.MachineNetInfo;
 import org.slf4j.Logger;
@@ -13,11 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,45 +37,68 @@ public class CheckNetStatusSchedule {
 	@Autowired
 	private MachineMonitorBackendProperties machineMonitorBackendProperties;
 
-	@Scheduled(cron = "0 0/15 * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
+    //@Scheduled(cron = "0/5 * * * * ?")
 	public void checkNetStatus() {
 
 		log.info("检查并修改网络状态的定时任务，开始执行");
-		//获取当前时间10分钟后的时间
-		LocalDateTime localDateTime = LocalDateTime.now();
-		LocalDateTime before = localDateTime.minusMinutes(10);
-		//查询库
-		Query query = new Query();
-		query.addCriteria(Criteria.where("createTime").lte(before));
-		List<MachineLogInfo> list= mongoTpl.find(query,MachineLogInfo.class,"MachineLogInfo");
-		log.info("网络断开的机器有{}台",list.size());
-		if(null != list){
-			List<MachineNetInfo> machineNetInfoList = new ArrayList<>();
-			for(MachineLogInfo machineLogInfo : list){
-				MachineNetInfo machineNetInfo = new MachineNetInfo();
-				machineNetInfo.setMachineCode(machineLogInfo.getMachineId());
-				machineNetInfo.setNetStatus(CommonConstants.NET_CLOSE);
-				machineNetInfoList.add(machineNetInfo);
-			}
-            String machineNetInfoString = JSONObject.toJSON(machineNetInfoList).toString();
-			String urlProp = machineMonitorBackendProperties.getProps().get("updateMachineListNetStatusUrl");
-			String result = HttpClient.post(urlProp, machineNetInfoString);
-			JSONObject jsonObject = JSONObject.parseObject(result);
-			Integer resultCdoe = jsonObject.getInteger("code");
-			List<MachineNetInfo> machineIdListInfo = JSON.parseArray(jsonObject.getString("data"), MachineNetInfo.class);
-			//维护一个断网机器信息表
-			if(CommonConstants.RESULT_SUCCESS.equals(resultCdoe) && machineIdListInfo != null){
-                log.info("修改后台机器网络状态为成功，个数：{}", machineIdListInfo.size());
-				for(MachineNetInfo machineNetInfoOne : machineIdListInfo){
-					NetOffMachineInfo netOffMachineInfo = new NetOffMachineInfo();
-					netOffMachineInfo.setMachineId(machineNetInfoOne.getMachineCode());
-					mongoTpl.save(netOffMachineInfo,"NetOffMachineInfo");
-				}
-			}
+        //查询库中所有数据
+        List<MachineLogInfo> list = mongoTpl.find(new Query(), MachineLogInfo.class, "MachineLogInfo");
+        if (null != list) {
+            List<MachineLogInfo> newMachineNetCloseList = new ArrayList<>();
+            List<MachineLogInfo> newMachineNetOpenList = new ArrayList<>();
+            for (MachineLogInfo machineLogInfo : list) {
+                LocalDateTime createTime = machineLogInfo.getCreateTime();
+                Duration duration = Duration.between(createTime, LocalDateTime.now());
+                long between = duration.toMinutes();
+                if (between >= 10) {
+                    newMachineNetCloseList.add(machineLogInfo);
 
-		}
+                } else {
+                    newMachineNetOpenList.add(machineLogInfo);
 
-		log.info("检查并修改网络状态的定时任务，执行结束");
+                }
+            }
+            if (newMachineNetCloseList.size() > 0) {
+                log.info("网络断开的机器有{}台", newMachineNetCloseList.size());
+                List<MachineNetInfo> machineNetInfoList = new ArrayList<>();
+                for (MachineLogInfo machineLogInfo : newMachineNetCloseList) {
+                    MachineNetInfo machineNetInfo = new MachineNetInfo();
+                    machineNetInfo.setMachineCode(machineLogInfo.getMachineId());
+                    machineNetInfo.setNetStatus(CommonConstants.NET_CLOSE);
+                    machineNetInfoList.add(machineNetInfo);
+                }
+                String machineNetInfoString = JSONObject.toJSON(machineNetInfoList).toString();
+                String urlProp = machineMonitorBackendProperties.getProps().get("updateMachineListNetStatusUrl");
+                String result = HttpClient.post(urlProp, machineNetInfoString);
+                JSONObject jsonObject = JSONObject.parseObject(result);
+                if (CommonConstants.RESULT_SUCCESS.equals(jsonObject.getInteger("code"))) {
+                    log.info("修改后台网络状态成功");
+                }
 
+            }
+            if (newMachineNetOpenList.size() > 0) {
+                log.info("网络连接中的机器有{}台", newMachineNetOpenList.size());
+                List<MachineNetInfo> machineNetInfoList = new ArrayList<>();
+                for (MachineLogInfo machineLogInfo : list) {
+                    MachineNetInfo machineNetInfo = new MachineNetInfo();
+                    machineNetInfo.setMachineCode(machineLogInfo.getMachineId());
+                    machineNetInfo.setNetStatus(CommonConstants.NET_OPEN);
+                    machineNetInfoList.add(machineNetInfo);
+                    String machineNetInfoString = JSONObject.toJSON(machineNetInfoList).toString();
+                    String urlProp = machineMonitorBackendProperties.getProps().get("updateMachineListNetStatusUrl");
+                    String result = HttpClient.post(urlProp, machineNetInfoString);
+                    JSONObject jsonObject = JSONObject.parseObject(result);
+                    if (CommonConstants.RESULT_SUCCESS.equals(jsonObject.getInteger("code"))) {
+                        log.info("修改后台网络状态成功");
+                    }
+                }
+
+            }
+            log.info("检查并修改网络状态的定时任务，执行结束");
+
+        } else {
+            return;
+        }
 	}
 }

@@ -84,7 +84,7 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 		
 		int n= inno72ActivityMapper.selectIsUseing(id);
 		if (n>0) {
-			return Results.failure("活动使用中，不能删除！");
+			return Results.failure("活动已排期，未结束，不能删除！");
 		}
 		Inno72Activity model = inno72ActivityMapper.selectByPrimaryKey(id);
 		model.setIsDelete(1);//0正常,1结束

@@ -91,7 +91,7 @@ public class ActivityPlanController {
     }
 
     @RequestMapping(value = "/selectNoPlanMachines", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<List<Inno72NoPlanInfoVo>> selectNoPlanMachines(@RequestBody String taskTime) {
+    public Result<List<Inno72NoPlanInfoVo>> selectNoPlanMachines(@RequestParam String taskTime) {
    	   	//联动查询
         List<Inno72NoPlanInfoVo> list = activityPlanService.selectNoPlanMachineList(taskTime);
         return ResultGenerator.genSuccessResult(list);

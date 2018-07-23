@@ -32,17 +32,19 @@ public class MachineController {
 	@Resource
 	private MachineService machineService;
 
-	/**
-	 * 初始化机器id
-	 * 
-	 * @param deviceId
-	 * @return
-	 */
-	@RequestMapping(value = "/initMachine", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> initMachine(@RequestParam String deviceId, @RequestParam String channelJson) {
-		return machineService.initMachine(deviceId, channelJson);
-
-	}
+	// /**
+	// * 初始化机器id
+	// *
+	// * @param deviceId
+	// * @return
+	// */
+	// @RequestMapping(value = "/initMachine", method = { RequestMethod.POST,
+	// RequestMethod.GET })
+	// public Result<String> initMachine(@RequestParam String deviceId,
+	// @RequestParam String channelJson) {
+	// return machineService.initMachine(deviceId, channelJson);
+	//
+	// }
 
 	/**
 	 * 更新机器网络状态

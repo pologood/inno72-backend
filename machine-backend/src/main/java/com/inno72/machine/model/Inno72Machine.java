@@ -82,15 +82,20 @@ public class Inno72Machine {
 
 	private String address;
 
+	@Column(name = "bluetooth_address")
+	private String bluetoothAddress;
+
 	public enum Machine_Status {
-		// 在厂测试
-		INFACTORY(1),
+		// 开机
+		START(1),
+		// 初始化机器
+		INIT(2),
 		// 通过测试
-		PASSTEST(2),
+		PASSTEST(3),
 		// 设置在点位
-		INLOCAL(3),
+		INLOCAL(4),
 		// 正常
-		NORMAL(4);
+		NORMAL(5);
 
 		private int v;
 

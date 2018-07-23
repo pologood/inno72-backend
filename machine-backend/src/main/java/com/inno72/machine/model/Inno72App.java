@@ -24,6 +24,12 @@ public class Inno72App {
 	@Column(name = "app_name")
 	private String appName;
 
+	@Column(name = "app_belong")
+	private Integer appBelong;
+
+	@Column(name = "download_url")
+	private String downloadUrl;
+
 	/**
 	 * @return id
 	 */
@@ -66,6 +72,22 @@ public class Inno72App {
 
 	public void setAppName(String appName) {
 		this.appName = appName;
+	}
+
+	public Integer getAppBelong() {
+		return appBelong;
+	}
+
+	public void setAppBelong(Integer appBelong) {
+		this.appBelong = appBelong;
+	}
+
+	public String getDownloadUrl() {
+		return downloadUrl;
+	}
+
+	public void setDownloadUrl(String downloadUrl) {
+		this.downloadUrl = downloadUrl;
 	}
 
 }

@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -55,6 +56,10 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
     
     @Resource
     private Inno72ActivityPlanGameResultMapper inno72ActivityPlanGameResultMapper;
+    //yyyy-MM-dd HH:mm
+    private String timeRegex = "^((([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))|((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[3579][26])00))-02-29))\\s+([0-1]?[0-9]|2[0-3]):([0-5][0-9])$";
+
+
     
 
 	@Override
@@ -68,6 +73,11 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		}
 		if (StringUtil.isBlank(activityPlan.getStartTimeStr())||StringUtil.isBlank(activityPlan.getEndTimeStr())) {
 			return Results.failure("请选择计划时间");
+		}
+		boolean b1 = Pattern.matches(timeRegex, activityPlan.getStartTimeStr());
+		boolean b2 = Pattern.matches(timeRegex, activityPlan.getEndTimeStr());
+		if (!b1 || !b2) {
+			return Results.failure("计划时间应格式化到分");
 		}
 		if (StringUtil.isBlank(activityPlan.getActivityId())) {
 			return Results.failure("请选择活动");
@@ -95,6 +105,9 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			planingsParam.put("endTime", endTimeStr);
 			activityPlan.setStartTime(DateUtil.toDateTime(startTimeStr, DateUtil.DF_FULL_S1));
 			activityPlan.setEndTime(DateUtil.toDateTime(endTimeStr, DateUtil.DF_FULL_S1));
+			if (!activityPlan.getEndTime().isAfter(activityPlan.getStartTime())) {
+				return Results.failure("结束时间须小于开始时间");
+			}
 			
 			List<String> planings =inno72ActivityPlanMapper.selectPlanedMachine(planingsParam);
 			
@@ -269,7 +282,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		try {
 			activityPlan.setUpdateId(userId);
 			activityPlan.setUpdateTime(LocalDateTime.now());
-			//是否开始
+			//是否开始 大于0 已开始
 			int n =inno72ActivityPlanMapper.selectPlanIsState(activityPlan.getId());
 			if (StringUtil.isNotBlank(activityPlan.getStartTimeStr())) {
 				String startTimeStr = activityPlan.getStartTimeStr()+":00";
@@ -282,13 +295,15 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				LocalDateTime oldEndTime =inno72ActivityPlanMapper.selectByPrimaryKey(activityPlan).getEndTime();
 				String endTimeStr = activityPlan.getEndTimeStr()+":59";
 				LocalDateTime newEndTime = DateUtil.toDateTime(endTimeStr, DateUtil.DF_FULL_S1);
-				if (n==0) {
-					newEndTime.isBefore(oldEndTime);
+				if (n>0) {
 					if (!newEndTime.isBefore(oldEndTime)) {
 						return Results.failure("活动已开始结束时间只能向前修改");
 					}
 				}
 				activityPlan.setEndTime(newEndTime);
+			}
+			if (!activityPlan.getEndTime().isAfter(activityPlan.getStartTime())) {
+				return Results.failure("结束时间须小于开始时间");
 			}
 			
 			//活动游戏结果 集合
@@ -473,6 +488,11 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	public List<Inno72AdminAreaVo> selectAreaMachineList(String code,String level,String startTime,String endTime) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("code", code);
+		boolean b1 = Pattern.matches(timeRegex, startTime);
+		boolean b2 = Pattern.matches(timeRegex, endTime);
+		if (!b1 || !b2) {
+			return null;
+		}
 		if (StringUtil.isNotBlank(startTime)) {
 			params.put("startTime", startTime+":00");
 		}
@@ -506,7 +526,6 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 						canUseNum++;
 						machineVo.setState("0");
 					}else{
-						machineVo.setState("1");
 						temp.add(machineVo);
 					}
 				}

@@ -16,6 +16,8 @@ public interface Inno72CheckUserMapper extends Mapper<Inno72CheckUser> {
 	
 	List<Inno72CheckUser> selectByPage(@Param("keyword")String keyword);
 	
+	int getCount(@Param("cardNo") String cardNo);
+	
 	Inno72CheckUserVo selectUserDetail(String id);
 	
 	List<Inno72AdminAreaVo> selectAreaMachineList(Map<String, Object> params);

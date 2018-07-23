@@ -1,10 +1,8 @@
 package com.inno72.common.interceptor;
 
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,8 +10,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.alibaba.fastjson.JSON;
-import com.inno72.redis.IRedisUtil;
-import com.inno72.utils.page.Pagination;
 
 /**
  * 项目拦截器
@@ -23,56 +19,39 @@ import com.inno72.utils.page.Pagination;
  */
 public class LogInterceptor extends HandlerInterceptorAdapter {
 
-	@Resource
-	private IRedisUtil redisUtil; // memcachedClient
-
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 
-		// 检查POST方法，token，url权限, 启用后删除检查参数中的token
-		checkAuthority(request, response);
-		@SuppressWarnings("rawtypes")
-		Enumeration enumeration = request.getParameterNames();
-		StringBuffer parm = new StringBuffer();
-
-		// 移除分页对象
-		Pagination.threadLocal.remove();
-		while (enumeration.hasMoreElements()) {
-			Object element = enumeration.nextElement();
-			if (element instanceof String) {
-				String name = (String) element;
-				Object attr = request.getParameter(name);
-				boolean isv = false;
-				if (name.equals("v") || name.equals("V")) {
-					isv = true;
-				}
-				if (!isv) {
-					parm.append(name).append("=").append(attr).append("&");
-
-					String attrStr = (String) attr;
-
-					if (name.equals("pageNo")) {
-						Pagination pagination = new Pagination();
-						int pageNo = 1;
-						try {
-							if (attrStr.indexOf("_") != -1) {
-								pageNo = Integer.parseInt(attrStr.split("_")[0]);
-								pagination.setPageSize(Integer.parseInt(attrStr.split("_")[1]));
-							} else {
-								pageNo = Integer.parseInt(attrStr);
-							}
-							pagination.setPageNo(pageNo);
-						} catch (Exception e) {
-						}
-						pagination.setPageNo(pageNo);
-						Pagination.threadLocal.set(pagination);
-					}
-				}
-
-			}
-		}
-
+		// StringBuilder stringBuilder = new StringBuilder();
+		// BufferedReader bufferedReader = null;
+		// try {
+		// InputStream inputStream = request.getInputStream();
+		// if (inputStream != null) {
+		// bufferedReader = new BufferedReader(new
+		// InputStreamReader(inputStream));
+		// char[] charBuffer = new char[128];
+		// int bytesRead = -1;
+		// while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
+		// stringBuilder.append(charBuffer, 0, bytesRead);
+		// }
+		// } else {
+		// stringBuilder.append("");
+		// }
+		// } catch (IOException ex) {
+		// throw ex;
+		// } finally {
+		// if (bufferedReader != null) {
+		// try {
+		// bufferedReader.close();
+		// } catch (IOException ex) {
+		// throw ex;
+		// }
+		// }
+		// }
+		// String body = stringBuilder.toString();
+		// System.out.println(body);
+		// response.getOutputStream().write(body.getBytes());
 		return true;
 
 	}
@@ -140,18 +119,6 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 		_log.put(request.getRequestURI(), map);
 
 		return null;
-	}
-
-	private boolean checkAuthority(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return true;
-	}
-
-	public IRedisUtil getRedisUtil() {
-		return redisUtil;
-	}
-
-	public void setRedisUtil(IRedisUtil redisUtil) {
-		this.redisUtil = redisUtil;
 	}
 
 }

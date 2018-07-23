@@ -6,7 +6,6 @@ import com.alibaba.fastjson.TypeReference;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.MachineMonitorBackendProperties;
 import com.inno72.model.*;
-import com.inno72.plugin.http.HttpClient;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.socketio.core.SocketServer;
 import com.inno72.socketio.core.SocketServerHandler;
@@ -23,7 +22,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -72,13 +70,13 @@ public class SocketIOStartHandler {
 						String machineId = machineStatus.getMachineId();
 						machineStatus.setCreateTime(LocalDateTime.now());
                         //将货道故障信息推送到预警系统
-						/*if(!StringUtils.isEmpty(machineStatus.getGoodsChannelStatus())){
+						if (!StringUtils.isEmpty(machineStatus.getGoodsChannelStatus())) {
 							AlarmMessageBean alarmMessageBean = new AlarmMessageBean();
 							alarmMessageBean.setSystem("machineChannel");
 							alarmMessageBean.setType("machineChannelException");
 							alarmMessageBean.setData(machineStatus);
 							redisUtil.publish("moniterAlarm",JSONObject.toJSONString(alarmMessageBean));
-						}*/
+						}
 						// 保存到mongo表中--先删除再保存
 						Query query = new Query();
 						query.addCriteria(Criteria.where("machineId").is(machineId));
@@ -123,8 +121,8 @@ public class SocketIOStartHandler {
 				query.addCriteria(Criteria.where("machineId").is(machineId));
 				mongoTpl.remove(query, "MachineLogInfo");
 				mongoTpl.save(machineLogInfo, "MachineLogInfo");
-				// 判断是否在断网机器表中存在，如果存在,修改机器主表中网络状态
-				Query queryNetOffMachine = new Query();
+				// 判断是否在断网机器表中存在，如果存在,修改机器主表中网络状态并从断网机器表中删除
+				/*Query queryNetOffMachine = new Query();
 				queryNetOffMachine.addCriteria(Criteria.where("machineId").is(machineId));
 				Boolean flag = mongoTpl.exists(query, "NetOffMachineInfo");
 				if (true == flag) {
@@ -138,7 +136,7 @@ public class SocketIOStartHandler {
                         log.info("machineCode:{}修改后台管理系统，网络状态数据为：已连接", machineId);
 						mongoTpl.remove(query, "NetOffMachineInfo");
 					}
-				}
+				}*/
 
 			}
 

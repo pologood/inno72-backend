@@ -16,6 +16,8 @@
 		<result column="net_status" jdbcType="INTEGER" property="netStatus" />
 		<result column="device_id" jdbcType="VARCHAR" property="deviceId" />
 		<result column="address" jdbcType="VARCHAR" property="address" />
+		<result column="bluetooth_address" jdbcType="VARCHAR" property="bluetoothAddress" />
+		
 	</resultMap>
 
 	<resultMap id="VoResultMap" type="com.inno72.machine.vo.MachineListVo">

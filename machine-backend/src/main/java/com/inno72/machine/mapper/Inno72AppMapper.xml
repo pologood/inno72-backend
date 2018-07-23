@@ -9,5 +9,7 @@
     <result column="app_package_name" jdbcType="VARCHAR" property="appPackageName" />
     <result column="app_type" jdbcType="INTEGER" property="appType" />
     <result column="app_name" jdbcType="VARCHAR" property="appName" />
+    <result column="app_belong" jdbcType="INTEGER" property="appBelong" />
+    <result column="download_url" jdbcType="VARCHAR" property="downloadUrl" />
   </resultMap>
 </mapper>

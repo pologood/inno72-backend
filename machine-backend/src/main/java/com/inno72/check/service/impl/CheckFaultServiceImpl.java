@@ -19,6 +19,7 @@ import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
 import com.inno72.system.model.Inno72User;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +77,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			faultRemark.setRemark(remark);
 			faultRemark.setUserId(userId);
 			faultRemark.setType(2);
+			faultRemark.setCreateTime(LocalDateTime.now());
 			
 			inno72CheckFaultRemarkMapper.insert(faultRemark);
 			
