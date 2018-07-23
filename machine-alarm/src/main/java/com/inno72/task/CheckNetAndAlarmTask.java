@@ -113,7 +113,7 @@ public class CheckNetAndAlarmTask {
 
                 } else if (between > 8 && (between - 8) % 2 == 0) {
                     //钉钉报警接口
-                    String code = "push_dingding_checkNetClose";
+                    String code = "dingding_alarm_common";
                     Map<String, String> params = new HashMap<>();
                     params.put("machineCode", machineLogInfo.getMachineId());
                     params.put("localStr", localStr);
