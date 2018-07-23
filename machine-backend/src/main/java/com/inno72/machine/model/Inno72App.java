@@ -27,8 +27,8 @@ public class Inno72App {
 	@Column(name = "app_belong")
 	private Integer appBelong;
 
-	@Column(name = "download_url")
-	private String downloadUrl;
+	@Column(name = "url")
+	private String url;
 
 	/**
 	 * @return id
@@ -82,12 +82,12 @@ public class Inno72App {
 		this.appBelong = appBelong;
 	}
 
-	public String getDownloadUrl() {
-		return downloadUrl;
+	public String getUrl() {
+		return url;
 	}
 
-	public void setDownloadUrl(String downloadUrl) {
-		this.downloadUrl = downloadUrl;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 }
