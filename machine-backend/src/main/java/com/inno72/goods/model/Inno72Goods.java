@@ -46,6 +46,7 @@ public class Inno72Goods {
     /**
      * 店铺ID
      */
+    @NotBlank(message="请选择店铺")
     @Column(name = "shop_id")
     private String shopId;
 
