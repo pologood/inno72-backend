@@ -297,8 +297,8 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				String endTimeStr = activityPlan.getEndTimeStr()+":59";
 				LocalDateTime newEndTime = DateUtil.toDateTime(endTimeStr, DateUtil.DF_FULL_S1);
 				if (n>0) {
-					if (!newEndTime.isBefore(oldEndTime)) {
-						return Results.failure("活动已开始结束时间只能向前修改");
+					if (newEndTime.compareTo(oldEndTime)>0) {
+						return Results.failure("活动已开始,结束时间只能向前修改");
 					}
 				}
 				activityPlan.setEndTime(newEndTime);

@@ -120,7 +120,8 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 			return Results.failure("未找到用户登录信息");
 		}
 		int n=inno72GoodsMapper.selectIsUseing(id);
-		if (n>0) {
+		int m = inno72GoodsMapper.selectIsUseing1(id);
+		if (n>0 || m>0) {
 			return Results.failure("商品使用中，不能删除！");
 		}
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);

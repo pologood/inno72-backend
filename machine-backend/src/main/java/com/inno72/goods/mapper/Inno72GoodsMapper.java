@@ -13,6 +13,8 @@ public interface Inno72GoodsMapper extends Mapper<Inno72Goods> {
 	
 	int selectIsUseing(String id);
 	
+	int selectIsUseing1(String id);
+	
 	int getCount(@Param("code") String code);
 	
 	List<Inno72Goods> selectByPage(Map<String, Object> params);
