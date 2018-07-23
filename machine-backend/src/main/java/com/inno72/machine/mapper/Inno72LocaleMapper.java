@@ -15,6 +15,8 @@ public interface Inno72LocaleMapper extends Mapper<Inno72Locale> {
 	
 	int selectIsUseing(String id);
 	
+	int selectIsUseingPlan(String id);
+	
 	List<Inno72LocaleVo> selectByPage(Map<String, Object> params);
 
 	/**

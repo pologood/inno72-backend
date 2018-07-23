@@ -132,15 +132,13 @@ public class RedisReceiver {
 
         } else if ((CommonConstants.SYS_MACHINE_DROPGOODS).equals(system)) {
             //接收并转数据类型
-            AlarmMessageBean<Map<String, String>> alarmMessageBean = JSONObject.parseObject(message,
-                    new TypeReference<AlarmMessageBean<Map<String, String>>>() {
+            AlarmMessageBean<MachineDropGoodsBean> alarmMessageBean = JSONObject.parseObject(message,
+                    new TypeReference<AlarmMessageBean<MachineDropGoodsBean>>() {
                     });
-            Map<String, String> dropGoodsInfo = alarmMessageBean.getData();
-            String machineCode = "";
-            for (String key : dropGoodsInfo.keySet()) {
-                log.info("机器掉货异常，machineCode:{},channelCode:{}", key, dropGoodsInfo.get(key));
-                machineCode = key;
-            }
+            MachineDropGoodsBean machineDropGoods = alarmMessageBean.getData();
+            String machineCode = machineDropGoods.getMachineCode();
+            String channelNum = machineDropGoods.getChannelNum();
+            String describtion = machineDropGoods.getDescribtion();
             //根据机器编码查询点位接口
             List<MachineLocaleInfo> machineLocaleInfos = new ArrayList<>();
             MachineLocaleInfo machineLocale = new MachineLocaleInfo();
@@ -177,7 +175,7 @@ public class RedisReceiver {
                         Map<String, String> params = new HashMap<>();
                         params.put("machineCode", machineCode);
                         params.put("localStr", localStr);
-                        params.put("text", "出现掉货异常，请及时处理");
+                        params.put("text", channelNum + describtion + "出现掉货异常，请及时处理");
                         //查询巡检人员手机号
                         Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
                         inno72CheckUserPhone.setMachineCode(machineCode);
@@ -199,7 +197,7 @@ public class RedisReceiver {
                         Map<String, String> params = new HashMap<>();
                         params.put("machineCode", machineCode);
                         params.put("localStr", localStr);
-                        params.put("text", "出现掉货异常，请及时处理");
+                        params.put("text", channelNum + describtion + "出现掉货异常，请及时处理");
                         msgUtil.sendDDTextByGroup(code, params, groupId, "machineAlarm-RedisReceiver");
 
                     }

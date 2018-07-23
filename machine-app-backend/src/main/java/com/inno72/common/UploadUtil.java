@@ -2,11 +2,14 @@ package com.inno72.common;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.inno72.oss.OSSUtil;
 
 public class UploadUtil {
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * 上传图片

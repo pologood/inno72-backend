@@ -84,6 +84,11 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		if (n > 0) {
 			return Results.failure("机器使用中，不能删除！");
 		}
+		//已排期未结束，不能修改
+		int m = inno72LocaleMapper.selectIsUseingPlan(id);
+		if (m > 0) {
+			return Results.failure("此点位机器已进行活动排期，暂不能删除！");
+		}
 		Inno72Locale model = inno72LocaleMapper.selectByPrimaryKey(id);
 		// 判断是否可以删除
 		model.setIsDelete(1);
@@ -116,6 +121,12 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
+			//已排期未结束，不能修改
+			int n = inno72LocaleMapper.selectIsUseingPlan(model.getId());
+			if (n > 0) {
+				return Results.failure("此点位机器已进行活动排期，暂不能修改！");
+			}
+			
 			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			
 			model.setUpdateId(userId);

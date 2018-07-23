@@ -40,7 +40,7 @@
 		FROM
 			inno72_activity_plan ap
 			LEFT JOIN inno72_activity a ON a.id = ap.activity_id 
-			LEFT JOIN inno72_activity_plan_machine apm ON apm.id=ap.id
+			LEFT JOIN inno72_activity_plan_machine apm ON apm.activity_plan_id=ap.id
 			LEFT JOIN inno72_machine m ON m.id = apm.machine_id
 			LEFT JOIN inno72_locale locale ON m.locale_id = locale.id
 		WHERE

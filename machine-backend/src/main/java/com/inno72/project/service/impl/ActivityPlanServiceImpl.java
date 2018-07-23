@@ -150,17 +150,18 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				for (Inno72ActivityPlanGameResult inno72ActivityPlanGameResult : goods) {
 					//活动计划商品关联数据
 					Inno72ActivityPlanGoods planGood = new Inno72ActivityPlanGoods();
+					String goodsId=inno72ActivityPlanGameResult.getPrizeId();
 					String planGoodId = StringUtil.getUUID();
 					planGood.setId(planGoodId);
 					planGood.setActivityPlanId(activityPlanId);
-					planGood.setGoodsId(inno72ActivityPlanGameResult.getPrizeId());
+					planGood.setGoodsId(goodsId);
 					
 					//活动游戏结果数据
 					Inno72ActivityPlanGameResult  planGameResult = new Inno72ActivityPlanGameResult();
 					String planGameResultId = StringUtil.getUUID();
 					planGameResult.setId(planGameResultId);
 					planGameResult.setActivityPlanId(activityPlanId);
-					planGameResult.setPrizeId(planGoodId);
+					planGameResult.setPrizeId(goodsId);
 					planGameResult.setPrizeType("1");
 					planGameResult.setResultCode(inno72ActivityPlanGameResult.getResultCode());
 					planGameResult.setResultRemark(inno72ActivityPlanGameResult.getResultRemark());
@@ -296,8 +297,8 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				String endTimeStr = activityPlan.getEndTimeStr()+":59";
 				LocalDateTime newEndTime = DateUtil.toDateTime(endTimeStr, DateUtil.DF_FULL_S1);
 				if (n>0) {
-					if (!newEndTime.isBefore(oldEndTime)) {
-						return Results.failure("活动已开始结束时间只能向前修改");
+					if (newEndTime.compareTo(oldEndTime)>0) {
+						return Results.failure("活动已开始,结束时间只能向前修改");
 					}
 				}
 				activityPlan.setEndTime(newEndTime);
@@ -321,17 +322,18 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				for (Inno72ActivityPlanGameResult inno72ActivityPlanGameResult : goods) {
 					//活动计划商品关联数据
 					Inno72ActivityPlanGoods planGood = new Inno72ActivityPlanGoods();
+					String goodsId=inno72ActivityPlanGameResult.getPrizeId();
 					String planGoodId = StringUtil.getUUID();
 					planGood.setId(planGoodId);
 					planGood.setActivityPlanId(activityPlan.getId());
-					planGood.setGoodsId(inno72ActivityPlanGameResult.getPrizeId());
+					planGood.setGoodsId(goodsId);
 					
 					//活动游戏结果数据
 					Inno72ActivityPlanGameResult  planGameResult = new Inno72ActivityPlanGameResult();
 					String planGameResultId = StringUtil.getUUID();
 					planGameResult.setId(planGameResultId);
 					planGameResult.setActivityPlanId(activityPlan.getId());
-					planGameResult.setPrizeId(planGoodId);
+					planGameResult.setPrizeId(goodsId);
 					planGameResult.setPrizeType("1");
 					planGameResult.setResultCode(inno72ActivityPlanGameResult.getResultCode());
 					planGameResult.setResultRemark(inno72ActivityPlanGameResult.getResultRemark());
