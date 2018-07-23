@@ -190,7 +190,7 @@
     </foreach>
   </update>
 
-  <select id="selectByParentCode">
+  <select id="selectByParentCode" resultMap="BaseResultMap">
     select <include refid="Column_Get"/>
     from inno72_supply_channel
     where machine_id=#{machineId} and parent_code=#{parentCode}
