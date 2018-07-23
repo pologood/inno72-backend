@@ -187,15 +187,19 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 childMap.put("machineId", machineId);
                 childMap.put("parentCode", code);
                 Inno72SupplyChannel childChannel = inno72SupplyChannelMapper.selectByParentCode(childMap);
-                childChannel.setParentCode(code);
-                childChannel.setStatus(0);
-                childChannel.setUpdateTime(LocalDateTime.now());
-                int count = inno72SupplyChannelMapper.updateChild(childChannel);
-                if (count == 1) {
-                    childChannel.setRemark("拆分货道，将货道" + code + "和货道" + childChannel.getCode() + "拆分");
-                    addSupplyChannelToMongo(childChannel);
-                    return ResultGenerator.genSuccessResult();
-                } else {
+                if(childChannel != null){
+                    childChannel.setParentCode(code);
+                    childChannel.setStatus(0);
+                    childChannel.setUpdateTime(LocalDateTime.now());
+                    int count = inno72SupplyChannelMapper.updateChild(childChannel);
+                    if (count == 1) {
+                        childChannel.setRemark("拆分货道，将货道" + code + "和货道" + childChannel.getCode() + "拆分");
+                        addSupplyChannelToMongo(childChannel);
+                        return ResultGenerator.genSuccessResult();
+                    } else {
+                        return ResultGenerator.genFailResult("货道未合并不能拆分");
+                    }
+                }else{
                     return ResultGenerator.genFailResult("货道未合并不能拆分");
                 }
 
