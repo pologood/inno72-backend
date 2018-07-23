@@ -140,7 +140,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
             childCode = codes[0];
             parentCode = codes[1];
         }else{
-            codes[1] = (codeInt - 1);
+            codes[1] = (codeInt + 1);
             childCode = codes[1];
             parentCode = codes[0];
         }
