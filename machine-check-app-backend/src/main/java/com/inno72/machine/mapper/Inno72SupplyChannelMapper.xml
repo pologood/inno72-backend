@@ -155,6 +155,9 @@
       <if test="updateTime != null">
         update_time = #{updateTime},
       </if>
+      <if test="parentCode != null">
+        parent_code=''
+      </if>
     </set>
     where machine_id=#{machineId} and parent_code=#{parentCode}
   </update>
