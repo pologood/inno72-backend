@@ -26,7 +26,7 @@ public class DeleteDropGoodsExceptionTask {
     @Autowired
     private MongoOperations mongoTpl;
 
-    //@Scheduled(cron = "0 0 10 * * ?")
+    @Scheduled(cron = "0 0 0 * * *")
     //@Scheduled(cron = "0/5 * * * * ?")
     public void checkActivityIsExist() {
 
