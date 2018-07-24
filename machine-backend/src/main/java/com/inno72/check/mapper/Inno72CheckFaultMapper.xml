@@ -35,10 +35,10 @@
 		LEFT JOIN inno72_machine m ON m.id = f.machine_id
 		WHERE 1=1
 		<if test="status !=null and status !=''">f.status =#{status} </if>
-		<if test="type =='1'">
+		<if test="type ==1">
 			<![CDATA[ and ( f.submit_time  BETWEEN #{startTime} AND #{endTime} ) ]]>
 		</if>
-		<if test="type =='2'">
+		<if test="type ==2">
 			<![CDATA[ and ( f.finish_time  BETWEEN #{startTime} AND #{endTime} ) ]]>
 		</if>
 		<if test="keyword !=null and keyword !=''"> and ( m.machine_code LIKE '%${keyword}%' or f.finish_user LIKE '%${keyword}%' or f.submit_user LIKE '%${keyword}%')</if>

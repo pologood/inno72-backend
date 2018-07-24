@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
-import com.inno72.common.share.model.Inno72AdminArea;
+import com.inno72.share.model.Inno72AdminArea;
 
 public class InitAdminArea {
 
