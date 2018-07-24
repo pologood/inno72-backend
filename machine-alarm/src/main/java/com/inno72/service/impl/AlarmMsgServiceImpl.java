@@ -28,11 +28,5 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
         return null;
     }
 
-    @Override
-    public Result<String> saveAlarmMsg(Inno72AlarmMsg alarmMsg) {
 
-        alarmMsg.setId(StringUtil.getUUID());
-        super.save(alarmMsg);
-        return Results.success();
-    }
 }
