@@ -57,7 +57,7 @@ public class CheckNetAndAlarmTask {
     @Resource
     private AlarmMsgService alarmMsgService;
 
-    @Scheduled(cron = "0 0/1 * * * ?")
+    //@Scheduled(cron = "0 0/1 * * * ?")
     //@Scheduled(cron = "0/5 * * * * ?")
     public void checkNetStatus() {
 
@@ -69,6 +69,8 @@ public class CheckNetAndAlarmTask {
         Query query = new Query();
         query.addCriteria(Criteria.where("createTime").lte(before));
         List<MachineLogInfo> list = mongoTpl.find(query, MachineLogInfo.class, "MachineLogInfo");
+        //查询后台数据库中机器状态是4的机器列表
+
         if (null != list) {
             for (MachineLogInfo machineLogInfo : list) {
                 //根据机器编码查询点位接口
