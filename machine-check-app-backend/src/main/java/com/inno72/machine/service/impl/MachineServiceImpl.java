@@ -37,25 +37,27 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
     private Inno72LocaleMapper inno72LocaleMapper;
     @Override
     public Result<String> setMachine(String machineId, String localeId) {
-        Inno72Machine machine = new Inno72Machine();
-        Inno72CheckUser checkUser = UserUtil.getUser();
-        machine.setId(machineId);
-        machine.setLocaleId(localeId);
-        machine.setMachineStatus(4);
-        machine.setUpdateId(checkUser.getId());
-        machine.setUpdateTime(LocalDateTime.now());
-        inno72MachineMapper.updateByPrimaryKeySelective(machine);
-        Condition condition = new Condition(Inno72CheckUserMachine.class);
-        condition.createCriteria().andEqualTo("checkUserId",checkUser.getId()).andEqualTo("machineId",machineId);
-        List<Inno72CheckUserMachine> userMachines = inno72CheckUserMachineMapper.selectByCondition(condition);
-        if(userMachines == null || userMachines.size()==0){
-            Inno72CheckUserMachine userMachine = new Inno72CheckUserMachine();
-            userMachine.setId(StringUtil.getUUID());
-            userMachine.setCheckUserId(checkUser.getId());
-            userMachine.setMachineId(machineId);
-            inno72CheckUserMachineMapper.insertSelective(userMachine);
+        Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+        if(machine!= null && machine.getMachineStatus().equals(3)){
+            Inno72CheckUser checkUser = UserUtil.getUser();
+            machine.setLocaleId(localeId);
+            machine.setMachineStatus(4);
+            machine.setUpdateId(checkUser.getId());
+            machine.setUpdateTime(LocalDateTime.now());
+            inno72MachineMapper.updateByPrimaryKeySelective(machine);
+            Condition condition = new Condition(Inno72CheckUserMachine.class);
+            condition.createCriteria().andEqualTo("checkUserId",checkUser.getId()).andEqualTo("machineId",machineId);
+            List<Inno72CheckUserMachine> userMachines = inno72CheckUserMachineMapper.selectByCondition(condition);
+            if(userMachines == null || userMachines.size()==0){
+                Inno72CheckUserMachine userMachine = new Inno72CheckUserMachine();
+                userMachine.setId(StringUtil.getUUID());
+                userMachine.setCheckUserId(checkUser.getId());
+                userMachine.setMachineId(machineId);
+                inno72CheckUserMachineMapper.insertSelective(userMachine);
+            }
+        }else{
+            return Results.failure("机器状态有误");
         }
-
         return ResultGenerator.genSuccessResult();
     }
 
