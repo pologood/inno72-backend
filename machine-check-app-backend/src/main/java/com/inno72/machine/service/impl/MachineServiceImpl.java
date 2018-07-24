@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -40,7 +41,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
         Inno72CheckUser checkUser = UserUtil.getUser();
         machine.setId(machineId);
         machine.setLocaleId(localeId);
-        machine.setMachineStatus(2);
+        machine.setMachineStatus(4);
+        machine.setUpdateId(checkUser.getId());
+        machine.setUpdateTime(LocalDateTime.now());
         inno72MachineMapper.updateByPrimaryKeySelective(machine);
         Condition condition = new Condition(Inno72CheckUserMachine.class);
         condition.createCriteria().andEqualTo("checkUserId",checkUser.getId()).andEqualTo("machineId",machineId);
