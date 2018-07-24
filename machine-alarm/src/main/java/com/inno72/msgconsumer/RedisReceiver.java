@@ -116,18 +116,6 @@ public class RedisReceiver {
 
             }
 
-            //保存接口
-            Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
-            if ((CommonConstants.MACHINE_CHANNEL_EXCEPTION).equals(type)) {
-                inno72AlarmMsg.setTitle("货道故障");
-                inno72AlarmMsg.setMachineCode(machineId);
-                inno72AlarmMsg.setCreateTime(LocalDateTime.now());
-                inno72AlarmMsg.setSystem(system);
-                inno72AlarmMsg.setId(StringUtil.getUUID());
-                alarmMsgService.save(inno72AlarmMsg);
-            }
-
-
         } else if ((CommonConstants.SYS_MACHINE_DROPGOODS).equals(system)) {
             //接收并转数据类型
             AlarmMessageBean<MachineDropGoodsBean> alarmMessageBean = JSONObject.parseObject(message,
@@ -180,6 +168,17 @@ public class RedisReceiver {
                             msgUtil.sendPush(code, params, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
                         }
 
+                        //保存接口
+                        Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
+                        if ((CommonConstants.MACHINE_DROPGOODS_EXCEPTION).equals(type)) {
+                            inno72AlarmMsg.setTitle(2);
+                            inno72AlarmMsg.setCreateTime(LocalDateTime.now());
+                            inno72AlarmMsg.setSystem(system);
+                            inno72AlarmMsg.setMachineCode(machineCode);
+                            inno72AlarmMsg.setId(StringUtil.getUUID());
+                            alarmMsgService.save(inno72AlarmMsg);
+                        }
+
                     } else if (updateNum == 5) {
                         //组合报警接口
                         Map<String, String> params = new HashMap<>();
@@ -205,6 +204,17 @@ public class RedisReceiver {
                             msgUtil.sendPush(code, params, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
                         }
 
+                        //保存接口
+                        Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
+                        if ((CommonConstants.MACHINE_DROPGOODS_EXCEPTION).equals(type)) {
+                            inno72AlarmMsg.setTitle(2);
+                            inno72AlarmMsg.setCreateTime(LocalDateTime.now());
+                            inno72AlarmMsg.setSystem(system);
+                            inno72AlarmMsg.setMachineCode(machineCode);
+                            inno72AlarmMsg.setId(StringUtil.getUUID());
+                            alarmMsgService.save(inno72AlarmMsg);
+                        }
+
                     } else if (updateNum > 5 && (updateNum - 5) % 2 == 0) {
                         //钉钉报警接口
                         String code = "dingding_alarm_common";
@@ -224,16 +234,6 @@ public class RedisReceiver {
                 mongoTpl.save(dropGoodsExceptionInfo, "DropGoodsExceptionInfo");
             }
 
-            //保存接口
-            Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
-            if ((CommonConstants.MACHINE_DROPGOODS_EXCEPTION).equals(type)) {
-                inno72AlarmMsg.setTitle("掉货异常报警");
-                inno72AlarmMsg.setCreateTime(LocalDateTime.now());
-                inno72AlarmMsg.setSystem(system);
-                inno72AlarmMsg.setMachineCode(machineCode);
-                inno72AlarmMsg.setId(StringUtil.getUUID());
-                alarmMsgService.save(inno72AlarmMsg);
-            }
 
         } else if ((CommonConstants.SYS_MACHINE_LACKGOODS).equals(system)) {
             //接收并转数据类型
@@ -305,7 +305,7 @@ public class RedisReceiver {
             //保存接口
             Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
             if ((CommonConstants.MACHINE_LACKGOODS_EXCEPTION).equals(type)) {
-                inno72AlarmMsg.setTitle("商品缺货异常报警");
+                inno72AlarmMsg.setTitle(3);
                 inno72AlarmMsg.setMachineCode(channelGoodsAlarmBean.getMachineCode());
                 inno72AlarmMsg.setCreateTime(LocalDateTime.now());
                 inno72AlarmMsg.setSystem(system);
