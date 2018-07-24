@@ -3,6 +3,7 @@ package com.inno72.check.service.impl;
 import com.inno72.check.mapper.*;
 import com.inno72.check.model.*;
 import com.inno72.check.service.CheckFaultService;
+import com.inno72.check.vo.CheckUserVo;
 import com.inno72.common.*;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72Machine;
@@ -73,21 +74,37 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
                 }
 
             }
-            List<Inno72Machine>machines = inno72MachineMapper.selectByIds(mIds.substring(0,mIds.length()-1));
+            Map<String,Object> queryMap = new HashMap<>();
+            queryMap.put("checkUserId",UserUtil.getUser().getId());
+            queryMap.put("machineIds",machineIds);
+            List<Inno72Machine>machines = inno72MachineMapper.selectByParam(queryMap);
+            Inno72CheckFaultType checkFaultType = inno72CheckFaultTypeMapper.selectByPrimaryKey(checkFault.getType());
             if(machines != null && machines.size()>0){
+                String title = "您负责的机器出现故障";
+                String remark = checkFault.getRemark();
+                String appName = "machine_check_app_backend";
+                String pushCode = "push_check_app_fault";
+                String smsCode = "sms_check_app_fault";
+                String faultType = checkFaultType.getName();
+
                 for(Inno72Machine machine:machines){
-                    String pushCode = "push_check_app_fault";
-                    String smsCode = "sms_check_app_fault";
+                    String machineCode = machine.getMachineCode();
+                    String localeStr = machine.getLocaleStr();
                     Map<String,String> params = new HashMap<>();
-                    params.put("machineCode",machine.getMachineCode());
+                    String messgeInfo = "【互动管家】您负责的机器，"+localeStr+"，"+machineCode+"出现故障，故障类型："+faultType+"，故障描述："+remark+"，请及时处理。";
+                    params.put("machineCode",machineCode);
                     params.put("machineId",machine.getId());
-                    List<Inno72CheckUser> checkUserList = inno72CheckUserMapper.selectByMachineId(machine.getId());
+                    params.put("localeStr",localeStr);
+                    params.put("faultType",faultType);
+                    params.put("remark",remark);
+                    params.put("messgeInfo",messgeInfo);
+                    List<CheckUserVo> checkUserList = machine.getCheckUserVoList();
                     if(checkUserList != null && checkUserList.size()>0){
-                        for(Inno72CheckUser checkUser:checkUserList){
+                        for(CheckUserVo checkUser:checkUserList){
                             String phone = checkUser.getPhone();
                             if(StringUtil.isNotEmpty(phone)){
-                                msgUtil.sendPush(pushCode,params,phone,"互动管家","故障","您有一条故障信息");
-                                msgUtil.sendSMS(smsCode,params,phone,"互动管家");
+                                msgUtil.sendPush(pushCode,params,phone,appName,title,messgeInfo);
+                                msgUtil.sendSMS(smsCode,params,phone,appName);
                             }
                         }
 

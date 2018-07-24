@@ -16,4 +16,6 @@ public interface Inno72MachineMapper extends Mapper<Inno72Machine> {
 	List<Inno72Machine> getMachineByLackGoods(@Param("checkUserId") String checkUserId, @Param("goodsId") String goodsId);
 
     List<Inno72Machine> machineList(String chekUserId);
+
+    List<Inno72Machine> selectByParam(Map<String,Object> map);
 }

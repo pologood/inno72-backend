@@ -30,14 +30,14 @@ public class SupplyChannelTask {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-//    @Scheduled(cron = "0/10 * * * * ?")
+    @Scheduled(cron = "0 5 * * * ?")
     public void typeOneTask(){
         logger.info("定时获取货道商品数量小于10%的货道开始。。。。。。。");
         pushToAlarm(1);
         logger.info("定时获取货道商品数量小于10%的货道结束。。。。。。。");
     }
 
-//    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(cron = "0 5 * * * ?")
     public void typeTwoTask(){
         logger.info("定时获取货道商品数量小于20%的货道开始。。。。。。。");
         pushToAlarm(2);
@@ -55,7 +55,7 @@ public class SupplyChannelTask {
             for(Inno72SupplyChannel supplyChannel:list){
                 String id = supplyChannel.getId();
                 String key = "LACK_GOODS_TYPE_"+lackGoodsType+"_"+id;
-//                redisUtil.del(key);
+                redisUtil.del(key);
                 String value = redisUtil.get(key);
                 if(StringUtil.isEmpty(value)){
                     ChannelGoodsAlarmBean alarmBean = new ChannelGoodsAlarmBean();

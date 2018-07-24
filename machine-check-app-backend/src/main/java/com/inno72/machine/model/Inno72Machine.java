@@ -1,6 +1,7 @@
 package com.inno72.machine.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.check.vo.CheckUserVo;
 import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 import com.inno72.machine.vo.SupplyChannelVo;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
@@ -102,6 +103,8 @@ public class Inno72Machine {
 
 	@Transient
 	private List<SupplyChannelVo> supplyChannelVoList;
+
+	private List<CheckUserVo> checkUserVoList;
 
 	public enum Machine_Status {
 		// 在厂测试
@@ -373,5 +376,13 @@ public class Inno72Machine {
 
 	public void setLocaleStr(String localeStr) {
 		this.localeStr = localeStr;
+	}
+
+	public List<CheckUserVo> getCheckUserVoList() {
+		return checkUserVoList;
+	}
+
+	public void setCheckUserVoList(List<CheckUserVo> checkUserVoList) {
+		this.checkUserVoList = checkUserVoList;
 	}
 }
