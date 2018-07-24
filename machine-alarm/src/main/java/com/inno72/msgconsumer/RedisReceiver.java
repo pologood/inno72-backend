@@ -167,7 +167,7 @@ public class RedisReceiver {
                         params.put("machineCode", machineCode);
                         params.put("localStr", localStr);
                         params.put("text", "出现掉货异常，请及时处理");
-                        msgUtil.sendPush(code, params, "machineCode", "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
+                        msgUtil.sendPush(code, params, machineCode, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
                     } else if (updateNum == 5) {
                         //组合报警接口
                         Map<String, String> params = new HashMap<>();
@@ -188,7 +188,7 @@ public class RedisReceiver {
                             msgUtil.sendSMS(code, params, phone, "machineAlarm-RedisReceiver");
                         }
                         String code = "push_alarm_common";
-                        msgUtil.sendPush(code, params, "machineCode", "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
+                        msgUtil.sendPush(code, params, machineCode, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
                     } else if (updateNum > 5 && (updateNum - 5) % 2 == 0) {
                         //钉钉报警接口
                         String code = "dingding_alarm_common";
