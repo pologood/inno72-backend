@@ -64,7 +64,7 @@ public class MachineController {
 
 
     /**
-     * 查询单个一级区域及子区域
+     * 查询一级区域
      * @return
      */
     @RequestMapping(value="findFistLevelArea")
