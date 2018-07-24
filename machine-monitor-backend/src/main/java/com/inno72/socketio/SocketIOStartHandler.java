@@ -112,7 +112,7 @@ public class SocketIOStartHandler {
 				querySystemStatus.addCriteria(Criteria.where("machineId").is(machineId));
 				mongoTpl.remove(querySystemStatus, "SystemStatus");
 				mongoTpl.save(systemStatus, "SystemStatus");
-                log.info("推送监控消息执行中，machineId：{}机器的系统信息已保存,消息内容：{}", machineId, systemStatus.toString());
+                log.info("推送监控消息执行中，machineId：{}机器的系统信息已保存,消息内容：{}", machineId, message);
 				// 将当前时间与机器Id维护到机器日志表中
 				MachineLogInfo machineLogInfo = new MachineLogInfo();
 				machineLogInfo.setMachineId(machineId);
