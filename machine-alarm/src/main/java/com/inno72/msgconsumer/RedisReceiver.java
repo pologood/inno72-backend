@@ -167,7 +167,19 @@ public class RedisReceiver {
                         params.put("machineCode", machineCode);
                         params.put("localStr", localStr);
                         params.put("text", "出现掉货异常，请及时处理");
-                        msgUtil.sendPush(code, params, machineCode, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
+                        //查询巡检人员手机号
+                        Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
+                        inno72CheckUserPhone.setMachineCode(machineCode);
+                        String inno72CheckUserPhoneInfo = JSONObject.toJSON(inno72CheckUserPhone).toString();
+                        String url1 = machineAlarmProperties.getProps().get("selectPhoneByMachineCode");
+                        String res = HttpClient.post(url1, inno72CheckUserPhoneInfo);
+                        JSONObject jsonObject2 = JSONObject.parseObject(res);
+                        List<Inno72CheckUserPhone> inno72CheckUserPhones = JSON.parseArray(jsonObject2.getString("data"), Inno72CheckUserPhone.class);
+                        for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                            String phone = inno72CheckUserPhone1.getPhone();
+                            msgUtil.sendPush(code, params, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
+                        }
+
                     } else if (updateNum == 5) {
                         //组合报警接口
                         Map<String, String> params = new HashMap<>();
@@ -187,8 +199,12 @@ public class RedisReceiver {
                             String code = "sms_alarm_common";
                             msgUtil.sendSMS(code, params, phone, "machineAlarm-RedisReceiver");
                         }
-                        String code = "push_alarm_common";
-                        msgUtil.sendPush(code, params, machineCode, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
+                        for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                            String phone = inno72CheckUserPhone1.getPhone();
+                            String code = "push_alarm_common";
+                            msgUtil.sendPush(code, params, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
+                        }
+
                     } else if (updateNum > 5 && (updateNum - 5) % 2 == 0) {
                         //钉钉报警接口
                         String code = "dingding_alarm_common";
