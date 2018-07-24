@@ -6,6 +6,7 @@ import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Inno72GameUserChannel {
@@ -60,7 +61,7 @@ public class Inno72GameUserChannel {
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
-    private Date createTime;
+    private LocalDateTime createTime;
 
     private String keyword;
 
@@ -121,11 +122,11 @@ public class Inno72GameUserChannel {
         this.channelUserKey = channelUserKey;
     }
 
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
