@@ -1,5 +1,7 @@
 package com.inno72.check.service.impl;
 
+import com.inno72.alarmMsg.mapper.Inno72AlarmMsgMapper;
+import com.inno72.alarmMsg.model.Inno72AlarmMsg;
 import com.inno72.check.mapper.*;
 import com.inno72.check.model.*;
 import com.inno72.check.service.CheckFaultService;
@@ -10,12 +12,10 @@ import com.inno72.machine.model.Inno72Machine;
 import com.inno72.msg.MsgUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -40,17 +40,17 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
     @Resource
     private Inno72CheckFaultTypeMapper inno72CheckFaultTypeMapper;
 
+    @Resource
+    private Inno72AlarmMsgMapper inno72AlarmMsgMapper;
+
     @Autowired
     private MsgUtil msgUtil;
 
     @Override
     public Result addCheckFault(Inno72CheckFault checkFault) {
         String[] machineIds = checkFault.getMachineIds();
-        StringBuffer mIds = new StringBuffer();
         if(machineIds != null && machineIds.length>0){
             for(int index=0;index<machineIds.length;index++){
-                mIds.append(machineIds[index]);
-                mIds.append(",");
                 String id = StringUtil.getUUID();
                 checkFault.setId(id);
                 String time = DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S2);
@@ -109,6 +109,15 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
                         }
 
                     }
+                    Inno72AlarmMsg alarmMsg = new Inno72AlarmMsg();
+                    alarmMsg.setId(StringUtil.getUUID());
+                    alarmMsg.setCreateTime(LocalDateTime.now());
+                    alarmMsg.setMachineCode(machineCode);
+                    alarmMsg.setSystem("machineChannel");
+                    alarmMsg.setTitle(title);
+                    alarmMsg.setType(1);
+                    alarmMsg.setDetail(messgeInfo);
+                    inno72AlarmMsgMapper.insertSelective(alarmMsg);
                 }
 
             }

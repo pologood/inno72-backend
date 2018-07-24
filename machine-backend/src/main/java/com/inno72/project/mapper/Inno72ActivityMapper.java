@@ -17,4 +17,6 @@ public interface Inno72ActivityMapper extends Mapper<Inno72Activity> {
 	Inno72ActivityVo selectById(String id);
 
 	List<Inno72Activity> selectUnPlanList();
+	
+	Inno72Activity selectDefaultActivity();
 }

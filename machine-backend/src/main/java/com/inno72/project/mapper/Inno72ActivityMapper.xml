@@ -106,6 +106,9 @@
 		 and a.id not in (SELECT activity_id from inno72_activity_plan where is_delete = 0)
   </select>
   
+  <select id="selectDefaultActivity" parameterType="java.util.Map" resultMap="BaseResultMap">
+		 SELECT * FROM inno72_activity a where a.is_delete = 0 and a.is_default=1 LIMIT 1
+  </select>
   
   
 </mapper>

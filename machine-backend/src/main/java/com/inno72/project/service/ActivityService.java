@@ -26,6 +26,8 @@ public interface ActivityService extends Service<Inno72Activity> {
 
 	Inno72ActivityVo selectById(String id);
 
+	Inno72Activity selectDefaultActivity();
+
 	
 
 }

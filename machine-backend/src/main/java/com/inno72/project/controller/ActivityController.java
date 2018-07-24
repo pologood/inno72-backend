@@ -80,4 +80,10 @@ public class ActivityController {
         return ResultGenerator.genSuccessResult(list);
     }
     
+    @RequestMapping(value = "/getDefaultActivity", method = { RequestMethod.POST,  RequestMethod.GET})
+    public Result<Inno72Activity> getDefaultActivity() {
+    	Inno72Activity activity = activityService.selectDefaultActivity();
+        return ResultGenerator.genSuccessResult(activity);
+    }
+    
 }

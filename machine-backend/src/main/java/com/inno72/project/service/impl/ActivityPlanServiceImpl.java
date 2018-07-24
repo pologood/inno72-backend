@@ -151,6 +151,9 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					//活动计划商品关联数据
 					Inno72ActivityPlanGoods planGood = new Inno72ActivityPlanGoods();
 					String goodsId=inno72ActivityPlanGameResult.getPrizeId();
+					if (StringUtil.isBlank(goodsId)) {
+						return Results.failure("有商品未选择");
+					}
 					String planGoodId = StringUtil.getUUID();
 					planGood.setId(planGoodId);
 					planGood.setActivityPlanId(activityPlanId);
@@ -180,6 +183,9 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			if(null != coupons){
 				for (Inno72CouponVo inno72CouponVo : coupons) {
 					//优惠券数据
+					if (StringUtil.isBlank(inno72CouponVo.getName()) || StringUtil.isBlank(inno72CouponVo.getCode()) ) {
+						return Results.failure("请完善健全信息");
+					}
 					Inno72Coupon coupon = new Inno72Coupon();
 					String couponId = StringUtil.getUUID();
 					coupon.setId(couponId);
@@ -323,6 +329,9 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					//活动计划商品关联数据
 					Inno72ActivityPlanGoods planGood = new Inno72ActivityPlanGoods();
 					String goodsId=inno72ActivityPlanGameResult.getPrizeId();
+					if (StringUtil.isBlank(goodsId)) {
+						return Results.failure("有商品未选择");
+					}
 					String planGoodId = StringUtil.getUUID();
 					planGood.setId(planGoodId);
 					planGood.setActivityPlanId(activityPlan.getId());
@@ -352,6 +361,9 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			if (null != coupons) {
 				for (Inno72CouponVo inno72CouponVo : coupons) {
 					//优惠券数据
+					if (StringUtil.isBlank(inno72CouponVo.getName()) || StringUtil.isBlank(inno72CouponVo.getCode()) ) {
+						return Results.failure("请完善健全信息");
+					}
 					Inno72Coupon coupon = new Inno72Coupon();
 					String couponId = StringUtil.getUUID();
 					coupon.setId(couponId);
