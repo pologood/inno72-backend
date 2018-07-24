@@ -21,6 +21,7 @@ import java.util.List;
 @RestController
 public class AlarmMsgController {
 
+
     @Resource
     private AlarmMsgService alarmMsgService;
 
