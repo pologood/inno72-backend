@@ -10,7 +10,7 @@ import java.util.Map;
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72LocaleMapper extends Mapper<Inno72Locale> {
 	
-	List<Inno72Locale> selectByAreaCode(String areaCode);
+	List<Inno72Locale> selectMallByAreaCode(String areaCode);
 
 
 	List<Inno72Locale> selectByMall(String mall);

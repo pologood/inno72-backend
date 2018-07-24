@@ -85,9 +85,14 @@ public class MachineController {
         return result;
     }
 
+    /**
+     * 查询
+     * @param locale
+     * @return
+     */
     @RequestMapping(value="findLocalByMall")
     public Result<List<Inno72Locale>> findLocalByMall(@RequestBody Inno72Locale locale){
-        Result<List<Inno72Locale>> result = machineService.findLocalByMall(locale.getMall());
+        Result<List<Inno72Locale>> result = machineService.findLocaleByMall(locale.getMall());
         return result;
     }
 

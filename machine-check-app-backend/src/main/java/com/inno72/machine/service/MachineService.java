@@ -20,5 +20,5 @@ public interface MachineService extends Service<Inno72Machine> {
 
     Result<List<Inno72Locale>> findMallByCode(String areaCode);
 
-    Result<List<Inno72Locale>> findLocalByMall(String mall);
+    Result<List<Inno72Locale>> findLocaleByMall(String mall);
 }

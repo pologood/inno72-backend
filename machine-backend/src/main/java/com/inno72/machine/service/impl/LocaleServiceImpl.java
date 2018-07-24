@@ -21,12 +21,12 @@ import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
-import com.inno72.common.share.mapper.Inno72AdminAreaMapper;
 import com.inno72.machine.mapper.Inno72LocaleMapper;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.service.LocaleService;
 import com.inno72.machine.vo.Inno72LocaleVo;
 import com.inno72.machine.vo.MachineLocaleInfo;
+import com.inno72.share.mapper.Inno72AdminAreaMapper;
 import com.inno72.system.model.Inno72User;
 
 import tk.mybatis.mapper.entity.Condition;
