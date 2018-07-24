@@ -1,12 +1,11 @@
 package com.inno72.msgconsumer;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.MachineAlarmProperties;
+import com.inno72.common.StringUtil;
 import com.inno72.model.*;
 import com.inno72.msg.MsgUtil;
 import com.inno72.plugin.http.HttpClient;
@@ -124,8 +123,10 @@ public class RedisReceiver {
                 inno72AlarmMsg.setMachineCode(machineId);
                 inno72AlarmMsg.setCreateTime(LocalDateTime.now());
                 inno72AlarmMsg.setSystem(system);
+                inno72AlarmMsg.setId(StringUtil.getUUID());
                 alarmMsgService.save(inno72AlarmMsg);
             }
+
 
         } else if ((CommonConstants.SYS_MACHINE_DROPGOODS).equals(system)) {
             //接收并转数据类型
@@ -214,6 +215,7 @@ public class RedisReceiver {
                 inno72AlarmMsg.setCreateTime(LocalDateTime.now());
                 inno72AlarmMsg.setSystem(system);
                 inno72AlarmMsg.setMachineCode(machineCode);
+                inno72AlarmMsg.setId(StringUtil.getUUID());
                 alarmMsgService.save(inno72AlarmMsg);
             }
 
@@ -291,6 +293,7 @@ public class RedisReceiver {
                 inno72AlarmMsg.setMachineCode(channelGoodsAlarmBean.getMachineCode());
                 inno72AlarmMsg.setCreateTime(LocalDateTime.now());
                 inno72AlarmMsg.setSystem(system);
+                inno72AlarmMsg.setId(StringUtil.getUUID());
                 alarmMsgService.save(inno72AlarmMsg);
             }
 

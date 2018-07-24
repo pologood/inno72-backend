@@ -29,7 +29,7 @@ public class AlarmMsgController {
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> add(Inno72AlarmMsg alarmMsg) {
-		alarmMsgService.saveAlarmMsg(alarmMsg);
+        alarmMsgService.save(alarmMsg);
 		return ResultGenerator.genSuccessResult();
 	}
 

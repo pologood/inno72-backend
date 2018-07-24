@@ -10,6 +10,5 @@ import com.inno72.model.Inno72AlarmMsg;
  */
 public interface AlarmMsgService extends Service<Inno72AlarmMsg> {
 
-    Result<String> saveAlarmMsg(Inno72AlarmMsg alarmMsg);
 
 }

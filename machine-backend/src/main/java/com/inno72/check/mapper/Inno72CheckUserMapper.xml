@@ -106,7 +106,7 @@
   		SELECT
 			m.id AS CODE,
 			'' AS parent_code,
-			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( locale.mall,""),IFNULL( locale.name,""), '—', m.machine_code ) AS NAME,
+			CONCAT( IFNULL( locale.mall,""),IFNULL( locale.name,""), '—', m.machine_code ) AS NAME,
 			area.province,
 			area.city,
 			area.district,
