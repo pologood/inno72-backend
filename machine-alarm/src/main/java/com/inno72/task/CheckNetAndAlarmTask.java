@@ -88,7 +88,19 @@ public class CheckNetAndAlarmTask {
                     params.put("machineCode", machineLogInfo.getMachineId());
                     params.put("localStr", localStr);
                     params.put("text", "出现网络连接不上的情况，请及时处理");
-                    msgUtil.sendPush(code, params, machineLogInfo.getMachineId(), "machineAlarm-CheckNetAndAlarmTask", "【报警】您负责的机器出现网络异常", "");
+                    //查询巡检人员手机号
+                    Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
+                    inno72CheckUserPhone.setMachineCode(machineLogInfo.getMachineId());
+                    String inno72CheckUserPhoneInfo = JSONObject.toJSON(inno72CheckUserPhone).toString();
+                    String url1 = machineAlarmProperties.getProps().get("selectPhoneByMachineCode");
+                    String res = HttpClient.post(url1, inno72CheckUserPhoneInfo);
+                    JSONObject jsonObject2 = JSONObject.parseObject(res);
+                    List<Inno72CheckUserPhone> inno72CheckUserPhones = JSON.parseArray(jsonObject2.getString("data"), Inno72CheckUserPhone.class);
+                    for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                        String phone = inno72CheckUserPhone1.getPhone();
+                        msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【报警】您负责的机器出现网络异常", "");
+                    }
+
                 } else if (between == 8) {
                     //组合报警接口
                     Map<String, String> params = new HashMap<>();
@@ -108,8 +120,12 @@ public class CheckNetAndAlarmTask {
                         String phone = inno72CheckUserPhone1.getPhone();
                         msgUtil.sendSMS(code, params, phone, "machineAlarm-CheckNetAndAlarmTask");
                     }
-                    String code = "push_alarm_common";
-                    msgUtil.sendPush(code, params, machineLogInfo.getMachineId(), "machineAlarm-CheckNetAndAlarmTask", "【报警】您负责的机器出现网络异常", "");
+                    for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                        String phone = inno72CheckUserPhone1.getPhone();
+                        String code = "push_alarm_common";
+                        msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【报警】您负责的机器出现网络异常", "");
+                    }
+
 
                 } else if (between > 8 && (between - 8) % 2 == 0) {
                     //钉钉报警接口

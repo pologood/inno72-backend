@@ -1,7 +1,6 @@
 package com.inno72.app.controller;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSON;
+import com.inno72.app.model.Inno72Machine;
 import com.inno72.app.service.MachineService;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
@@ -78,6 +77,17 @@ public class MachineController {
 		return machineService.setMachineChannel(msg);
 	}
 
+	/**
+	 * 获取机器信息
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	@RequestMapping(value = "/getMachineInfo", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<Inno72Machine> getMachineInfo(@RequestBody Map<String, Object> msg) {
+		return machineService.getMachineInfo(msg);
+	}
+
 	@PostMapping("encrypt")
 	public String encrypt(HttpServletRequest request) throws IOException {
 		byte[] encryptRequestBodyBytes = StreamUtils.copyToByteArray(request.getInputStream());
@@ -90,13 +100,6 @@ public class MachineController {
 		byte[] encryptRequestBodyBytes = StreamUtils.copyToByteArray(request.getInputStream());
 		String encryptRequestBody = new String(encryptRequestBodyBytes);
 		return AesUtils.decrypt(encryptRequestBody);
-	}
-
-	public static void main(String[] args) {
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("deviceId", "aaa111");
-		map.put("age", "12");
-		System.out.println(AesUtils.encrypt(JSON.toJSONString(map)));
 	}
 
 }
