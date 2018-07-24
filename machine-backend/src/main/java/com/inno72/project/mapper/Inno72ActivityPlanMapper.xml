@@ -48,9 +48,9 @@
 				GROUP BY apm.activity_plan_id
 			) m ON m.activity_plan_id = ap.id
 			
-		WHERE
-			ap.is_delete = 0 
-		<if test="code !=null and code !='' ">and m.area_code LIKE '%${code}%'</if>
+		WHERE 1=1 
+		<if test="code !=null and code !='' "> and m.area_code LIKE '%${code}%'</if>
+		and ap.is_delete = 0 
 		<if test="startTime !=null and startTime !='' ">
 			<![CDATA[and ( ap.start_time  BETWEEN #{startTime} AND #{endTime} OR ap.end_time BETWEEN #{startTime} AND #{endTime} ) ]]>
 		</if>
