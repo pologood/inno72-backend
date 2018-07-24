@@ -18,7 +18,7 @@
 		select DISTINCT f.* from inno72_user_role ur left join
 		inno72_role_function rf on ur.role_id=rf.role_id
 		left join inno72_function f on rf.function_id=f.id where
-		ur.user_id=#{id}
+		ur.user_id=#{id} and f.id is not null order by f.function_level,seq
 	</select>
 	
 	<select id="selectFunctionsByPage" parameterType="java.util.Map"
