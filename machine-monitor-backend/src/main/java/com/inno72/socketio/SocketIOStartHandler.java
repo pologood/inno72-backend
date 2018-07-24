@@ -1,16 +1,16 @@
 package com.inno72.socketio;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
-import com.inno72.common.CommonConstants;
-import com.inno72.common.MachineMonitorBackendProperties;
-import com.inno72.model.*;
-import com.inno72.redis.IRedisUtil;
-import com.inno72.socketio.core.SocketServer;
-import com.inno72.socketio.core.SocketServerHandler;
-import com.inno72.util.AesUtils;
-import com.inno72.util.GZIPUtil;
+import static com.inno72.model.MessageBean.EventType.CHECKSTATUS;
+import static com.inno72.model.MessageBean.SubEventType.APPSTATUS;
+import static com.inno72.model.MessageBean.SubEventType.MACHINESTATUS;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +21,22 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static com.inno72.model.MessageBean.EventType.CHECKSTATUS;
-import static com.inno72.model.MessageBean.SubEventType.APPSTATUS;
-import static com.inno72.model.MessageBean.SubEventType.MACHINESTATUS;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
+import com.inno72.common.CommonConstants;
+import com.inno72.common.MachineMonitorBackendProperties;
+import com.inno72.model.AlarmMessageBean;
+import com.inno72.model.MachineAppStatus;
+import com.inno72.model.MachineLogInfo;
+import com.inno72.model.MachineStatus;
+import com.inno72.model.MessageBean;
+import com.inno72.model.SystemStatus;
+import com.inno72.redis.IRedisUtil;
+import com.inno72.socketio.core.SocketServer;
+import com.inno72.socketio.core.SocketServerHandler;
+import com.inno72.util.AesUtils;
+import com.inno72.util.GZIPUtil;
 
 @Configuration
 public class SocketIOStartHandler {
@@ -69,13 +76,13 @@ public class SocketIOStartHandler {
 						MachineStatus machineStatus = messageBean.getData();
 						String machineId = machineStatus.getMachineId();
 						machineStatus.setCreateTime(LocalDateTime.now());
-                        //将货道故障信息推送到预警系统
+						// 将货道故障信息推送到预警系统
 						if (!StringUtils.isEmpty(machineStatus.getGoodsChannelStatus())) {
 							AlarmMessageBean alarmMessageBean = new AlarmMessageBean();
 							alarmMessageBean.setSystem("machineChannel");
 							alarmMessageBean.setType("machineChannelException");
 							alarmMessageBean.setData(machineStatus);
-							redisUtil.publish("moniterAlarm",JSONObject.toJSONString(alarmMessageBean));
+							redisUtil.publish("moniterAlarm", JSONObject.toJSONString(alarmMessageBean));
 						}
 						// 保存到mongo表中--先删除再保存
 						Query query = new Query();
@@ -112,7 +119,7 @@ public class SocketIOStartHandler {
 				querySystemStatus.addCriteria(Criteria.where("machineId").is(machineId));
 				mongoTpl.remove(querySystemStatus, "SystemStatus");
 				mongoTpl.save(systemStatus, "SystemStatus");
-                log.info("推送监控消息执行中，machineId：{}机器的系统信息已保存,消息内容：{}", machineId, message);
+				log.info("收到推送监控消息，sessionId:{},machineId：{}机器的系统信息已保存,消息内容：{}", key, machineId, message);
 				// 将当前时间与机器Id维护到机器日志表中
 				MachineLogInfo machineLogInfo = new MachineLogInfo();
 				machineLogInfo.setMachineId(machineId);
@@ -122,21 +129,23 @@ public class SocketIOStartHandler {
 				mongoTpl.remove(query, "MachineLogInfo");
 				mongoTpl.save(machineLogInfo, "MachineLogInfo");
 				// 判断是否在断网机器表中存在，如果存在,修改机器主表中网络状态并从断网机器表中删除
-				/*Query queryNetOffMachine = new Query();
-				queryNetOffMachine.addCriteria(Criteria.where("machineId").is(machineId));
-				Boolean flag = mongoTpl.exists(query, "NetOffMachineInfo");
-				if (true == flag) {
-                    log.info("断网机器表中存在该machineCode:{}的数据", machineId);
-					String urlProp = machineMonitorBackendProperties.getProps().get("updateNetStatusUrl");
-					String url = MessageFormat.format(urlProp, machineId, CommonConstants.NET_OPEN);
-					String result = HttpClient.post(url, "");
-					JSONObject jsonObject = JSONObject.parseObject(result);
-					Integer resultCdoe = jsonObject.getInteger("code");
-					if (CommonConstants.RESULT_SUCCESS.equals(resultCdoe)) {
-                        log.info("machineCode:{}修改后台管理系统，网络状态数据为：已连接", machineId);
-						mongoTpl.remove(query, "NetOffMachineInfo");
-					}
-				}*/
+				/*
+				 * Query queryNetOffMachine = new Query();
+				 * queryNetOffMachine.addCriteria(Criteria.where("machineId").is
+				 * (machineId)); Boolean flag = mongoTpl.exists(query,
+				 * "NetOffMachineInfo"); if (true == flag) {
+				 * log.info("断网机器表中存在该machineCode:{}的数据", machineId); String
+				 * urlProp = machineMonitorBackendProperties.getProps().get(
+				 * "updateNetStatusUrl"); String url =
+				 * MessageFormat.format(urlProp, machineId,
+				 * CommonConstants.NET_OPEN); String result =
+				 * HttpClient.post(url, ""); JSONObject jsonObject =
+				 * JSONObject.parseObject(result); Integer resultCdoe =
+				 * jsonObject.getInteger("code"); if
+				 * (CommonConstants.RESULT_SUCCESS.equals(resultCdoe)) {
+				 * log.info("machineCode:{}修改后台管理系统，网络状态数据为：已连接", machineId);
+				 * mongoTpl.remove(query, "NetOffMachineInfo"); } }
+				 */
 
 			}
 
