@@ -31,8 +31,6 @@ public class SystemStatus {
 	private long sdFree;
 	private long sdTotle;
 	private String ping;
-	private int screenIntensity;
-	private int voice;
 	/**
 	 * 创建时间
 	 */
@@ -125,22 +123,6 @@ public class SystemStatus {
 
 	public void setSdTotle(long sdTotle) {
 		this.sdTotle = sdTotle;
-	}
-
-	public int getScreenIntensity() {
-		return screenIntensity;
-	}
-
-	public void setScreenIntensity(int screenIntensity) {
-		this.screenIntensity = screenIntensity;
-	}
-
-	public int getVoice() {
-		return voice;
-	}
-
-	public void setVoice(int voice) {
-		this.voice = voice;
 	}
 
 }
