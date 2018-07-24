@@ -46,7 +46,7 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         String key = CommonConstants.SMS_CODE_KEY+phone;
         String smsCode = redisUtil.get(key);
         params.put("code", smsCode);
-        String appName ="machine-app-backend";
+        String appName ="machine-check-app-backend";
         if(StringUtil.isEmpty(smsCode)){
             smsCode = StringUtil.createVerificationCode(6);
             redisUtil.setex(key,60*5,smsCode);

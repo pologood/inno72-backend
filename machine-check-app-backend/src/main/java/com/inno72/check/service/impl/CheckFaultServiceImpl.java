@@ -77,6 +77,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
             if(machines != null && machines.size()>0){
                 for(Inno72Machine machine:machines){
                     String pushCode = "push_check_app_fault";
+                    String smsCode = "sms_check_app_fault";
                     Map<String,String> params = new HashMap<>();
                     params.put("machineCode",machine.getMachineCode());
                     params.put("machineId",machine.getId());
@@ -86,9 +87,10 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
                             String phone = checkUser.getPhone();
                             if(StringUtil.isNotEmpty(phone)){
                                 msgUtil.sendPush(pushCode,params,phone,"互动管家","故障","您有一条故障信息");
-                                msgUtil.sendSMS(pushCode,params,phone,"互动管家");
+                                msgUtil.sendSMS(smsCode,params,phone,"互动管家");
                             }
                         }
+
                     }
                 }
 
