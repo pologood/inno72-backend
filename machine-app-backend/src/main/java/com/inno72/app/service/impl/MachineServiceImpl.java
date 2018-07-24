@@ -178,4 +178,19 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		return Results.success();
 	}
 
+	@Override
+	public Result<Inno72Machine> getMachineInfo(Map<String, Object> msg) {
+		String machineCode = (String) Optional.of(msg).map(a -> a.get("machineCode")).orElse("");
+		if (StringUtil.isEmpty(machineCode)) {
+			return Results.failure("machineCode传入为空");
+		}
+		Condition condition = new Condition(Inno72Machine.class);
+		condition.createCriteria().andEqualTo("machineCode", machineCode);
+		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition);
+		if (machines == null || machines.size() != 1) {
+			return Results.failure("machineCode传入错误");
+		}
+		return Results.success(machines.get(0));
+	}
+
 }
