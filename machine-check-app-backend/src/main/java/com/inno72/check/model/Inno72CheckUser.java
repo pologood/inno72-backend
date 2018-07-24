@@ -83,6 +83,7 @@ public class Inno72CheckUser {
     @Column(name="is_delete")
     private int isDelete;
 
+    @Transient
     private String smsCode;
 
     public String getId() {
