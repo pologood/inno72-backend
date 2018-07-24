@@ -19,4 +19,6 @@ public interface Inno72ActivityMapper extends Mapper<Inno72Activity> {
 	List<Inno72Activity> selectUnPlanList();
 	
 	Inno72Activity selectDefaultActivity();
+	
+	int deleteDefaultActivity();
 }

@@ -158,7 +158,7 @@ public class CheckNetAndAlarmTask {
                     params.put("machineCode", machineLogInfo.getMachineId());
                     params.put("localStr", localStr);
                     params.put("text", "出现网络连接不上的情况，请及时处理");
-                    log.info("检查网络状态动态参数是", params.toString());
+                    log.info("检查网络状态动态参数是，params：{}", params.toString());
                     msgUtil.sendDDTextByGroup(code, params, groupId, "machineAlarm-CheckNetAndAlarmTask");
                 }
             }

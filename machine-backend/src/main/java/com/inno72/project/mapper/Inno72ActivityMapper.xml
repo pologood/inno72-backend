@@ -109,6 +109,9 @@
   <select id="selectDefaultActivity" parameterType="java.util.Map" resultMap="BaseResultMap">
 		 SELECT * FROM inno72_activity a where a.is_delete = 0 and a.is_default=1 LIMIT 1
   </select>
+  <delete id="deleteDefaultActivity" parameterType="String">
+		DELETE FROM inno72_activity WHERE is_default=1
+	</delete>
   
   
 </mapper>
