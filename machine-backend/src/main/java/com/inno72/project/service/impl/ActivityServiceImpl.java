@@ -139,6 +139,12 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 		return inno72ActivityMapper.selectById(id);
 	}
 	
+	@Override
+	public Inno72Activity selectDefaultActivity() {
+		
+		return inno72ActivityMapper.selectDefaultActivity();
+	}
+	
 	
     
     
