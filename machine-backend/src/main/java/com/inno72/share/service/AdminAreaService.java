@@ -1,9 +1,9 @@
-package com.inno72.common.share.service;
+package com.inno72.share.service;
 
 import java.util.List;
 
 import com.inno72.common.Service;
-import com.inno72.common.share.model.Inno72AdminArea;
+import com.inno72.share.model.Inno72AdminArea;
 
 
 /**
