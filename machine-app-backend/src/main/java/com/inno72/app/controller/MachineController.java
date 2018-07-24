@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inno72.app.model.Inno72Machine;
 import com.inno72.app.service.MachineService;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
@@ -83,9 +82,9 @@ public class MachineController {
 	 * @param msg
 	 * @return
 	 */
-	@RequestMapping(value = "/getMachineInfo", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<Inno72Machine> getMachineInfo(@RequestBody Map<String, Object> msg) {
-		return machineService.getMachineInfo(msg);
+	@RequestMapping(value = "/getMachineStatus", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<Integer> getMachineStatus(@RequestBody Map<String, Object> msg) {
+		return machineService.getMachineStatus(msg);
 	}
 
 	@PostMapping("encrypt")

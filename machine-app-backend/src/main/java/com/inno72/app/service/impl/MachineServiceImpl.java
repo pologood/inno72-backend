@@ -179,7 +179,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	}
 
 	@Override
-	public Result<Inno72Machine> getMachineInfo(Map<String, Object> msg) {
+	public Result<Integer> getMachineStatus(Map<String, Object> msg) {
 		String machineCode = (String) Optional.of(msg).map(a -> a.get("machineCode")).orElse("");
 		if (StringUtil.isEmpty(machineCode)) {
 			return Results.failure("machineCode传入为空");
@@ -190,7 +190,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (machines == null || machines.size() != 1) {
 			return Results.failure("machineCode传入错误");
 		}
-		return Results.success(machines.get(0));
+		return Results.success(machines.get(0).getMachineStatus());
 	}
 
 }
