@@ -55,7 +55,7 @@ public class SupplyChannelTask {
             for(Inno72SupplyChannel supplyChannel:list){
                 String id = supplyChannel.getId();
                 String key = "LACK_GOODS_TYPE_"+lackGoodsType+"_"+id;
-                redisUtil.del(key);
+//                redisUtil.del(key);
                 String value = redisUtil.get(key);
                 if(StringUtil.isEmpty(value)){
                     ChannelGoodsAlarmBean alarmBean = new ChannelGoodsAlarmBean();

@@ -41,6 +41,12 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
 
     @Override
     public Result<String> smsCode(String phone) {
+        Condition condition = new Condition(Inno72CheckUser.class);
+        condition.createCriteria().andEqualTo("phone",phone);
+        List<Inno72CheckUser> userList = inno72CheckUserMapper.selectByCondition(condition);
+        if(userList == null || userList.size()==0){
+            return Results.failure("用户不存在");
+        }
         String code = "yp_validate_code";
         Map<String, String> params = new HashMap<>();
         String key = CommonConstants.SMS_CODE_KEY+phone;

@@ -48,7 +48,12 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
+			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			
+			model.setId(StringUtil.getUUID());
+			model.setManagerId(userId);//负责人
+			model.setCreateId(userId);
+			model.setUpdateId(userId);
 			if(0==model.getIsDefault()){//常规活动选择商户，店铺
 				if (StringUtil.isBlank(model.getSellerId())) {
 					return Results.failure("请选择所属商户");
@@ -56,13 +61,17 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 				if (StringUtil.isBlank(model.getSellerId())) {
 					return Results.failure("请选择所属店铺");
 				}
+			}else{
+				Inno72Activity defaultAct=inno72ActivityMapper.selectDefaultActivity();
+				if (null !=defaultAct) {
+					if (defaultAct.getGameId().equals(model.getGameId())) {
+						return Results.success("操作成功");
+					}else{
+						//删除原来默认活动
+						inno72ActivityMapper.deleteDefaultActivity();
+					}
+				}
 			}
-			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-			
-			model.setId(StringUtil.getUUID());
-			model.setManagerId(userId);//负责人
-			model.setCreateId(userId);
-			model.setUpdateId(userId);
 			super.save(model);
 		} catch (Exception e) {
 			logger.info(e.getMessage());
