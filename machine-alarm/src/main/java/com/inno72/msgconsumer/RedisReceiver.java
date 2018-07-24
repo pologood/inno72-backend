@@ -99,7 +99,7 @@ public class RedisReceiver {
                 Map<String, String> params = new HashMap<>();
                 params.put("machineCode", machineId);
                 params.put("localStr", localStr);
-                params.put("text", "出现掉货异常，货道编号是：" + channelNum + "故障原因是：" + describtion + "请及时处理。");
+                params.put("text", "出现掉货异常，货道编号是：" + channelNum + "故障原因是：" + describtion + "，请及时处理。");
                 log.info("货道故障发送短讯，参数param：{}", params.toString());
                 //根据机器编码查询对应巡检人员
                 Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
