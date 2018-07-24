@@ -15,7 +15,7 @@ public class Inno72AlarmMsg {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
-    private String title;
+    private int title;
 
     private String system;
 
@@ -61,19 +61,7 @@ public class Inno72AlarmMsg {
         this.id = id;
     }
 
-    /**
-     * @return title
-     */
-    public String getTitle() {
-        return title;
-    }
 
-    /**
-     * @param title
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     /**
      * @return system
@@ -115,6 +103,14 @@ public class Inno72AlarmMsg {
      */
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+    public int getTitle() {
+        return title;
+    }
+
+    public void setTitle(int title) {
+        this.title = title;
     }
 
 

@@ -2,12 +2,16 @@ package com.inno72.task;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.inno72.common.CommonConstants;
 import com.inno72.common.MachineAlarmProperties;
+import com.inno72.common.StringUtil;
+import com.inno72.model.Inno72AlarmMsg;
 import com.inno72.model.Inno72CheckUserPhone;
 import com.inno72.model.MachineLocaleInfo;
 import com.inno72.model.MachineLogInfo;
 import com.inno72.msg.MsgUtil;
 import com.inno72.plugin.http.HttpClient;
+import com.inno72.service.AlarmMsgService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import javax.annotation.Resource;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -48,6 +53,9 @@ public class CheckNetAndAlarmTask {
 
     @Autowired
     private MsgUtil msgUtil;
+
+    @Resource
+    private AlarmMsgService alarmMsgService;
 
     @Scheduled(cron = "0 0/1 * * * ?")
     //@Scheduled(cron = "0/5 * * * * ?")
@@ -100,6 +108,14 @@ public class CheckNetAndAlarmTask {
                         String phone = inno72CheckUserPhone1.getPhone();
                         msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【报警】您负责的机器出现网络异常", "");
                     }
+                    //保存接口
+                    Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
+                    inno72AlarmMsg.setTitle(4);
+                    inno72AlarmMsg.setCreateTime(LocalDateTime.now());
+                    inno72AlarmMsg.setSystem("machineCloseNet");
+                    inno72AlarmMsg.setMachineCode(machineLogInfo.getMachineId());
+                    inno72AlarmMsg.setId(StringUtil.getUUID());
+                    alarmMsgService.save(inno72AlarmMsg);
 
                 } else if (between == 8) {
                     //组合报警接口
@@ -126,6 +142,14 @@ public class CheckNetAndAlarmTask {
                         msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【报警】您负责的机器出现网络异常", "");
                     }
 
+                    //保存接口
+                    Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
+                    inno72AlarmMsg.setTitle(4);
+                    inno72AlarmMsg.setCreateTime(LocalDateTime.now());
+                    inno72AlarmMsg.setSystem("machineCloseNet");
+                    inno72AlarmMsg.setMachineCode(machineLogInfo.getMachineId());
+                    inno72AlarmMsg.setId(StringUtil.getUUID());
+                    alarmMsgService.save(inno72AlarmMsg);
 
                 } else if (between > 8 && (between - 8) % 2 == 0) {
                     //钉钉报警接口
