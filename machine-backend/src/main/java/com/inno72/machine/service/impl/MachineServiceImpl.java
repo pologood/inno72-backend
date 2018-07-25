@@ -46,6 +46,7 @@ import com.inno72.machine.vo.SystemStatus;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.system.model.Inno72User;
+import tk.mybatis.mapper.entity.Condition;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
@@ -225,12 +226,17 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		for (MachineNetInfo machineNetInfo : list) {
 			String machineCode = machineNetInfo.getMachineCode();
 			Integer netStatus = machineNetInfo.getNetStatus();
-			Inno72Machine machine = findBy("machineCode", machineCode);
-			if (machine != null) {
-				if (!machine.getNetStatus().equals(netStatus)) {
-					machine.setNetStatus(netStatus);
-					inno72MachineMapper.updateByPrimaryKeySelective(machine);
+			Condition condition = new Condition(Inno72Machine.class);
+			condition.createCriteria().andCondition("machine_code =" + machineCode);
+			List<Inno72Machine> machine = findByCondition(condition);
+			if (null != machine && machine.size() > 0) {
+				for (Inno72Machine inno72Machine : machine) {
+					if (!inno72Machine.getNetStatus().equals(netStatus)) {
+						inno72Machine.setNetStatus(netStatus);
+						inno72MachineMapper.updateByPrimaryKeySelective(inno72Machine);
+					}
 				}
+
 			} else {
 				logger.info("机器id传入错误");
 			}
@@ -357,6 +363,14 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		msg.setData(il);
 		return sendMsg(machine.getMachineCode(), msg);
 	}
+
+	/*@Override
+	public Result<List<Inno72Machine>> findMachineByMachineCode(int machineStatus) {
+
+		 List<Inno72Machine> list = inno72MachineMapper.findMachineByMachineCode(machineStatus);
+
+		 return Results.success(list);
+	}*/
 
 	private Result<String> sendMsg(String machineCode, SendMessageBean... beans) {
 		String url = machineBackendProperties.get("sendAppMsgUrl");
