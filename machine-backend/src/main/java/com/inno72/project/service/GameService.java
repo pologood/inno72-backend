@@ -1,9 +1,9 @@
-package com.inno72.game.service;
+package com.inno72.project.service;
 import java.util.List;
 
 import com.inno72.common.Result;
 import com.inno72.common.Service;
-import com.inno72.game.model.Inno72Game;
+import com.inno72.project.model.Inno72Game;
 
 
 /**

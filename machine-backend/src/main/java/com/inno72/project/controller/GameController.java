@@ -1,10 +1,10 @@
-package com.inno72.game.controller;
+package com.inno72.project.controller;
 
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
-import com.inno72.game.model.Inno72Game;
-import com.inno72.game.service.GameService;
+import com.inno72.project.model.Inno72Game;
+import com.inno72.project.service.GameService;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.validation.BindingResult;

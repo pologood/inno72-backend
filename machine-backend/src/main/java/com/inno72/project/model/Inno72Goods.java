@@ -1,4 +1,4 @@
-package com.inno72.goods.model;
+package com.inno72.project.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package com.inno72.game.mapper;
+package com.inno72.project.mapper;
 
 import java.util.List;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.inno72.common.Mapper;
-import com.inno72.game.model.Inno72Game;
+import com.inno72.project.model.Inno72Game;
 
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72GameMapper extends Mapper<Inno72Game> {

@@ -1,10 +1,11 @@
 package com.inno72.machine.service.impl;
 
 import com.inno72.common.AbstractService;
-import com.inno72.goods.model.GoodsChannelBean;
 import com.inno72.machine.mapper.Inno72SupplyChannelStatusMapper;
 import com.inno72.machine.model.Inno72SupplyChannelStatus;
 import com.inno72.machine.service.SupplyChannelStatusService;
+import com.inno72.project.model.GoodsChannelBean;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

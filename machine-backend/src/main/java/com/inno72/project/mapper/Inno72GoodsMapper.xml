@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.inno72.goods.mapper.Inno72GoodsMapper">
-  <resultMap id="BaseResultMap" type="com.inno72.goods.model.Inno72Goods">
+<mapper namespace="com.inno72.project.mapper.Inno72GoodsMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.project.model.Inno72Goods">
     <!--
       WARNING - @mbg.generated
     -->

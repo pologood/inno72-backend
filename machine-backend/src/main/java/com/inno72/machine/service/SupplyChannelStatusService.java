@@ -1,7 +1,7 @@
 package com.inno72.machine.service;
 
-import com.inno72.goods.model.GoodsChannelBean;
 import com.inno72.machine.model.Inno72SupplyChannelStatus;
+import com.inno72.project.model.GoodsChannelBean;
 import com.inno72.common.Service;
 
 import java.util.List;

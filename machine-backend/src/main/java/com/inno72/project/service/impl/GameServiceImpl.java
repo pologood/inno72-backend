@@ -1,4 +1,4 @@
-package com.inno72.game.service.impl;
+package com.inno72.project.service.impl;
 
 import com.inno72.common.AbstractService;
 import com.inno72.common.CommonConstants;
@@ -7,10 +7,10 @@ import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
-import com.inno72.game.mapper.Inno72GameMapper;
-import com.inno72.game.model.Inno72Game;
-import com.inno72.game.service.GameService;
-import com.inno72.goods.model.Inno72Goods;
+import com.inno72.project.mapper.Inno72GameMapper;
+import com.inno72.project.model.Inno72Game;
+import com.inno72.project.model.Inno72Goods;
+import com.inno72.project.service.GameService;
 import com.inno72.system.model.Inno72User;
 
 import tk.mybatis.mapper.entity.Condition;

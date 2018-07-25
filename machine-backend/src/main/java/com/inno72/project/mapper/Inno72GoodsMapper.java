@@ -1,4 +1,4 @@
-package com.inno72.goods.mapper;
+package com.inno72.project.mapper;
 
 import java.util.List;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.inno72.common.Mapper;
-import com.inno72.goods.model.Inno72Goods;
+import com.inno72.project.model.Inno72Goods;
 
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72GoodsMapper extends Mapper<Inno72Goods> {

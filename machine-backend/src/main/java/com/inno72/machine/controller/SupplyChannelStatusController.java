@@ -4,9 +4,10 @@ package com.inno72.machine.controller;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
-import com.inno72.goods.model.GoodsChannelBean;
 import com.inno72.machine.model.Inno72SupplyChannelStatus;
 import com.inno72.machine.service.SupplyChannelStatusService;
+import com.inno72.project.model.GoodsChannelBean;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import tk.mybatis.mapper.entity.Condition;
