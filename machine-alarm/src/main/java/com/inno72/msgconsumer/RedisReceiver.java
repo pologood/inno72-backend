@@ -143,13 +143,15 @@ public class RedisReceiver {
             Query query = new Query();
             query.addCriteria(Criteria.where("machineCode").is(machineCode));
             log.info("当前的machineCode：{}", machineCode);
-            List<DropGoodsExceptionInfo> dropGoodsExceptionInfoList = mongoTpl.find(query, DropGoodsExceptionInfo.class);
+            List<DropGoodsExceptionInfo> dropGoodsExceptionInfoList = mongoTpl.find(query, DropGoodsExceptionInfo.class, "DropGoodsExceptionInfo");
             log.info("当前数据库查询数据，dropGoodsExceptionInfoList：{}", dropGoodsExceptionInfoList.toString());
             if (dropGoodsExceptionInfoList.size() > 0) {
                 for (DropGoodsExceptionInfo dropGoodsExceptionInfo : dropGoodsExceptionInfoList) {
                     Integer updateNum = dropGoodsExceptionInfo.getErrorNum() + 1;
                     log.info("当前数据库次数，updateTime：{}", updateNum);
                     dropGoodsExceptionInfo.setErrorNum(updateNum);
+                    mongoTpl.remove(query, "DropGoodsExceptionInfo");
+                    mongoTpl.save(dropGoodsExceptionInfo, "DropGoodsExceptionInfo");
                     //连续掉货两次
                     if (updateNum == 2) {
                         //巡检app接口
