@@ -94,35 +94,42 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         if (users == null || users.size() != 1) {
             return Results.failure("用户不存在");
         }
-        String smsCodeValue = redisUtil.get(CommonConstants.SMS_CODE_KEY+phone);
-        if(StringUtil.isEmpty(smsCodeValue)){
-            return Results.failure("验证码已过期");
-        }else if(!smsCodeValue.equals(smsCode)){
+        String message = redisUtil.get(CommonConstants.SMS_CODE_KEY+phone);
+        if(StringUtil.isNotEmpty(message)){
+            JSONObject jsonObject = JSONObject.parseObject(message);
+            String smsCodeValue = jsonObject.getString("smsCode");
+            if(StringUtil.isEmpty(smsCodeValue)){
+                return Results.failure("验证码已过期");
+            }else if(!smsCodeValue.equals(smsCode)){
+                return Results.failure("验证码不正确");
+            }
+            Inno72CheckUser user = users.get(0);
+            String token = StringUtil.getUUID();
+            SessionData sessionData = new SessionData(token, user);
+            // 获取用户token使用
+            String userTokenKey = CommonConstants.USER_LOGIN_TOKEN_CACHE_KEY_PREF + user.getId();
+            // 获取用户之前登录的token
+            String oldToken = redisUtil.get(userTokenKey);
+            // 清除之前的登录信息
+            if (StringUtil.isNotBlank(oldToken)) {
+                redisUtil.del(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + oldToken);
+                // 记录被踢出
+                redisUtil.sadd(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, oldToken);
+                redisUtil.del(CommonConstants.SMS_CODE_KEY+phone);
+            }
+            // 保存新登录的token
+            redisUtil.set(userTokenKey, token);
+            // 用户登录信息缓存
+            String userInfoKey = CommonConstants.USER_LOGIN_CACHE_KEY_PREF + token;
+            // 缓存用户登录sessionData
+            redisUtil.set(userInfoKey, JsonUtil.toJson(sessionData));
+            redisUtil.expire(userInfoKey, CommonConstants.SESSION_DATA_EXP);
+            redisUtil.expire(userTokenKey, CommonConstants.SESSION_DATA_EXP);
+            return Results.success(sessionData);
+        }else{
             return Results.failure("验证码不正确");
         }
-        Inno72CheckUser user = users.get(0);
-        String token = StringUtil.getUUID();
-        SessionData sessionData = new SessionData(token, user);
-        // 获取用户token使用
-        String userTokenKey = CommonConstants.USER_LOGIN_TOKEN_CACHE_KEY_PREF + user.getId();
-        // 获取用户之前登录的token
-        String oldToken = redisUtil.get(userTokenKey);
-        // 清除之前的登录信息
-        if (StringUtil.isNotBlank(oldToken)) {
-            redisUtil.del(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + oldToken);
-            // 记录被踢出
-            redisUtil.sadd(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, oldToken);
-            redisUtil.del(CommonConstants.SMS_CODE_KEY+phone);
-        }
-        // 保存新登录的token
-        redisUtil.set(userTokenKey, token);
-        // 用户登录信息缓存
-        String userInfoKey = CommonConstants.USER_LOGIN_CACHE_KEY_PREF + token;
-        // 缓存用户登录sessionData
-        redisUtil.set(userInfoKey, JsonUtil.toJson(sessionData));
-        redisUtil.expire(userInfoKey, CommonConstants.SESSION_DATA_EXP);
-        redisUtil.expire(userTokenKey, CommonConstants.SESSION_DATA_EXP);
-        return Results.success(sessionData);
+
     }
 
     @Override
