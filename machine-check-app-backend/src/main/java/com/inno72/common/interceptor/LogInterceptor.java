@@ -150,6 +150,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 
 	@SuppressWarnings("unused")
 	private boolean checkAuthority(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		response.reset();
 		String url = request.getServletPath();
 		boolean match = doNotCheckUs.parallelStream().anyMatch(_url -> url.indexOf(_url) != -1);
 		if (match) {
