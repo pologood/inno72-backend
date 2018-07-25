@@ -1,11 +1,11 @@
-package com.inno72.goods.service.impl;
+package com.inno72.project.service.impl;
 
 import com.inno72.common.*;
 import tk.mybatis.mapper.entity.Condition;
 
-import com.inno72.goods.mapper.Inno72GoodsMapper;
-import com.inno72.goods.model.Inno72Goods;
-import com.inno72.goods.service.GoodsService;
+import com.inno72.project.mapper.Inno72GoodsMapper;
+import com.inno72.project.model.Inno72Goods;
+import com.inno72.project.service.GoodsService;
 import com.inno72.system.model.Inno72User;
 
 import org.slf4j.Logger;

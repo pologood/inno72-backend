@@ -1,4 +1,4 @@
-package com.inno72.game.model;
+package com.inno72.project.model;
 
 import java.time.LocalDateTime;
 import javax.persistence.*;

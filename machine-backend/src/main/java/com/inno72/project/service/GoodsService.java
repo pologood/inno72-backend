@@ -1,4 +1,4 @@
-package com.inno72.goods.service;
+package com.inno72.project.service;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.inno72.common.Result;
 import com.inno72.common.Service;
-import com.inno72.goods.model.Inno72Goods;
+import com.inno72.project.model.Inno72Goods;
 
 
 /**

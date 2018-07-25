@@ -1,10 +1,10 @@
-package com.inno72.goods.controller;
+package com.inno72.project.controller;
 
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
-import com.inno72.goods.model.Inno72Goods;
-import com.inno72.goods.service.GoodsService;
+import com.inno72.project.model.Inno72Goods;
+import com.inno72.project.service.GoodsService;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.validation.BindingResult;
