@@ -1,5 +1,6 @@
 package com.inno72.machine.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.inno72.common.Result;
 import com.inno72.common.Service;
 import com.inno72.machine.model.Inno72Goods;
@@ -46,7 +47,7 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
 	Result<String> supplyAll(String machineId);
 
-	Result<String> submit(List<Inno72SupplyChannel> supplyChannelList);
+	Result<String> submit(List<Map<String,Object>> mapList);
 
 	List<WorkOrderVo> workOrderList(String keyword,String findTime);
 

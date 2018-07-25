@@ -1,5 +1,6 @@
 package com.inno72.machine.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
@@ -148,12 +149,13 @@ public class SupplyChannelController {
 
 	/**
 	 * 提交补货
-	 * @param supplyChannelList
+	 * @param map
 	 * @return
 	 */
 	@RequestMapping(value="submit",method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> submit(List<Inno72SupplyChannel> supplyChannelList){
-		Result<String> result = supplyChannelService.submit(supplyChannelList);
+	public Result<String> submit(@RequestBody Map<String,Object> map){
+		List<Map<String,Object>> mapList = (List<Map<String,Object>>) map.get("list");
+		Result<String> result = supplyChannelService.submit(mapList);
 		return result;
 	}
 

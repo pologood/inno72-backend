@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,8 +85,15 @@ public class CheckUserController {
      * @return
      */
     @RequestMapping(value="decrypt")
-    public String decrypt(@RequestBody Map<String,Object> map){
+    public Result<String> decrypt(@RequestBody Map<String,Object> map){
         String data = map.get("data").toString();
-        return AesUtils.decrypt(data);
+        String decryptData = AesUtils.decrypt(data);
+        String result = null;
+        try {
+           result =  new String(decryptData.getBytes("UTF-8"),"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return ResultGenerator.genSuccessResult(result);
     }
 }
