@@ -25,6 +25,9 @@ public class CommonConstants {
 
     public final static int LACKGOODS_TENPERCENT = 1;
 
+    //机器状态是正常的
+    public final static int MACHINESTATUS_NUMAUL = 4;
+
 
 
 }
