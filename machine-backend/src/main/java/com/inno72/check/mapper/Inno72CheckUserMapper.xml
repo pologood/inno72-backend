@@ -56,6 +56,7 @@
 			u.sex,
 			u.head_image,
 			u.is_delete,
+			u.remark,
 			m.id AS machine_id,
 			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL( l.name,""), '—', m.machine_code ) AS machine_code
 		from inno72_check_user  u
