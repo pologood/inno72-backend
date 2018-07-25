@@ -33,13 +33,14 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	@Resource
 	private IRedisUtil redisUtil; // memcachedClient
 
-	private static List<String> doNotCheckUs = Arrays.asList(new String[] { "/dd/login", "/dd", "/dd/reg_call_back",
-			"/dd/update_call_back", "/dd/initDData", "/dd/token", "/dd/testLogin", "/machine/channel/out/subCount",
-			"/machine/channel/out/get", "/machine/machine/initMachine", "/machine/machine/updateNetStatus",
+    /*private static List<String> doNotCheckUs = Arrays.asList(new String[] { "/dd/login", "/dd", "/dd/reg_call_back",
+            "/dd/update_call_back", "/dd/initDData", "/dd/token", "/dd/testLogin", "/machine/channel/out/subCount",
+            "/machine/channel/out/get", "/machine/machine/initMachine", "/machine/machine/updateNetStatus",
             "/machine/machine/updateMachineListNetStatus", "/testMsg", "/machine/machine/findMachineByMachineCode", "/project/activityPlan/selectNoPlanMachines",
             "/machine/locale/selectLocaleByMachineCode", "/supply/channel/status/getChannelErrorDetail", "/check/signIn/userExcel",
             "/machine/locale/selectLocaleByMachineCode", "/supply/channel/status/getChannelErrorDetail",
-			"/check/user/selectAreaMachines", "/check/user/selectPhoneByMachineCode"});
+            "/check/user/selectAreaMachines", "/check/user/selectPhoneByMachineCode"});*/
+    private static List<String> doNotCheckUs = Arrays.asList(new String[]{"/machine/machine/findMachineByMachineCode"});
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
