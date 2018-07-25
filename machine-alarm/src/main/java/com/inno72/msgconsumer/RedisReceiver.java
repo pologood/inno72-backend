@@ -143,6 +143,7 @@ public class RedisReceiver {
             Query query = new Query();
             query.addCriteria(Criteria.where("machineCode").is(machineCode));
             List<DropGoodsExceptionInfo> dropGoodsExceptionInfoList = mongoTpl.find(query, DropGoodsExceptionInfo.class);
+            log.info("当前数据库查询数据，dropGoodsExceptionInfoList：{}", dropGoodsExceptionInfoList.toString());
             if (dropGoodsExceptionInfoList.size() > 0) {
                 for (DropGoodsExceptionInfo dropGoodsExceptionInfo : dropGoodsExceptionInfoList) {
                     Integer updateNum = dropGoodsExceptionInfo.getErrorNum() + 1;
