@@ -183,7 +183,7 @@ public class SupplyChannelController {
 	 * @param vo
 	 */
 	@RequestMapping(value = "findAndPushByTaskParam",method = {RequestMethod.POST,RequestMethod.GET})
-	public void findAndPushByTaskParam(SupplyRequestVo vo){
+	public void findAndPushByTaskParam(@RequestBody SupplyRequestVo vo){
 		supplyChannelService.findAndPushByTaskParam(vo.getLackGoodsType());
 	}
 
