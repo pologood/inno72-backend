@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Configuration
 @EnableScheduling
-public class CheckSupplyLackGoodsTash {
+public class CheckSupplyLackGoodsTask {
     @Autowired
     private MachineAlarmProperties machineAlarmProperties;
 
