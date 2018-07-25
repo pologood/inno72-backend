@@ -24,6 +24,12 @@ public class Inno72Activity {
     @NotBlank(message="请填写活动名称")
     @Column(name = "name")
     private String name;
+    /**
+     * 活动编码
+     */
+    @NotBlank(message="请填写活动编码")
+    @Column(name = "code")
+    private String code;
 
     /**
      * 店铺ID
@@ -131,8 +137,16 @@ public class Inno72Activity {
     public void setName(String name) {
         this.name = name;
     }
+    
+    public String getCode() {
+		return code;
+	}
 
-    public String getShopId() {
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getShopId() {
 		return shopId;
 	}
 

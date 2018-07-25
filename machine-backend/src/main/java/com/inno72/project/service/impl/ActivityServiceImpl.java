@@ -55,6 +55,12 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 			model.setCreateId(userId);
 			model.setUpdateId(userId);
 			if(0==model.getIsDefault()){//常规活动选择商户，店铺
+				if (StringUtil.isNotBlank(model.getCode())) {
+					int n= inno72ActivityMapper.getCountByCode(model.getCode());
+					if (n>0) {
+						return Results.failure("活动编码已存在，请确认！");
+					}
+				}
 				if (StringUtil.isBlank(model.getSellerId())) {
 					return Results.failure("请选择所属商户");
 				}
@@ -64,12 +70,8 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 			}else{
 				Inno72Activity defaultAct=inno72ActivityMapper.selectDefaultActivity();
 				if (null !=defaultAct) {
-					if (defaultAct.getGameId().equals(model.getGameId())) {
-						return Results.success("操作成功");
-					}else{
-						//删除原来默认活动
-						inno72ActivityMapper.deleteDefaultActivity();
-					}
+					//删除原来默认活动
+					inno72ActivityMapper.deleteDefaultActivity();
 				}
 			}
 			super.save(model);
@@ -113,6 +115,12 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
+			Inno72Activity m = inno72ActivityMapper.selectByPrimaryKey(model.getId());
+			int n= inno72ActivityMapper.getCountByCode(model.getCode());
+			if (n>0 && !m.getCode().equals(model.getCode())) {
+				return Results.failure("活动编码已存在，请确认！");
+			}
+			
 			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			model.setUpdateId(userId);
 			model.setUpdateTime(LocalDateTime.now());
