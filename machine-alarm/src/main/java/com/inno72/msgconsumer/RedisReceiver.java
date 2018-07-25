@@ -146,6 +146,7 @@ public class RedisReceiver {
             if (dropGoodsExceptionInfoList.size() > 0) {
                 for (DropGoodsExceptionInfo dropGoodsExceptionInfo : dropGoodsExceptionInfoList) {
                     Integer updateNum = dropGoodsExceptionInfo.getErrorNum() + 1;
+                    log.info("当前数据库次数，updateTime：{}", updateNum);
                     dropGoodsExceptionInfo.setErrorNum(updateNum);
                     //连续掉货两次
                     if (updateNum == 2) {
