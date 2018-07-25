@@ -5,6 +5,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.alibaba.fastjson.JSONObject;
 import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.common.*;
 import com.inno72.machine.mapper.*;
@@ -12,6 +13,9 @@ import com.inno72.machine.model.*;
 import com.inno72.machine.service.SupplyChannelService;
 import com.inno72.machine.vo.SupplyChannelVo;
 import com.inno72.machine.vo.WorkOrderVo;
+import com.inno72.model.AlarmMessageBean;
+import com.inno72.model.ChannelGoodsAlarmBean;
+import com.inno72.redis.IRedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +58,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 
     @Autowired
     private MongoOperations mongoTpl;
+
+    @Resource
+    private IRedisUtil redisUtil;
 
     @Override
     public Result<Inno72SupplyChannel> subCount(Inno72SupplyChannel supplyChannel) {
@@ -501,9 +508,31 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     }
 
     @Override
-    public List<Inno72SupplyChannel> findByTaskParam(int lackGoodsType) {
+    public void findAndPushByTaskParam(int lackGoodsType) {
         List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectTaskParam(lackGoodsType);
-        return list;
+        if(list != null && list.size()>0){
+            AlarmMessageBean alarmMessageBean = new AlarmMessageBean();
+            alarmMessageBean.setSystem("machineLackGoods");
+            alarmMessageBean.setType("machineLackGoodsException");
+            for(Inno72SupplyChannel supplyChannel:list){
+                String id = supplyChannel.getId();
+                String key = "LACK_GOODS_TYPE_"+lackGoodsType+"_"+id;
+//                redisUtil.del(key);
+                String value = redisUtil.get(key);
+                if(StringUtil.isEmpty(value)){
+                    ChannelGoodsAlarmBean alarmBean = new ChannelGoodsAlarmBean();
+                    alarmBean.setChannelNum(supplyChannel.getCode());
+                    alarmBean.setGoodsName(supplyChannel.getGoodsName());
+                    alarmBean.setLackGoodsType(lackGoodsType);
+                    alarmBean.setMachineCode(supplyChannel.getMachineCode());
+                    alarmMessageBean.setData(alarmBean);
+                    logger.info("货道缺货发送push{}",JSONObject.toJSONString(alarmMessageBean));
+                    redisUtil.publish("moniterAlarm",JSONObject.toJSONString(alarmMessageBean));
+                    redisUtil.setex(key,60*60*2,"1");
+
+                }
+            }
+        }
     }
 
 

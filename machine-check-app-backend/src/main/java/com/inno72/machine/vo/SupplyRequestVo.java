@@ -14,6 +14,8 @@ public class SupplyRequestVo {
 
     private String localeId;
 
+    private int lackGoodsType;
+
     public String getMachineId() {
         return machineId;
     }
@@ -60,5 +62,13 @@ public class SupplyRequestVo {
 
     public void setLocaleId(String localeId) {
         this.localeId = localeId;
+    }
+
+    public int getLackGoodsType() {
+        return lackGoodsType;
+    }
+
+    public void setLackGoodsType(int lackGoodsType) {
+        this.lackGoodsType = lackGoodsType;
     }
 }

@@ -67,9 +67,25 @@ public class CheckUserController {
         return result;
     }
 
-    @RequestMapping(value="/jiami",method = {RequestMethod.POST,RequestMethod.GET})
+    /**
+     * 加密
+     * @param map
+     * @return
+     */
+    @RequestMapping(value="/encrypt",method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
-    public Result<String> jiami(@RequestParam(name="data",required = false) String data){
-        return ResultGenerator.genSuccessResult(AesUtils.encrypt(data));
+    public Result<String> encrypt(@RequestBody Map<String,Object> map){
+        return ResultGenerator.genSuccessResult(AesUtils.encrypt(JSON.toJSONString(map)));
+    }
+
+    /**
+     * 解密
+     * @param map
+     * @return
+     */
+    @RequestMapping(value="decrypt")
+    public String decrypt(@RequestBody Map<String,Object> map){
+        String data = map.get("data").toString();
+        return AesUtils.decrypt(data);
     }
 }
