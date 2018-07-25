@@ -63,6 +63,7 @@ left join inno72_activity_plan_machine apm on ap.id=apm.activity_plan_id
 left join inno72_activity a on ap.activity_id=a.id
  where NOW() BETWEEN ap.start_time and ap.end_time and ap.is_delete!=1
 ) mm on m.id=mm.machine_id
+where 1=1 
 <if test="code !=null and code !='' ">and LEFT(l.area_code,#{num})='${code}'</if>
 		<if test="machineCode !=null and machineCode !=''">
 			AND m.machine_code=#{machineCode}
