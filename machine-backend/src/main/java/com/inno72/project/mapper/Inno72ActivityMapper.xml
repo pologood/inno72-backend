@@ -61,6 +61,7 @@
 			<if test="code ==1"> and NOW() &lt;  ap.start_time </if>
 			<if test="code ==2"> and (NOW() BETWEEN ap.start_time and ap.end_time ) </if>
 			<if test="code ==3"> and NOW() &gt; ap.end_time  </if>
+			<if test="code ==4"> and ap.id is null   </if>
 			<if test="keyword !=null and keyword !='' ">
 			and ( a.name LIKE '%${keyword}%' or m.merchant_name LIKE '%${keyword}%' OR s.shop_name LIKE '%${keyword}%')
 			</if>
