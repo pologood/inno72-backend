@@ -40,13 +40,16 @@ public class Inno72SupplyChannelHistory {
     @Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
     @Column(name = "create_time")
     private LocalDateTime createTime;
-
+    @Transient
     private String machineCode;
 
+    @Transient
     private String localeStr;
 
+    @Transient
     private int subCount;
 
+    @Transient
     private String goodsName;
 
     public String getId() {

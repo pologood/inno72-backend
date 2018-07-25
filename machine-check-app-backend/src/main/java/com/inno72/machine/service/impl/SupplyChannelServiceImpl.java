@@ -439,32 +439,39 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     }
 
     @Override
-    public Result<String> submit(List<Inno72SupplyChannel> supplyChannelList) {
+    public Result<String> submit(List<Map<String,Object>> mapList) {
         LocalDateTime now = LocalDateTime.now();
-        if(supplyChannelList != null && supplyChannelList.size()>0){
+        if(mapList != null && mapList.size()>0){
             String batchNo = StringUtil.getUUID();
             List<Inno72SupplyChannelHistory> historyList = new ArrayList<>();
-            for(Inno72SupplyChannel supplyChannel:supplyChannelList){
+            for(Map<String,Object> map:mapList){
+                Inno72SupplyChannel supplyChannel = new Inno72SupplyChannel();
+                supplyChannel.setId(map.get("id").toString());
+                supplyChannel.setGoodsId(map.get("goodsId").toString());
+                supplyChannel.setGoodsCount(Integer.parseInt(map.get("goodsCount").toString()));
+                Inno72SupplyChannel oldSupply = inno72SupplyChannelMapper.selectByPrimaryKey(supplyChannel.getId());
                 supplyChannel.setUpdateTime(LocalDateTime.now());
                 inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
                 Inno72SupplyChannelGoods goods = new Inno72SupplyChannelGoods();
                 goods.setGoodsId(supplyChannel.getGoodsId());
+                goods.setId(StringUtil.getUUID());
                 goods.setSupplyChannelId(supplyChannel.getId());
                 Condition condition = new Condition(Inno72SupplyChannelGoods.class);
                 condition.createCriteria().andEqualTo("supplyChannelId",supplyChannel.getId());
                 inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
-                inno72SupplyChannelGoodsMapper.updateByConditionSelective(goods,condition);
+                inno72SupplyChannelGoodsMapper.insertSelective(goods);
                 Inno72SupplyChannelHistory history = new Inno72SupplyChannelHistory();
                 history.setId(StringUtil.getUUID());
-                history.setBeforeCount(supplyChannel.getGoodsCount());
-                history.setAfterCount(supplyChannel.getVolumeCount());
+                history.setBeforeCount(oldSupply.getGoodsCount());
+                history.setAfterCount(supplyChannel.getGoodsCount());
                 history.setBatchNo(batchNo);
-                history.setMachineId(supplyChannel.getMachineId());
+                history.setSupplyChannelId(supplyChannel.getId());
+                history.setMachineId(oldSupply.getMachineId());
                 history.setUserId("");
                 history.setCreateTime(now);
                 historyList.add(history);
+                inno72SupplyChannelHistoryMapper.insertSelective(history);
             }
-            inno72SupplyChannelHistoryMapper.insertList(historyList);
         }
         return ResultGenerator.genSuccessResult();
     }
