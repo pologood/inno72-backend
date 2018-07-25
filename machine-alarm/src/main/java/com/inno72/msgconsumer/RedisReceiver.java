@@ -142,7 +142,9 @@ public class RedisReceiver {
             //保存消息次数等信息
             Query query = new Query();
             query.addCriteria(Criteria.where("machineCode").is(machineCode));
+            log.info("当前的machineCode：{}", machineCode);
             List<DropGoodsExceptionInfo> dropGoodsExceptionInfoList = mongoTpl.find(query, DropGoodsExceptionInfo.class);
+            log.info("当前数据库查询数据，dropGoodsExceptionInfoList：{}", dropGoodsExceptionInfoList.toString());
             if (dropGoodsExceptionInfoList.size() > 0) {
                 for (DropGoodsExceptionInfo dropGoodsExceptionInfo : dropGoodsExceptionInfoList) {
                     Integer updateNum = dropGoodsExceptionInfo.getErrorNum() + 1;
@@ -232,6 +234,7 @@ public class RedisReceiver {
                 dropGoodsExceptionInfo.setCreateTime(LocalDateTime.now());
                 dropGoodsExceptionInfo.setErrorNum(1);
                 dropGoodsExceptionInfo.setMachineCode(machineCode);
+                log.info("保存当前数据是dropGoodsExceptionInfo：{}", dropGoodsExceptionInfo.toString());
                 mongoTpl.save(dropGoodsExceptionInfo, "DropGoodsExceptionInfo");
             }
 
