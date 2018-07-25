@@ -49,7 +49,12 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 				return Results.failure("未找到用户登录信息");
 			}
 			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-			
+			if (StringUtil.isNotBlank(model.getCode())) {
+				int n= inno72ActivityMapper.getCountByCode(model.getCode());
+				if (n>0) {
+					return Results.failure("活动编码已存在，请确认！");
+				}
+			}
 			model.setId(StringUtil.getUUID());
 			model.setManagerId(userId);//负责人
 			model.setCreateId(userId);
@@ -113,6 +118,12 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
+			Inno72Activity m = inno72ActivityMapper.selectByPrimaryKey(model.getId());
+			int n= inno72ActivityMapper.getCountByCode(model.getCode());
+			if (n>0 && !m.getCode().equals(model.getCode())) {
+				return Results.failure("活动编码已存在，请确认！");
+			}
+			
 			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			model.setUpdateId(userId);
 			model.setUpdateTime(LocalDateTime.now());

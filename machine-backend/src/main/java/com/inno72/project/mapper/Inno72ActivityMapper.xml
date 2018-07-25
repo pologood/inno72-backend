@@ -70,9 +70,13 @@
 			ORDER BY a.update_time DESC
   </select>
   
-  <select id="selectIsUseing" parameterType="String" resultType="int">
-		SELECT count(1) FROM inno72_activity_plan
-		 where activity_id=#{id} <![CDATA[and NOW() <= end_time ]]>
+  <select id="selectIsUseing" parameterType="String" resultType="int">s
+		SELECT count(1) FROM inno72_activity_plan 
+		 where is_delete =0 and activity_id=#{id} <![CDATA[and NOW() <= end_time ]]>
+  </select>
+  
+  <select id="getCountByCode" parameterType="String" resultType="int">
+		SELECT count(1) FROM inno72_activity where is_delete = 0 and code=#{code}
   </select>
   
   <select id="selectById" parameterType="String" resultMap="VoResultMap">
