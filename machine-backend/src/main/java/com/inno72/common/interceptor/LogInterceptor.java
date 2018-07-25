@@ -12,6 +12,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -29,7 +31,7 @@ import com.inno72.utils.page.Pagination;
  *
  */
 public class LogInterceptor extends HandlerInterceptorAdapter {
-
+    Logger log = LoggerFactory.getLogger(this.getClass());
 	@Resource
 	private IRedisUtil redisUtil; // memcachedClient
 
@@ -124,6 +126,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	private boolean checkAuthority(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String url = request.getServletPath();
 		boolean match = doNotCheckUs.parallelStream().anyMatch(_url -> url.indexOf(_url) != -1);
+        log.info("request url：" + url + ",match:" + match + ",doNotCheckUs:" + doNotCheckUs.toString());
 		if (match) {
 			return true;
 		}
