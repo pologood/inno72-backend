@@ -2,7 +2,7 @@ package com.inno72.share.controller;
 
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
-import com.inno72.share.service.AdminAreaService;
+import com.inno72.share.service.ShareService;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,12 +23,12 @@ import javax.annotation.Resource;
 @CrossOrigin
 public class ShareController {
     @Resource
-    private AdminAreaService adminAreaService;
+    private ShareService shareService;
 
     @RequestMapping(value = "/uploadImage", method = { RequestMethod.POST,  RequestMethod.GET})
-    public @ResponseBody Result<String> uploadImage(@RequestParam(value = "file",required = false) MultipartFile file) {
+    public @ResponseBody Result<String> uploadImage(@RequestParam(value = "file",required = false) MultipartFile file,String type) {
     	try {
-    		return null;
+    		return shareService.uploadImage(file,type);
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
