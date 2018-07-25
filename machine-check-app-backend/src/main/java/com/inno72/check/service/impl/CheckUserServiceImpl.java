@@ -51,12 +51,12 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         Map<String, String> params = new HashMap<>();
         String key = CommonConstants.SMS_CODE_KEY+phone;
         String smsCode = redisUtil.get(key);
-        params.put("code", smsCode);
         String appName ="machine-check-app-backend";
         if(StringUtil.isEmpty(smsCode)){
             smsCode = StringUtil.createVerificationCode(6);
             redisUtil.setex(key,60*5,smsCode);
         }
+        params.put("code", smsCode);
         msgUtil.sendSMS(code, params, phone, appName);
         logger.info(key+"验证码为"+smsCode);
         return ResultGenerator.genSuccessResult();
