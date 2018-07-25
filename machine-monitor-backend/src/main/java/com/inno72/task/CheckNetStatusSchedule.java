@@ -85,13 +85,13 @@ public class CheckNetStatusSchedule {
                     machineNetInfo.setMachineCode(machineLogInfo.getMachineId());
                     machineNetInfo.setNetStatus(CommonConstants.NET_OPEN);
                     machineNetInfoList.add(machineNetInfo);
-                    String machineNetInfoString = JSONObject.toJSON(machineNetInfoList).toString();
-                    String urlProp = machineMonitorBackendProperties.getProps().get("updateMachineListNetStatusUrl");
-                    String result = HttpClient.post(urlProp, machineNetInfoString);
-                    JSONObject jsonObject = JSONObject.parseObject(result);
-                    if (CommonConstants.RESULT_SUCCESS.equals(jsonObject.getInteger("code"))) {
-                        log.info("修改后台网络状态成功");
                     }
+                String machineNetInfoString = JSONObject.toJSON(machineNetInfoList).toString();
+                String urlProp = machineMonitorBackendProperties.getProps().get("updateMachineListNetStatusUrl");
+                String result = HttpClient.post(urlProp, machineNetInfoString);
+                JSONObject jsonObject = JSONObject.parseObject(result);
+                if (CommonConstants.RESULT_SUCCESS.equals(jsonObject.getInteger("code"))) {
+                    log.info("修改后台网络状态成功");
                 }
 
             }
