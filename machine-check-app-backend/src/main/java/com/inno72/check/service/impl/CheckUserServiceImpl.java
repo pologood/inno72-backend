@@ -1,5 +1,7 @@
 package com.inno72.check.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.inno72.check.mapper.Inno72CheckFaultImageMapper;
 import com.inno72.check.mapper.Inno72CheckFaultMapper;
 import com.inno72.check.mapper.Inno72CheckUserMapper;
@@ -21,6 +23,7 @@ import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,16 +53,36 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         String code = "yp_validate_code";
         Map<String, String> params = new HashMap<>();
         String key = CommonConstants.SMS_CODE_KEY+phone;
-        String smsCode = redisUtil.get(key);
         String appName ="machine-check-app-backend";
-        if(StringUtil.isEmpty(smsCode)){
-            smsCode = StringUtil.createVerificationCode(6);
-            redisUtil.setex(key,60*5,smsCode);
+        Map<String,Object> map = new HashMap<>();
+        String message = redisUtil.get(key);
+        if(StringUtil.isNotEmpty(message)){
+            JSONObject jsonObject  = JSONObject.parseObject(message);
+            Date date = jsonObject.getDate("time");
+            Date now = new Date();
+            long sub = (now.getTime()-date.getTime())/1000;
+            if(sub>60){//超过60秒发送
+                //发送
+                String smsCode = StringUtil.createVerificationCode(6);
+                map.put("smsCode",smsCode);
+                map.put("time",new Date());
+                redisUtil.setex(key,60*10, JSON.toJSONString(map));//验证码有效期10分钟
+                params.put("code", smsCode);
+                msgUtil.sendSMS(code, params, phone, appName);
+                logger.info(key+"验证码为"+smsCode);
+                return ResultGenerator.genSuccessResult();
+            }
+        }else{//Redis中没有直接发送
+            //发送
+            String smsCode = StringUtil.createVerificationCode(6);
+            map.put("smsCode",smsCode);
+            map.put("time",new Date());
+            redisUtil.setex(key,60*10, JSON.toJSONString(map));//验证码有效期10分钟
+            params.put("code", smsCode);
+            msgUtil.sendSMS(code, params, phone, appName);
+            logger.info(key+"验证码为"+smsCode);
+            return ResultGenerator.genSuccessResult();
         }
-
-        params.put("code", smsCode);
-        msgUtil.sendSMS(code, params, phone, appName);
-        logger.info(key+"验证码为"+smsCode);
         return ResultGenerator.genSuccessResult();
     }
 
