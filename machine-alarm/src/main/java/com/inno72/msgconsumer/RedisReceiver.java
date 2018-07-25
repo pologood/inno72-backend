@@ -232,6 +232,7 @@ public class RedisReceiver {
                 dropGoodsExceptionInfo.setCreateTime(LocalDateTime.now());
                 dropGoodsExceptionInfo.setErrorNum(1);
                 dropGoodsExceptionInfo.setMachineCode(machineCode);
+                log.info("保存当前数据是dropGoodsExceptionInfo：{}", dropGoodsExceptionInfo.toString());
                 mongoTpl.save(dropGoodsExceptionInfo, "DropGoodsExceptionInfo");
             }
 
