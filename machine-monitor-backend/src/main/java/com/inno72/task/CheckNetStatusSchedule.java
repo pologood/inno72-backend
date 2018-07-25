@@ -80,7 +80,7 @@ public class CheckNetStatusSchedule {
             if (newMachineNetOpenList.size() > 0) {
                 log.info("网络连接中的机器有{}台", newMachineNetOpenList.size());
                 List<MachineNetInfo> machineNetInfoList = new ArrayList<>();
-                for (MachineLogInfo machineLogInfo : list) {
+                for (MachineLogInfo machineLogInfo : newMachineNetOpenList) {
                     MachineNetInfo machineNetInfo = new MachineNetInfo();
                     machineNetInfo.setMachineCode(machineLogInfo.getMachineId());
                     machineNetInfo.setNetStatus(CommonConstants.NET_OPEN);
