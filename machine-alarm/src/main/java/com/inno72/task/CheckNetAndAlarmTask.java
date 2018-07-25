@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.MachineAlarmProperties;
 import com.inno72.common.StringUtil;
-import com.inno72.model.Inno72AlarmMsg;
-import com.inno72.model.Inno72CheckUserPhone;
-import com.inno72.model.MachineLocaleInfo;
-import com.inno72.model.MachineLogInfo;
+import com.inno72.model.*;
 import com.inno72.msg.MsgUtil;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.service.AlarmMsgService;
@@ -24,6 +21,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.annotation.Resource;
+import java.text.MessageFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -70,6 +68,38 @@ public class CheckNetAndAlarmTask {
         query.addCriteria(Criteria.where("createTime").lte(before));
         List<MachineLogInfo> list = mongoTpl.find(query, MachineLogInfo.class, "MachineLogInfo");
         //查询后台数据库中机器状态是4的机器列表
+        int machineStatus = 4;
+        String machineUrl = machineAlarmProperties.getProps().get("findMachineByMachineStatus");
+        String prop = MessageFormat.format(machineUrl, machineStatus);
+        String msg = HttpClient.post(prop, "");
+        JSONObject jsonObject = JSONObject.parseObject(msg);
+        List<Inno72Machine> MachineInfos = JSON.parseArray(jsonObject.getString("data"), Inno72Machine.class);
+        /*List<MachineLogInfo> newList = new ArrayList<>();
+        for(Inno72Machine inno72Machine : MachineInfos){
+            String machineCode = inno72Machine.getMachineCode();
+            for(MachineLogInfo machineLogInfo : list){
+                String machineCodeOne =  machineLogInfo.getMachineId();
+                if(machineCodeOne.equals(machineCode)){
+                    MachineLogInfo machineLogInfo1 = new MachineLogInfo();
+                    machineLogInfo1.setMachineId(machineCodeOne);
+                    machineLogInfo1.setCreateTime(machineLogInfo.getCreateTime());
+                    newList.add(machineLogInfo1);
+                }
+            }
+        }*/
+        for (Inno72Machine inno72Machine : MachineInfos) {
+            String machineCode = inno72Machine.getMachineCode();
+            /*for (MachineLogInfo machineLogInfo : list) {
+                String machineCodeOne = machineLogInfo.getMachineId();
+                if (machineCodeOne.equals(machineCode)) {
+                    MachineLogInfo machineLogInfo1 = new MachineLogInfo();
+                    machineLogInfo1.setMachineId(machineCodeOne);
+                    machineLogInfo1.setCreateTime(machineLogInfo.getCreateTime());
+                }
+            }*/
+            //  machineCode.con
+        }
+
 
         if (null != list) {
             for (MachineLogInfo machineLogInfo : list) {

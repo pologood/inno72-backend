@@ -71,4 +71,8 @@ where 1=1
 ) o order by machine_code
 
 	</select>
+
+	<!--<select id="findMachineByMachineCode" parameterType="Integer" resultType = "com.inno72.machine.model.Inno72Machine">
+		select s.machine_code from inno72_machine s where s.machine_status = #{machineStatus}
+	</select>-->
 </mapper>

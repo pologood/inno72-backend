@@ -24,7 +24,7 @@ import java.util.List;
 * Created by CodeGenerator on 2018/06/29.
 */
 @RestController
-@RequestMapping("/goods/goods")
+@RequestMapping("/project/goods")
 @CrossOrigin
 public class GoodsController {
     @Resource

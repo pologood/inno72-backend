@@ -42,4 +42,5 @@ public interface MachineService extends Service<Inno72Machine> {
 
 	Result<String> installApp(String machineId, String appPackageName, String url, Integer versionCode);
 
+	//Result<List<Inno72Machine>> findMachineByMachineCode(int id);
 }

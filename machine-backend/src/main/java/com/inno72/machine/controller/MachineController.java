@@ -72,6 +72,18 @@ public class MachineController {
 	}
 
 	/**
+	 * 查询机器状态是正常的机器列表
+	 *
+	 * @param machineStatus
+	 * @return
+	 */
+	/*@RequestMapping(value = "/findMachineByMachineCode", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Inno72Machine>> findMachineByMachineCode(@RequestParam int machineStatus) {
+		return machineService.findMachineByMachineCode(machineStatus);
+
+	}*/
+
+	/**
 	 * 查看机器列表
 	 *
 	 * @param machineCode
