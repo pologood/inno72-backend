@@ -7,17 +7,19 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
 
-//@Aspect
-//@Component
+@Aspect
+@Component
 public class LogCut {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -27,7 +29,7 @@ public class LogCut {
 
 	@Around("pointcut()")
 	public Object handle(ProceedingJoinPoint joinPoint) throws Throwable {
-		preHandle();
+		// preHandle();
 		Object retVal = joinPoint.proceed();
 
 		postHandle(retVal);
