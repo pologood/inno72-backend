@@ -45,7 +45,7 @@ public class ProcessDataFilter extends OncePerRequestFilter {
 		super.doFilter(req, resp, filterChain);
 		byte[] bytes = resp.getBytes();
 		logger.info("请求地址{}返回值为：{}", request.getServletPath(), new String(bytes));
-
+		response.getOutputStream().write(bytes);
 	}
 
 }
