@@ -1,5 +1,6 @@
 package com.inno72.common;
 
+import java.io.IOException;
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -33,13 +35,13 @@ public class LogCut {
 		return retVal;
 	}
 
-	private void preHandle() {
+	private void preHandle() throws IOException {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 				.getRequest();
 		logger.info("使用{}方式请求地址{}", request.getMethod().toUpperCase(), request.getServletPath());
 		String token = request.getHeader("lf-None-Matoh") == null ? "无" : request.getHeader("lf-None-Matoh");
-		CustomerHttpServletRequestWrapper req = new CustomerHttpServletRequestWrapper(request);
-		String jsonStr = new String(req.getRequestBody());
+
+		String jsonStr = new String(StreamUtils.copyToByteArray(request.getInputStream()));
 		if (!StringUtil.isEmpty(jsonStr)) {
 			logger.info("请求token：{},json参数：{}", token, jsonStr);
 		} else {
