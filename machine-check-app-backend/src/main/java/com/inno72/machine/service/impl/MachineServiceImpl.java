@@ -13,7 +13,6 @@ import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ResponseBody;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
@@ -70,7 +69,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
     /**
      * 查询一级地址
-     * @return
      */
     @Override
     public Result<List<Inno72AdminArea>> findFistLevelArea() {
@@ -80,8 +78,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
     /**
      * 查询单个一级地址及以下地址
-     * @param code
-     * @return
      */
     @Override
     public Result<Inno72AdminArea> findByFirstLevelCode(String code) {

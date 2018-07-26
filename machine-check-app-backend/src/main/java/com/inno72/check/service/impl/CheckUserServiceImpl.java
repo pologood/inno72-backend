@@ -49,23 +49,14 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         String appName ="machine-check-app-backend";
         Map<String,Object> map = new HashMap<>();
         String message = redisUtil.get(key);
+        long sub = 0l;
         if(StringUtil.isNotEmpty(message)){
             JSONObject jsonObject  = JSONObject.parseObject(message);
             Date date = jsonObject.getDate("time");
             Date now = new Date();
-            long sub = (now.getTime()-date.getTime())/1000;
-            if(sub>60){//超过60秒发送
-                //发送
-                String smsCode = StringUtil.createVerificationCode(6);
-                map.put("smsCode",smsCode);
-                map.put("time",new Date());
-                redisUtil.setex(key,60*10, JSON.toJSONString(map));//验证码有效期10分钟
-                params.put("code", smsCode);
-                msgUtil.sendSMS(code, params, phone, appName);
-                logger.info(key+"验证码为"+smsCode);
-                return ResultGenerator.genSuccessResult();
-            }
-        }else{//Redis中没有,直接发送
+            sub = (now.getTime()-date.getTime())/1000;
+        }
+        if(StringUtil.isEmpty(message) || sub>60){
             //发送
             String smsCode = StringUtil.createVerificationCode(6);
             map.put("smsCode",smsCode);
