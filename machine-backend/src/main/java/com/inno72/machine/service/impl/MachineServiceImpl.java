@@ -365,9 +365,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	}
 
 	@Override
-	public Result<List<String>> findMachineByMachineCode(int machineStatus) {
+    public Result<List<String>> findMachineByMachineStatus(int machineStatus) {
 
-		List<String> list = inno72MachineMapper.findMachineByMachineCode(machineStatus);
+        List<String> list = inno72MachineMapper.findMachineByMachineStatus(machineStatus);
 
 		 return Results.success(list);
 	}
