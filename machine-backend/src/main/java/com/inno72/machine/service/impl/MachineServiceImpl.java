@@ -227,7 +227,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			String machineCode = machineNetInfo.getMachineCode();
 			Integer netStatus = machineNetInfo.getNetStatus();
 			Condition condition = new Condition(Inno72Machine.class);
-			condition.createCriteria().andCondition("machine_code =" + machineCode);
+            condition.createCriteria().andEqualTo("machine_code =" + machineCode);
 			List<Inno72Machine> machine = findByCondition(condition);
 			if (null != machine && machine.size() > 0) {
 				for (Inno72Machine inno72Machine : machine) {
