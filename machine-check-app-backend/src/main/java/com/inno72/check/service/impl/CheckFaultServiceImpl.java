@@ -127,7 +127,8 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         upCheckFault.setId(checkFault.getId());
         upCheckFault.setFinishRemark(checkFault.getFinishRemark());
         upCheckFault.setFinishTime(LocalDateTime.now());
-        upCheckFault.setFinishUser(checkFault.getFinishUser());
+        upCheckFault.setStatus(1);
+        upCheckFault.setFinishUser(UserUtil.getUser().getName());
         inno72CheckFaultMapper.updateByPrimaryKeySelective(upCheckFault);
         return ResultGenerator.genSuccessResult();
     }
