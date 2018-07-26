@@ -125,6 +125,7 @@ public class RedisReceiver {
             String machineCode = machineDropGoods.getMachineCode();
             String channelNum = machineDropGoods.getChannelNum();
             String describtion = machineDropGoods.getDescribtion();
+            log.info("接收到的参数是，machineCode：{}，channelNum：{}，describtion：{}", machineCode, channelNum, describtion);
             //根据机器编码查询点位接口
             List<MachineLocaleInfo> machineLocaleInfos = new ArrayList<>();
             MachineLocaleInfo machineLocale = new MachineLocaleInfo();
