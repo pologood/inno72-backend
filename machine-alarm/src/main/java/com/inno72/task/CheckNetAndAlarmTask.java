@@ -1,6 +1,7 @@
 package com.inno72.task;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.MachineAlarmProperties;
@@ -55,7 +56,7 @@ public class CheckNetAndAlarmTask {
     @Resource
     private AlarmMsgService alarmMsgService;
 
-    //@Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     //@Scheduled(cron = "0/5 * * * * ?")
     public void checkNetStatus() {
 
@@ -67,143 +68,130 @@ public class CheckNetAndAlarmTask {
         Query query = new Query();
         query.addCriteria(Criteria.where("createTime").lte(before));
         List<MachineLogInfo> list = mongoTpl.find(query, MachineLogInfo.class, "MachineLogInfo");
-        //查询后台数据库中机器状态是4的机器列表
-        int machineStatus = 4;
-        String machineUrl = machineAlarmProperties.getProps().get("findMachineByMachineStatus");
-        String prop = MessageFormat.format(machineUrl, machineStatus);
-        String msg = HttpClient.post(prop, "");
-        JSONObject jsonObject = JSONObject.parseObject(msg);
-        List<Inno72Machine> MachineInfos = JSON.parseArray(jsonObject.getString("data"), Inno72Machine.class);
-        /*List<MachineLogInfo> newList = new ArrayList<>();
-        for(Inno72Machine inno72Machine : MachineInfos){
-            String machineCode = inno72Machine.getMachineCode();
-            for(MachineLogInfo machineLogInfo : list){
-                String machineCodeOne =  machineLogInfo.getMachineId();
-                if(machineCodeOne.equals(machineCode)){
-                    MachineLogInfo machineLogInfo1 = new MachineLogInfo();
-                    machineLogInfo1.setMachineId(machineCodeOne);
-                    machineLogInfo1.setCreateTime(machineLogInfo.getCreateTime());
-                    newList.add(machineLogInfo1);
+        if (null != list && list.size() > 0) {
+            //查询后台数据库中机器状态是4的机器列表
+            String machineUrl = machineAlarmProperties.getProps().get("findMachineByMachineStatus");
+            String prop = MessageFormat.format(machineUrl, CommonConstants.MACHINESTATUS_NUMAUL);
+            String msg = HttpClient.post(prop, "");
+            //String msg = HttpClient.post("http://192.168.33.251:8080/machine/machine/findMachineByMachineCode", "");
+            if (StringUtil.isNotEmpty(msg)) {
+                JSONObject jsonObject = JSONObject.parseObject(msg);
+                List<String> dataList = JSONArray.parseArray(jsonObject.getString("data"), String.class);
+                List<MachineLogInfo> newList = new ArrayList<>();
+                for (MachineLogInfo machineLogInfo : list) {
+                    if (dataList.contains(machineLogInfo.getMachineId())) {
+                        MachineLogInfo machineLogInfo1 = new MachineLogInfo();
+                        machineLogInfo1.setMachineId(machineLogInfo.getMachineId());
+                        machineLogInfo1.setCreateTime(machineLogInfo.getCreateTime());
+                        newList.add(machineLogInfo1);
+                    }
                 }
+                for (MachineLogInfo machineLogInfo : newList) {
+                    //根据机器编码查询点位接口
+                    List<MachineLocaleInfo> machineLocaleInfos = new ArrayList<>();
+                    MachineLocaleInfo machineLocale = new MachineLocaleInfo();
+                    machineLocale.setMachineCode(machineLogInfo.getMachineId());
+                    machineLocaleInfos.add(machineLocale);
+                    String machineLocaleInfoString = JSONObject.toJSON(machineLocaleInfos).toString();
+                    String url = machineAlarmProperties.getProps().get("findLocalByMachineCode");
+                    String returnMsg = HttpClient.post(url, machineLocaleInfoString);
+                    JSONObject jsonObject1 = JSONObject.parseObject(returnMsg);
+                    List<MachineLocaleInfo> MachineLocaleInfos = JSON.parseArray(jsonObject1.getString("data"), MachineLocaleInfo.class);
+                    String localStr = "";
+                    for (MachineLocaleInfo machineLocaleInfo : MachineLocaleInfos) {
+                        localStr = machineLocaleInfo.getLocaleStr();
+                    }
+
+                    LocalDateTime createTime = machineLogInfo.getCreateTime();
+                    Duration duration = Duration.between(createTime, LocalDateTime.now());
+                    long between = duration.toMinutes();
+                    if (between == 5) {
+                        //巡检app
+                        String code = "push_alarm_common";
+                        Map<String, String> params = new HashMap<>();
+                        params.put("machineCode", machineLogInfo.getMachineId());
+                        params.put("localStr", localStr);
+                        params.put("text", "出现网络连接不上的情况，请及时处理");
+                        //查询巡检人员手机号
+                        Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
+                        inno72CheckUserPhone.setMachineCode(machineLogInfo.getMachineId());
+                        String inno72CheckUserPhoneInfo = JSONObject.toJSON(inno72CheckUserPhone).toString();
+                        String url1 = machineAlarmProperties.getProps().get("selectPhoneByMachineCode");
+                        String res = HttpClient.post(url1, inno72CheckUserPhoneInfo);
+                        JSONObject jsonObject2 = JSONObject.parseObject(res);
+                        List<Inno72CheckUserPhone> inno72CheckUserPhones = JSON.parseArray(jsonObject2.getString("data"), Inno72CheckUserPhone.class);
+                        for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                            String phone = inno72CheckUserPhone1.getPhone();
+                            msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【报警】您负责的机器出现网络异常", "");
+                        }
+                        //保存接口
+                        Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
+                        inno72AlarmMsg.setTitle(4);
+                        inno72AlarmMsg.setCreateTime(LocalDateTime.now());
+                        inno72AlarmMsg.setSystem("machineCloseNet");
+                        inno72AlarmMsg.setMachineCode(machineLogInfo.getMachineId());
+                        inno72AlarmMsg.setId(StringUtil.getUUID());
+                        alarmMsgService.save(inno72AlarmMsg);
+
+                    } else if (between == 8) {
+                        //组合报警接口
+                        Map<String, String> params = new HashMap<>();
+                        params.put("machineCode", machineLogInfo.getMachineId());
+                        params.put("localStr", localStr);
+                        params.put("text", "出现网络连接不上的情况，请及时处理");
+                        //查询巡检人员手机号
+                        Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
+                        inno72CheckUserPhone.setMachineCode(machineLogInfo.getMachineId());
+                        String inno72CheckUserPhoneInfo = JSONObject.toJSON(inno72CheckUserPhone).toString();
+                        String url1 = machineAlarmProperties.getProps().get("selectPhoneByMachineCode");
+                        String res = HttpClient.post(url1, inno72CheckUserPhoneInfo);
+                        JSONObject jsonObject2 = JSONObject.parseObject(res);
+                        List<Inno72CheckUserPhone> inno72CheckUserPhones = JSON.parseArray(jsonObject2.getString("data"), Inno72CheckUserPhone.class);
+                        for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                            String code = "sms_alarm_common";
+                            String phone = inno72CheckUserPhone1.getPhone();
+                            msgUtil.sendSMS(code, params, phone, "machineAlarm-CheckNetAndAlarmTask");
+                        }
+                        for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                            String phone = inno72CheckUserPhone1.getPhone();
+                            String code = "push_alarm_common";
+                            msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【报警】您负责的机器出现网络异常", "");
+                        }
+
+                        //保存接口
+                        Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
+                        inno72AlarmMsg.setTitle(4);
+                        inno72AlarmMsg.setCreateTime(LocalDateTime.now());
+                        inno72AlarmMsg.setSystem("machineCloseNet");
+                        inno72AlarmMsg.setMachineCode(machineLogInfo.getMachineId());
+                        inno72AlarmMsg.setId(StringUtil.getUUID());
+                        alarmMsgService.save(inno72AlarmMsg);
+
+                    } else if (between > 8 && (between - 8) % 2 == 0) {
+                        //钉钉报警接口
+                        String code = "dingding_alarm_common";
+                        Map<String, String> params = new HashMap<>();
+                        params.put("machineCode", machineLogInfo.getMachineId());
+                        params.put("localStr", localStr);
+                        params.put("text", "出现网络连接不上的情况，请及时处理");
+                        log.info("检查网络状态动态参数是，params：{}", params.toString());
+                        msgUtil.sendDDTextByGroup(code, params, groupId, "machineAlarm-CheckNetAndAlarmTask");
+                    }
+                }
+
             }
-        }*/
-        for (Inno72Machine inno72Machine : MachineInfos) {
-            String machineCode = inno72Machine.getMachineCode();
-            /*for (MachineLogInfo machineLogInfo : list) {
-                String machineCodeOne = machineLogInfo.getMachineId();
-                if (machineCodeOne.equals(machineCode)) {
-                    MachineLogInfo machineLogInfo1 = new MachineLogInfo();
-                    machineLogInfo1.setMachineId(machineCodeOne);
-                    machineLogInfo1.setCreateTime(machineLogInfo.getCreateTime());
-                }
-            }*/
-            //  machineCode.con
+        } else {
+            return;
         }
 
 
-        if (null != list) {
-            for (MachineLogInfo machineLogInfo : list) {
-                //根据机器编码查询点位接口
-                List<MachineLocaleInfo> machineLocaleInfos = new ArrayList<>();
-                MachineLocaleInfo machineLocale = new MachineLocaleInfo();
-                machineLocale.setMachineCode(machineLogInfo.getMachineId());
-                machineLocaleInfos.add(machineLocale);
-                String machineLocaleInfoString = JSONObject.toJSON(machineLocaleInfos).toString();
-                String url = machineAlarmProperties.getProps().get("findLocalByMachineCode");
-                String returnMsg = HttpClient.post(url, machineLocaleInfoString);
-                JSONObject jsonObject1 = JSONObject.parseObject(returnMsg);
-                List<MachineLocaleInfo> MachineLocaleInfos = JSON.parseArray(jsonObject1.getString("data"), MachineLocaleInfo.class);
-                String localStr = "";
-                for (MachineLocaleInfo machineLocaleInfo : MachineLocaleInfos) {
-                    localStr = machineLocaleInfo.getLocaleStr();
-                }
-
-                LocalDateTime createTime = machineLogInfo.getCreateTime();
-                Duration duration = Duration.between(createTime, LocalDateTime.now());
-                long between = duration.toMinutes();
-                if (between == 5) {
-                    //巡检app
-                    String code = "push_alarm_common";
-                    Map<String, String> params = new HashMap<>();
-                    params.put("machineCode", machineLogInfo.getMachineId());
-                    params.put("localStr", localStr);
-                    params.put("text", "出现网络连接不上的情况，请及时处理");
-                    //查询巡检人员手机号
-                    Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
-                    inno72CheckUserPhone.setMachineCode(machineLogInfo.getMachineId());
-                    String inno72CheckUserPhoneInfo = JSONObject.toJSON(inno72CheckUserPhone).toString();
-                    String url1 = machineAlarmProperties.getProps().get("selectPhoneByMachineCode");
-                    String res = HttpClient.post(url1, inno72CheckUserPhoneInfo);
-                    JSONObject jsonObject2 = JSONObject.parseObject(res);
-                    List<Inno72CheckUserPhone> inno72CheckUserPhones = JSON.parseArray(jsonObject2.getString("data"), Inno72CheckUserPhone.class);
-                    for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-                        String phone = inno72CheckUserPhone1.getPhone();
-                        msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【报警】您负责的机器出现网络异常", "");
-                    }
-                    //保存接口
-                    Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
-                    inno72AlarmMsg.setTitle(4);
-                    inno72AlarmMsg.setCreateTime(LocalDateTime.now());
-                    inno72AlarmMsg.setSystem("machineCloseNet");
-                    inno72AlarmMsg.setMachineCode(machineLogInfo.getMachineId());
-                    inno72AlarmMsg.setId(StringUtil.getUUID());
-                    alarmMsgService.save(inno72AlarmMsg);
-
-                } else if (between == 8) {
-                    //组合报警接口
-                    Map<String, String> params = new HashMap<>();
-                    params.put("machineCode", machineLogInfo.getMachineId());
-                    params.put("localStr", localStr);
-                    params.put("text", "出现网络连接不上的情况，请及时处理");
-                    //查询巡检人员手机号
-                    Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
-                    inno72CheckUserPhone.setMachineCode(machineLogInfo.getMachineId());
-                    String inno72CheckUserPhoneInfo = JSONObject.toJSON(inno72CheckUserPhone).toString();
-                    String url1 = machineAlarmProperties.getProps().get("selectPhoneByMachineCode");
-                    String res = HttpClient.post(url1, inno72CheckUserPhoneInfo);
-                    JSONObject jsonObject2 = JSONObject.parseObject(res);
-                    List<Inno72CheckUserPhone> inno72CheckUserPhones = JSON.parseArray(jsonObject2.getString("data"), Inno72CheckUserPhone.class);
-                    for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-                        String code = "sms_alarm_common";
-                        String phone = inno72CheckUserPhone1.getPhone();
-                        msgUtil.sendSMS(code, params, phone, "machineAlarm-CheckNetAndAlarmTask");
-                    }
-                    for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-                        String phone = inno72CheckUserPhone1.getPhone();
-                        String code = "push_alarm_common";
-                        msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【报警】您负责的机器出现网络异常", "");
-                    }
-
-                    //保存接口
-                    Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
-                    inno72AlarmMsg.setTitle(4);
-                    inno72AlarmMsg.setCreateTime(LocalDateTime.now());
-                    inno72AlarmMsg.setSystem("machineCloseNet");
-                    inno72AlarmMsg.setMachineCode(machineLogInfo.getMachineId());
-                    inno72AlarmMsg.setId(StringUtil.getUUID());
-                    alarmMsgService.save(inno72AlarmMsg);
-
-                } else if (between > 8 && (between - 8) % 2 == 0) {
-                    //钉钉报警接口
-                    String code = "dingding_alarm_common";
-                    Map<String, String> params = new HashMap<>();
-                    params.put("machineCode", machineLogInfo.getMachineId());
-                    params.put("localStr", localStr);
-                    params.put("text", "出现网络连接不上的情况，请及时处理");
-                    log.info("检查网络状态动态参数是，params：{}", params.toString());
-                    msgUtil.sendDDTextByGroup(code, params, groupId, "machineAlarm-CheckNetAndAlarmTask");
-                }
-            }
-
-            log.info("检查网络状态并预警的定时任务，执行结束");
-        } else {
-            return;
+        log.info("检查网络状态并预警的定时任务，执行结束");
         }
 
     }
 
 
-}
+
 
 
 

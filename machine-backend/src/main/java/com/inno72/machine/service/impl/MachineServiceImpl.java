@@ -364,13 +364,13 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		return sendMsg(machine.getMachineCode(), msg);
 	}
 
-	/*@Override
-	public Result<List<Inno72Machine>> findMachineByMachineCode(int machineStatus) {
+	@Override
+	public Result<List<String>> findMachineByMachineCode(int machineStatus) {
 
-		 List<Inno72Machine> list = inno72MachineMapper.findMachineByMachineCode(machineStatus);
+		List<String> list = inno72MachineMapper.findMachineByMachineCode(machineStatus);
 
 		 return Results.success(list);
-	}*/
+	}
 
 	private Result<String> sendMsg(String machineCode, SendMessageBean... beans) {
 		String url = machineBackendProperties.get("sendAppMsgUrl");

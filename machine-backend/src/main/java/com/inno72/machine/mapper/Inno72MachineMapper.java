@@ -11,7 +11,7 @@ public interface Inno72MachineMapper extends Mapper<Inno72Machine> {
 
 	List<Inno72Machine> selectMachinesByPage(Map<String, Object> param);
 
-	//List<String> findMachineByMachineCode(int machineStatus);
+	List<String> findMachineByMachineCode(int machineStatus);
 
 
 

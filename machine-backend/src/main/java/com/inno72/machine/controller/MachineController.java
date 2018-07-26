@@ -77,11 +77,11 @@ public class MachineController {
 	 * @param machineStatus
 	 * @return
 	 */
-	/*@RequestMapping(value = "/findMachineByMachineCode", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72Machine>> findMachineByMachineCode(@RequestParam int machineStatus) {
+	@RequestMapping(value = "/findMachineByMachineCode", method = {RequestMethod.POST, RequestMethod.GET})
+	public Result<List<String>> findMachineByMachineCode(@RequestParam int machineStatus) {
 		return machineService.findMachineByMachineCode(machineStatus);
 
-	}*/
+	}
 
 	/**
 	 * 查看机器列表

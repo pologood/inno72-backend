@@ -72,7 +72,8 @@ where 1=1
 
 	</select>
 
-	<!--<select id="findMachineByMachineCode" parameterType="Integer" resultType = "com.inno72.machine.model.Inno72Machine">
+	<select id="findMachineByMachineCode" parameterType="Integer" resultType="String">
 		select s.machine_code from inno72_machine s where s.machine_status = #{machineStatus}
-	</select>-->
+	</select>
+
 </mapper>
