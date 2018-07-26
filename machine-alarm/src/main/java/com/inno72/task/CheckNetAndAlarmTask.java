@@ -84,7 +84,6 @@ public class CheckNetAndAlarmTask {
                         MachineLogInfo machineLogInfo1 = new MachineLogInfo();
                         machineLogInfo1.setMachineId(machineLogInfo.getMachineId());
                         machineLogInfo1.setCreateTime(machineLogInfo.getCreateTime());
-                        log.info("机器状态是正常情况下的断网机器，machineLogInfo1:{}", machineLogInfo1.toString());
                         newList.add(machineLogInfo1);
                     }
                 }
@@ -129,7 +128,8 @@ public class CheckNetAndAlarmTask {
                         }
                         //保存接口
                         Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
-                        inno72AlarmMsg.setTitle(4);
+                        inno72AlarmMsg.setTitle("报警");
+                        inno72AlarmMsg.setType(4);
                         inno72AlarmMsg.setCreateTime(LocalDateTime.now());
                         inno72AlarmMsg.setSystem("machineCloseNet");
                         inno72AlarmMsg.setMachineCode(machineLogInfo.getMachineId());
@@ -163,7 +163,8 @@ public class CheckNetAndAlarmTask {
 
                         //保存接口
                         Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
-                        inno72AlarmMsg.setTitle(4);
+                        inno72AlarmMsg.setTitle("报警");
+                        inno72AlarmMsg.setType(4);
                         inno72AlarmMsg.setCreateTime(LocalDateTime.now());
                         inno72AlarmMsg.setSystem("machineCloseNet");
                         inno72AlarmMsg.setMachineCode(machineLogInfo.getMachineId());
