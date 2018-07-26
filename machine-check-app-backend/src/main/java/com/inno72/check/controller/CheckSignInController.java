@@ -25,8 +25,6 @@ public class CheckSignInController {
 
     /**
      * 打卡
-     * @param signIn
-     * @return
      */
     @RequestMapping(value="add", method = {RequestMethod.POST,RequestMethod.GET})
     public Result<String> add(@RequestBody Inno72CheckSignIn signIn){
@@ -38,7 +36,6 @@ public class CheckSignInController {
 
     /**
      * 查询本月打卡记录
-     * @return
      */
     @RequestMapping(value="list", method = {RequestMethod.POST,RequestMethod.GET})
     public Result<List<Inno72CheckSignIn>> list(@RequestBody Inno72CheckSignIn signIn){
@@ -50,7 +47,6 @@ public class CheckSignInController {
 
     /**
      * 查询机器打卡状态
-     * @return
      */
     @RequestMapping(value="machineList", method = {RequestMethod.POST,RequestMethod.GET})
     public Result<List<MachineSignInVo>> machineSignInList(){

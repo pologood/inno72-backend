@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.Map;
 
 @RequestMapping(value = "/check/user")
@@ -26,52 +24,39 @@ public class CheckUserController {
 
     /**
      * 验证码
-     * @param
-     * @return
      */
     @RequestMapping(value="/smsCode", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
     public Result smsCode(@RequestBody Inno72CheckUser inno72CheckUser){
-        Result<String> result = checkUserService.smsCode(inno72CheckUser.getPhone());
-        return result;
+        return checkUserService.smsCode(inno72CheckUser.getPhone());
     }
 
     /**
      * 登录
-     * @return
      */
     @RequestMapping(value="/login", method = {RequestMethod.POST,RequestMethod.GET})
     public Result<SessionData> login(@RequestBody Inno72CheckUser inno72CheckUser){
-        Result<SessionData> result = checkUserService.login(inno72CheckUser.getPhone(),inno72CheckUser.getSmsCode());
-        return result;
+        return checkUserService.login(inno72CheckUser.getPhone(),inno72CheckUser.getSmsCode());
     }
 
     /**
      * 上传头像
-     * @param file
-     * @return
      */
     @RequestMapping(value="/upload")
     public Result<String> upload(MultipartFile file){
-        Result<String> result = checkUserService.upload(file);
-        return result;
+        return checkUserService.upload(file);
     }
 
     /**
      * 编辑用户
-     * @param inno72CheckUser
-     * @return
      */
     @RequestMapping(value="/update",method = {RequestMethod.POST,RequestMethod.GET})
     public Result<Inno72CheckUser> update(@RequestBody Inno72CheckUser inno72CheckUser){
-        Result<Inno72CheckUser> result = checkUserService.updateUser(inno72CheckUser);
-        return result;
+        return checkUserService.updateUser(inno72CheckUser);
     }
 
     /**
      * 加密
-     * @param map
-     * @return
      */
     @RequestMapping(value="/encrypt",method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
@@ -81,8 +66,6 @@ public class CheckUserController {
 
     /**
      * 解密
-     * @param map
-     * @return
      */
     @RequestMapping(value="decrypt")
     public Result<String> decrypt(@RequestBody Map<String,Object> map){
