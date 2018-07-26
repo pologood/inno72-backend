@@ -190,6 +190,7 @@ public class DDServiceImpl implements DDService {
 
 	@Override
 	public Result<SessionData> login(String code, String state) {
+		logger.info("code:{},state:{}", code, state);
 		Result<String> tokenResult = getLoginToken();
 		if (tokenResult.getCode() != Result.SUCCESS) {
 			return Results.failure("获取token失败");

@@ -51,7 +51,9 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		params.put("keyword", keyword);
 		params.put("type", type);
 		params.put("startTime", startTime);
-		params.put("endTime", endTime);
+		if (StringUtil.isNotBlank(endTime)) {
+			params.put("endTime", endTime +" 23:59:59");
+		}
 		
 		return inno72CheckFaultMapper.selectByPage(params);
 	}

@@ -78,7 +78,7 @@ public class CheckFaultController {
     @RequestMapping(value="/edit",method = {RequestMethod.POST,RequestMethod.GET})
     public Result<String> edit(@RequestBody Inno72CheckFault inno72CheckFault){
         logger.info("编辑回复故障备注接口参数：{}",JSON.toJSON(inno72CheckFault));
-        Result<String> result = checkFaultService.editRemark(inno72CheckFault.getId(),inno72CheckFault.getFinishRemark());
+        Result<String> result = checkFaultService.editRemark(inno72CheckFault.getId(),inno72CheckFault.getRemark());
         logger.info("编辑回复故障备注接口结果：{}",JSON.toJSON(result));
         return result;
     }
