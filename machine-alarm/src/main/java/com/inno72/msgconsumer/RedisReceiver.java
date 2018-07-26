@@ -57,7 +57,7 @@ public class RedisReceiver {
         JSONObject jsonObject = JSON.parseObject(message);
         String type = jsonObject.getString("type");
         String system = jsonObject.getString("system");
-        log.info("当前接收的消息来自于系统：{}，类型：{}", system, type);
+        log.info("receive msg:{}", message);
 
         if ((CommonConstants.SYS_MACHINE_CHANNEL).equals(system)) {
             //接收货道信息并转数据类型
@@ -67,7 +67,7 @@ public class RedisReceiver {
             MachineStatus machineStatus = alarmMessageBean.getData();
             String goodsChannelStatus = machineStatus.getGoodsChannelStatus();
             String machineId = machineStatus.getMachineId();
-            log.info("机器货道异常，machineCode:{}", machineId);
+            log.info("machineChannel msg，machineCode:{}", machineId);
             //根据机器编码查询点位信息
             List<MachineLocaleInfo> machineLocaleInfos = new ArrayList<>();
             MachineLocaleInfo machineLocaleInfo = new MachineLocaleInfo();
@@ -100,7 +100,7 @@ public class RedisReceiver {
                 params.put("machineCode", machineId);
                 params.put("localStr", localStr);
                 params.put("text", "出现掉货异常，货道编号是：" + channelNum + "，故障原因是：" + describtion + "，请及时处理。");
-                log.info("货道故障发送短讯，参数param：{}", params.toString());
+                log.info("machineChannel send duanxin ，params：{}", params.toString());
                 //根据机器编码查询对应巡检人员
                 Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
                 inno72CheckUserPhone.setMachineCode(machineId);
@@ -125,7 +125,7 @@ public class RedisReceiver {
             String machineCode = machineDropGoods.getMachineCode();
             String channelNum = machineDropGoods.getChannelNum();
             String describtion = machineDropGoods.getDescribtion();
-            log.info("接收到的参数是，machineCode：{}，channelNum：{}，describtion：{}", machineCode, channelNum, describtion);
+            log.info("to dropGoods msg，machineCode：{}，channelNum：{}，describtion：{}", machineCode, channelNum, describtion);
             //根据机器编码查询点位接口
             List<MachineLocaleInfo> machineLocaleInfos = new ArrayList<>();
             MachineLocaleInfo machineLocale = new MachineLocaleInfo();
@@ -143,13 +143,13 @@ public class RedisReceiver {
             //保存消息次数等信息
             Query query = new Query();
             query.addCriteria(Criteria.where("machineCode").is(machineCode));
-            log.info("当前的machineCode：{}", machineCode);
+            log.info("dropGoods query condition,machineCode：{}", machineCode);
             List<DropGoodsExceptionInfo> dropGoodsExceptionInfoList = mongoTpl.find(query, DropGoodsExceptionInfo.class, "DropGoodsExceptionInfo");
             log.info("当前数据库查询数据，dropGoodsExceptionInfoList：{}", dropGoodsExceptionInfoList.toString());
             if (dropGoodsExceptionInfoList.size() > 0) {
                 for (DropGoodsExceptionInfo dropGoodsExceptionInfo : dropGoodsExceptionInfoList) {
                     Integer updateNum = dropGoodsExceptionInfo.getErrorNum() + 1;
-                    log.info("当前数据库次数，updateTime：{}", updateNum);
+                    log.info("save to mongo machineCode : {},num：{}", dropGoodsExceptionInfo.getMachineCode(), updateNum);
                     dropGoodsExceptionInfo.setErrorNum(updateNum);
                     mongoTpl.remove(query, "DropGoodsExceptionInfo");
                     mongoTpl.save(dropGoodsExceptionInfo, "DropGoodsExceptionInfo");
@@ -239,7 +239,7 @@ public class RedisReceiver {
                 dropGoodsExceptionInfo.setCreateTime(LocalDateTime.now());
                 dropGoodsExceptionInfo.setErrorNum(1);
                 dropGoodsExceptionInfo.setMachineCode(machineCode);
-                log.info("保存当前数据是dropGoodsExceptionInfo：{}", dropGoodsExceptionInfo.toString());
+                log.info("no alarm ,just save dropGoodsExceptionInfo：{}", dropGoodsExceptionInfo.toString());
                 mongoTpl.save(dropGoodsExceptionInfo, "DropGoodsExceptionInfo");
             }
 
@@ -250,7 +250,7 @@ public class RedisReceiver {
                     new TypeReference<AlarmMessageBean<ChannelGoodsAlarmBean>>() {
                     });
             ChannelGoodsAlarmBean channelGoodsAlarmBean = alarmMessageBean.getData();
-            log.info("商品缺货消息，machineCode:{}", channelGoodsAlarmBean.getMachineCode());
+            log.info("lackGoods msg，machineCode:{}", channelGoodsAlarmBean.getMachineCode());
 
             //根据机器编码查询点位接口
             List<MachineLocaleInfo> machineLocaleInfos = new ArrayList<>();
