@@ -52,6 +52,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
                 String time = DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S2);
                 checkFault.setCode("F" + StringUtil.createRandomCode(6) + time);
                 checkFault.setSubmitTime(LocalDateTime.now());
+                checkFault.setSubmitUser(UserUtil.getUser().getName());
                 checkFault.setMachineId(machineId);
                 inno72CheckFaultMapper.insertSelective(checkFault);
                 String[] images = checkFault.getImages();
