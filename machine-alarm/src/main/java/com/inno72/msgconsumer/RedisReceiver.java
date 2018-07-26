@@ -176,13 +176,14 @@ public class RedisReceiver {
                         //保存接口
                         Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
                         if ((CommonConstants.MACHINE_DROPGOODS_EXCEPTION).equals(type)) {
-                            inno72AlarmMsg.setTitle(2);
-                            inno72AlarmMsg.setCreateTime(LocalDateTime.now());
-                            inno72AlarmMsg.setSystem(system);
-                            inno72AlarmMsg.setMachineCode(machineCode);
-                            inno72AlarmMsg.setId(StringUtil.getUUID());
-                            alarmMsgService.save(inno72AlarmMsg);
+                            inno72AlarmMsg.setTitle("报警");
+                            inno72AlarmMsg.setType(2);
                         }
+                        inno72AlarmMsg.setCreateTime(LocalDateTime.now());
+                        inno72AlarmMsg.setSystem(system);
+                        inno72AlarmMsg.setMachineCode(machineCode);
+                        inno72AlarmMsg.setId(StringUtil.getUUID());
+                        alarmMsgService.save(inno72AlarmMsg);
 
                     } else if (updateNum == 5) {
                         //组合报警接口
@@ -212,13 +213,14 @@ public class RedisReceiver {
                         //保存接口
                         Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
                         if ((CommonConstants.MACHINE_DROPGOODS_EXCEPTION).equals(type)) {
-                            inno72AlarmMsg.setTitle(2);
-                            inno72AlarmMsg.setCreateTime(LocalDateTime.now());
-                            inno72AlarmMsg.setSystem(system);
-                            inno72AlarmMsg.setMachineCode(machineCode);
-                            inno72AlarmMsg.setId(StringUtil.getUUID());
-                            alarmMsgService.save(inno72AlarmMsg);
+                            inno72AlarmMsg.setTitle("报警");
+                            inno72AlarmMsg.setType(2);
                         }
+                        inno72AlarmMsg.setCreateTime(LocalDateTime.now());
+                        inno72AlarmMsg.setSystem(system);
+                        inno72AlarmMsg.setMachineCode(machineCode);
+                        inno72AlarmMsg.setId(StringUtil.getUUID());
+                        alarmMsgService.save(inno72AlarmMsg);
 
                     } else if (updateNum > 5 && (updateNum - 5) % 2 == 0) {
                         //钉钉报警接口
@@ -311,13 +313,14 @@ public class RedisReceiver {
             //保存接口
             Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
             if ((CommonConstants.MACHINE_LACKGOODS_EXCEPTION).equals(type)) {
-                inno72AlarmMsg.setTitle(3);
-                inno72AlarmMsg.setMachineCode(channelGoodsAlarmBean.getMachineCode());
-                inno72AlarmMsg.setCreateTime(LocalDateTime.now());
-                inno72AlarmMsg.setSystem(system);
-                inno72AlarmMsg.setId(StringUtil.getUUID());
-                alarmMsgService.save(inno72AlarmMsg);
+                inno72AlarmMsg.setTitle("补货");
+                inno72AlarmMsg.setType(3);
             }
+            inno72AlarmMsg.setMachineCode(channelGoodsAlarmBean.getMachineCode());
+            inno72AlarmMsg.setCreateTime(LocalDateTime.now());
+            inno72AlarmMsg.setSystem(system);
+            inno72AlarmMsg.setId(StringUtil.getUUID());
+            alarmMsgService.save(inno72AlarmMsg);
 
         } else {
             return;
