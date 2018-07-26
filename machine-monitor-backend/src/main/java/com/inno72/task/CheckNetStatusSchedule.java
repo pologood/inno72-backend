@@ -69,6 +69,7 @@ public class CheckNetStatusSchedule {
                     machineNetInfoList.add(machineNetInfo);
                 }
                 String machineNetInfoString = JSONObject.toJSON(machineNetInfoList).toString();
+                log.info("断开的机器列表，machineNetInfoString：{}", machineNetInfoString);
                 String urlProp = machineMonitorBackendProperties.getProps().get("updateMachineListNetStatusUrl");
                 String result = HttpClient.post(urlProp, machineNetInfoString);
                 JSONObject jsonObject = JSONObject.parseObject(result);
@@ -87,6 +88,7 @@ public class CheckNetStatusSchedule {
                     machineNetInfoList.add(machineNetInfo);
                     }
                 String machineNetInfoString = JSONObject.toJSON(machineNetInfoList).toString();
+                log.info("断开的机器列表，machineNetInfoString：{}", machineNetInfoString);
                 String urlProp = machineMonitorBackendProperties.getProps().get("updateMachineListNetStatusUrl");
                 String result = HttpClient.post(urlProp, machineNetInfoString);
                 JSONObject jsonObject = JSONObject.parseObject(result);
