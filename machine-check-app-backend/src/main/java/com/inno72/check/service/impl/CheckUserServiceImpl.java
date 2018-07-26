@@ -2,13 +2,8 @@ package com.inno72.check.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.inno72.check.mapper.Inno72CheckFaultImageMapper;
-import com.inno72.check.mapper.Inno72CheckFaultMapper;
 import com.inno72.check.mapper.Inno72CheckUserMapper;
-import com.inno72.check.model.Inno72CheckFault;
-import com.inno72.check.model.Inno72CheckFaultImage;
 import com.inno72.check.model.Inno72CheckUser;
-import com.inno72.check.service.CheckFaultService;
 import com.inno72.check.service.CheckUserService;
 import com.inno72.common.*;
 import com.inno72.common.json.JsonUtil;
@@ -16,13 +11,11 @@ import com.inno72.msg.MsgUtil;
 import com.inno72.redis.IRedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -34,13 +27,13 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
     @Resource
     private Inno72CheckUserMapper inno72CheckUserMapper;
 
-    @Autowired
+    @Resource
     private MsgUtil msgUtil;
 
     @Resource
     private IRedisUtil redisUtil;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public Result<String> smsCode(String phone) {
@@ -68,18 +61,18 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
                 map.put("time",new Date());
                 redisUtil.setex(key,60*10, JSON.toJSONString(map));//验证码有效期10分钟
                 params.put("code", smsCode);
-//                msgUtil.sendSMS(code, params, phone, appName);
+                msgUtil.sendSMS(code, params, phone, appName);
                 logger.info(key+"验证码为"+smsCode);
                 return ResultGenerator.genSuccessResult();
             }
-        }else{//Redis中没有直接发送
+        }else{//Redis中没有,直接发送
             //发送
             String smsCode = StringUtil.createVerificationCode(6);
             map.put("smsCode",smsCode);
             map.put("time",new Date());
             redisUtil.setex(key,60*10, JSON.toJSONString(map));//验证码有效期10分钟
             params.put("code", smsCode);
-//            msgUtil.sendSMS(code, params, phone, appName);
+            msgUtil.sendSMS(code, params, phone, appName);
             logger.info(key+"验证码为"+smsCode);
             return ResultGenerator.genSuccessResult();
         }

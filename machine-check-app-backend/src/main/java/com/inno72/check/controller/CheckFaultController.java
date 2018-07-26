@@ -12,25 +12,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 
 @RequestMapping("/check/fault")
 @CrossOrigin
 @RestController
 public class CheckFaultController {
-    public Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    /**
+     * 故障service
+     */
     @Resource
     private CheckFaultService checkFaultService;
 
     /**
      * 添加报障
-     * @param checkFault
-     * @return
      */
     @RequestMapping(value="/add" , method = {RequestMethod.POST,RequestMethod.GET})
     public Result add(@RequestBody Inno72CheckFault checkFault){
@@ -42,8 +41,6 @@ public class CheckFaultController {
 
     /**
      * 解决故障
-     * @param checkFault
-     * @return
      */
     @RequestMapping(value="/finish",method = {RequestMethod.POST,RequestMethod.GET})
     public Result finish(@RequestBody Inno72CheckFault checkFault){
@@ -55,7 +52,6 @@ public class CheckFaultController {
 
     /**
      * 故障集合
-     * @return
      */
     @RequestMapping(value="/list",method = {RequestMethod.POST,RequestMethod.GET})
     public ModelAndView list(@RequestBody Inno72CheckFault checkFault){
@@ -67,8 +63,6 @@ public class CheckFaultController {
 
     /**
      * 上传图片
-     * @param file
-     * @return
      */
     @RequestMapping(value="/upload",method = {RequestMethod.POST})
     public Result<String> upload(MultipartFile file){
@@ -80,7 +74,6 @@ public class CheckFaultController {
 
     /**
      * 编辑故障
-     * @return
      */
     @RequestMapping(value="/edit",method = {RequestMethod.POST,RequestMethod.GET})
     public Result<String> edit(@RequestBody Inno72CheckFault inno72CheckFault){
@@ -92,7 +85,6 @@ public class CheckFaultController {
 
     /**
      * 查询详情
-     * @return
      */
     @RequestMapping(value="/detail",method = {RequestMethod.POST,RequestMethod.GET})
     public Result<Inno72CheckFault> detail(@RequestBody Inno72CheckFault inno72CheckFault){
@@ -104,7 +96,6 @@ public class CheckFaultController {
 
     /**
      * 查询故障类型
-     * @return
      */
     @RequestMapping(value = "/typeList", method = {RequestMethod.POST,RequestMethod.GET})
     public Result<List<Inno72CheckFaultType>> typeList(@RequestBody Inno72CheckFault inno72CheckFault){
