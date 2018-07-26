@@ -10,13 +10,15 @@ public class CommonConstants {
 	public final static String DD_CORPID = "dingd04d2d6ca18d0fd535c2f4657eb6378f";
 
 	/** 用户登录信息_缓存KEY前缀 **/
-	public static final String USER_LOGIN_CACHE_KEY_PREF = "machine-app-backend:login_user:";
+	public static final String USER_LOGIN_CACHE_KEY_PREF = "machine-check-app-backend:login_user:";
 
 	/** 用户登录TOKEN_缓存KEY前缀 **/
-	public static final String USER_LOGIN_TOKEN_CACHE_KEY_PREF = "machine-app-backend:login_user_token:";
+	public static final String USER_LOGIN_TOKEN_CACHE_KEY_PREF = "machine-check-app-backend:login_user_token:";
 
 	/** 被踢出用户集合 **/
-	public static final String CHECK_OUT_USER_TOKEN_SET_KEY = "machine-app-backend::checkout_user_token_set";
+	public static final String CHECK_OUT_USER_TOKEN_SET_KEY = "machine-check-app-backend:checkout_user_token_set:";
+
+	public static final String CHECK_USER_SMS_CODE_KEY_PREF = "machine-check-app-backend:sms_code:";
 
 	/** 用户sessionData有效期 **/
 	public static final int SESSION_DATA_EXP = 3600 * 24*100;

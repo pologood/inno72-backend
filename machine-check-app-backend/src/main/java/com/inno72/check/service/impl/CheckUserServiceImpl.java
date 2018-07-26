@@ -52,7 +52,7 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         }
         String code = "yp_validate_code";
         Map<String, String> params = new HashMap<>();
-        String key = CommonConstants.SMS_CODE_KEY+phone;
+        String key = CommonConstants.CHECK_USER_SMS_CODE_KEY_PREF+phone;
         String appName ="machine-check-app-backend";
         Map<String,Object> map = new HashMap<>();
         String message = redisUtil.get(key);
@@ -68,7 +68,7 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
                 map.put("time",new Date());
                 redisUtil.setex(key,60*10, JSON.toJSONString(map));//验证码有效期10分钟
                 params.put("code", smsCode);
-                msgUtil.sendSMS(code, params, phone, appName);
+//                msgUtil.sendSMS(code, params, phone, appName);
                 logger.info(key+"验证码为"+smsCode);
                 return ResultGenerator.genSuccessResult();
             }
@@ -79,7 +79,7 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
             map.put("time",new Date());
             redisUtil.setex(key,60*10, JSON.toJSONString(map));//验证码有效期10分钟
             params.put("code", smsCode);
-            msgUtil.sendSMS(code, params, phone, appName);
+//            msgUtil.sendSMS(code, params, phone, appName);
             logger.info(key+"验证码为"+smsCode);
             return ResultGenerator.genSuccessResult();
         }
@@ -94,7 +94,7 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         if (users == null || users.size() != 1) {
             return Results.failure("用户不存在");
         }
-        String message = redisUtil.get(CommonConstants.SMS_CODE_KEY+phone);
+        String message = redisUtil.get(CommonConstants.CHECK_USER_SMS_CODE_KEY_PREF+phone);
         if(StringUtil.isNotEmpty(message)){
             JSONObject jsonObject = JSONObject.parseObject(message);
             String smsCodeValue = jsonObject.getString("smsCode");
@@ -115,7 +115,7 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
                 redisUtil.del(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + oldToken);
                 // 记录被踢出
                 redisUtil.sadd(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, oldToken);
-                redisUtil.del(CommonConstants.SMS_CODE_KEY+phone);
+                redisUtil.del(CommonConstants.CHECK_USER_SMS_CODE_KEY_PREF+phone);
             }
             // 保存新登录的token
             redisUtil.set(userTokenKey, token);

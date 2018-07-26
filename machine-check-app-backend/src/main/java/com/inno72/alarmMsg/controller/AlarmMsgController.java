@@ -2,10 +2,8 @@ package com.inno72.alarmMsg.controller;
 
 import com.inno72.alarmMsg.model.Inno72AlarmMsg;
 import com.inno72.alarmMsg.service.AlarmMsgService;
-import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
