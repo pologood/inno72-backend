@@ -19,7 +19,7 @@ public class CommonConstants {
 	public static final String CHECK_OUT_USER_TOKEN_SET_KEY = "machine-app-backend::checkout_user_token_set";
 
 	/** 用户sessionData有效期 **/
-	public static final int SESSION_DATA_EXP = 3600 * 24;
+	public static final int SESSION_DATA_EXP = 3600 * 24*100;
 
 	/** 用户登录对象 **/
 	public static SessionData SESSION_DATA = new SessionData();
