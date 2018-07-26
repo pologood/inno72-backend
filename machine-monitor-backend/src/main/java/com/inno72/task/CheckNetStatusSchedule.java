@@ -51,7 +51,7 @@ public class CheckNetStatusSchedule {
                 LocalDateTime createTime = machineLogInfo.getCreateTime();
                 Duration duration = Duration.between(createTime, LocalDateTime.now());
                 long between = duration.toMinutes();
-                if (between >= 10) {
+                if (between >= 5) {
                     newMachineNetCloseList.add(machineLogInfo);
 
                 } else {
