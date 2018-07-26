@@ -87,7 +87,7 @@ public class CheckNetAndAlarmTask {
                         newList.add(machineLogInfo1);
                     }
                 }
-                log.info("机器状态是正常情况下的断网机器列表，newList:{}", newList.toString());
+                log.info("机器状态是正常情况下的断网机器列表，newList:{}", newList.toArray().toString());
                 for (MachineLogInfo machineLogInfo : newList) {
                     //根据机器编码查询点位接口
                     List<MachineLocaleInfo> machineLocaleInfos = new ArrayList<>();
