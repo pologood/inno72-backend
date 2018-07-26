@@ -1,6 +1,5 @@
 package com.inno72.machine.service;
 
-import com.alibaba.fastjson.JSONArray;
 import com.inno72.common.Result;
 import com.inno72.common.Service;
 import com.inno72.machine.model.Inno72Goods;
@@ -16,10 +15,6 @@ import java.util.Map;
  */
 @SuppressWarnings("rawtypes")
 public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
-
-	Result subCount(Inno72SupplyChannel supplyChannel);
-
-	Result getSupplyChannel(Inno72SupplyChannel supplyChannel);
 
 	Result<String> init(String machineId, List<Inno72SupplyChannel> channels);
 

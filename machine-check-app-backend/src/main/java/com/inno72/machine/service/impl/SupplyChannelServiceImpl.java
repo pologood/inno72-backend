@@ -18,7 +18,6 @@ import com.inno72.model.ChannelGoodsAlarmBean;
 import com.inno72.redis.IRedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -40,7 +39,7 @@ import tk.mybatis.mapper.entity.Condition;
 public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChannel>
         implements SupplyChannelService {
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Resource
     private Inno72SupplyChannelMapper inno72SupplyChannelMapper;
 
@@ -56,53 +55,13 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     @Resource
     private Inno72SupplyChannelHistoryMapper inno72SupplyChannelHistoryMapper;
 
-    @Autowired
+    @Resource
     private MongoOperations mongoTpl;
 
     @Resource
     private IRedisUtil redisUtil;
 
-    @Override
-    public Result<Inno72SupplyChannel> subCount(Inno72SupplyChannel supplyChannel) {
-        String machineId = supplyChannel.getMachineId();
-        String code = supplyChannel.getCode();
-        if (StringUtil.isEmpty(machineId) || StringUtil.isEmpty(code)) {
-            return Results.failure("参数错误");
-        }
-        Map<String, Object> map = new HashMap<>();
-        map.put("machineId", machineId);
-        map.put("code", code);
-        supplyChannel = inno72SupplyChannelMapper.selectByParam(map);
-        if (supplyChannel == null) {
-            return Results.failure("货道不存在");
-        } else if (supplyChannel.getGoodsStatus() == 1) {
-            return Results.failure("商品已下架");
-        } else if (supplyChannel.getGoodsCount() <= 0) {
-            return Results.failure("商品已无货");
-        }
-        supplyChannel.setUpdateTime(LocalDateTime.now());
-        inno72SupplyChannelMapper.subCount(supplyChannel);
-        supplyChannel = inno72SupplyChannelMapper.selectByParam(map);
-        supplyChannel.setRemark("货道商品数量减一");
-        addSupplyChannelToMongo(supplyChannel);
-        return ResultGenerator.genSuccessResult(supplyChannel);
-    }
 
-    @SuppressWarnings("rawtypes")
-    @Override
-    public Result getSupplyChannel(Inno72SupplyChannel supplyChannel) {
-        String machineId = supplyChannel.getMachineId();
-        String[] goodsCodes = supplyChannel.getGoodsCodes();
-        System.out.print(goodsCodes);
-        if (StringUtil.isEmpty(machineId) || goodsCodes == null) {
-            return ResultGenerator.genFailResult("参数有误");
-        }
-        Map<String, Object> map = new HashMap<>();
-        map.put("machineId", machineId);
-        map.put("goodsCodes", goodsCodes);
-        List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectListByParam(map);
-        return ResultGenerator.genSuccessResult(list);
-    }
 
     @Override
     public Result<String> init(String machineId, List<Inno72SupplyChannel> channels) {
@@ -141,7 +100,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         Integer[] codes = new Integer[2];
         codes[0] = codeInt;
         Integer childCode = null;
-        Integer parentCode = null;
+        Integer parentCode;
         if (codeInt % 2 == 0 ) {
             codes[1] = (codeInt - 1);
             childCode = codes[0];
@@ -221,8 +180,6 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     /**
      * 货道清零
      *
-     * @param supplyChannel
-     * @return
      */
     @Override
     public Result<String> clear(Inno72SupplyChannel supplyChannel) {
@@ -278,8 +235,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 
     @Override
     public List<Inno72SupplyChannel> getListForPage(Inno72SupplyChannel supplyChannel) {
-        List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectListForPage(supplyChannel);
-        return list;
+        return inno72SupplyChannelMapper.selectListForPage(supplyChannel);
     }
 
     @Override
@@ -290,8 +246,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         Map<String,Object> map= new HashMap<>();
         map.put("machineId",machineId);
         map.put("status",0);
-        List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectListByParam(map);
-        return list;
+        return inno72SupplyChannelMapper.selectListByParam(map);
     }
 
     @Override
@@ -381,8 +336,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     @Override
     public List<Inno72Goods> getGoodsByMachineId(String machineId) {
 
-        List<Inno72Goods> goodsList = inno72GoodsMapper.selectByMachineId(machineId);
-        return goodsList;
+        return inno72GoodsMapper.selectByMachineId(machineId);
     }
 
     @Override
@@ -392,14 +346,13 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectByCondition(condition);
         if(supplyChannelList != null && supplyChannelList.size()>0){
             StringBuffer idBuffer= new StringBuffer();
-            LocalDateTime now = LocalDateTime.now();
-            for(Inno72SupplyChannel supplyChannel:supplyChannelList){
+            supplyChannelList.forEach(supplyChannel -> {
                 supplyChannel.setUpdateTime(LocalDateTime.now());
                 supplyChannel.setGoodsCount(0);
                 inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
                 idBuffer.append(supplyChannel.getId());
                 idBuffer.append(",");
-            }
+            });
             inno72SupplyChannelGoodsMapper.deleteByIds(idBuffer.substring(0,idBuffer.length()-1));
         }
         return ResultGenerator.genSuccessResult();
@@ -443,8 +396,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         LocalDateTime now = LocalDateTime.now();
         if(mapList != null && mapList.size()>0){
             String batchNo = StringUtil.getUUID();
-            List<Inno72SupplyChannelHistory> historyList = new ArrayList<>();
-            for(Map<String,Object> map:mapList){
+            mapList.forEach(map -> {
                 Inno72SupplyChannel supplyChannel = new Inno72SupplyChannel();
                 supplyChannel.setId(map.get("id").toString());
                 supplyChannel.setGoodsId(map.get("goodsId").toString());
@@ -457,7 +409,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 goods.setId(StringUtil.getUUID());
                 goods.setSupplyChannelId(supplyChannel.getId());
                 Condition condition = new Condition(Inno72SupplyChannelGoods.class);
-                condition.createCriteria().andEqualTo("supplyChannelId",supplyChannel.getId());
+                condition.createCriteria().andEqualTo("supplyChannelId", supplyChannel.getId());
                 inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
                 inno72SupplyChannelGoodsMapper.insertSelective(goods);
                 Inno72SupplyChannelHistory history = new Inno72SupplyChannelHistory();
@@ -469,9 +421,8 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 history.setMachineId(oldSupply.getMachineId());
                 history.setUserId("");
                 history.setCreateTime(now);
-                historyList.add(history);
                 inno72SupplyChannelHistoryMapper.insertSelective(history);
-            }
+            });
         }
         return ResultGenerator.genSuccessResult();
     }
@@ -480,7 +431,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     public List<WorkOrderVo> workOrderList(String keyword,String findTime) {
         Inno72CheckUser checkUser = UserUtil.getUser();
         String checkUserId = checkUser.getId();
-        Map<String,Object> map = new HashMap<String,Object>();
+        Map<String,Object> map = new HashMap<>();
         map.put("checkUserId",checkUserId);
         if(StringUtil.isNotEmpty(keyword) && StringUtil.isNotEmpty(keyword.trim())){
             map.put("keyword",keyword.trim());
@@ -489,8 +440,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
             map.put("beginTime",findTime.trim()+" 00:00:00");
             map.put("endTime",findTime.trim()+" 23:59:59");
         }
-        List<WorkOrderVo> workOrderVoList = inno72SupplyChannelHistoryMapper.getWorkOrderVoList(map);
-        return workOrderVoList;
+        return inno72SupplyChannelHistoryMapper.getWorkOrderVoList(map);
     }
 
     @Override

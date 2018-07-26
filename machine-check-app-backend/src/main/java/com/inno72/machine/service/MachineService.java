@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface MachineService extends Service<Inno72Machine> {
 
-    public Result<String> setMachine(String machineId,String localeId);
+    Result<String> setMachine(String machineId, String localeId);
 
     Result<List<Inno72Machine>> getMachineList();
 
