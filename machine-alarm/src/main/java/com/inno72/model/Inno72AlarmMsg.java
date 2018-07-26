@@ -15,11 +15,35 @@ public class Inno72AlarmMsg {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
-    private int title;
+    private String title;
 
     private String system;
 
-    private String type;
+    private int type;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
 
     private String detail;
 
@@ -77,41 +101,6 @@ public class Inno72AlarmMsg {
         this.system = system;
     }
 
-    /**
-     * @return type
-     */
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * @param type
-     */
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    /**
-     * @return detail
-     */
-    public String getDetail() {
-        return detail;
-    }
-
-    /**
-     * @param detail
-     */
-    public void setDetail(String detail) {
-        this.detail = detail;
-    }
-
-    public int getTitle() {
-        return title;
-    }
-
-    public void setTitle(int title) {
-        this.title = title;
-    }
 
 
 }
