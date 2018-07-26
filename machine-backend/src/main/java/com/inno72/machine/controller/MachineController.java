@@ -77,9 +77,9 @@ public class MachineController {
 	 * @param machineStatus
 	 * @return
 	 */
-	@RequestMapping(value = "/findMachineByMachineCode", method = {RequestMethod.POST, RequestMethod.GET})
-	public Result<List<String>> findMachineByMachineCode(@RequestParam int machineStatus) {
-		return machineService.findMachineByMachineCode(machineStatus);
+	@RequestMapping(value = "/findMachineByMachineStatus", method = {RequestMethod.POST, RequestMethod.GET})
+	public Result<List<String>> findMachineByMachineStatus(@RequestParam int machineStatus) {
+		return machineService.findMachineByMachineStatus(machineStatus);
 
 	}
 

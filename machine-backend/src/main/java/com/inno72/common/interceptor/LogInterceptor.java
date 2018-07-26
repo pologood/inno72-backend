@@ -38,7 +38,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
     private static List<String> doNotCheckUs = Arrays.asList(new String[]{"/dd/login", "/dd", "/dd/reg_call_back",
             "/dd/update_call_back", "/dd/initDData", "/dd/token", "/dd/testLogin", "/machine/channel/out/subCount",
             "/machine/channel/out/get", "/machine/machine/initMachine", "/machine/machine/updateNetStatus",
-            "/machine/machine/updateMachineListNetStatus", "/testMsg", "/machine/machine/findMachineByMachineCode", "/project/activityPlan/selectNoPlanMachines",
+            "/machine/machine/updateMachineListNetStatus", "/testMsg", "/machine/machine/findMachineByMachineStatus", "/project/activityPlan/selectNoPlanMachines",
             "/machine/locale/selectLocaleByMachineCode", "/supply/channel/status/getChannelErrorDetail", "/check/signIn/userExcel",
             "/machine/locale/selectLocaleByMachineCode", "/supply/channel/status/getChannelErrorDetail",
             "/check/user/selectAreaMachines", "/check/user/selectPhoneByMachineCode"});
