@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -23,7 +22,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inno72.common.interceptor.LogInterceptor;
 import com.inno72.common.interceptor.PageListAttrHandlerInterceptor;
-import com.inno72.common.log.ProcessDataFilter;
 import com.inno72.common.spring.JsonView;
 import com.inno72.redis.IRedisUtil;
 
@@ -94,12 +92,12 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 		registry.addInterceptor(logInterceptor).addPathPatterns("/**");
 	}
 
-	@Bean
-	public FilterRegistrationBean someFilterRegistration() {
-		FilterRegistrationBean registration = new FilterRegistrationBean();
-		registration.setFilter(new ProcessDataFilter());
-		registration.addUrlPatterns("/*");
-		return registration;
-	}
+	// @Bean
+	// public FilterRegistrationBean someFilterRegistration() {
+	// FilterRegistrationBean registration = new FilterRegistrationBean();
+	// registration.setFilter(new ProcessDataFilter());
+	// registration.addUrlPatterns("/*");
+	// return registration;
+	// }
 
 }
