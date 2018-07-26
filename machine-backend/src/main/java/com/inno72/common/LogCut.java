@@ -2,26 +2,22 @@ package com.inno72.common;
 
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
 
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class LogCut {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -43,7 +39,9 @@ public class LogCut {
 				.getRequest();
 		logger.info("使用{}方式请求地址{}", request.getMethod().toUpperCase(), request.getServletPath());
 		String token = request.getHeader("lf-None-Matoh") == null ? "无" : request.getHeader("lf-None-Matoh");
-
+		// byte[] a = new
+		// CustomerHttpServletRequestWrapper(request).getRequestBody();
+		// System.out.println("==" + new String(a));
 		// String jsonStr = new
 		// String(StreamUtils.copyToByteArray(request.getInputStream()));
 		String jsonStr = "";
@@ -62,22 +60,12 @@ public class LogCut {
 					parm.append(name).append("=").append(attr).append("&");
 				}
 			}
-			logger.info("请求token：{},param参数：{}", token, jsonStr);
+			logger.info("请求token：{},param参数：{}", token, parm.toString());
 		}
 	}
 
 	private void postHandle(Object retVal) {
 		if (retVal instanceof ModelAndView) {
-			ModelAndView modelAndView = (ModelAndView) retVal;
-			Map<String, Object> model = modelAndView.getModel();
-			Map<String, Object> newModel = new HashMap<String, Object>();
-			for (Map.Entry<String, Object> item : model.entrySet()) {
-				Object attr = item.getValue();
-				// 把所有值为空的key变为""
-				if (attr == null) {
-					newModel.put(item.getKey(), "");
-				}
-			}
 			return;
 		}
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
