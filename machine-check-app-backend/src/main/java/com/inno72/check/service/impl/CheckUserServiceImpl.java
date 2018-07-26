@@ -90,6 +90,8 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
             Inno72CheckUser user = users.get(0);
             String token = StringUtil.getUUID();
             SessionData sessionData = new SessionData(token, user);
+            String headImage = sessionData.getUser().getHeadImage();
+            sessionData.getUser().setHeadImage(ImageUtil.getLongImageUrl(headImage));
             // 获取用户token使用
             String userTokenKey = CommonConstants.USER_LOGIN_TOKEN_CACHE_KEY_PREF + user.getId();
             // 获取用户之前登录的token
@@ -124,9 +126,12 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
     @Override
     public Result<Inno72CheckUser> updateUser(Inno72CheckUser inno72CheckUser) {
         inno72CheckUser.setId(UserUtil.getUser().getId());
+        inno72CheckUser.setHeadImage(ImageUtil.getLackImageUrl(inno72CheckUser.getHeadImage()));
         mapper.updateByPrimaryKeySelective(inno72CheckUser);
         inno72CheckUser = mapper.selectByPrimaryKey(inno72CheckUser.getId());
+        inno72CheckUser.setHeadImage(ImageUtil.getLongImageUrl(inno72CheckUser.getHeadImage()));
         return ResultGenerator.genSuccessResult(inno72CheckUser);
     }
+
 
 }

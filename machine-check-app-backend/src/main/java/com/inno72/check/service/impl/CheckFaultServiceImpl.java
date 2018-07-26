@@ -57,17 +57,14 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
                 inno72CheckFaultMapper.insertSelective(checkFault);
                 String[] images = checkFault.getImages();
                 if (images != null && images.length > 0) {
-                    List<Inno72CheckFaultImage> imageList = new ArrayList<>();
                     for (String image1 : images) {
                         Inno72CheckFaultImage image = new Inno72CheckFaultImage();
                         image.setId(StringUtil.getUUID());
                         image.setFaultId(id);
-                        image.setImage(image1);
+                        image.setImage(ImageUtil.getLackImageUrl(image1));
                         image.setCreateTime(LocalDateTime.now());
-                        imageList.add(image);
+                        inno72CheckFaultImageMapper.insertSelective(image);
                     }
-                    inno72CheckFaultImageMapper.insertList(imageList);
-
                 }
 
             }
@@ -143,7 +140,19 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         if(status != null){
             map.put("status",status);
         }
-        return inno72CheckFaultMapper.selectForPage(map);
+        List<Inno72CheckFault> list = inno72CheckFaultMapper.selectForPage(map);
+        if(list != null && list.size()>0){
+            for(Inno72CheckFault checkFault:list){
+                List<Inno72CheckFaultImage> imageList = checkFault.getImageList();
+                if(imageList != null && imageList.size()>0){
+                    for(Inno72CheckFaultImage image:imageList){
+                        String imageUrl = image.getImage();
+                        image.setImage(ImageUtil.getLongImageUrl(imageUrl));
+                    }
+                }
+            }
+        }
+        return list;
     }
 
     @Override
@@ -167,6 +176,13 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
     @Override
     public Result<Inno72CheckFault> getDetail(String faultId) {
         Inno72CheckFault fault = inno72CheckFaultMapper.selectDetail(faultId);
+        List<Inno72CheckFaultImage> imageList = fault.getImageList();
+        if(imageList != null && imageList.size()>0){
+            for(Inno72CheckFaultImage image:imageList){
+                String imageUrl = image.getImage();
+                image.setImage(ImageUtil.getLongImageUrl(imageUrl));
+            }
+        }
         return ResultGenerator.genSuccessResult(fault);
     }
 
