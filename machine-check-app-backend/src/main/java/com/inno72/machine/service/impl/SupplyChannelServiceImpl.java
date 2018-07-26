@@ -114,19 +114,25 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         map.put("codes", codes);
         List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectListByParam(map);
         if (list != null && list.size() == 2) {
-            for (Inno72SupplyChannel channel : list) {
-                int goodsCount = channel.getGoodsCount();
-                if (goodsCount != 0) {
-                    return ResultGenerator.genFailResult("当前货道未清0不能合并");
-                }
-            }
+            Inno72SupplyChannel parentChannel = new Inno72SupplyChannel();
+            parentChannel.setCode(parentCode.toString());
+            parentChannel.setMachineId(machineId);
+            parentChannel.setGoodsCount(0);
+            parentChannel.setUpdateTime(LocalDateTime.now());
+            inno72SupplyChannelMapper.updateByParam(parentChannel);
             Inno72SupplyChannel channel = new Inno72SupplyChannel();
             channel.setCode(childCode.toString());
             channel.setMachineId(machineId);
             channel.setParentCode(parentCode.toString());
             channel.setStatus(1);
             channel.setUpdateTime(LocalDateTime.now());
+            channel.setGoodsCount(0);
             inno72SupplyChannelMapper.updateByParam(channel);
+            for(Inno72SupplyChannel supply:list){
+                Condition condition = new Condition(Inno72SupplyChannelGoods.class);
+                condition.createCriteria().andEqualTo("supplyChannelId",supply.getId());
+                inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
+            }
             channel.setRemark("合并货道，由" + childCode + "合并到" + parentCode);
             addSupplyChannelToMongo(channel);
             return ResultGenerator.genSuccessResult();
@@ -147,30 +153,34 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         map.put("code", code);
         supplyChannel = inno72SupplyChannelMapper.selectByParam(map);
         if (supplyChannel != null) {
-            int goodsCount = supplyChannel.getGoodsCount();
-            if (goodsCount == 0) {
-                Map<String, Object> childMap = new HashMap<>();
-                childMap.put("machineId", machineId);
-                childMap.put("parentCode", code);
-                Inno72SupplyChannel childChannel = inno72SupplyChannelMapper.selectByParentCode(childMap);
-                if(childChannel != null){
-                    childChannel.setParentCode(code);
-                    childChannel.setStatus(0);
-                    childChannel.setUpdateTime(LocalDateTime.now());
-                    int count = inno72SupplyChannelMapper.updateChild(childChannel);
-                    if (count == 1) {
-                        childChannel.setRemark("拆分货道，将货道" + code + "和货道" + childChannel.getCode() + "拆分");
-                        addSupplyChannelToMongo(childChannel);
-                        return ResultGenerator.genSuccessResult();
-                    } else {
-                        return ResultGenerator.genFailResult("货道未合并不能拆分");
-                    }
-                }else{
+            supplyChannel.setGoodsCount(0);
+            supplyChannel.setUpdateTime(LocalDateTime.now());
+            inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
+            Condition condition = new Condition(Inno72SupplyChannelGoods.class);
+            condition.createCriteria().andEqualTo("supplyChannelId",supplyChannel.getId());
+            inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
+            Map<String, Object> childMap = new HashMap<>();
+            childMap.put("machineId", machineId);
+            childMap.put("parentCode", code);
+            Inno72SupplyChannel childChannel = inno72SupplyChannelMapper.selectByParentCode(childMap);
+            if(childChannel != null){
+                childChannel.setParentCode(code);
+                childChannel.setStatus(0);
+                childChannel.setGoodsCount(0);
+                childChannel.setUpdateTime(LocalDateTime.now());
+                int count = inno72SupplyChannelMapper.updateChild(childChannel);
+                Condition childCon = new Condition(Inno72SupplyChannelGoods.class);
+                childCon.createCriteria().andEqualTo("supplyChannelId",supplyChannel.getId());
+                inno72SupplyChannelGoodsMapper.deleteByCondition(childCon);
+                if (count == 1) {
+                    childChannel.setRemark("拆分货道，将货道" + code + "和货道" + childChannel.getCode() + "拆分");
+                    addSupplyChannelToMongo(childChannel);
+                    return ResultGenerator.genSuccessResult();
+                } else {
                     return ResultGenerator.genFailResult("货道未合并不能拆分");
                 }
-
-            } else {
-                return ResultGenerator.genFailResult("货道未清0不能拆分");
+            }else{
+                return ResultGenerator.genFailResult("货道未合并不能拆分");
             }
         } else {
             return ResultGenerator.genFailResult("操作货道有误");
