@@ -77,6 +77,7 @@ public class CheckNetAndAlarmTask {
             if (StringUtil.isNotEmpty(msg)) {
                 JSONObject jsonObject = JSONObject.parseObject(msg);
                 List<String> dataList = JSONArray.parseArray(jsonObject.getString("data"), String.class);
+                log.info("后台数据库中状态是正常的机器列表数据，dataList:{}", dataList);
                 List<MachineLogInfo> newList = new ArrayList<>();
                 for (MachineLogInfo machineLogInfo : list) {
                     if (dataList.contains(machineLogInfo.getMachineId())) {
@@ -86,6 +87,7 @@ public class CheckNetAndAlarmTask {
                         newList.add(machineLogInfo1);
                     }
                 }
+                log.info("机器状态是正常情况下的断网机器列表，newList:{}", newList);
                 for (MachineLogInfo machineLogInfo : newList) {
                     //根据机器编码查询点位接口
                     List<MachineLocaleInfo> machineLocaleInfos = new ArrayList<>();
