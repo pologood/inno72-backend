@@ -51,7 +51,7 @@ public class CheckNetStatusSchedule {
                 LocalDateTime createTime = machineLogInfo.getCreateTime();
                 Duration duration = Duration.between(createTime, LocalDateTime.now());
                 long between = duration.toMinutes();
-                if (between >= 10) {
+                if (between >= 5) {
                     newMachineNetCloseList.add(machineLogInfo);
 
                 } else {
@@ -69,6 +69,7 @@ public class CheckNetStatusSchedule {
                     machineNetInfoList.add(machineNetInfo);
                 }
                 String machineNetInfoString = JSONObject.toJSON(machineNetInfoList).toString();
+                log.info("断开的机器列表，machineNetInfoString：{}", machineNetInfoString);
                 String urlProp = machineMonitorBackendProperties.getProps().get("updateMachineListNetStatusUrl");
                 String result = HttpClient.post(urlProp, machineNetInfoString);
                 JSONObject jsonObject = JSONObject.parseObject(result);
@@ -87,6 +88,7 @@ public class CheckNetStatusSchedule {
                     machineNetInfoList.add(machineNetInfo);
                     }
                 String machineNetInfoString = JSONObject.toJSON(machineNetInfoList).toString();
+                log.info("断开的机器列表，machineNetInfoString：{}", machineNetInfoString);
                 String urlProp = machineMonitorBackendProperties.getProps().get("updateMachineListNetStatusUrl");
                 String result = HttpClient.post(urlProp, machineNetInfoString);
                 JSONObject jsonObject = JSONObject.parseObject(result);
