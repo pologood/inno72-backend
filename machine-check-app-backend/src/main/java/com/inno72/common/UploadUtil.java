@@ -20,6 +20,7 @@ public class UploadUtil {
         String path = CommonConstants.OSS_PATH+"/"+type+"/"+name;
         try {
             OSSUtil.uploadByStream(file.getInputStream(),path);
+            path = ImageUtil.getLongImageUrl(path);
             return Results.success(path);
         } catch (IOException e) {
             e.printStackTrace();
