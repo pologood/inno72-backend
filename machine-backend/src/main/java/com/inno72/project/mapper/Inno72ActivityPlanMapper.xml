@@ -81,7 +81,7 @@
 			a.*,
 			m.id AS machine_id,
 			m.machine_code AS machine_code,
-			 CASE WHEN  aa.machine_id is null THEN '0' ELSE '1' END AS state
+			CASE WHEN  aa.machine_id is not null THEN '1' ELSE null  END AS state
 		FROM
 			inno72_admin_area a
 			LEFT JOIN (
@@ -119,7 +119,6 @@
 			LEFT JOIN (	select distinct apm.machine_id from inno72_activity_plan app 
 			left join inno72_activity_plan_machine apm on app.id=apm.activity_plan_id
 				where app.id not in (
-				select id from inno72_activity_plan ap where 
 				select id from inno72_activity_plan ap where 
 				 <![CDATA[(
 				ap.start_time > #{endTime}
