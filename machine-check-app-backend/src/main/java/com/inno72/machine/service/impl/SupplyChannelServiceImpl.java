@@ -419,7 +419,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 history.setBatchNo(batchNo);
                 history.setSupplyChannelId(supplyChannel.getId());
                 history.setMachineId(oldSupply.getMachineId());
-                history.setUserId("");
+                history.setUserId(UserUtil.getUser().getId());
                 history.setCreateTime(now);
                 inno72SupplyChannelHistoryMapper.insertSelective(history);
             });
