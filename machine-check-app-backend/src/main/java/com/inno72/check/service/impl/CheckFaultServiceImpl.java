@@ -10,7 +10,6 @@ import com.inno72.common.*;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.msg.MsgUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Condition;
@@ -32,9 +31,6 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
     private Inno72MachineMapper inno72MachineMapper;
 
     @Resource
-    private Inno72CheckUserMapper inno72CheckUserMapper;
-
-    @Resource
     private Inno72CheckFaultRemarkMapper inno72CheckFaultRemarkMapper;
 
     @Resource
@@ -43,29 +39,29 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
     @Resource
     private Inno72AlarmMsgMapper inno72AlarmMsgMapper;
 
-    @Autowired
+    @Resource
     private MsgUtil msgUtil;
 
     @Override
     public Result addCheckFault(Inno72CheckFault checkFault) {
         String[] machineIds = checkFault.getMachineIds();
         if(machineIds != null && machineIds.length>0){
-            for(int index=0;index<machineIds.length;index++){
+            for (String machineId : machineIds) {
                 String id = StringUtil.getUUID();
                 checkFault.setId(id);
-                String time = DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S2);
-                checkFault.setCode("F"+StringUtil.createRandomCode(6)+time);
+                String time = DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S2);
+                checkFault.setCode("F" + StringUtil.createRandomCode(6) + time);
                 checkFault.setSubmitTime(LocalDateTime.now());
-                checkFault.setMachineId(machineIds[index]);
+                checkFault.setMachineId(machineId);
                 inno72CheckFaultMapper.insertSelective(checkFault);
-                String [] images = checkFault.getImages();
-                if(images != null && images.length>0){
+                String[] images = checkFault.getImages();
+                if (images != null && images.length > 0) {
                     List<Inno72CheckFaultImage> imageList = new ArrayList<>();
-                    for(int i=0;i<images.length;i++){
+                    for (String image1 : images) {
                         Inno72CheckFaultImage image = new Inno72CheckFaultImage();
                         image.setId(StringUtil.getUUID());
                         image.setFaultId(id);
-                        image.setImage(images[i]);
+                        image.setImage(image1);
                         image.setCreateTime(LocalDateTime.now());
                         imageList.add(image);
                     }
@@ -129,7 +125,6 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 
     @Override
     public Result finish(Inno72CheckFault checkFault) {
-        Map<String,Object> map = new HashMap<>();
         Inno72CheckFault upCheckFault = new Inno72CheckFault();
         upCheckFault.setId(checkFault.getId());
         upCheckFault.setFinishRemark(checkFault.getFinishRemark());
@@ -147,8 +142,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         if(status != null){
             map.put("status",status);
         }
-        List<Inno72CheckFault> list = inno72CheckFaultMapper.selectForPage(map);
-        return list;
+        return inno72CheckFaultMapper.selectForPage(map);
     }
 
     @Override
