@@ -32,7 +32,7 @@ public class AdminAreaServiceImpl extends AbstractService<Inno72AdminArea> imple
 	   	 if (StringUtil.isEmpty(code)) {
 	   		 condition.createCriteria().andCondition("level = 1");
 	   	 }else{
-	   		 condition.createCriteria().andCondition("parent_code = "+code);
+	   		 condition.createCriteria().andEqualTo("parentCode", code);
 	   	 }
 		return inno72AdminAreaMapper.selectByCondition(condition);
 	}

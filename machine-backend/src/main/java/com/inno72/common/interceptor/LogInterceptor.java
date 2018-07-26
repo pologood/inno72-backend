@@ -31,23 +31,22 @@ import com.inno72.utils.page.Pagination;
  *
  */
 public class LogInterceptor extends HandlerInterceptorAdapter {
-    Logger log = LoggerFactory.getLogger(this.getClass());
+	Logger log = LoggerFactory.getLogger(this.getClass());
 	@Resource
 	private IRedisUtil redisUtil; // memcachedClient
 
-    private static List<String> doNotCheckUs = Arrays.asList(new String[]{"/dd/login", "/dd", "/dd/reg_call_back",
-            "/dd/update_call_back", "/dd/initDData", "/dd/token", "/dd/testLogin", "/machine/channel/out/subCount",
-            "/machine/channel/out/get", "/machine/machine/initMachine", "/machine/machine/updateNetStatus",
-            "/machine/machine/updateMachineListNetStatus", "/testMsg", "/machine/machine/findMachineByMachineStatus", "/project/activityPlan/selectNoPlanMachines",
-            "/machine/locale/selectLocaleByMachineCode", "/supply/channel/status/getChannelErrorDetail", "/check/signIn/userExcel",
-            "/machine/locale/selectLocaleByMachineCode", "/supply/channel/status/getChannelErrorDetail",
-            "/check/user/selectAreaMachines", "/check/user/selectPhoneByMachineCode"});
-    //private static List<String> doNotCheckUs = Arrays.asList(new String[]{"/machine/machine/findMachineByMachineCode"});
+	private static List<String> doNotCheckUs = Arrays.asList(new String[] { "/dd/login", "/dd", "/dd/reg_call_back",
+			"/dd/update_call_back", "/dd/initDData", "/dd/token", "/dd/testLogin", "/machine/channel/out/subCount",
+			"/machine/channel/out/get", "/machine/machine/initMachine", "/machine/machine/updateNetStatus",
+			"/machine/machine/updateMachineListNetStatus", "/testMsg", "/machine/machine/findMachineByMachineCode",
+			"/project/activityPlan/selectNoPlanMachines", "/machine/locale/selectLocaleByMachineCode",
+			"/supply/channel/status/getChannelErrorDetail", "/check/signIn/userExcel",
+			"/machine/locale/selectLocaleByMachineCode", "/supply/channel/status/getChannelErrorDetail",
+			"/check/user/selectAreaMachines", "/check/user/selectPhoneByMachineCode" });
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-
 		boolean result = checkAuthority(request, response);
 		if (result) {
 			@SuppressWarnings("rawtypes")
@@ -110,10 +109,8 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 				if (attr == null) {
 					newModel.put(item.getKey(), "");
 				}
-
 			}
 			modelAndView.addAllObjects(newModel);
-
 		}
 
 	}
@@ -126,7 +123,6 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	private boolean checkAuthority(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String url = request.getServletPath();
 		boolean match = doNotCheckUs.parallelStream().anyMatch(_url -> url.indexOf(_url) != -1);
-        log.info("request url：" + url + ",match:" + match + ",doNotCheckUs:" + doNotCheckUs.toString());
 		if (match) {
 			return true;
 		}

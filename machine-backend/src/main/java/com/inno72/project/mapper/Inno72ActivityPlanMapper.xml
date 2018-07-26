@@ -81,18 +81,21 @@
 			a.*,
 			m.id AS machine_id,
 			m.machine_code AS machine_code,
-			CASE 
-			 WHEN  ap.start_time BETWEEN #{startTime} AND #{endTime} OR ap.end_time BETWEEN #{startTime} AND #{endTime} THEN '1' 
-			 ELSE NULL 
-			 END AS state
+			CASE WHEN  aa.machine_id is not null THEN '1' ELSE null  END AS state
 		FROM
 			inno72_admin_area a
 			LEFT JOIN (
 				SELECT m.machine_code,	m.id, locale.area_code FROM inno72_machine m
 				LEFT JOIN inno72_locale locale ON locale.id = m.locale_id WHERE m.machine_status ='4'
 			) m ON LEFT ( m.area_code,#{num}) = LEFT ( a.CODE,#{num})
-			LEFT JOIN inno72_activity_plan_machine apm ON m.id = apm.machine_id
-			LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id 
+			LEFT JOIN (	select distinct apm.machine_id from inno72_activity_plan app left join inno72_activity_plan_machine apm on app.id=apm.activity_plan_id
+				where app.id not in (
+				select id from inno72_activity_plan ap where 
+				<![CDATA[(
+				ap.start_time > #{endTime}
+				OR ap.end_time < #{startTime})]]>and is_delete=0) and  
+				app.is_delete=0 and apm.machine_id is not null  and length(apm.machine_id)>0 and app.start_time is not null 
+				) aa on m.id=aa.machine_id
 		WHERE
 		<if test="code !=null and code !='' ">a.parent_code = #{code}  </if>
 		<if test="level !=null and level !='' ">a.LEVEL = #{level}  </if>
@@ -108,16 +111,20 @@
 			area.district,
 			area.circle,
 			'5' AS LEVEL,
-			 CASE 
-			 WHEN  ap.start_time BETWEEN #{startTime} AND #{endTime} OR ap.end_time BETWEEN #{startTime} AND #{endTime} THEN '1' 
-			 ELSE '0' 
-			 END AS planed
+			 CASE WHEN  aa.machine_id is null THEN '0' ELSE '1' END AS planed
 		FROM
 			inno72_machine m
 			LEFT JOIN inno72_locale locale ON m.locale_id = locale.id
 			LEFT JOIN inno72_admin_area area ON area.CODE = locale.area_code 
-			LEFT JOIN inno72_activity_plan_machine apm ON m.id = apm.machine_id
-			LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id 
+			LEFT JOIN (	select distinct apm.machine_id from inno72_activity_plan app 
+			left join inno72_activity_plan_machine apm on app.id=apm.activity_plan_id
+				where app.id not in (
+				select id from inno72_activity_plan ap where 
+				 <![CDATA[(
+				ap.start_time > #{endTime}
+				OR ap.end_time < #{startTime})]]>and is_delete=0) and  
+				app.is_delete=0 and apm.machine_id is not null  and length(apm.machine_id)>0 and app.start_time is not null 
+				) aa on m.id=aa.machine_id
 		WHERE locale.area_code=#{code} and m.machine_status ='4'
   </select>
   <!-- 查询时间段内排期的机器-->
@@ -184,12 +191,12 @@
 	  <result column="goods_id" property="prizeId" />
 	  <result column="goods_result_code" property="resultCode"/>
 	  <result column="goods_result_remark" property="resultRemark"/>
-	  <result column="goods_result_remark" property="prizeType" />
+	  <result column="goods_prize_type" property="prizeType" />
 	  <result column="goods_name" property="activityPlanId" />
 </resultMap>
  
  <resultMap id="couponsResult" type="com.inno72.project.vo.Inno72CouponVo">
- <result column="coupons_code" property="code" />
+ 		<result column="coupons_code" property="code" />
 	  <result column="coupons_name" property="name"/>
 	  <result column="coupons_result_code" property="resultCode"/>
 	  <result column="coupons_result_remark" property="resultRemark"/>
