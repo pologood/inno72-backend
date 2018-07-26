@@ -229,7 +229,7 @@ public class RedisReceiver {
                         Map<String, String> params = new HashMap<>();
                         params.put("machineCode", machineCode);
                         params.put("localStr", localStr);
-                        params.put("text", channelNum + describtion + "出现掉货异常，请及时处理。");
+                        params.put("text", channelNum + "," + describtion + "出现掉货异常，请及时处理。");
                         msgUtil.sendDDTextByGroup(code, params, groupId, "machineAlarm-RedisReceiver");
 
                     }
