@@ -120,7 +120,6 @@
 			left join inno72_activity_plan_machine apm on app.id=apm.activity_plan_id
 				where app.id not in (
 				select id from inno72_activity_plan ap where 
-				select id from inno72_activity_plan ap where 
 				 <![CDATA[(
 				ap.start_time > #{endTime}
 				OR ap.end_time < #{startTime})]]>and is_delete=0) and  
