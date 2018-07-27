@@ -487,7 +487,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		params.put("startTime", startTime);
 		params.put("endTime", endTime);
 		if (StringUtil.isNotEmpty(code)) {
-			int num =getlikeCode(code);
+			int num =StringUtil.getAreaCodeNum(code);
 			if (num<4) {
 				num=3;
 			}
@@ -550,15 +550,6 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		}
 		
 	   	return list;
-	}
-	
-	public int getlikeCode(String s){
-		for (int i = s.length()-1; i >=0; i--) {
-			if (!"0".equals(String.valueOf(s.charAt(i)))) {
-				return i+1;
-			}
-		}
-		return 0;
 	}
 	
 

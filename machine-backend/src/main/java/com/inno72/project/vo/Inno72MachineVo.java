@@ -8,6 +8,8 @@ public class Inno72MachineVo {
     private String machineCode;
     
     private String state;
+    
+    private String province;
 
 	public String getMachineId() {
 		return machineId;
@@ -31,6 +33,14 @@ public class Inno72MachineVo {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
 	}
 
     

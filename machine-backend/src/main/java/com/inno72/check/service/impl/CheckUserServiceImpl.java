@@ -212,7 +212,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("code", code);
 		
-		if (StringUtil.isEmpty(code)) {
+		/*if (StringUtil.isEmpty(code)) {
 			params.put("level", 1);
 	   	}
 		if (level.equals("1")) {
@@ -223,9 +223,16 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 			params.put("num", 6);
 		}else if (level.equals("4")) {
 			params.put("num", 9);
+		}*/
+		int num = StringUtil.getAreaCodeNum(code);
+		if (num < 4) {
+			num = 3;
 		}
-		List<Inno72AdminAreaVo> list = new ArrayList<>();
-		if (level.equals("5")) {
+		String likeCode = code.substring(0, num);
+		params.put("code", likeCode);
+		params.put("num", num);
+		List<Inno72AdminAreaVo> list = inno72CheckUserMapper.selectMachineList(params);
+		/*if (level.equals("5")) {
 			list = inno72CheckUserMapper.selectMachineList(params);
 		}else{
 			list = inno72CheckUserMapper.selectAreaMachineList(params);
@@ -233,7 +240,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 				List<Inno72MachineVo> machines=inno72AdminAreaVo.getMachines();
 				inno72AdminAreaVo.setTotalNum(machines.size()+"");
 			}
-		}
+		}*/
 		
 	   	return list;
 	}

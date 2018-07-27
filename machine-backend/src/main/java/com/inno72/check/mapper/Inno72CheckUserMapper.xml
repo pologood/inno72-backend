@@ -58,7 +58,8 @@
 			u.is_delete,
 			u.remark,
 			m.id AS machine_id,
-			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL( l.name,""), '—', m.machine_code ) AS machine_code
+			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL( l.name,""), '—', m.machine_code ) AS machine_code,
+			area.province as machine_province
 		from inno72_check_user  u
 		LEFT JOIN inno72_check_user_machine um ON um.check_user_id = u.id
 		LEFT JOIN inno72_machine m ON m.id = um.machine_id
@@ -86,6 +87,7 @@
   <result column="machine_id" property="machineId" />
   <result column="machine_code" property="machineCode"/>
   <result column="state" property="state"/>
+  <result column="machine_province" property="province"/>
  </resultMap>
   
   <select id="selectAreaMachineList" parameterType="java.util.Map" resultMap="ResultAreaMachineMap">
@@ -107,7 +109,7 @@
   		SELECT
 			m.id AS CODE,
 			'' AS parent_code,
-			CONCAT( IFNULL( locale.mall,""),IFNULL( locale.name,""), '—', m.machine_code ) AS NAME,
+			CONCAT(  area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( locale.mall,""),IFNULL( locale.name,""), '—', m.machine_code ) AS NAME,
 			area.province,
 			area.city,
 			area.district,
@@ -117,7 +119,8 @@
 			inno72_machine m
 			LEFT JOIN inno72_locale locale ON m.locale_id = locale.id
 			LEFT JOIN inno72_admin_area area ON area.CODE = locale.area_code
-		WHERE locale.area_code=#{code} and m.machine_status ='4'
+		WHERE m.machine_status ='4'
+		and LEFT(locale.area_code,#{num}) =#{code}
   </select>
 
 	<select id="selectPhoneByMachineCode" parameterType="String"
