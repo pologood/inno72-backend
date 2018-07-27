@@ -10,6 +10,7 @@ import com.inno72.model.*;
 import com.inno72.msg.MsgUtil;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.service.AlarmMsgService;
+import com.inno72.service.LocaleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,9 @@ public class RedisReceiver {
     @Autowired
     private MachineAlarmProperties machineAlarmProperties;
 
+    @Resource
+    private LocaleService localeService;
+
     @Value("${inno72.dingding.groupId}")
     private String groupId;
 
@@ -73,16 +77,12 @@ public class RedisReceiver {
             MachineLocaleInfo machineLocaleInfo = new MachineLocaleInfo();
             machineLocaleInfo.setMachineCode(machineId);
             machineLocaleInfos.add(machineLocaleInfo);
-            String machineLocaleInfoString = JSONObject.toJSON(machineLocaleInfos).toString();
-            String url = machineAlarmProperties.getProps().get("findLocalByMachineCode");
-            String returnMsg = HttpClient.post(url, machineLocaleInfoString);
-            JSONObject jsonObject1 = JSONObject.parseObject(returnMsg);
-            List<MachineLocaleInfo> MachineLocaleInfos = JSON.parseArray(jsonObject1.getString("data"), MachineLocaleInfo.class);
-
+            List<MachineLocaleInfo> machineLocaleInfoList = localeService.selectLocaleByMachineCode(machineLocaleInfos);
             String localStr = "";
-            for (MachineLocaleInfo machineLocale : MachineLocaleInfos) {
+            for (MachineLocaleInfo machineLocale : machineLocaleInfoList) {
                 localStr = machineLocale.getLocaleStr();
             }
+            log.info("machineChannel msg，localStr:{}", localStr);
             //调用接口查询故障信息
             List<GoodsChannelBean> goodsChannelBean = JSON.parseArray(goodsChannelStatus, GoodsChannelBean.class);
             String machineNetInfoString = JSONObject.toJSON(goodsChannelBean).toString();
@@ -138,16 +138,13 @@ public class RedisReceiver {
                 MachineLocaleInfo machineLocale = new MachineLocaleInfo();
                 machineLocale.setMachineCode(machineCode);
                 machineLocaleInfos.add(machineLocale);
-                String machineLocaleInfoString = JSONObject.toJSON(machineLocaleInfos).toString();
-                String url = machineAlarmProperties.getProps().get("findLocalByMachineCode");
-                String returnMsg = HttpClient.post(url, machineLocaleInfoString);
-                JSONObject jsonObject1 = JSONObject.parseObject(returnMsg);
-                List<MachineLocaleInfo> MachineLocaleInfos = JSON.parseArray(jsonObject1.getString("data"), MachineLocaleInfo.class);
+                List<MachineLocaleInfo> machineLocaleInfoList = localeService.selectLocaleByMachineCode(machineLocaleInfos);
                 String localStr = "";
-                for (MachineLocaleInfo machineLocaleInfo : MachineLocaleInfos) {
+                for (MachineLocaleInfo machineLocaleInfo : machineLocaleInfoList) {
                     localStr = machineLocaleInfo.getLocaleStr();
                 }
-
+                log.info("dropGoods msg，localStr：{}", localStr);
+                //循环
                 for (DropGoodsExceptionInfo dropGoodsExceptionInfo : dropGoodsExceptionInfoList) {
                     Integer updateNum = dropGoodsExceptionInfo.getErrorNum() + 1;
                     log.info("save to mongo machineCode : {},num：{}", dropGoodsExceptionInfo.getMachineCode(), updateNum);
@@ -258,15 +255,12 @@ public class RedisReceiver {
             MachineLocaleInfo machineLocale = new MachineLocaleInfo();
             machineLocale.setMachineCode(channelGoodsAlarmBean.getMachineCode());
             machineLocaleInfos.add(machineLocale);
-            String machineLocaleInfoString = JSONObject.toJSON(machineLocaleInfos).toString();
-            String url = machineAlarmProperties.getProps().get("findLocalByMachineCode");
-            String returnMsg = HttpClient.post(url, machineLocaleInfoString);
-            JSONObject jsonObject1 = JSONObject.parseObject(returnMsg);
-            List<MachineLocaleInfo> MachineLocaleInfos = JSON.parseArray(jsonObject1.getString("data"), MachineLocaleInfo.class);
+            List<MachineLocaleInfo> machineLocaleInfoList = localeService.selectLocaleByMachineCode(machineLocaleInfos);
             String localStr = "";
-            for (MachineLocaleInfo machineLocaleInfo : MachineLocaleInfos) {
+            for (MachineLocaleInfo machineLocaleInfo : machineLocaleInfoList) {
                 localStr = machineLocaleInfo.getLocaleStr();
             }
+            log.info("lackGoods msg，localStr：{}", localStr);
             //调用报警接口
             //缺货20%或者缺货10%
             if (CommonConstants.LACKGOODS_TENPERCENT == channelGoodsAlarmBean.getLackGoodsType()) {
