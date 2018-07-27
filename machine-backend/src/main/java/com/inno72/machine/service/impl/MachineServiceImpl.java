@@ -46,6 +46,7 @@ import com.inno72.machine.vo.SystemStatus;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.system.model.Inno72User;
+
 import tk.mybatis.mapper.entity.Condition;
 
 /**
@@ -68,39 +69,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	@Autowired
 	private MachineBackendProperties machineBackendProperties;
 
-	// @Override
-	// public Result<String> initMachine(String deviceId, String channelJson) {
-	// Inno72Machine initMachine = findBy("deviceId", deviceId);
-	// if (initMachine != null) {
-	// return Results.success(initMachine.getMachineCode());
-	// }
-	// String machineCode = StringUtil.getMachineCode();
-	// LocalDateTime now = LocalDateTime.now();
-	// Inno72Machine machine = new Inno72Machine();
-	// String machineId = StringUtil.getUUID();
-	// machine.setDeviceId(deviceId);
-	// machine.setId(machineId);
-	// machine.setMachineCode(machineCode);
-	// machine.setMachineStatus(Inno72Machine.Machine_Status.INFACTORY.v());
-	// machine.setUpdateId("machine-backend");
-	// machine.setCreateId("machine-backend");
-	// machine.setCreateTime(now);
-	// machine.setUpdateTime(now);
-	// machine.setNetStatus(0);
-	// int result = inno72MachineMapper.insert(machine);
-	// if (result != 1) {
-	// return Results.failure("生成machineCode失败");
-	// }
-	// List<Inno72SupplyChannel> channels = JSON.parseArray(channelJson,
-	// Inno72SupplyChannel.class);
-	// Result<String> initResult = supplyChannelService.initChannel(machineId,
-	// channels);
-	// if (initResult.getCode() != Result.SUCCESS) {
-	// return initResult;
-	// }
-	// return Results.success(machineCode);
-	// }
-
 	@Override
 	public Result<String> updateNetStatus(String machineCode, Integer netStatus) {
 		Inno72Machine machine = findBy("machineCode", machineCode);
@@ -119,7 +87,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	public Result<List<Inno72Machine>> findMachines(String machineCode, String localCode) {
 		Map<String, Object> param = new HashMap<>();
 		if (StringUtil.isNotEmpty(localCode)) {
-			int num = getlikeCode(localCode);
+			int num = StringUtil.getAreaCodeNum(localCode);
 			if (num < 4) {
 				num = 3;
 			}
@@ -133,14 +101,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		return Results.success(machines);
 	}
 
-	public int getlikeCode(String s) {
-		for (int i = s.length() - 1; i >= 0; i--) {
-			if (!"0".equals(String.valueOf(s.charAt(i)))) {
-				return i + 1;
-			}
-		}
-		return 0;
-	}
 
 	@Override
 	public Result<String> updateLocale(String id, String localeId, String address) {
@@ -177,6 +137,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<String> deleteChannel(List<UpdateMachineChannelVo> channels) {
+		logger.info("停用渠道传入json{}", JSON.toJSONString(channels));
 		SessionData session = CommonConstants.SESSION_DATA;
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
@@ -200,6 +161,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<String> updateGoodsCount(List<UpdateMachineChannelVo> channels) {
+		logger.info("更新商品个数传入json{}", JSON.toJSONString(channels));
 		SessionData session = CommonConstants.SESSION_DATA;
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
@@ -227,7 +189,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			String machineCode = machineNetInfo.getMachineCode();
 			Integer netStatus = machineNetInfo.getNetStatus();
 			Condition condition = new Condition(Inno72Machine.class);
-            condition.createCriteria().andEqualTo("machineCode", machineCode);
+			condition.createCriteria().andEqualTo("machineCode", machineCode);
 			List<Inno72Machine> machine = findByCondition(condition);
 			if (null != machine && machine.size() > 0) {
 				for (Inno72Machine inno72Machine : machine) {
@@ -365,11 +327,11 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	}
 
 	@Override
-    public Result<List<String>> findMachineByMachineStatus(int machineStatus) {
+	public Result<List<String>> findMachineByMachineStatus(int machineStatus) {
 
-        List<String> list = inno72MachineMapper.findMachineByMachineStatus(machineStatus);
+		List<String> list = inno72MachineMapper.findMachineByMachineStatus(machineStatus);
 
-		 return Results.success(list);
+		return Results.success(list);
 	}
 
 	private Result<String> sendMsg(String machineCode, SendMessageBean... beans) {

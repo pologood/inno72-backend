@@ -41,6 +41,7 @@
     left join inno72_check_user_machine t2 on t1.id = t2.machine_id
     left join inno72_check_sign_in t3 on t2.machine_id=t3.machine_id
     and date_format(t3.create_time,'%Y%M%D') = date_format(CURRENT_DATE,'%Y%M%D')
+    and t3.check_user_id=#{checkUserId,jdbcType=VARCHAR}
     LEFT JOIN inno72_locale t4 ON t4.id = t1.locale_id
     LEFT JOIN inno72_admin_area t5 ON t5.CODE = t4.area_code
     where t2.check_user_id = #{checkUserId}

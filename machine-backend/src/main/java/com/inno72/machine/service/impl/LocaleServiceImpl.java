@@ -162,7 +162,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		if (StringUtil.isNotEmpty(code)) {
-			int num = getlikeCode(code);
+			int num = StringUtil.getAreaCodeNum(code);
 			if (num < 4) {
 				num = 3;
 			}
@@ -186,13 +186,5 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		return super.findByCondition(condition);
 	}
 
-	public int getlikeCode(String s) {
-		for (int i = s.length() - 1; i >= 0; i--) {
-			if (!"0".equals(String.valueOf(s.charAt(i)))) {
-				return i + 1;
-			}
-		}
-		return 0;
-	}
 
 }

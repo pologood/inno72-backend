@@ -40,9 +40,11 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
             for(MachineSignInVo vo:list){
                 List<Inno72CheckSignIn> signInList = vo.getSignInList();
                 if(signInList != null && signInList.size()>0){
-                    vo.setSginInStatus(1);
-                    vo.setSignInList(null);
+                    vo.setSignInStatus(1);
+                }else{
+                    vo.setSignInStatus(-1);
                 }
+                vo.setSignInList(null);
             }
         }
 
