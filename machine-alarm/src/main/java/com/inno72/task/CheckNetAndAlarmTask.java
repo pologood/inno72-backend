@@ -61,8 +61,8 @@ public class CheckNetAndAlarmTask {
     @Resource
     private MachineService machineService;
 
-    //@Scheduled(cron = "0 0/1 * * * ?")
-    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
+    //@Scheduled(cron = "0/5 * * * * ?")
     public void checkNetStatus() {
 
         log.info("检查网络状态并预警的定时任务，开始执行");
