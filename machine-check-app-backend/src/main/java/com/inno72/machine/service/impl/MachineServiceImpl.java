@@ -86,14 +86,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
     }
 
     @Override
-    public Result<List<Inno72Locale>> findMallByCode(String areaCode) {
-        List<Inno72Locale> list = inno72LocaleMapper.selectMallByAreaCode(areaCode);
-        return ResultGenerator.genSuccessResult(list);
-    }
-
-    @Override
-    public Result<List<Inno72Locale>> findLocaleByMall(String mall) {
-        List<Inno72Locale> list = inno72LocaleMapper.selectByMall(mall);
+    public Result<List<Inno72Locale>> selectLocaleByAreaCode(String areaCode) {
+        List<Inno72Locale> list = inno72LocaleMapper.selectLocaleByAreaCode(areaCode);
         return ResultGenerator.genSuccessResult(list);
     }
 

@@ -51,6 +51,7 @@ public class MachineController {
      */
     @RequestMapping(value="findAreaByCode")
     public Result<Inno72AdminArea> findAreaByCode(@RequestBody Inno72AdminArea adminArea){
+        logger.info("查询单个一级区域及子区域接口参数：{}",JSON.toJSON(adminArea));
         return machineService.findByFirstLevelCode(adminArea.getCode());
     }
 
@@ -60,24 +61,17 @@ public class MachineController {
      */
     @RequestMapping(value="findFistLevelArea")
     public Result<List<Inno72AdminArea>> findFistLevelArea(){
+        logger.info("查询单个一级区域及子区域接口");
         return machineService.findFistLevelArea();
     }
 
-
     /**
-     * 查询商场
+     * 查询点位
      */
-    @RequestMapping(value="findMallByCode")
-    public Result<List<Inno72Locale>> findMallByCode(@RequestBody Inno72Locale locale){
-        return machineService.findMallByCode(locale.getAreaCode());
-    }
-
-    /**
-     * 查询e
-     */
-    @RequestMapping(value="findLocaleByMall")
-    public Result<List<Inno72Locale>> findLocaleByMall(@RequestBody Inno72Locale locale){
-        return machineService.findLocaleByMall(locale.getMall());
+    @RequestMapping(value="findLocaleByAreaCode")
+    public Result<List<Inno72Locale>> findLocaleByAreaCode(@RequestBody Inno72Locale locale){
+        logger.info("查询点位接口参数：{}",JSON.toJSON(locale));
+        return machineService.selectLocaleByAreaCode(locale.getAreaCode());
     }
 
 
