@@ -119,7 +119,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	public Result<List<Inno72Machine>> findMachines(String machineCode, String localCode) {
 		Map<String, Object> param = new HashMap<>();
 		if (StringUtil.isNotEmpty(localCode)) {
-			int num = getlikeCode(localCode);
+			int num = StringUtil.getAreaCodeNum(localCode);
 			if (num < 4) {
 				num = 3;
 			}
@@ -133,14 +133,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		return Results.success(machines);
 	}
 
-	public int getlikeCode(String s) {
-		for (int i = s.length() - 1; i >= 0; i--) {
-			if (!"0".equals(String.valueOf(s.charAt(i)))) {
-				return i + 1;
-			}
-		}
-		return 0;
-	}
 
 	@Override
 	public Result<String> updateLocale(String id, String localeId, String address) {

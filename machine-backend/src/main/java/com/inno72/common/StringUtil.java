@@ -63,6 +63,15 @@ public class StringUtil {
 		sb.append(_random);
 		return sb.toString();
 	}
+	
+	public static int getAreaCodeNum(String s) {
+		for (int i = s.length() - 1; i >= 0; i--) {
+			if (!"0".equals(String.valueOf(s.charAt(i)))) {
+				return i + 1;
+			}
+		}
+		return 0;
+	}
 
 	/**
 	 * 判断是否为空
