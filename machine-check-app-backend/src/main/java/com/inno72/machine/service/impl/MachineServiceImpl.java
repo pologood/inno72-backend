@@ -81,6 +81,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
                 }else{
                     inno72Machine.setSignInStatus(-1);
                 }
+                inno72Machine.setSignInList(null);
             });
         }
         return ResultGenerator.genSuccessResult(list);
