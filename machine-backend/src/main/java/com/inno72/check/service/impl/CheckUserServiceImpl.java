@@ -1,5 +1,6 @@
 package com.inno72.check.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.check.mapper.Inno72CheckUserMachineMapper;
 import com.inno72.check.mapper.Inno72CheckUserMapper;
 import com.inno72.check.model.Inno72CheckUser;
@@ -55,6 +56,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	public Result<String>  saveModel(Inno72CheckUserVo model) {
 		try {
 			logger.info("----------------巡检人员添加--------------");
+			logger.info("参数:{}",JSON.toJSONString(model));
 			SessionData session = CommonConstants.SESSION_DATA;
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
@@ -140,6 +142,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	public Result<String>  updateModel(Inno72CheckUserVo model) {
 		try {
 			logger.info("----------------巡检人员更新--------------");
+			logger.info("参数:{}",JSON.toJSONString(model));
 			SessionData session = CommonConstants.SESSION_DATA;
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {

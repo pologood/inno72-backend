@@ -1,5 +1,6 @@
 package com.inno72.project.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.common.AbstractService;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.DateUtil;
@@ -19,6 +20,7 @@ import com.inno72.project.model.Inno72ActivityPlanMachine;
 import com.inno72.project.model.Inno72Coupon;
 import com.inno72.project.service.ActivityPlanService;
 import com.inno72.project.vo.*;
+import com.inno72.redis.IRedisUtil;
 import com.inno72.system.model.Inno72User;
 
 import org.slf4j.Logger;
@@ -45,6 +47,8 @@ import javax.annotation.Resource;
 public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan> implements ActivityPlanService {
 	private static Logger logger = LoggerFactory.getLogger(ActivityPlanServiceImpl.class);
 	
+	@Resource
+	private IRedisUtil redisUtil;
     @Resource
     private Inno72ActivityPlanMapper inno72ActivityPlanMapper;
     @Resource
@@ -64,7 +68,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 
 	@Override
 	public Result<String> saveActPlan(Inno72ActivityPlanVo activityPlan) {
-		
+		logger.info("新建计划参数:{}",JSON.toJSONString(activityPlan));
 		SessionData session = CommonConstants.SESSION_DATA;
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
@@ -278,6 +282,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 
 	@Override
 	public Result<String> updateModel(Inno72ActivityPlanVo activityPlan) {
+		logger.info("更新计划参数:{}",JSON.toJSONString(activityPlan));
 		SessionData session = CommonConstants.SESSION_DATA;
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
@@ -440,7 +445,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			if (q >0) {
 				logger.info("游戏结果规则处理完成");
 			}
-			
+			redisUtil.del(CommonConstants.REDIS_ACTIVITY_PLAN_CACHE_KEY+activityPlan.getId());
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 			return Results.failure("操作失败！");	

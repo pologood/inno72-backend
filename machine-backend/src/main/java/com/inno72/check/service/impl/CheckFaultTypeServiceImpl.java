@@ -1,5 +1,6 @@
 package com.inno72.check.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.check.mapper.Inno72CheckFaultTypeMapper;
 import com.inno72.check.model.Inno72CheckFaultType;
 import com.inno72.check.service.CheckFaultTypeService;
@@ -45,6 +46,7 @@ public class CheckFaultTypeServiceImpl extends AbstractService<Inno72CheckFaultT
 	public Result<String> saveModel(Inno72CheckFaultTypeVo model) {
 		
 		logger.info("----------------故障类型添加--------------");
+		logger.info("参数:{}",JSON.toJSONString(model));
 		SessionData session = CommonConstants.SESSION_DATA;
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
@@ -96,6 +98,7 @@ public class CheckFaultTypeServiceImpl extends AbstractService<Inno72CheckFaultT
 	public Result<String> updateModel(Inno72CheckFaultTypeVo model) {
 		
 		logger.info("----------------故障类型编辑--------------");
+		logger.info("参数:{}",JSON.toJSONString(model));
 		SessionData session = CommonConstants.SESSION_DATA;
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
