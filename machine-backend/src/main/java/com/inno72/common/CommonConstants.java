@@ -31,5 +31,7 @@ public class CommonConstants {
 	
 	/** 每次下载条数 **/
 	public final static int ONE_THOUSAND = 10000;
+	
+	public static final String REDIS_ACTIVITY_PLAN_CACHE_KEY = "machine_plan:";
 
 }
