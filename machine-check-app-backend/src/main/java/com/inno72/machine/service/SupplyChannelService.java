@@ -16,8 +16,6 @@ import java.util.Map;
 @SuppressWarnings("rawtypes")
 public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
-	Result<String> init(String machineId, List<Inno72SupplyChannel> channels);
-
 	Result<String> merge(Inno72SupplyChannel supplyChannel);
 
 	Result<String> split(Inno72SupplyChannel supplyChannel);
@@ -26,17 +24,15 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
 	Result<Map<String, Object>> history(Inno72SupplyChannel supplyChannel);
 
-	List<Inno72SupplyChannel> getListForPage(Inno72SupplyChannel supplyChannel);
-
 	List<Inno72SupplyChannel> getList(String machineId);
 
-    List<Inno72Machine> getMachineLackGoods();
+    Result<List<Inno72Machine>> getMachineLackGoods();
 
-	List<Inno72Goods> getGoodsLack();
+	Result<List<Inno72Goods>> getGoodsLack();
 
-	List<Inno72Machine> getMachineByLackGoods(String goodsId);
+	Result<List<Inno72Machine>> getMachineByLackGoods(String goodsId);
 
-	List<Inno72Goods> getGoodsByMachineId(String machineId);
+	Result<List<Inno72Goods>> getGoodsByMachineId(String machineId);
 
     Result<String> clearAll(String machineId);
 
