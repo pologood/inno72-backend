@@ -215,27 +215,28 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("code", code);
 		
-		/*if (StringUtil.isEmpty(code)) {
-			params.put("level", 1);
+		if(StringUtil.isNotBlank(level)){
+			if (level.equals("1")) {
+				params.put("num", 2);
+			}else if (level.equals("2")) {
+				params.put("num", 4);
+			}else if (level.equals("3")) {
+				params.put("num", 6);
+			}else if (level.equals("4")) {
+				params.put("num", 9);
+			}
+			params.put("level", level);
+		}else{
+	   		int num = StringUtil.getAreaCodeNum(code);
+			if (num < 4) 
+				num = 3;
+			String likeCode = code.substring(0, num);
+			params.put("code", likeCode);
+			params.put("num", num);
 	   	}
-		if (level.equals("1")) {
-			params.put("num", 2);
-		}else if (level.equals("2")) {
-			params.put("num", 4);
-		}else if (level.equals("3")) {
-			params.put("num", 6);
-		}else if (level.equals("4")) {
-			params.put("num", 9);
-		}*/
-		int num = StringUtil.getAreaCodeNum(code);
-		if (num < 4) {
-			num = 3;
-		}
-		String likeCode = code.substring(0, num);
-		params.put("code", likeCode);
-		params.put("num", num);
-		List<Inno72AdminAreaVo> list = inno72CheckUserMapper.selectMachineList(params);
-		/*if (level.equals("5")) {
+		
+		List<Inno72AdminAreaVo> list = new ArrayList<>();
+		if (StringUtil.isEmpty(level)) {
 			list = inno72CheckUserMapper.selectMachineList(params);
 		}else{
 			list = inno72CheckUserMapper.selectAreaMachineList(params);
@@ -243,7 +244,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 				List<Inno72MachineVo> machines=inno72AdminAreaVo.getMachines();
 				inno72AdminAreaVo.setTotalNum(machines.size()+"");
 			}
-		}*/
+		}
 		
 	   	return list;
 	}
