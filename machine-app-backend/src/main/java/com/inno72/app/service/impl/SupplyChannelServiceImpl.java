@@ -50,6 +50,13 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				channel.setCreateTime(LocalDateTime.now());
 				channel.setUpdateTime(LocalDateTime.now());
 				channel.setUpdateId("系统");
+				if (Integer.parseInt(channel.getCode()) < 20) {
+					channel.setVolumeCount(11);
+				} else if (Integer.parseInt(channel.getCode()) < 30 && Integer.parseInt(channel.getCode()) > 20) {
+					channel.setVolumeCount(5);
+				} else {
+					channel.setVolumeCount(50);
+				}
 				super.save(channel);
 			}
 		}
