@@ -80,6 +80,17 @@ public class Inno72Machine {
     @Column(name = "bluetooth_address")
     private String bluetoothAddress;
 
+    public String getLocaleStr() {
+        return localeStr;
+    }
+
+    public void setLocaleStr(String localeStr) {
+        this.localeStr = localeStr;
+    }
+
+    private String localeStr;
+
+
     public enum Machine_Status {
         // 开机
         START(1),
@@ -311,5 +322,31 @@ public class Inno72Machine {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    /**
+     * 重写equls方法
+     *
+     * */
+   /* @Override
+    public boolean equals(Object object){
+        if(this == object){
+            return true;
+        }
+
+        if(object == null){
+            return false;
+        }
+
+        if(this.getClass() != object.getClass()){
+            return false;
+        }
+
+        final Inno72Machine inno72Machine = (Inno72Machine) object;
+        if(!this.getMachineCode().equals(inno72Machine.getMachineCode())){
+            return false;
+        }
+        return true;
+    }*/
+
 
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.mapper.Inno72MachineMapper">
+    <resultMap id="BaseResultMap" type="com.inno72.model.Inno72Machine">
+        <!-- WARNING - @mbg.generated -->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="machine_code" jdbcType="VARCHAR" property="machineCode"/>
+        <result column="machine_name" jdbcType="VARCHAR" property="machineName"/>
+        <result column="locale_id" jdbcType="VARCHAR" property="localeId"/>
+        <result column="tag" jdbcType="VARCHAR" property="tag"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="update_id" jdbcType="VARCHAR" property="updateId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="machine_status" jdbcType="INTEGER" property="machineStatus"/>
+        <result column="net_status" jdbcType="INTEGER" property="netStatus"/>
+        <result column="device_id" jdbcType="VARCHAR" property="deviceId"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="bluetooth_address" jdbcType="VARCHAR" property="bluetoothAddress"/>
+
+    </resultMap>
+
+    <select id="findMachineByMachineStatus" parameterType="Integer" resultType="com.inno72.model.Inno72Machine">
+		SELECT
+			m.id as id,m.machine_code as machineCode,m.machine_status as machineStatus,
+			CONCAT(
+			area.province,
+			area.city,
+			area.district,
+		IF ( area.circle = '其他', '', area.circle ),IFNULL( l.mall, "" ),IFNULL( l.NAME, "" ) ) AS localeStr
+		FROM inno72_machine m
+		LEFT JOIN inno72_locale l ON l.id = m.locale_id
+		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
+		WHERE
+			m.machine_status  = #{machineStatus} and m.open_status = 0
+	</select>
+
+</mapper>

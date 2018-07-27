@@ -126,20 +126,6 @@ public class RedisReceiver {
             String channelNum = machineDropGoods.getChannelNum();
             String describtion = machineDropGoods.getDescribtion();
             log.info("to dropGoods msg，machineCode：{}，channelNum：{}，describtion：{}", machineCode, channelNum, describtion);
-            //根据机器编码查询点位接口
-            List<MachineLocaleInfo> machineLocaleInfos = new ArrayList<>();
-            MachineLocaleInfo machineLocale = new MachineLocaleInfo();
-            machineLocale.setMachineCode(machineCode);
-            machineLocaleInfos.add(machineLocale);
-            String machineLocaleInfoString = JSONObject.toJSON(machineLocaleInfos).toString();
-            String url = machineAlarmProperties.getProps().get("findLocalByMachineCode");
-            String returnMsg = HttpClient.post(url, machineLocaleInfoString);
-            JSONObject jsonObject1 = JSONObject.parseObject(returnMsg);
-            List<MachineLocaleInfo> MachineLocaleInfos = JSON.parseArray(jsonObject1.getString("data"), MachineLocaleInfo.class);
-            String localStr = "";
-            for (MachineLocaleInfo machineLocaleInfo : MachineLocaleInfos) {
-                localStr = machineLocaleInfo.getLocaleStr();
-            }
             //保存消息次数等信息
             Query query = new Query();
             query.addCriteria(Criteria.where("machineCode").is(machineCode));
@@ -147,6 +133,21 @@ public class RedisReceiver {
             List<DropGoodsExceptionInfo> dropGoodsExceptionInfoList = mongoTpl.find(query, DropGoodsExceptionInfo.class, "DropGoodsExceptionInfo");
             log.info("当前数据库查询数据，dropGoodsExceptionInfoList：{}", dropGoodsExceptionInfoList.toString());
             if (dropGoodsExceptionInfoList.size() > 0) {
+                //根据机器编码查询点位接口
+                List<MachineLocaleInfo> machineLocaleInfos = new ArrayList<>();
+                MachineLocaleInfo machineLocale = new MachineLocaleInfo();
+                machineLocale.setMachineCode(machineCode);
+                machineLocaleInfos.add(machineLocale);
+                String machineLocaleInfoString = JSONObject.toJSON(machineLocaleInfos).toString();
+                String url = machineAlarmProperties.getProps().get("findLocalByMachineCode");
+                String returnMsg = HttpClient.post(url, machineLocaleInfoString);
+                JSONObject jsonObject1 = JSONObject.parseObject(returnMsg);
+                List<MachineLocaleInfo> MachineLocaleInfos = JSON.parseArray(jsonObject1.getString("data"), MachineLocaleInfo.class);
+                String localStr = "";
+                for (MachineLocaleInfo machineLocaleInfo : MachineLocaleInfos) {
+                    localStr = machineLocaleInfo.getLocaleStr();
+                }
+
                 for (DropGoodsExceptionInfo dropGoodsExceptionInfo : dropGoodsExceptionInfoList) {
                     Integer updateNum = dropGoodsExceptionInfo.getErrorNum() + 1;
                     log.info("save to mongo machineCode : {},num：{}", dropGoodsExceptionInfo.getMachineCode(), updateNum);
