@@ -34,7 +34,7 @@ public class ProcessDataFilter extends OncePerRequestFilter {
 			logger.info("请求{}接口返回值为{}", request.getRequestURI(), returnData);
 			String msg = AesUtils.encrypt(returnData);
 			response.setContentType("text/html; charset=utf-8");
-			response.getOutputStream().write(msg.getBytes());
+			response.getWriter().print(msg);
 		} else {
 			super.doFilter(request, response, filterChain);
 		}

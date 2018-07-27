@@ -19,6 +19,8 @@
 		<result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
 		<association property="supplyChannelVoList" resultMap="supplyChannelVoList"/>
 		<association property="checkUserVoList" resultMap="checkUserVoList"/>
+		<association property="faultVoList" resultMap="faultVoList"/>
+		<association property="signInList" resultMap="signInList"/>
 	</resultMap>
 
 	<resultMap id="supplyChannelVoList" type="com.inno72.machine.vo.SupplyChannelVo">
@@ -35,6 +37,18 @@
 		<result column="checkUserId" jdbcType="VARCHAR" property="id"/>
 		<result column="checkUserName" jdbcType="VARCHAR" property="name"/>
 		<result column="checkUserPhone" jdbcType="VARCHAR" property="phone"/>
+	</resultMap>
+
+	<resultMap id="faultVoList" type="com.inno72.check.vo.FaultVo">
+		<result column="faultId" jdbcType="VARCHAR" property="id"/>
+		<result column="faultCode" jdbcType="VARCHAR" property="code"/>
+		<result column="faultStatus" jdbcType="INTEGER" property="status"/>
+		<result column="faultType" jdbcType="VARCHAR" property="type"/>
+	</resultMap>
+
+	<resultMap id="signInList" type="com.inno72.check.model.Inno72CheckSignIn">
+		<result column="signInId" jdbcType="VARCHAR" property="id"/>
+		<result column="cTime" jdbcType="TIMESTAMP" property="createTime"/>
 	</resultMap>
 
 	<select id="getMachine" resultMap="BaseResultMap">
@@ -82,9 +96,27 @@
 	</select>
 
 	<select id="machineList" resultMap="BaseResultMap">
-		select t1.*
+		select t1.*,
+		t3.code faultCode,
+		t3.id faultId,
+		t3.status faultStatus,
+		t3.type faultType,
+		CONCAT(
+		t5.province,
+		t5.city,
+		t5.district,
+		if(t5.circle='其他','',t5.circle),IFNULL(t4.mall,""),IFNULL( t4.name,'')
+		) AS localeStr,
+		t6.id signInId,
+		t6.create_time cTime
 		from inno72_machine t1
 		left join inno72_check_user_machine t2 on t1.id=t2.machine_id
+		left join inno72_check_fault t3 on t1.id=t3.machine_id and t3.status=0
+		LEFT JOIN inno72_locale t4 ON t4.id = t1.locale_id
+		LEFT JOIN inno72_admin_area t5 ON t5.CODE = t4.area_code
+		left join inno72_check_sign_in t6 on t2.machine_id=t6.machine_id
+    	and date_format(t6.create_time,'%Y%M%D') = date_format(CURRENT_DATE,'%Y%M%D')
+    	and t6.check_user_id=#{checkUserId,jdbcType=VARCHAR}
 		where t2.check_user_id=#{checkUserId,jdbcType=VARCHAR}
 	</select>
 

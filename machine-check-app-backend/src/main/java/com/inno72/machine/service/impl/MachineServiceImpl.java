@@ -1,8 +1,10 @@
 package com.inno72.machine.service.impl;
 
 import com.inno72.check.mapper.Inno72CheckUserMachineMapper;
+import com.inno72.check.model.Inno72CheckSignIn;
 import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.check.model.Inno72CheckUserMachine;
+import com.inno72.check.vo.FaultVo;
 import com.inno72.common.*;
 import com.inno72.machine.mapper.Inno72AdminAreaMapper;
 import com.inno72.machine.mapper.Inno72LocaleMapper;
@@ -64,6 +66,24 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
     public Result<List<Inno72Machine>> getMachineList() {
         String chekUserId = UserUtil.getUser().getId();
         List<Inno72Machine> list = inno72MachineMapper.machineList(chekUserId);
+        if(list != null && list.size()>0){
+            list.forEach(inno72Machine -> {
+                List<FaultVo> faultVoList = inno72Machine.getFaultVoList();
+                if(faultVoList != null && faultVoList.size()>0){
+                    inno72Machine.setFaultStatus(-1);
+                }else{
+                    inno72Machine.setFaultStatus(1);
+                }
+                inno72Machine.setFaultVoList(null);
+                List<Inno72CheckSignIn> signInList = inno72Machine.getSignInList();
+                if(signInList != null && signInList.size()>0){
+                    inno72Machine.setSignInStatus(1);
+                }else{
+                    inno72Machine.setSignInStatus(-1);
+                }
+                inno72Machine.setSignInList(null);
+            });
+        }
         return ResultGenerator.genSuccessResult(list);
     }
 
@@ -86,14 +106,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
     }
 
     @Override
-    public Result<List<Inno72Locale>> findMallByCode(String areaCode) {
-        List<Inno72Locale> list = inno72LocaleMapper.selectMallByAreaCode(areaCode);
-        return ResultGenerator.genSuccessResult(list);
-    }
-
-    @Override
-    public Result<List<Inno72Locale>> findLocaleByMall(String mall) {
-        List<Inno72Locale> list = inno72LocaleMapper.selectByMall(mall);
+    public Result<List<Inno72Locale>> selectLocaleByAreaCode(String areaCode) {
+        List<Inno72Locale> list = inno72LocaleMapper.selectLocaleByAreaCode(areaCode);
         return ResultGenerator.genSuccessResult(list);
     }
 

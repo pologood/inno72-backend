@@ -157,6 +157,7 @@
 		 	#{taskTime} > ap.end_time or #{taskTime} < ap.start_time
 		 ]]>
 		 )
+		 and m.machine_status = 4
   </select>
 
   <select id="selectPlanIsState" parameterType="String" resultType="int">

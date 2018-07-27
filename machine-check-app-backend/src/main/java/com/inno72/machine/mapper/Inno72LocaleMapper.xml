@@ -18,12 +18,9 @@
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
- <select id="selectMallByAreaCode" resultMap="BaseResultMap">
-     select mall,area_code from inno72_locale  where area_code=#{areaCode} group by mall
- </select>
 
-    <select id="selectByMall" resultMap="BaseResultMap">
-        select * from inno72_locale  where mall = #{mall}
+    <select id="selectLocaleByAreaCode" resultMap="BaseResultMap">
+        select * from inno72_locale  where area_code = #{areaCode}
     </select>
 
 </mapper>

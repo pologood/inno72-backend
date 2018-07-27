@@ -1,7 +1,9 @@
 package com.inno72.machine.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.check.model.Inno72CheckSignIn;
 import com.inno72.check.vo.CheckUserVo;
+import com.inno72.check.vo.FaultVo;
 import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 import com.inno72.machine.vo.SupplyChannelVo;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
@@ -102,9 +104,22 @@ public class Inno72Machine {
 	private String localeStr;
 
 	@Transient
+	private Integer faultStatus;
+
+	@Transient
+	private int signInStatus;
+
+	@Transient
 	private List<SupplyChannelVo> supplyChannelVoList;
 
+	@Transient
 	private List<CheckUserVo> checkUserVoList;
+
+	@Transient
+	private List<FaultVo> faultVoList;
+
+	@Transient
+	private List<Inno72CheckSignIn> signInList;
 
 	public enum Machine_Status {
 		// 在厂测试
@@ -384,5 +399,37 @@ public class Inno72Machine {
 
 	public void setCheckUserVoList(List<CheckUserVo> checkUserVoList) {
 		this.checkUserVoList = checkUserVoList;
+	}
+
+	public List<FaultVo> getFaultVoList() {
+		return faultVoList;
+	}
+
+	public void setFaultVoList(List<FaultVo> faultVoList) {
+		this.faultVoList = faultVoList;
+	}
+
+	public Integer getFaultStatus() {
+		return faultStatus;
+	}
+
+	public void setFaultStatus(Integer faultStatus) {
+		this.faultStatus = faultStatus;
+	}
+
+	public List<Inno72CheckSignIn> getSignInList() {
+		return signInList;
+	}
+
+	public void setSignInList(List<Inno72CheckSignIn> signInList) {
+		this.signInList = signInList;
+	}
+
+	public int getSignInStatus() {
+		return signInStatus;
+	}
+
+	public void setSignInStatus(int signInStatus) {
+		this.signInStatus = signInStatus;
 	}
 }

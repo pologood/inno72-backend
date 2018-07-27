@@ -287,8 +287,12 @@ public class RedisReceiver {
                     String phone = inno72CheckUserPhone1.getPhone();
                     msgUtil.sendSMS(code, params, phone, "machineAlarm-CheckNetAndAlarmTask");
                 }
-                String code = "push_alarm_common";
-                msgUtil.sendPush(code, params, channelGoodsAlarmBean.getMachineCode(), "machineAlarm-CheckNetAndAlarmTask", "【缺货】您负责的机器需要补货", "");
+                for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                    String phone = inno72CheckUserPhone1.getPhone();
+                    String code = "push_alarm_common";
+                    msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【缺货】您负责的机器需要补货", "");
+                }
+
             } else {
                 //组合报警接口
                 Map<String, String> params = new HashMap<>();
@@ -308,8 +312,11 @@ public class RedisReceiver {
                     String phone = inno72CheckUserPhone1.getPhone();
                     msgUtil.sendSMS(code, params, phone, "machineAlarm-CheckNetAndAlarmTask");
                 }
-                String code = "push_alarm_common";
-                msgUtil.sendPush(code, params, channelGoodsAlarmBean.getMachineCode(), "machineAlarm-CheckNetAndAlarmTask", "【缺货】您负责的机器需要补货", "");
+                for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                    String phone = inno72CheckUserPhone1.getPhone();
+                    String code = "push_alarm_common";
+                    msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【缺货】您负责的机器需要补货", "");
+                }
             }
             //保存接口
             Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
