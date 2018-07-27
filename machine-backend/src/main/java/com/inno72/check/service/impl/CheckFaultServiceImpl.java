@@ -92,7 +92,11 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 	
 	@Override
 	public Inno72CheckFaultVo selectFaultDetail(String id) {
-		return inno72CheckFaultMapper.selectFaultDetail(id);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", id);
+		params.put("path", CommonConstants.ALI_OSS);
+		
+		return inno72CheckFaultMapper.selectFaultDetail(params);
 	}
 
 

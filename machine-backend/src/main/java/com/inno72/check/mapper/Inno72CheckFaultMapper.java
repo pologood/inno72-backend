@@ -13,6 +13,6 @@ public interface Inno72CheckFaultMapper extends Mapper<Inno72CheckFault> {
 	
 	List<Inno72CheckFault> selectByPage(Map<String, Object> params);
 	
-	Inno72CheckFaultVo selectFaultDetail(String id);
+	Inno72CheckFaultVo selectFaultDetail(Map<String, Object> params);
 
 }

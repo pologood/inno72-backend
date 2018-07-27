@@ -56,7 +56,7 @@
  	<resultMap id="answerResult" type="String">
   		<result column="answer" property="answer" />
  	</resultMap>
-  <select id="selectFaultDetail" parameterType="String" resultMap="ResultFaultDetailMap">
+  <select id="selectFaultDetail" parameterType="java.util.Map" resultMap="ResultFaultDetailMap">
   
  		SELECT f.id,
  		m.machine_code AS machine_id,
@@ -65,7 +65,7 @@
  		submit_time,
  		finish_time,
 		fr.remark AS answer,
-		img.image AS image
+		CONCAT(#{path},img.image) AS image
  		 from inno72_check_fault f
 		LEFT JOIN inno72_machine m ON m.id = f.machine_id
 		LEFT JOIN inno72_check_fault_remark fr ON fr.fault_id = f.id

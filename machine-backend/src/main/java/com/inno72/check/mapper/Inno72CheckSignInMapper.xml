@@ -30,7 +30,7 @@
 			u.enterprise,
 			m.machine_code,
 			sin.create_time,
-			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL( l.name,""), '—', m.machine_code ) AS localeName
+			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL( l.name,"")) AS localeName
 		FROM
 			inno72_check_sign_in sin
 			LEFT JOIN inno72_check_user u ON u.id = sin.check_user_id
