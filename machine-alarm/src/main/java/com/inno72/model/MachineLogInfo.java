@@ -26,7 +26,6 @@ public class MachineLogInfo {
     public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
-
     public String getMachineId() {
         return machineId;
     }
@@ -34,6 +33,31 @@ public class MachineLogInfo {
     public void setMachineId(String machineId) {
         this.machineId = machineId;
     }
+    /**
+     *
+     *重写equls方法
+     * */
+    /*@Override
+    public boolean equals(Object object){
+        if(this == object){
+            return true;
+        }
+
+        if(object == null){
+            return false;
+        }
+
+        if(this.getClass() != object.getClass()){
+            return false;
+        }
+
+        final MachineLogInfo machineLogInfo = (MachineLogInfo) object;
+        if(this.getMachineId().equals(machineLogInfo.getMachineId())){
+            return true;
+        }
+
+        return false;
+    }*/
 
 }
 
