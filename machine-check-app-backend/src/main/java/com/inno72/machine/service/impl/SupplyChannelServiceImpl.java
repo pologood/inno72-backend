@@ -403,6 +403,23 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 
     @Override
     public Result<String> submit(List<Map<String,Object>> mapList) {
+//        StringBuffer ids = new StringBuffer();
+//        mapList.forEach(map -> {
+//            String id = map.get("id").toString();
+//            ids.append(id);
+//            ids.append(",");
+//        });
+//        String supplyChannelIds = ids.substring(0,ids.length()-1);
+//        List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectByIds(supplyChannelIds);
+//        if(supplyChannelList != null && supplyChannelList.size()>0){
+//            supplyChannelList.forEach(supplyChannel -> {
+//                String supplyId = supplyChannel.getId();
+//                mapList.forEach(map -> {
+//
+//                });
+//
+//            });
+//        }
         LocalDateTime now = LocalDateTime.now();
         if(mapList != null && mapList.size()>0){
             String batchNo = StringUtil.getUUID();

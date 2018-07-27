@@ -29,7 +29,7 @@ public class MachineSignInVo {
     private String localeStr;
 
     @Transient
-    private int sginInStatus;
+    private int signInStatus;
 
     private List<Inno72CheckSignIn> signInList;
 
@@ -65,12 +65,12 @@ public class MachineSignInVo {
         this.localeStr = localeStr;
     }
 
-    public int getSginInStatus() {
-        return sginInStatus;
+    public int getSignInStatus() {
+        return signInStatus;
     }
 
-    public void setSginInStatus(int sginInStatus) {
-        this.sginInStatus = sginInStatus;
+    public void setSignInStatus(int signInStatus) {
+        this.signInStatus = signInStatus;
     }
 
     public List<Inno72CheckSignIn> getSignInList() {
