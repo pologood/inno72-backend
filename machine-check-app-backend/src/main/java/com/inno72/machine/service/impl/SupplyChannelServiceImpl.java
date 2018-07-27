@@ -70,6 +70,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
             return ResultGenerator.genFailResult("参数有误");
         }
         Integer codeInt = Integer.parseInt(code);
+        if(codeInt>20){
+            return Results.failure("货道编号小于20才能合并");
+        }
         Map<String, Object> map = new HashMap<>();
         map.put("machineId", machineId);
         Integer[] codes = new Integer[2];
@@ -130,8 +133,14 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
             inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
             Inno72SupplyChannel childChannel = new Inno72SupplyChannel();
             childChannel.setId(StringUtil.getUUID());
-            childChannel.setVolumeCount(199);
             Integer codeInt = Integer.parseInt(code)+1;
+            int volumeCount = 50;
+            if(codeInt<=20){
+                volumeCount = 11;
+            }else if(codeInt>20 && codeInt<=30){
+                volumeCount = 5;
+            }
+            childChannel.setVolumeCount(volumeCount);
             childChannel.setCode(codeInt.toString());
             childChannel.setCreateTime(LocalDateTime.now());
             childChannel.setCreateId("系统");
