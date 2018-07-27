@@ -101,9 +101,9 @@
 				SELECT m.machine_code,	m.id, locale.area_code FROM inno72_machine m
 				LEFT JOIN inno72_locale locale ON locale.id = m.locale_id WHERE m.machine_status ='4'
 			) m ON LEFT ( m.area_code,#{num}) = LEFT ( a.CODE,#{num})
-		WHERE
-		<if test="code !=null and code !='' ">a.parent_code = #{code}  </if>
-		<if test="level !=null and level !='' ">a.LEVEL = #{level}  </if>
+		WHERE 1=1
+		<if test="code !=null and code !='' ">and a.parent_code = #{code}  </if>
+		<if test="level !=null and level !='' ">and a.LEVEL = #{level}  </if>
   </select>
   <select id="selectMachineList" parameterType="java.util.Map" resultMap="ResultAreaMachineMap">
   		SELECT

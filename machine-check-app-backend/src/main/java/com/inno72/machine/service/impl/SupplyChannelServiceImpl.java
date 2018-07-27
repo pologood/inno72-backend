@@ -62,31 +62,6 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     private IRedisUtil redisUtil;
 
 
-
-    @Override
-    public Result<String> init(String machineId, List<Inno72SupplyChannel> channels) {
-        if (channels == null) {
-            return Results.failure("货道信息错误");
-        }
-        Condition condition = new Condition(Inno72SupplyChannel.class);
-        condition.createCriteria().andEqualTo("machineId", machineId);
-        List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectByCondition(condition);
-        if (supplyChannelList != null) {
-            for (Inno72SupplyChannel channel : channels) {
-                channel.setMachineId(machineId);
-                channel.setId(StringUtil.getUUID());
-                channel.setName("货道" + channel.getCode());
-                channel.setGoodsCount(0);
-                channel.setCreateId("系统");
-                channel.setCreateTime(LocalDateTime.now());
-                channel.setUpdateTime(LocalDateTime.now());
-                channel.setUpdateId("系统");
-                super.save(channel);
-            }
-        }
-        return Results.success();
-    }
-
     @Override
     public Result<String> merge(Inno72SupplyChannel supplyChannel) {
         String code = supplyChannel.getCode();
@@ -230,12 +205,10 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     }
 
     @Override
-    public List<Inno72SupplyChannel> getListForPage(Inno72SupplyChannel supplyChannel) {
-        return inno72SupplyChannelMapper.selectListForPage(supplyChannel);
-    }
-
-    @Override
     public List<Inno72SupplyChannel> getList(String machineId) {
+        if(StringUtil.isEmpty(machineId)){
+            return null;
+        }
         Condition condition = new Condition(Inno72SupplyChannel.class);
         condition.createCriteria().andEqualTo("machineId",machineId).andEqualTo("status",0);
         condition.orderBy("code");
@@ -246,7 +219,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     }
 
     @Override
-    public List<Inno72Machine> getMachineLackGoods() {
+    public Result<List<Inno72Machine>> getMachineLackGoods() {
         Inno72CheckUser checkUser = UserUtil.getUser();
         String checkUserId = checkUser.getId();
         List<Inno72Machine> machineList = inno72MachineMapper.getMachine(checkUserId);
@@ -268,11 +241,11 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 machine.setSupplyChannelVoList(null);
             }
         }
-        return machineList;
+        return ResultGenerator.genSuccessResult(machineList);
     }
 
     @Override
-    public List<Inno72Goods> getGoodsLack() {
+    public Result<List<Inno72Goods>> getGoodsLack() {
         Inno72CheckUser checkUser = UserUtil.getUser();
         String checkUserId = checkUser.getId();
         List<Inno72Goods> inno72GoodsList = inno72GoodsMapper.getLackGoods(checkUserId);
@@ -298,11 +271,14 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 }
             }
         }
-        return resultList;
+        return ResultGenerator.genSuccessResult(resultList);
     }
 
     @Override
-    public List<Inno72Machine> getMachineByLackGoods(String goodsId) {
+    public Result<List<Inno72Machine>> getMachineByLackGoods(String goodsId) {
+        if(StringUtil.isEmpty(goodsId)){
+            return Results.failure("参数不能为空");
+        }
         Inno72CheckUser checkUser = UserUtil.getUser();
         String checkUserId = checkUser.getId();
         List<Inno72Machine> machineList = inno72MachineMapper.getMachineByLackGoods(checkUserId,goodsId);
@@ -326,17 +302,23 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 
             }
         }
-        return resultList;
+        return ResultGenerator.genSuccessResult(resultList);
     }
 
     @Override
-    public List<Inno72Goods> getGoodsByMachineId(String machineId) {
-
-        return inno72GoodsMapper.selectByMachineId(machineId);
+    public Result<List<Inno72Goods>> getGoodsByMachineId(String machineId) {
+        if(StringUtil.isEmpty(machineId)){
+            return Results.failure("参数不能为空");
+        }
+        List<Inno72Goods> list = inno72GoodsMapper.selectByMachineId(machineId);
+        return ResultGenerator.genSuccessResult(list);
     }
 
     @Override
     public Result<String> clearAll(String machineId) {
+        if(StringUtil.isEmpty(machineId)){
+            return Results.failure("参数不能为空");
+        }
         Condition condition = new Condition(Inno72SupplyChannel.class);
         condition.createCriteria().andEqualTo("machineId",machineId);
         List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectByCondition(condition);
@@ -356,6 +338,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 
     @Override
     public Result<String> supplyAll(String machineId) {
+        if(StringUtil.isEmpty(machineId)){
+            return Results.failure("参数不能为空");
+        }
         Map<String,Object> map = new HashMap<>();
         map.put("machineId",machineId);
         map.put("status",0);
@@ -389,52 +374,54 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 
     @Override
     public Result<String> submit(List<Map<String,Object>> mapList) {
-//        StringBuffer ids = new StringBuffer();
-//        mapList.forEach(map -> {
-//            String id = map.get("id").toString();
-//            ids.append(id);
-//            ids.append(",");
-//        });
-//        String supplyChannelIds = ids.substring(0,ids.length()-1);
-//        List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectByIds(supplyChannelIds);
-//        if(supplyChannelList != null && supplyChannelList.size()>0){
-//            supplyChannelList.forEach(supplyChannel -> {
-//                String supplyId = supplyChannel.getId();
-//                mapList.forEach(map -> {
-//
-//                });
-//
-//            });
-//        }
-        LocalDateTime now = LocalDateTime.now();
-        if(mapList != null && mapList.size()>0){
+        if(mapList == null || mapList.size()==0){
+            return Results.failure("参数不能为空");
+        }
+        StringBuffer ids = new StringBuffer();
+        mapList.forEach(map -> {
+            String id = map.get("id").toString();
+            ids.append("\"");
+            ids.append(id);
+            ids.append("\"");
+            ids.append(",");
+        });
+        String supplyChannelIds = ids.substring(0,ids.length()-1);
+        List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectByIds(supplyChannelIds);
+        if(supplyChannelList != null && supplyChannelList.size()>0){
             String batchNo = StringUtil.getUUID();
-            mapList.forEach(map -> {
-                Inno72SupplyChannel supplyChannel = new Inno72SupplyChannel();
-                supplyChannel.setId(map.get("id").toString());
-                supplyChannel.setGoodsId(map.get("goodsId").toString());
-                supplyChannel.setGoodsCount(Integer.parseInt(map.get("goodsCount").toString()));
-                Inno72SupplyChannel oldSupply = inno72SupplyChannelMapper.selectByPrimaryKey(supplyChannel.getId());
-                supplyChannel.setUpdateTime(LocalDateTime.now());
-                inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
-                Inno72SupplyChannelGoods goods = new Inno72SupplyChannelGoods();
-                goods.setGoodsId(supplyChannel.getGoodsId());
-                goods.setId(StringUtil.getUUID());
-                goods.setSupplyChannelId(supplyChannel.getId());
-                Condition condition = new Condition(Inno72SupplyChannelGoods.class);
-                condition.createCriteria().andEqualTo("supplyChannelId", supplyChannel.getId());
-                inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
-                inno72SupplyChannelGoodsMapper.insertSelective(goods);
-                Inno72SupplyChannelHistory history = new Inno72SupplyChannelHistory();
-                history.setId(StringUtil.getUUID());
-                history.setBeforeCount(oldSupply.getGoodsCount());
-                history.setAfterCount(supplyChannel.getGoodsCount());
-                history.setBatchNo(batchNo);
-                history.setSupplyChannelId(supplyChannel.getId());
-                history.setMachineId(oldSupply.getMachineId());
-                history.setUserId(UserUtil.getUser().getId());
-                history.setCreateTime(now);
-                inno72SupplyChannelHistoryMapper.insertSelective(history);
+            supplyChannelList.forEach(supplyChannel -> {
+                String supplyChannelId = supplyChannel.getId();
+                mapList.forEach(map -> {
+                    String id = map.get("id").toString();
+                    LocalDateTime now = LocalDateTime.now();
+                    if(id.equals(supplyChannelId)){
+                        int beforeGoodsCount = supplyChannel.getGoodsCount();
+                        int afterGoodsCount = Integer.parseInt(map.get("goodsCount").toString());
+                        supplyChannel.setUpdateTime(now);
+                        supplyChannel.setGoodsId(map.get("goodsId").toString());
+                        supplyChannel.setGoodsCount(afterGoodsCount);
+                        inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
+                        Inno72SupplyChannelGoods goods = new Inno72SupplyChannelGoods();
+                        goods.setGoodsId(supplyChannel.getGoodsId());
+                        goods.setId(StringUtil.getUUID());
+                        goods.setSupplyChannelId(supplyChannelId);
+                        Condition condition = new Condition(Inno72SupplyChannelGoods.class);
+                        condition.createCriteria().andEqualTo("supplyChannelId", supplyChannel.getId());
+                        inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
+                        inno72SupplyChannelGoodsMapper.insertSelective(goods);
+                        Inno72SupplyChannelHistory history = new Inno72SupplyChannelHistory();
+                        history.setId(StringUtil.getUUID());
+                        history.setBeforeCount(beforeGoodsCount);
+                        history.setAfterCount(afterGoodsCount);
+                        history.setBatchNo(batchNo);
+                        history.setSupplyChannelId(supplyChannelId);
+                        history.setMachineId(supplyChannel.getMachineId());
+                        history.setUserId(UserUtil.getUser().getId());
+                        history.setCreateTime(now);
+                        inno72SupplyChannelHistoryMapper.insertSelective(history);
+                    }
+                });
+
             });
         }
         return ResultGenerator.genSuccessResult();
@@ -458,6 +445,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 
     @Override
     public Result<WorkOrderVo> workOrderDetail(String machineId, String batchNo) {
+        if(StringUtil.isEmpty(machineId) || StringUtil.isEmpty(batchNo)){
+            return Results.failure("参数不能为空");
+        }
         Inno72CheckUser checkUser = UserUtil.getUser();
         String checkUserId = checkUser.getId();
         Map<String,Object> map = new HashMap<>();
@@ -487,7 +477,6 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
             for(Inno72SupplyChannel supplyChannel:list){
                 String id = supplyChannel.getId();
                 String key = "LACK_GOODS_TYPE_"+lackGoodsType+"_"+id;
-//                redisUtil.del(key);
                 String value = redisUtil.get(key);
                 if(StringUtil.isEmpty(value)){
                     ChannelGoodsAlarmBean alarmBean = new ChannelGoodsAlarmBean();
