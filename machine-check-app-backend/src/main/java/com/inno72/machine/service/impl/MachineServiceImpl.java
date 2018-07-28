@@ -39,7 +39,10 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
     @Override
     public Result<String> setMachine(String machineId, String localeId) {
         Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
-        if(machine!= null && machine.getMachineStatus().equals(3)){
+        if(machine == null){
+            return Results.failure("机器不存在");
+        }
+        if(machine.getMachineStatus().equals(3)){
             Inno72CheckUser checkUser = UserUtil.getUser();
             machine.setLocaleId(localeId);
             machine.setMachineStatus(4);
@@ -56,6 +59,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
                 userMachine.setMachineId(machineId);
                 inno72CheckUserMachineMapper.insertSelective(userMachine);
             }
+        }else if(machine.getMachineStatus().equals(4)){
+            return ResultGenerator.genSuccessResult();
         }else{
             return Results.failure("机器状态有误");
         }
