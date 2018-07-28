@@ -262,57 +262,31 @@ public class RedisReceiver {
             }
             log.info("lackGoods msg，localStr：{}", localStr);
             //调用报警接口
-            //缺货20%或者缺货10%
-            if (CommonConstants.LACKGOODS_TENPERCENT == channelGoodsAlarmBean.getLackGoodsType()) {
-                //组合报警接口
-                Map<String, String> params = new HashMap<>();
-                params.put("machineCode", channelGoodsAlarmBean.getMachineCode());
-                params.put("localStr", localStr);
-                params.put("text", "缺货10%，请及时处理。");
-                //查询巡检人员手机号
-                Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
-                inno72CheckUserPhone.setMachineCode(channelGoodsAlarmBean.getMachineCode());
-                String inno72CheckUserPhoneInfo = JSONObject.toJSON(inno72CheckUserPhone).toString();
-                String url1 = machineAlarmProperties.getProps().get("selectPhoneByMachineCode");
-                String res = HttpClient.post(url1, inno72CheckUserPhoneInfo);
-                JSONObject jsonObject2 = JSONObject.parseObject(res);
-                List<Inno72CheckUserPhone> inno72CheckUserPhones = JSON.parseArray(jsonObject2.getString("data"), Inno72CheckUserPhone.class);
-                for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-                    String code = "sms_alarm_common";
-                    String phone = inno72CheckUserPhone1.getPhone();
-                    msgUtil.sendSMS(code, params, phone, "machineAlarm-CheckNetAndAlarmTask");
-                }
-                for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-                    String phone = inno72CheckUserPhone1.getPhone();
-                    String code = "push_alarm_common";
-                    msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【缺货】您负责的机器需要补货", "");
-                }
-
-            } else {
-                //组合报警接口
-                Map<String, String> params = new HashMap<>();
-                params.put("machineCode", channelGoodsAlarmBean.getMachineCode());
-                params.put("localStr", localStr);
-                params.put("text", "缺货20%，请及时处理。");
-                //查询巡检人员手机号
-                Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
-                inno72CheckUserPhone.setMachineCode(channelGoodsAlarmBean.getMachineCode());
-                String inno72CheckUserPhoneInfo = JSONObject.toJSON(inno72CheckUserPhone).toString();
-                String url1 = machineAlarmProperties.getProps().get("selectPhoneByMachineCode");
-                String res = HttpClient.post(url1, inno72CheckUserPhoneInfo);
-                JSONObject jsonObject2 = JSONObject.parseObject(res);
-                List<Inno72CheckUserPhone> inno72CheckUserPhones = JSON.parseArray(jsonObject2.getString("data"), Inno72CheckUserPhone.class);
-                for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-                    String code = "sms_alarm_common";
-                    String phone = inno72CheckUserPhone1.getPhone();
-                    msgUtil.sendSMS(code, params, phone, "machineAlarm-CheckNetAndAlarmTask");
-                }
-                for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-                    String phone = inno72CheckUserPhone1.getPhone();
-                    String code = "push_alarm_common";
-                    msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【缺货】您负责的机器需要补货", "");
-                }
+            //缺货个数
+            //组合报警接口
+            Map<String, String> params = new HashMap<>();
+            params.put("machineCode", channelGoodsAlarmBean.getMachineCode());
+            params.put("localStr", localStr);
+            params.put("text", "缺货" + channelGoodsAlarmBean.getLackNum() + "个，请及时处理。");
+            //查询巡检人员手机号
+            Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
+            inno72CheckUserPhone.setMachineCode(channelGoodsAlarmBean.getMachineCode());
+            String inno72CheckUserPhoneInfo = JSONObject.toJSON(inno72CheckUserPhone).toString();
+            String url1 = machineAlarmProperties.getProps().get("selectPhoneByMachineCode");
+            String res = HttpClient.post(url1, inno72CheckUserPhoneInfo);
+            JSONObject jsonObject2 = JSONObject.parseObject(res);
+            List<Inno72CheckUserPhone> inno72CheckUserPhones = JSON.parseArray(jsonObject2.getString("data"), Inno72CheckUserPhone.class);
+            for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                String code = "sms_alarm_common";
+                String phone = inno72CheckUserPhone1.getPhone();
+                msgUtil.sendSMS(code, params, phone, "machineAlarm-CheckNetAndAlarmTask");
             }
+            for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                String phone = inno72CheckUserPhone1.getPhone();
+                String code = "push_alarm_common";
+                msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【缺货】您负责的机器需要补货", "");
+            }
+
             //保存接口
             Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
             if ((CommonConstants.MACHINE_LACKGOODS_EXCEPTION).equals(type)) {
