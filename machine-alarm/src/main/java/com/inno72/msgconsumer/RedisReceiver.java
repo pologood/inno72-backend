@@ -10,6 +10,7 @@ import com.inno72.model.*;
 import com.inno72.msg.MsgUtil;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.service.AlarmMsgService;
+import com.inno72.service.LocaleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,9 @@ public class RedisReceiver {
     @Autowired
     private MachineAlarmProperties machineAlarmProperties;
 
+    @Resource
+    private LocaleService localeService;
+
     @Value("${inno72.dingding.groupId}")
     private String groupId;
 
@@ -73,16 +77,12 @@ public class RedisReceiver {
             MachineLocaleInfo machineLocaleInfo = new MachineLocaleInfo();
             machineLocaleInfo.setMachineCode(machineId);
             machineLocaleInfos.add(machineLocaleInfo);
-            String machineLocaleInfoString = JSONObject.toJSON(machineLocaleInfos).toString();
-            String url = machineAlarmProperties.getProps().get("findLocalByMachineCode");
-            String returnMsg = HttpClient.post(url, machineLocaleInfoString);
-            JSONObject jsonObject1 = JSONObject.parseObject(returnMsg);
-            List<MachineLocaleInfo> MachineLocaleInfos = JSON.parseArray(jsonObject1.getString("data"), MachineLocaleInfo.class);
-
+            List<MachineLocaleInfo> machineLocaleInfoList = localeService.selectLocaleByMachineCode(machineLocaleInfos);
             String localStr = "";
-            for (MachineLocaleInfo machineLocale : MachineLocaleInfos) {
+            for (MachineLocaleInfo machineLocale : machineLocaleInfoList) {
                 localStr = machineLocale.getLocaleStr();
             }
+            log.info("machineChannel msg，localStr:{}", localStr);
             //调用接口查询故障信息
             List<GoodsChannelBean> goodsChannelBean = JSON.parseArray(goodsChannelStatus, GoodsChannelBean.class);
             String machineNetInfoString = JSONObject.toJSON(goodsChannelBean).toString();
@@ -138,16 +138,13 @@ public class RedisReceiver {
                 MachineLocaleInfo machineLocale = new MachineLocaleInfo();
                 machineLocale.setMachineCode(machineCode);
                 machineLocaleInfos.add(machineLocale);
-                String machineLocaleInfoString = JSONObject.toJSON(machineLocaleInfos).toString();
-                String url = machineAlarmProperties.getProps().get("findLocalByMachineCode");
-                String returnMsg = HttpClient.post(url, machineLocaleInfoString);
-                JSONObject jsonObject1 = JSONObject.parseObject(returnMsg);
-                List<MachineLocaleInfo> MachineLocaleInfos = JSON.parseArray(jsonObject1.getString("data"), MachineLocaleInfo.class);
+                List<MachineLocaleInfo> machineLocaleInfoList = localeService.selectLocaleByMachineCode(machineLocaleInfos);
                 String localStr = "";
-                for (MachineLocaleInfo machineLocaleInfo : MachineLocaleInfos) {
+                for (MachineLocaleInfo machineLocaleInfo : machineLocaleInfoList) {
                     localStr = machineLocaleInfo.getLocaleStr();
                 }
-
+                log.info("dropGoods msg，localStr：{}", localStr);
+                //循环
                 for (DropGoodsExceptionInfo dropGoodsExceptionInfo : dropGoodsExceptionInfoList) {
                     Integer updateNum = dropGoodsExceptionInfo.getErrorNum() + 1;
                     log.info("save to mongo machineCode : {},num：{}", dropGoodsExceptionInfo.getMachineCode(), updateNum);
@@ -258,67 +255,38 @@ public class RedisReceiver {
             MachineLocaleInfo machineLocale = new MachineLocaleInfo();
             machineLocale.setMachineCode(channelGoodsAlarmBean.getMachineCode());
             machineLocaleInfos.add(machineLocale);
-            String machineLocaleInfoString = JSONObject.toJSON(machineLocaleInfos).toString();
-            String url = machineAlarmProperties.getProps().get("findLocalByMachineCode");
-            String returnMsg = HttpClient.post(url, machineLocaleInfoString);
-            JSONObject jsonObject1 = JSONObject.parseObject(returnMsg);
-            List<MachineLocaleInfo> MachineLocaleInfos = JSON.parseArray(jsonObject1.getString("data"), MachineLocaleInfo.class);
+            List<MachineLocaleInfo> machineLocaleInfoList = localeService.selectLocaleByMachineCode(machineLocaleInfos);
             String localStr = "";
-            for (MachineLocaleInfo machineLocaleInfo : MachineLocaleInfos) {
+            for (MachineLocaleInfo machineLocaleInfo : machineLocaleInfoList) {
                 localStr = machineLocaleInfo.getLocaleStr();
             }
+            log.info("lackGoods msg，localStr：{}", localStr);
             //调用报警接口
-            //缺货20%或者缺货10%
-            if (CommonConstants.LACKGOODS_TENPERCENT == channelGoodsAlarmBean.getLackGoodsType()) {
-                //组合报警接口
-                Map<String, String> params = new HashMap<>();
-                params.put("machineCode", channelGoodsAlarmBean.getMachineCode());
-                params.put("localStr", localStr);
-                params.put("text", "缺货10%，请及时处理。");
-                //查询巡检人员手机号
-                Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
-                inno72CheckUserPhone.setMachineCode(channelGoodsAlarmBean.getMachineCode());
-                String inno72CheckUserPhoneInfo = JSONObject.toJSON(inno72CheckUserPhone).toString();
-                String url1 = machineAlarmProperties.getProps().get("selectPhoneByMachineCode");
-                String res = HttpClient.post(url1, inno72CheckUserPhoneInfo);
-                JSONObject jsonObject2 = JSONObject.parseObject(res);
-                List<Inno72CheckUserPhone> inno72CheckUserPhones = JSON.parseArray(jsonObject2.getString("data"), Inno72CheckUserPhone.class);
-                for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-                    String code = "sms_alarm_common";
-                    String phone = inno72CheckUserPhone1.getPhone();
-                    msgUtil.sendSMS(code, params, phone, "machineAlarm-CheckNetAndAlarmTask");
-                }
-                for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-                    String phone = inno72CheckUserPhone1.getPhone();
-                    String code = "push_alarm_common";
-                    msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【缺货】您负责的机器需要补货", "");
-                }
-
-            } else {
-                //组合报警接口
-                Map<String, String> params = new HashMap<>();
-                params.put("machineCode", channelGoodsAlarmBean.getMachineCode());
-                params.put("localStr", localStr);
-                params.put("text", "缺货20%，请及时处理。");
-                //查询巡检人员手机号
-                Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
-                inno72CheckUserPhone.setMachineCode(channelGoodsAlarmBean.getMachineCode());
-                String inno72CheckUserPhoneInfo = JSONObject.toJSON(inno72CheckUserPhone).toString();
-                String url1 = machineAlarmProperties.getProps().get("selectPhoneByMachineCode");
-                String res = HttpClient.post(url1, inno72CheckUserPhoneInfo);
-                JSONObject jsonObject2 = JSONObject.parseObject(res);
-                List<Inno72CheckUserPhone> inno72CheckUserPhones = JSON.parseArray(jsonObject2.getString("data"), Inno72CheckUserPhone.class);
-                for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-                    String code = "sms_alarm_common";
-                    String phone = inno72CheckUserPhone1.getPhone();
-                    msgUtil.sendSMS(code, params, phone, "machineAlarm-CheckNetAndAlarmTask");
-                }
-                for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-                    String phone = inno72CheckUserPhone1.getPhone();
-                    String code = "push_alarm_common";
-                    msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【缺货】您负责的机器需要补货", "");
-                }
+            //缺货个数
+            //组合报警接口
+            Map<String, String> params = new HashMap<>();
+            params.put("machineCode", channelGoodsAlarmBean.getMachineCode());
+            params.put("localStr", localStr);
+            params.put("text", "缺货" + channelGoodsAlarmBean.getLackNum() + "个，请及时处理。");
+            //查询巡检人员手机号
+            Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
+            inno72CheckUserPhone.setMachineCode(channelGoodsAlarmBean.getMachineCode());
+            String inno72CheckUserPhoneInfo = JSONObject.toJSON(inno72CheckUserPhone).toString();
+            String url1 = machineAlarmProperties.getProps().get("selectPhoneByMachineCode");
+            String res = HttpClient.post(url1, inno72CheckUserPhoneInfo);
+            JSONObject jsonObject2 = JSONObject.parseObject(res);
+            List<Inno72CheckUserPhone> inno72CheckUserPhones = JSON.parseArray(jsonObject2.getString("data"), Inno72CheckUserPhone.class);
+            for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                String code = "sms_alarm_common";
+                String phone = inno72CheckUserPhone1.getPhone();
+                msgUtil.sendSMS(code, params, phone, "machineAlarm-CheckNetAndAlarmTask");
             }
+            for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                String phone = inno72CheckUserPhone1.getPhone();
+                String code = "push_alarm_common";
+                msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【缺货】您负责的机器需要补货", "");
+            }
+
             //保存接口
             Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
             if ((CommonConstants.MACHINE_LACKGOODS_EXCEPTION).equals(type)) {
