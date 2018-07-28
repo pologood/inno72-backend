@@ -119,6 +119,12 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		Inno72Machine machine = findBy("machineCode", machineCode);
 		if (machine == null) {
 			return Results.failure("machineCode传入错误");
+
+		}
+		// 客户端会重复传入是3的状态值
+		if (status == Inno72Machine.Machine_Status.PASSTEST.v()
+				&& machine.getMachineStatus() != Inno72Machine.Machine_Status.PASSTEST.v()) {
+			return Results.success();
 		}
 		if (status == Inno72Machine.Machine_Status.PASSTEST.v()
 				&& machine.getMachineStatus() != Inno72Machine.Machine_Status.INIT.v()) {
