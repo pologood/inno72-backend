@@ -493,6 +493,10 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                     alarmBean.setGoodsName(supplyChannel.getGoodsName());
                     alarmBean.setLackGoodsType(lackGoodsType);
                     alarmBean.setMachineCode(supplyChannel.getMachineCode());
+                    int volumeCount = supplyChannel.getVolumeCount();
+                    int goodsCount = supplyChannel.getGoodsCount();
+                    alarmBean.setSurPlusNum(goodsCount);
+                    alarmBean.setLackNum(volumeCount-goodsCount);
                     alarmMessageBean.setData(alarmBean);
                     logger.info("货道缺货发送push{}",JSONObject.toJSONString(alarmMessageBean));
                     redisUtil.publish("moniterAlarm",JSONObject.toJSONString(alarmMessageBean));
