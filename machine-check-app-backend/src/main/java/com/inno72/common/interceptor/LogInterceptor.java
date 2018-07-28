@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.SessionData;
+import com.inno72.common.StringUtil;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.utils.page.Pagination;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -37,7 +38,10 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 			throws Exception {
 
 		// 检查POST方法，token，url权限, 启用后删除检查参数中的token
-		 checkAuthority(request,response);
+		 boolean flag = checkAuthority(request,response);
+		 if(!flag){
+		     return false;
+         }
 		@SuppressWarnings("rawtypes")
 		Enumeration enumeration = request.getParameterNames();
 		StringBuffer parm = new StringBuffer();
@@ -163,7 +167,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 			if (!match) {
 				// lf-None-Matoh 传入token
 				String token = request.getHeader("lf-None-Matoh");
-				if (token == null) {
+				if (StringUtil.isEmpty(token)) {
 					Result<String> result = new Result<>();
 					result.setCode(999);
 					result.setMsg("你未登录，请登录");
