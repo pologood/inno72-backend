@@ -11,6 +11,7 @@ import com.inno72.msg.MsgUtil;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.service.AlarmMsgService;
 import com.inno72.service.LocaleService;
+import com.inno72.service.SupplyChannelStatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,9 @@ public class RedisReceiver {
     @Resource
     private LocaleService localeService;
 
+    @Resource
+    private SupplyChannelStatusService supplyChannelStatusService;
+
     @Value("${inno72.dingding.groupId}")
     private String groupId;
 
@@ -83,14 +87,9 @@ public class RedisReceiver {
                 localStr = machineLocale.getLocaleStr();
             }
             log.info("machineChannel msg，localStr:{}", localStr);
-            //调用接口查询故障信息
+            //查询故障信息
             List<GoodsChannelBean> goodsChannelBean = JSON.parseArray(goodsChannelStatus, GoodsChannelBean.class);
-            String machineNetInfoString = JSONObject.toJSON(goodsChannelBean).toString();
-            String urlProp = machineAlarmProperties.getProps().get("findChannelError");
-            String result = HttpClient.post(urlProp, machineNetInfoString);
-            JSONObject json = JSONObject.parseObject(result);
-            List<GoodsChannelBean> goodsChannelBeans = JSON.parseArray(json.getString("data"), GoodsChannelBean.class);
-
+            List<GoodsChannelBean> goodsChannelBeans = supplyChannelStatusService.getChannelErrorDetail(goodsChannelBean);
             //获取货道号与故障描述
             for (GoodsChannelBean goodsChannel : goodsChannelBeans) {
                 int channelNum = goodsChannel.getGoodsChannelNum();
