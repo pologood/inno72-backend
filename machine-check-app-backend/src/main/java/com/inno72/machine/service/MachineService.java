@@ -14,7 +14,7 @@ public interface MachineService extends Service<Inno72Machine> {
 
     Result<List<Inno72Machine>> getMachineList();
 
-    Result<List<Inno72AdminArea>> findFistLevelArea();
+    Result<List<Inno72AdminArea>> findFirstLevelArea();
 
     Result<Inno72AdminArea> findByFirstLevelCode(String code);
 

@@ -59,10 +59,10 @@ public class MachineController {
     /**
      * 查询一级区域
      */
-    @RequestMapping(value="findFistLevelArea")
-    public Result<List<Inno72AdminArea>> findFistLevelArea(){
+    @RequestMapping(value="findFirstLevelArea")
+    public Result<List<Inno72AdminArea>> findFirstLevelArea(){
         logger.info("查询单个一级区域及子区域接口");
-        return machineService.findFistLevelArea();
+        return machineService.findFirstLevelArea();
     }
 
     /**

@@ -91,7 +91,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
      * 查询一级地址
      */
     @Override
-    public Result<List<Inno72AdminArea>> findFistLevelArea() {
+    public Result<List<Inno72AdminArea>> findFirstLevelArea() {
         List<Inno72AdminArea> list = inno72AdminAreaMapper.selectFistLevelArea();
         return ResultGenerator.genSuccessResult(list);
     }
