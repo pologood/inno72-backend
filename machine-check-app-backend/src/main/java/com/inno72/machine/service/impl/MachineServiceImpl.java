@@ -60,7 +60,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
                 inno72CheckUserMachineMapper.insertSelective(userMachine);
             }
         }else if(machine.getMachineStatus().equals(4)){
-            return ResultGenerator.genSuccessResult();
+            return Results.failure("请勿重复设置点位");
         }else{
             return Results.failure("机器状态有误");
         }
