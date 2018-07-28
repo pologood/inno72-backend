@@ -133,5 +133,18 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         return ResultGenerator.genSuccessResult(inno72CheckUser);
     }
 
+    @Override
+    public Result<String> logout() {
+        Inno72CheckUser user = UserUtil.getUser();
+        String userTokenKey = CommonConstants.USER_LOGIN_TOKEN_CACHE_KEY_PREF + user.getId();
+        // 获取用户之前登录的token
+        String oldToken = redisUtil.get(userTokenKey);
+        // 清除之前的登录信息
+        if (StringUtil.isNotBlank(oldToken)) {
+            redisUtil.del(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + oldToken);
+        }
+        return ResultGenerator.genSuccessResult();
+    }
+
 
 }
