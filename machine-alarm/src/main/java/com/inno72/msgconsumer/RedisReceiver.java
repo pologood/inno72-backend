@@ -182,6 +182,7 @@ public class RedisReceiver {
                         inno72AlarmMsg.setSystem(system);
                         inno72AlarmMsg.setMachineCode(machineCode);
                         inno72AlarmMsg.setId(StringUtil.getUUID());
+                        inno72AlarmMsg.setDetail(machineCode + "," + "出现掉货异常，请及时处理");
                         alarmMsgService.save(inno72AlarmMsg);
 
                     } else if (updateNum == 5) {
@@ -189,7 +190,7 @@ public class RedisReceiver {
                         Map<String, String> params = new HashMap<>();
                         params.put("machineCode", machineCode);
                         params.put("localStr", localStr);
-                        params.put("text", channelNum + describtion + "出现掉货异常，请及时处理");
+                        params.put("text", channelNum + "," + describtion + "出现掉货异常，请及时处理");
                         //查询巡检人员手机号
                         Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
                         inno72CheckUserPhone.setMachineCode(machineCode);
@@ -219,6 +220,7 @@ public class RedisReceiver {
                         inno72AlarmMsg.setSystem(system);
                         inno72AlarmMsg.setMachineCode(machineCode);
                         inno72AlarmMsg.setId(StringUtil.getUUID());
+                        inno72AlarmMsg.setDetail(machineCode + "," + channelNum + "," + describtion + "出现掉货异常，请及时处理");
                         alarmMsgService.save(inno72AlarmMsg);
 
                     } else if (updateNum > 5 && (updateNum - 5) % 2 == 0) {
@@ -296,6 +298,7 @@ public class RedisReceiver {
             inno72AlarmMsg.setMachineCode(channelGoodsAlarmBean.getMachineCode());
             inno72AlarmMsg.setCreateTime(LocalDateTime.now());
             inno72AlarmMsg.setSystem(system);
+            inno72AlarmMsg.setDetail(channelGoodsAlarmBean.getMachineCode() + "," + "缺货" + channelGoodsAlarmBean.getLackNum() + "个，请及时处理");
             inno72AlarmMsg.setId(StringUtil.getUUID());
             alarmMsgService.save(inno72AlarmMsg);
 
