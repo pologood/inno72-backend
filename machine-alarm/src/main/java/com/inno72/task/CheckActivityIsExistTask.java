@@ -8,6 +8,7 @@ import com.inno72.common.Result;
 import com.inno72.model.MachineLocaleInfo;
 import com.inno72.msg.MsgUtil;
 import com.inno72.plugin.http.HttpClient;
+import com.inno72.service.ActivityPlanService;
 import com.inno72.service.LocaleService;
 import com.inno72.vo.Inno72NoPlanInfoVo;
 import org.slf4j.Logger;
@@ -51,19 +52,18 @@ public class CheckActivityIsExistTask {
     @Resource
     private LocaleService localeService;
 
+    @Resource
+    private ActivityPlanService activityPlanService;
+
     @Scheduled(cron = "0 0 10 * * ?")
-    // @Scheduled(cron = "0/5 * * * * ?")
+    //@Scheduled(cron = "0/5 * * * * ?")
     public void checkActivityIsExist() {
 
         log.info("检查机器上是否有活动排期的定时任务，开始执行");
 
         String nowTime = DateUtil.toTimeStr(LocalDateTime.now(), DF_FULL_S1);
         //查询无活动机器列表
-        String urlProp = machineAlarmProperties.getProps().get("noPlanMachine");
-        String url = MessageFormat.format(urlProp, nowTime);
-        String noPlanInfoVos = HttpClient.post(url, "");
-        JSONObject jsonObject = JSONObject.parseObject(noPlanInfoVos);
-        List<Inno72NoPlanInfoVo> noPlanInfoVoList = JSON.parseArray(jsonObject.getString("data"), Inno72NoPlanInfoVo.class);
+        List<Inno72NoPlanInfoVo> noPlanInfoVoList = activityPlanService.selectNoPlanMachineList(nowTime);
         log.info("检查机器上是否有活动排期的定时任务，查询后list：{}", noPlanInfoVoList.toString());
         //调用发送短信接口
         if (null != noPlanInfoVoList && noPlanInfoVoList.size() > 0) {
