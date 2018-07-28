@@ -18,4 +18,6 @@ public interface CheckUserService extends Service<Inno72CheckUser> {
     Result<String> upload(MultipartFile file);
 
     Result<Inno72CheckUser> updateUser(Inno72CheckUser inno72CheckUser);
+
+    Result<String> logout();
 }

@@ -95,4 +95,10 @@ public class CheckUserController {
         }
         return ResultGenerator.genSuccessResult(result);
     }
+
+    @RequestMapping(value = "logout")
+    public Result<String> logout(){
+        Result<String> result = checkUserService.logout();
+        return result;
+    }
 }
