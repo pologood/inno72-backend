@@ -404,20 +404,31 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                     String id = map.get("id").toString();
                     LocalDateTime now = LocalDateTime.now();
                     if(id.equals(supplyChannelId)){
+                        Object goodsCount = map.get("goodsCount");
+                        int afterGoodsCount = 0;
+                        if(goodsCount != null){
+                            afterGoodsCount = Integer.parseInt(map.get("goodsCount").toString());
+                        }
                         int beforeGoodsCount = supplyChannel.getGoodsCount();
-                        int afterGoodsCount = Integer.parseInt(map.get("goodsCount").toString());
                         supplyChannel.setUpdateTime(now);
-                        supplyChannel.setGoodsId(map.get("goodsId").toString());
+                        Object goodsId = map.get("goodsId");
+                        String goodsIdStr = "";
+                        if(goodsId != null){
+                            goodsIdStr = map.get("goodsId").toString();
+                        }
+                        supplyChannel.setGoodsId(goodsIdStr);
                         supplyChannel.setGoodsCount(afterGoodsCount);
                         inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
-                        Inno72SupplyChannelGoods goods = new Inno72SupplyChannelGoods();
-                        goods.setGoodsId(supplyChannel.getGoodsId());
-                        goods.setId(StringUtil.getUUID());
-                        goods.setSupplyChannelId(supplyChannelId);
                         Condition condition = new Condition(Inno72SupplyChannelGoods.class);
                         condition.createCriteria().andEqualTo("supplyChannelId", supplyChannel.getId());
                         inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
-                        inno72SupplyChannelGoodsMapper.insertSelective(goods);
+                        Inno72SupplyChannelGoods goods = new Inno72SupplyChannelGoods();
+                        if(StringUtil.isNotEmpty(goodsIdStr)){
+                            goods.setGoodsId(supplyChannel.getGoodsId());
+                            goods.setId(StringUtil.getUUID());
+                            goods.setSupplyChannelId(supplyChannelId);
+                            inno72SupplyChannelGoodsMapper.insertSelective(goods);
+                        }
                         Inno72SupplyChannelHistory history = new Inno72SupplyChannelHistory();
                         history.setId(StringUtil.getUUID());
                         history.setBeforeCount(beforeGoodsCount);

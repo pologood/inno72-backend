@@ -13,6 +13,7 @@ import com.inno72.machine.model.Inno72AdminArea;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
+import com.inno72.machine.vo.SupplyRequestVo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
@@ -37,9 +38,19 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
     @Resource
     private Inno72LocaleMapper inno72LocaleMapper;
     @Override
-    public Result<String> setMachine(String machineId, String localeId) {
-        Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
-        if(machine!= null && machine.getMachineStatus().equals(3)){
+    public Result<String> setMachine(SupplyRequestVo vo) {
+        String localeId = vo.getLocaleId();
+        String machineCode = vo.getMachineCode();
+        if(StringUtil.isEmpty(localeId) || StringUtil.isEmpty(machineCode)){
+            return Results.failure("参数不能为空");
+        }
+        Inno72Machine machine = inno72MachineMapper.getMachineByCode(machineCode);
+        if(machine == null){
+            return Results.failure("机器不存在");
+        }
+        String machineId = machine.getId();
+        Integer machineStatus = machine.getMachineStatus();
+        if(machineStatus.equals(3) || machineStatus.equals(4)){
             Inno72CheckUser checkUser = UserUtil.getUser();
             machine.setLocaleId(localeId);
             machine.setMachineStatus(4);
@@ -91,7 +102,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
      * 查询一级地址
      */
     @Override
-    public Result<List<Inno72AdminArea>> findFistLevelArea() {
+    public Result<List<Inno72AdminArea>> findFirstLevelArea() {
         List<Inno72AdminArea> list = inno72AdminAreaMapper.selectFistLevelArea();
         return ResultGenerator.genSuccessResult(list);
     }

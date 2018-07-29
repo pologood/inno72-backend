@@ -29,7 +29,7 @@ public class MachineController {
     @RequestMapping(value="set" ,method = {RequestMethod.POST,RequestMethod.GET})
     public Result<String> setMachine(@RequestBody SupplyRequestVo vo){
         logger.info("设置机器点位及管理人接口参数：{}",JSON.toJSON(vo));
-        Result<String> result = machineService.setMachine(vo.getMachineId(),vo.getLocaleId());
+        Result<String> result = machineService.setMachine(vo);
         logger.info("设置机器点位及管理人接口结果：{}",JSON.toJSON(result));
         return result;
     }
@@ -59,10 +59,10 @@ public class MachineController {
     /**
      * 查询一级区域
      */
-    @RequestMapping(value="findFistLevelArea")
-    public Result<List<Inno72AdminArea>> findFistLevelArea(){
+    @RequestMapping(value="findFirstLevelArea")
+    public Result<List<Inno72AdminArea>> findFirstLevelArea(){
         logger.info("查询单个一级区域及子区域接口");
-        return machineService.findFistLevelArea();
+        return machineService.findFirstLevelArea();
     }
 
     /**

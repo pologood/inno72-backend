@@ -145,4 +145,9 @@
 
 		</if>
 	</select>
+	<select id="getMachineByCode" resultMap="BaseResultMap">
+		select * from inno72_machine
+		where machine_code=#{machineCode}
+		limit 1
+	</select>
 </mapper>

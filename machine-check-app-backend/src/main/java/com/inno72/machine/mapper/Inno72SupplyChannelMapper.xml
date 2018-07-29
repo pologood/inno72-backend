@@ -242,11 +242,12 @@
     left join inno72_check_user t5 on t5.id=t4.check_user_id
     left join inno72_machine t6 on t1.machine_id=t6.id
     where
+    t6.machine_status=4 and t6.open_status=0
      <if test="lackGoodsType==1">
-       (t1.goods_count/t1.volume_count) <![CDATA[ <= ]]> 0.1
+       and (t1.goods_count/t1.volume_count) <![CDATA[ <= ]]> 0.1
      </if>
     <if test="lackGoodsType==2">
-      (t1.goods_count/t1.volume_count) <![CDATA[ <= ]]> 0.2
+      and (t1.goods_count/t1.volume_count) <![CDATA[ <= ]]> 0.2
     </if>
   </select>
 </mapper>

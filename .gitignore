@@ -11,6 +11,8 @@
 /machine-backend/machine-backend.iml
 /machine-check-app-backend/logs/
 /machine-monitor-backend/machine-monitor-backend.iml
-
-
+/machine-alarm/machine-alarm.iml
+/machine-app-backend/machine-app-backend.iml
+/machine-check-app-backend/machine-check-app-backend.iml
+/zuul/zuul.iml
 

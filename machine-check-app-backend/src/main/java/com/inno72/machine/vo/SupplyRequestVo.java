@@ -16,6 +16,8 @@ public class SupplyRequestVo {
 
     private int lackGoodsType;
 
+    private String machineCode;
+
     public String getMachineId() {
         return machineId;
     }
@@ -70,5 +72,13 @@ public class SupplyRequestVo {
 
     public void setLackGoodsType(int lackGoodsType) {
         this.lackGoodsType = lackGoodsType;
+    }
+
+    public String getMachineCode() {
+        return machineCode;
+    }
+
+    public void setMachineCode(String machineCode) {
+        this.machineCode = machineCode;
     }
 }
