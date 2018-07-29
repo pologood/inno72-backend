@@ -49,7 +49,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
             return Results.failure("机器不存在");
         }
         String machineId = machine.getId();
-        if(machine.getMachineStatus().equals(3)){
+        Integer machineStatus = machine.getMachineStatus();
+        if(machineStatus.equals(3) || machineStatus.equals(4)){
             Inno72CheckUser checkUser = UserUtil.getUser();
             machine.setLocaleId(localeId);
             machine.setMachineStatus(4);
@@ -66,8 +67,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
                 userMachine.setMachineId(machineId);
                 inno72CheckUserMachineMapper.insertSelective(userMachine);
             }
-        }else if(machine.getMachineStatus().equals(4)){
-            return Results.failure("请勿重复设置点位");
         }else{
             return Results.failure("机器状态有误");
         }
