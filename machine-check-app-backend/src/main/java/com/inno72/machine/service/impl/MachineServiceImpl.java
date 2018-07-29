@@ -13,6 +13,7 @@ import com.inno72.machine.model.Inno72AdminArea;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
+import com.inno72.machine.vo.SupplyRequestVo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
@@ -37,11 +38,17 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
     @Resource
     private Inno72LocaleMapper inno72LocaleMapper;
     @Override
-    public Result<String> setMachine(String machineId, String localeId) {
-        Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+    public Result<String> setMachine(SupplyRequestVo vo) {
+        String localeId = vo.getLocaleId();
+        String machineCode = vo.getMachineCode();
+        if(StringUtil.isEmpty(localeId) || StringUtil.isEmpty(machineCode)){
+            return Results.failure("参数不能为空");
+        }
+        Inno72Machine machine = inno72MachineMapper.getMachineByCode(machineCode);
         if(machine == null){
             return Results.failure("机器不存在");
         }
+        String machineId = machine.getId();
         if(machine.getMachineStatus().equals(3)){
             Inno72CheckUser checkUser = UserUtil.getUser();
             machine.setLocaleId(localeId);

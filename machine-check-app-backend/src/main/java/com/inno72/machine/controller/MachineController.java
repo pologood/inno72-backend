@@ -29,7 +29,7 @@ public class MachineController {
     @RequestMapping(value="set" ,method = {RequestMethod.POST,RequestMethod.GET})
     public Result<String> setMachine(@RequestBody SupplyRequestVo vo){
         logger.info("设置机器点位及管理人接口参数：{}",JSON.toJSON(vo));
-        Result<String> result = machineService.setMachine(vo.getMachineId(),vo.getLocaleId());
+        Result<String> result = machineService.setMachine(vo);
         logger.info("设置机器点位及管理人接口结果：{}",JSON.toJSON(result));
         return result;
     }
