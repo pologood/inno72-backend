@@ -80,6 +80,16 @@ public class Inno72Machine {
     @Column(name = "bluetooth_address")
     private String bluetoothAddress;
 
+    private int openStatus;
+
+    public int getOpenStatus() {
+        return openStatus;
+    }
+
+    public void setOpenStatus(int openStatus) {
+        this.openStatus = openStatus;
+    }
+
     public String getLocaleStr() {
         return localeStr;
     }

@@ -12,4 +12,8 @@ import java.util.List;
 public interface MachineService extends Service<Inno72Machine> {
 
     Result<List<Inno72Machine>> findMachineByMachineStatus(int id);
+
+    Result<Inno72Machine> findMachineByMachineCode(String machineCode);
+
+
 }

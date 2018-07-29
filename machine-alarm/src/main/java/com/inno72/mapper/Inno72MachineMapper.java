@@ -10,5 +10,7 @@ public interface Inno72MachineMapper extends Mapper<Inno72Machine> {
 
     List<Inno72Machine> findMachineByMachineStatus(int machineStatus);
 
+    Inno72Machine findMachineByMachineCode(String machineCode);
+
 
 }

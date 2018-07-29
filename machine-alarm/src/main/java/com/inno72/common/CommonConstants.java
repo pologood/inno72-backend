@@ -28,6 +28,9 @@ public class CommonConstants {
     //机器状态是正常的
     public final static int MACHINESTATUS_NUMAUL = 4;
 
+    //报警开关是开着
+    public final static int OPENSTATUS_OPEN = 0;
+
 
 
 }
