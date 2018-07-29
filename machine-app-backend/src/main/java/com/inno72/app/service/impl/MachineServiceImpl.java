@@ -134,6 +134,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 				&& machine.getMachineStatus() != Inno72Machine.Machine_Status.PASSTEST.v()) {
 			return Results.failure("status传入错误");
 		}*/
+		
 		machine.setUpdateId("updateMachineStatus");
 		machine.setUpdateTime(LocalDateTime.now());
 		machine.setMachineStatus(status);
