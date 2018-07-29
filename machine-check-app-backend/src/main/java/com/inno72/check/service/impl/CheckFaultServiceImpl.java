@@ -73,6 +73,9 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
             queryMap.put("machineIds",machineIds);
             List<Inno72Machine>machines = inno72MachineMapper.selectByParam(queryMap);
             Inno72CheckFaultType checkFaultType = inno72CheckFaultTypeMapper.selectByPrimaryKey(checkFault.getType());
+            if(checkFaultType == null){
+                return Results.failure("故障类型有误");
+            }
             if(machines != null && machines.size()>0){
                 String title = "您负责的机器出现故障";
                 String remark = checkFault.getRemark();
