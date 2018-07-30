@@ -1,6 +1,7 @@
 package com.inno72.common.filter;
 
 import com.inno72.common.AesUtils;
+import com.inno72.common.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -16,15 +17,9 @@ import java.util.List;
 public class ProcessDataFilter extends OncePerRequestFilter {
 	private Logger logger = LoggerFactory.getLogger(ProcessDataFilter.class);
 	private static List<String> doNotCheckUs = Arrays
-			.asList("/check/user/smsCode","/check/user/login", "/check/user/upload",
-					"/check/user/encrypt","/check/user/decrypt",
-					"/check/fault/add","/check/fault/finish","/check/fault/list",
-					"/check/fault/upload","/check/fault/edit","/check/fault/detail","/check/fault/typeList",
-					"/machine/machine/set","/machine/machine/list","/machine/machine/findAreaByCode",
-					"/machine/machine/findFirstLevelArea","/machine/machine/findLocaleByAreaCode",
-                    "/machine/channel/list","/machine/channel/merge","/machine/channel/split",
-                    "/machine/channel/machineLack","/machine/channel/goodsLack","/machine/channel/machineByLackGoods",
-                    "/machine/channel/getGoodsByMachineId","/machine/channel/submit","/machine/channel/findAndPushByTaskParam"
+			.asList("/check/user/upload","/check/user/encrypt","/check/user/decrypt",
+					"/check/fault/upload","/machine/channel/merge","/machine/channel/split",
+                    "/machine/channel/findAndPushByTaskParam"
 					);
 
 	@Override
@@ -32,7 +27,7 @@ public class ProcessDataFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		String url = request.getServletPath();
 		boolean match = doNotCheckUs.parallelStream().anyMatch(url::contains);
-		if (!match && !url.equals("/")) {
+		if (!match && !url.equals("/") && !url.contains("/h5")) {
 			CustomerHttpServletRequestWrapper req = new CustomerHttpServletRequestWrapper(request);
 			CustomerServletResponseWrapper resp = new CustomerServletResponseWrapper(response);
 			super.doFilter(req, resp, filterChain);
