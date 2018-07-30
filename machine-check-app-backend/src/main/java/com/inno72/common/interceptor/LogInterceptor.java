@@ -33,8 +33,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
             "/machine/channel/findAndPushByTaskParam");
 
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-			throws Exception {
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
 		// 检查POST方法，token，url权限, 启用后删除检查参数中的token
 		 boolean flag = checkAuthority(request,response);
@@ -43,7 +42,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
          }
 		@SuppressWarnings("rawtypes")
 		Enumeration enumeration = request.getParameterNames();
-		StringBuffer parm = new StringBuffer();
+		StringBuilder parm = new StringBuilder();
 
 		// 移除分页对象
 		Pagination.threadLocal.remove();
@@ -65,14 +64,14 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 						Pagination pagination = new Pagination();
 						int pageNo = 1;
 						try {
-							if (attrStr.indexOf("_") != -1) {
+							if (attrStr.contains("_")) {
 								pageNo = Integer.parseInt(attrStr.split("_")[0]);
 								pagination.setPageSize(Integer.parseInt(attrStr.split("_")[1]));
 							} else {
 								pageNo = Integer.parseInt(attrStr);
 							}
 							pagination.setPageNo(pageNo);
-						} catch (Exception e) {
+						} catch (Exception ignored) {
 						}
 						pagination.setPageNo(pageNo);
 						Pagination.threadLocal.set(pagination);
@@ -88,13 +87,13 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-			ModelAndView modelAndView) throws Exception {
+			ModelAndView modelAndView) {
 
 		// 获取controller返回值
 
 		if (modelAndView != null) {
 			Map<String, Object> model = modelAndView.getModel();
-			Map<String, Object> newModel = new HashMap<String, Object>();
+			Map<String, Object> newModel = new HashMap<>();
 			for (Map.Entry<String, Object> item : model.entrySet()) {
 				Object attr = item.getValue();
 				// 把所有值为空的key变为""
@@ -107,16 +106,15 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 
 		}
 
-		log(request, response, modelAndView);
+		log(request, modelAndView);
 
 	}
 
 	@Override
-	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
-			throws Exception {
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
 	}
 
-	private String log(HttpServletRequest request, HttpServletResponse response, ModelAndView modelAndView) {
+	private void log(HttpServletRequest request, ModelAndView modelAndView) {
 
 		Map<String, Object> map = new HashMap<>();
 
@@ -124,38 +122,35 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 		map.put("request_data", request.getParameterMap());
 
 		// 响应结果
-		Map<String, Object> response_data = new HashMap<String, Object>();
+		Map<String, Object> response_data = new HashMap<>();
 		if (modelAndView != null) {
 			Map<String, Object> model = modelAndView.getModel();
 
-			model.entrySet().forEach(entry -> {
-				Object attr = entry.getValue();
-				String key = entry.getKey();
+			model.forEach((key, attr) -> {
 
-				if ("result".equals(key)) {
-					response_data.put(key, JSON.toJSONString(attr));
-				}
-				if ("data".equals(key)) {
-					response_data.put(key, JSON.toJSONString(attr));
-				}
-				if ("code".equals(key)) {
-					response_data.put(key, JSON.toJSONString(attr));
-				}
-			});
+                if ("result".equals(key)) {
+                    response_data.put(key, JSON.toJSONString(attr));
+                }
+                if ("data".equals(key)) {
+                    response_data.put(key, JSON.toJSONString(attr));
+                }
+                if ("code".equals(key)) {
+                    response_data.put(key, JSON.toJSONString(attr));
+                }
+            });
 		}
 		map.put("response_data", response_data);
 
 		Map<String, Object> _log = new HashMap<>();
 		_log.put(request.getRequestURI(), map);
 
-		return null;
-	}
+    }
 
 	@SuppressWarnings("unused")
-	private boolean checkAuthority(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private boolean checkAuthority(HttpServletRequest request, HttpServletResponse response) {
 		response.reset();
 		String url = request.getServletPath();
-		boolean match = doNotCheckUs.parallelStream().anyMatch(_url -> url.indexOf(_url) != -1);
+		boolean match = doNotCheckUs.parallelStream().anyMatch(url::contains);
 		if (match) {
 			return true;
 		}
@@ -163,60 +158,45 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 		String requestMethod = request.getMethod().toUpperCase();
 		if (requestMethod.equals("GET") || requestMethod.equals("POST") || requestMethod.equals("DELETE")
 				|| requestMethod.equals("PUT")) {
-			if (!match) {
 				// lf-None-Matoh 传入token
-				String token = request.getHeader("lf-None-Matoh");
-				if (StringUtil.isEmpty(token)) {
-					Result<String> result = new Result<>();
-					result.setCode(999);
-					result.setMsg("你未登录，请登录");
-					String origin = request.getHeader("Origin");
-					response(response, origin);
-					PrintWriter out = null;
-					try {
-						out = response.getWriter();
-						out.append(JSON.toJSONString(result));
-					} catch (IOException e) {
-						e.printStackTrace();
-					} finally {
-						if (out != null) {
-							out.close();
-						}
-					}
-					return false;
-				}
-				String info = redisUtil.get(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + token);
-				if (info == null) {
-					// 判断用户是否被踢出
-					boolean checkout = redisUtil.sismember(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, token);
-					redisUtil.srem(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, token);
-					Result<String> result = new Result<>();
-					if (checkout) {
-						result.setCode(888);
-						result.setMsg("你的账号在另一处登录，你已被踢出");
-					} else {
-						result.setCode(999);
-						result.setMsg("你登录超时，请重新登录");
-					}
-					String origin = request.getHeader("Origin");
-					response(response, origin);
-					PrintWriter out = null;
-					try {
-						out = response.getWriter();
-						out.append(JSON.toJSONString(result));
-					} catch (IOException e) {
-						e.printStackTrace();
-					} finally {
-						if (out != null) {
-							out.close();
-						}
-					}
-					return false;
-				} else {
-					String _info = info.toString();
-					CommonConstants.SESSION_DATA = JSON.parseObject(_info, SessionData.class);
-				}
-			}
+            String token = request.getHeader("lf-None-Matoh");
+            if (StringUtil.isEmpty(token)) {
+                Result<String> result = new Result<>();
+                result.setCode(999);
+                result.setMsg("你未登录，请登录");
+                String origin = request.getHeader("Origin");
+                response(response, origin);
+                try (PrintWriter out = response.getWriter()) {
+                    out.append(JSON.toJSONString(result));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }
+            String info = redisUtil.get(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + token);
+            if (info == null) {
+                // 判断用户是否被踢出
+                boolean checkout = redisUtil.sismember(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, token);
+                redisUtil.srem(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, token);
+                Result<String> result = new Result<>();
+                if (checkout) {
+                    result.setCode(888);
+                    result.setMsg("你的账号在另一处登录，你已被踢出");
+                } else {
+                    result.setCode(999);
+                    result.setMsg("你登录超时，请重新登录");
+                }
+                String origin = request.getHeader("Origin");
+                response(response, origin);
+                try (PrintWriter out = response.getWriter()) {
+                    out.append(JSON.toJSONString(result));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            } else {
+                CommonConstants.SESSION_DATA = JSON.parseObject(info, SessionData.class);
+            }
 		}
 		return true;
 	}
