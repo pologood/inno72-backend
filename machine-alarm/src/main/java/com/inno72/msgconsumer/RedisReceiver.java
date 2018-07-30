@@ -129,14 +129,12 @@ public class RedisReceiver {
             MachineDropGoodsBean machineDropGoods = alarmMessageBean.getData();
             String machineCode = machineDropGoods.getMachineCode();
             String channelNum = machineDropGoods.getChannelNum();
-            String describtion = machineDropGoods.getDescribtion();
-            log.info("to dropGoods msg，machineCode：{}，channelNum：{}，describtion：{}", machineCode, channelNum, describtion);
+            log.info("to dropGoods msg，machineCode：{}，channelNum：{}，describtion：{}", machineCode, channelNum, machineDropGoods.getDescribtion());
             //保存消息次数等信息
             Query query = new Query();
             query.addCriteria(Criteria.where("machineCode").is(machineCode));
             log.info("dropGoods query condition,machineCode：{}", machineCode);
             List<DropGoodsExceptionInfo> dropGoodsExceptionInfoList = mongoTpl.find(query, DropGoodsExceptionInfo.class, "DropGoodsExceptionInfo");
-            log.info("当前数据库查询数据，dropGoodsExceptionInfoList：{}", dropGoodsExceptionInfoList.toString());
             if (dropGoodsExceptionInfoList.size() > 0) {
                 //根据机器编码查询点位接口
                 List<MachineLocaleInfo> machineLocaleInfos = new ArrayList<>();
@@ -191,7 +189,7 @@ public class RedisReceiver {
                         Map<String, String> params = new HashMap<>();
                         params.put("machineCode", machineCode);
                         params.put("localStr", localStr);
-                        params.put("text", channelNum + "," + describtion + "出现掉货异常，请及时处理");
+                        params.put("text", channelNum + "," + "出现掉货异常，请及时处理");
                         //查询巡检人员手机号
                         Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
                         inno72CheckUserPhone.setMachineCode(machineCode);
@@ -217,7 +215,7 @@ public class RedisReceiver {
                         inno72AlarmMsg.setSystem(system);
                         inno72AlarmMsg.setMachineCode(machineCode);
                         inno72AlarmMsg.setId(StringUtil.getUUID());
-                        inno72AlarmMsg.setDetail(machineCode + "," + channelNum + "," + describtion + "出现掉货异常，请及时处理");
+                        inno72AlarmMsg.setDetail(machineCode + "," + channelNum + "," + "出现掉货异常，请及时处理");
                         alarmMsgService.save(inno72AlarmMsg);
 
                     } else if (updateNum > 5 && (updateNum - 5) % 2 == 0) {
@@ -226,7 +224,7 @@ public class RedisReceiver {
                         Map<String, String> params = new HashMap<>();
                         params.put("machineCode", machineCode);
                         params.put("localStr", localStr);
-                        params.put("text", channelNum + "," + describtion + "出现掉货异常，请及时处理。");
+                        params.put("text", channelNum + "," + "出现掉货异常，请及时处理。");
                         msgUtil.sendDDTextByGroup(code, params, groupId, "machineAlarm-RedisReceiver");
 
                     }
