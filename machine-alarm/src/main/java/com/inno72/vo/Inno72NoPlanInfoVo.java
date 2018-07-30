@@ -1,7 +1,7 @@
 package com.inno72.vo;
 
 /**
- * @Auther: wxt
+ * @auther: wxt
  * @Date: 2018/7/17 10:18
  * @Description:用于查询没有活动排期的机器信息
  */
