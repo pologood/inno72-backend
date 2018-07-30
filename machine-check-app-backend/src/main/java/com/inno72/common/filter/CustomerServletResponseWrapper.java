@@ -11,17 +11,17 @@ public class CustomerServletResponseWrapper extends HttpServletResponseWrapper {
 	private ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 	private PrintWriter pwrite;
 
-	public CustomerServletResponseWrapper(HttpServletResponse response) {
+	CustomerServletResponseWrapper(HttpServletResponse response) {
 		super(response);
 	}
 
 	@Override
-	public ServletOutputStream getOutputStream() throws IOException {
+	public ServletOutputStream getOutputStream() {
 		return new MyServletOutputStream(bytes);
 	}
 
 	@Override
-	public PrintWriter getWriter() throws IOException {
+	public PrintWriter getWriter() {
 		try {
 			pwrite = new PrintWriter(new OutputStreamWriter(bytes, "utf-8"));
 		} catch (UnsupportedEncodingException e) {
@@ -33,9 +33,8 @@ public class CustomerServletResponseWrapper extends HttpServletResponseWrapper {
 	/**
 	 * 获取缓存在 PrintWriter 中的响应数据
 	 * 
-	 * @return
 	 */
-	public byte[] getBytes() {
+	byte[] getBytes() {
 		if (null != pwrite) {
 			pwrite.close();
 			return bytes.toByteArray();
@@ -44,22 +43,23 @@ public class CustomerServletResponseWrapper extends HttpServletResponseWrapper {
 		if (null != bytes) {
 			try {
 				bytes.flush();
+				return bytes.toByteArray();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		return bytes.toByteArray();
+		return null;
 	}
 
 	class MyServletOutputStream extends ServletOutputStream {
 		private ByteArrayOutputStream ostream;
 
-		public MyServletOutputStream(ByteArrayOutputStream ostream) {
+		MyServletOutputStream(ByteArrayOutputStream ostream) {
 			this.ostream = ostream;
 		}
 
 		@Override
-		public void write(int b) throws IOException {
+		public void write(int b) {
 			ostream.write(b);
 		}
 
