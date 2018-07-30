@@ -10,9 +10,9 @@ import tk.mybatis.mapper.entity.Condition;
 import java.util.List;
 
 public interface CheckFaultService extends Service<Inno72CheckFault> {
-    Result addCheckFault(Inno72CheckFault checkFault);
+    Result<String> addCheckFault(Inno72CheckFault checkFault);
 
-    Result finish(Inno72CheckFault checkFault);
+    Result<String> finish(Inno72CheckFault checkFault);
 
     List<Inno72CheckFault> findForPage(Integer status);
 

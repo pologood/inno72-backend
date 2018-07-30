@@ -32,7 +32,7 @@ public class CheckFaultController {
      * 添加报障
      */
     @RequestMapping(value="/add" , method = {RequestMethod.POST,RequestMethod.GET})
-    public Result add(@RequestBody Inno72CheckFault checkFault){
+    public Result<String> add(@RequestBody Inno72CheckFault checkFault){
         logger.info("上报故障接口参数：{}", JSON.toJSON(checkFault));
         Result result = checkFaultService.addCheckFault(checkFault);
         logger.info("上报故障接口结果：{}",JSON.toJSON(result));
@@ -43,7 +43,7 @@ public class CheckFaultController {
      * 解决故障
      */
     @RequestMapping(value="/finish",method = {RequestMethod.POST,RequestMethod.GET})
-    public Result finish(@RequestBody Inno72CheckFault checkFault){
+    public Result<String> finish(@RequestBody Inno72CheckFault checkFault){
         logger.info("解决故障接口参数：{}", JSON.toJSON(checkFault));
         Result result = checkFaultService.finish(checkFault);
         logger.info("解决故障接口结果：{}", JSON.toJSON(result));

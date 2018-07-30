@@ -49,7 +49,7 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         String appName ="machine-check-app-backend";
         Map<String,Object> map = new HashMap<>();
         String message = redisUtil.get(key);
-        long sub = 0l;
+        long sub = 0L;
         if(StringUtil.isNotEmpty(message)){
             JSONObject jsonObject  = JSONObject.parseObject(message);
             Date date = jsonObject.getDate("time");

@@ -14,17 +14,17 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ProcessDataFilter extends OncePerRequestFilter {
-	Logger logger = LoggerFactory.getLogger(ProcessDataFilter.class);
+	private Logger logger = LoggerFactory.getLogger(ProcessDataFilter.class);
 	private static List<String> doNotCheckUs = Arrays
-			.asList(new String[] {"/check/fault/upload", "/check/user/upload" ,"/check/user/encrypt",
-					"/machine/channel/split","/machine/channel/merge","/check/user/decrypt",
-			"/machine/channel/findAndPushByTaskParam"});
+			.asList("/check/fault/upload", "/check/user/upload","/check/user/encrypt",
+                    "/machine/channel/split","/machine/channel/merge","/check/user/decrypt",
+                    "/machine/channel/findAndPushByTaskParam");
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		String url = request.getServletPath();
-		boolean match = doNotCheckUs.parallelStream().anyMatch(_url -> url.indexOf(_url) != -1);
+		boolean match = doNotCheckUs.parallelStream().anyMatch(url::contains);
 		if (!match) {
 			CustomerHttpServletRequestWrapper req = new CustomerHttpServletRequestWrapper(request);
 			CustomerServletResponseWrapper resp = new CustomerServletResponseWrapper(response);

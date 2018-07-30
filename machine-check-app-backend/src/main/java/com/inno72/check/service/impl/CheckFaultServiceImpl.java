@@ -43,7 +43,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
     private MsgUtil msgUtil;
 
     @Override
-    public Result addCheckFault(Inno72CheckFault checkFault) {
+    public Result<String> addCheckFault(Inno72CheckFault checkFault) {
         String[] machineIds = checkFault.getMachineIds();
         if(machineIds != null && machineIds.length>0){
             for (String machineId : machineIds) {
@@ -125,7 +125,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
     }
 
     @Override
-    public Result finish(Inno72CheckFault checkFault) {
+    public Result<String> finish(Inno72CheckFault checkFault) {
         Inno72CheckFault upCheckFault = new Inno72CheckFault();
         upCheckFault.setId(checkFault.getId());
         upCheckFault.setFinishRemark(checkFault.getFinishRemark());

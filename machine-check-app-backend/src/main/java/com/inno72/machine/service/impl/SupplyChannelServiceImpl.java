@@ -77,7 +77,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         map.put("machineId", machineId);
         Integer[] codes = new Integer[2];
         codes[0] = codeInt;
-        Integer childCode = null;
+        Integer childCode;
         Integer parentCode;
         if (codeInt % 2 == 0 ) {
             codes[1] = (codeInt - 1);
@@ -135,9 +135,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
             childChannel.setId(StringUtil.getUUID());
             Integer codeInt = Integer.parseInt(code)+1;
             int volumeCount = 50;
-            if(codeInt<=20){
+            if(codeInt<20){
                 volumeCount = 11;
-            }else if(codeInt>20 && codeInt<=30){
+            }else if(codeInt>20 && codeInt<30){
                 volumeCount = 5;
             }
             childChannel.setVolumeCount(volumeCount);
