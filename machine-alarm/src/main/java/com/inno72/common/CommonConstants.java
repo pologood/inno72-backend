@@ -31,6 +31,13 @@ public class CommonConstants {
     //报警开关是开着
     public final static int OPENSTATUS_OPEN = 0;
 
+    //缺货百分之十
+    public static final int TEN_PERSENT = 10;
+    //缺货百分之二十
+    public static final int TWENTY_PERSENT = 20;
+
+
+
 
 
 }

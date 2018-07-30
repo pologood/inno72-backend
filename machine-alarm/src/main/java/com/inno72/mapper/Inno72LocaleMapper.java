@@ -7,13 +7,16 @@ import com.inno72.model.MachineLocaleInfo;
 
 import java.util.List;
 
+/**
+ * @author
+ */
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72LocaleMapper extends Mapper<Inno72Locale> {
 
     /**
-     * @param :machineCodeStr
+     * find locale by machineCode
+     * @param :machineCodes
      * @return :List
-     * @author :wxt
      */
     List<MachineLocaleInfo> selectLocaleByMachineCode(List<String> machineCodes);
 
