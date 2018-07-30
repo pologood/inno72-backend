@@ -26,7 +26,7 @@ public class CheckSignInController {
     /**
      * 打卡
      */
-    @RequestMapping(value="add", method = {RequestMethod.POST,RequestMethod.GET})
+    @RequestMapping(value="add", method = {RequestMethod.POST})
     public Result<String> add(@RequestBody Inno72CheckSignIn signIn){
         logger.info("打卡接口参数{}", JSON.toJSON(signIn));
         Result<String> result = checkSignInService.add(signIn);
@@ -37,7 +37,7 @@ public class CheckSignInController {
     /**
      * 查询本月打卡记录
      */
-    @RequestMapping(value="list", method = {RequestMethod.POST,RequestMethod.GET})
+    @RequestMapping(value="list", method = {RequestMethod.POST})
     public Result<List<Inno72CheckSignIn>> list(@RequestBody Inno72CheckSignIn signIn){
         logger.info("查询本月打卡记录接口参数{}", JSON.toJSON(signIn));
         Result<List<Inno72CheckSignIn>> result = checkSignInService.findThisMonth(signIn.getMachineId());
@@ -48,7 +48,7 @@ public class CheckSignInController {
     /**
      * 查询机器打卡状态
      */
-    @RequestMapping(value="machineList", method = {RequestMethod.POST,RequestMethod.GET})
+    @RequestMapping(value="machineList", method = {RequestMethod.POST})
     public Result<List<MachineSignInVo>> machineSignInList(){
         logger.info("查询机器打卡状态");
         Result<List<MachineSignInVo>> result = checkSignInService.findMachineSignList();
