@@ -200,4 +200,14 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		return Results.success(machines.get(0).getMachineStatus());
 	}
 
+	@Override
+	public Result<String> getMachineLocale(Map<String, Object> msg) {
+		String machineCode = (String) Optional.of(msg).map(a -> a.get("machineCode")).orElse("");
+		if (StringUtil.isEmpty(machineCode)) {
+			return Results.failure("machineCode传入为空");
+		}
+		String locale = inno72MachineMapper.selectMachineLocale(machineCode);
+		return Results.success(locale);
+	}
+
 }
