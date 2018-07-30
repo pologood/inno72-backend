@@ -100,10 +100,14 @@ public class RedisReceiver {
                     log.info("machineChannel send msg ，params：{}", params.toString());
                     //根据机器编码查询对应巡检人员
                     List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineId);
-                    for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-                        String phone = inno72CheckUserPhone1.getPhone();
-                        String code = "sms_alarm_common";
-                        msgUtil.sendSMS(code, params, phone, "machineAlarm-RedisReceiver");
+                    String active = System.getenv("spring_profiles_active");
+                    log.info("获取spring_profiles_active：{}", active);
+                    if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
+                        for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                            String phone = inno72CheckUserPhone1.getPhone();
+                            String code = "sms_alarm_common";
+                            msgUtil.sendSMS(code, params, phone, "machineAlarm-RedisReceiver");
+                        }
                     }
                     //发巡检app提醒
                     for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
@@ -214,21 +218,25 @@ public class RedisReceiver {
                 for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
                     String phone = inno72CheckUserPhone1.getPhone();
                     String code = "push_alarm_common";
-                    msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【缺货】您负责的机器需要补货", "");
+                    msgUtil.sendPush(code, params, phone, "machineAlarm-RedisReceiver", "【缺货】您负责的机器需要补货", "");
                 }
             } else if (percent <= CommonConstants.TEN_PERSENT) {
                 //组合报警接口
                 //查询巡检人员手机号
                 List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(channelGoodsAlarmBean.getMachineCode());
-                for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-                    String code = "sms_alarm_common";
-                    String phone = inno72CheckUserPhone1.getPhone();
-                    msgUtil.sendSMS(code, params, phone, "machineAlarm-CheckNetAndAlarmTask");
+                String active = System.getenv("spring_profiles_active");
+                log.info("获取spring_profiles_active：{}", active);
+                if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
+                    for (Inno72CheckUserPhone inno72CheckUserPhoneOne : inno72CheckUserPhones) {
+                        String code = "sms_alarm_common";
+                        String phone = inno72CheckUserPhoneOne.getPhone();
+                        msgUtil.sendSMS(code, params, phone, "machineAlarm-RedisReceiver");
+                    }
                 }
                 for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
                     String phone = inno72CheckUserPhone1.getPhone();
                     String code = "push_alarm_common";
-                    msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【缺货】您负责的机器需要补货", "");
+                    msgUtil.sendPush(code, params, phone, "machineAlarm-RedisReceiver", "【缺货】您负责的机器需要补货", "");
                 }
             }
             //保存接口
