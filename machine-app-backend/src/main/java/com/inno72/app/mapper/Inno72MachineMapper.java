@@ -6,4 +6,6 @@ import com.inno72.common.Mapper;
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72MachineMapper extends Mapper<Inno72Machine> {
 
+	String selectMachineLocale(String machineCode);
+
 }

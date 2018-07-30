@@ -29,7 +29,7 @@ public class CheckUserController {
     /**
      * 验证码
      */
-    @RequestMapping(value="/smsCode", method = {RequestMethod.POST,RequestMethod.GET})
+    @RequestMapping(value="/smsCode", method = {RequestMethod.POST})
     @ResponseBody
     public Result<String> smsCode(@RequestBody Inno72CheckUser inno72CheckUser){
         logger.info("获取验证码接口参数：{}",JSON.toJSON(inno72CheckUser));
@@ -41,8 +41,8 @@ public class CheckUserController {
     /**
      * 登录
      */
-    @RequestMapping(value="/login", method = {RequestMethod.POST,RequestMethod.GET})
-    public Result<SessionData> login(@RequestBody Inno72CheckUser inno72CheckUser){
+    @RequestMapping(value="/login", method = {RequestMethod.GET})
+    public Result<SessionData> login(Inno72CheckUser inno72CheckUser){
         logger.info("登录接口参数：{}",JSON.toJSON(inno72CheckUser));
         Result<SessionData> result = checkUserService.login(inno72CheckUser.getPhone(),inno72CheckUser.getSmsCode());
         logger.info("登录接口结果：{}",JSON.toJSON(result));

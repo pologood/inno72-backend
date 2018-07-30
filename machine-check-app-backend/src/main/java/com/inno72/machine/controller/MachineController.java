@@ -37,7 +37,7 @@ public class MachineController {
     /**
      * 查询管理的机器
      */
-    @RequestMapping(value="list", method = {RequestMethod.POST,RequestMethod.GET})
+    @RequestMapping(value="list", method = RequestMethod.GET)
     public Result<List<Inno72Machine>> list(){
         logger.info("查询管理的机器接口");
         Result<List<Inno72Machine>> result = machineService.getMachineList();
@@ -49,8 +49,8 @@ public class MachineController {
     /**
      * 查询单个一级区域及子区域
      */
-    @RequestMapping(value="findAreaByCode")
-    public Result<Inno72AdminArea> findAreaByCode(@RequestBody Inno72AdminArea adminArea){
+    @RequestMapping(value="findAreaByCode", method = RequestMethod.GET)
+    public Result<Inno72AdminArea> findAreaByCode(Inno72AdminArea adminArea){
         logger.info("查询单个一级区域及子区域接口参数：{}",JSON.toJSON(adminArea));
         return machineService.findByFirstLevelCode(adminArea.getCode());
     }
@@ -59,7 +59,7 @@ public class MachineController {
     /**
      * 查询一级区域
      */
-    @RequestMapping(value="findFirstLevelArea")
+    @RequestMapping(value="findFirstLevelArea", method = RequestMethod.GET)
     public Result<List<Inno72AdminArea>> findFirstLevelArea(){
         logger.info("查询单个一级区域及子区域接口");
         return machineService.findFirstLevelArea();
@@ -68,8 +68,8 @@ public class MachineController {
     /**
      * 查询点位
      */
-    @RequestMapping(value="findLocaleByAreaCode")
-    public Result<List<Inno72Locale>> findLocaleByAreaCode(@RequestBody Inno72Locale locale){
+    @RequestMapping(value="findLocaleByAreaCode", method = RequestMethod.GET)
+    public Result<List<Inno72Locale>> findLocaleByAreaCode(Inno72Locale locale){
         logger.info("查询点位接口参数：{}",JSON.toJSON(locale));
         return machineService.selectLocaleByAreaCode(locale.getAreaCode());
     }

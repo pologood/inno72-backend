@@ -34,8 +34,8 @@ public class SupplyChannelController {
 	/**
 	 * 货道列表
 	 */
-	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72SupplyChannel>> list(@RequestBody SupplyRequestVo vo) {
+	@RequestMapping(value = "/list", method = {RequestMethod.GET })
+	public Result<List<Inno72SupplyChannel>> list(SupplyRequestVo vo) {
 		logger.info("货道列表接口参数：{}", JSON.toJSON(vo));
 		List<Inno72SupplyChannel> list = supplyChannelService.getList(vo.getMachineId());
 		return ResultGenerator.genSuccessResult(list);
@@ -81,7 +81,7 @@ public class SupplyChannelController {
 	/**
 	 * 机器维度缺货
 	 */
-	@RequestMapping(value="machineLack",method = { RequestMethod.POST, RequestMethod.GET })
+	@RequestMapping(value="machineLack",method = {RequestMethod.GET })
 	public Result<List<Inno72Machine>> getMachineLack(){
 		logger.info("机器维度缺货接口");
 		return supplyChannelService.getMachineLackGoods();
@@ -90,7 +90,7 @@ public class SupplyChannelController {
 	/**
 	 * 商品维度缺货
 	 */
-	@RequestMapping(value="goodsLack",method = { RequestMethod.POST, RequestMethod.GET })
+	@RequestMapping(value="goodsLack",method = {RequestMethod.GET })
 	public Result<List<Inno72Goods>> getGoodsLack(){
 		logger.info("商品维度缺货接口");
 		return supplyChannelService.getGoodsLack();
@@ -99,8 +99,8 @@ public class SupplyChannelController {
 	/**
 	 * 查询单个商品缺货的机器
 	 */
-	@RequestMapping(value="machineByLackGoods",method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72Machine>> getMachineByLackGoods(@RequestBody SupplyRequestVo vo){
+	@RequestMapping(value="machineByLackGoods",method = {RequestMethod.GET })
+	public Result<List<Inno72Machine>> getMachineByLackGoods(SupplyRequestVo vo){
 		logger.info("查询单个商品缺货的机器接口参数：{}",JSON.toJSON(vo));
 		return supplyChannelService.getMachineByLackGoods(vo.getGoodsId());
 	}
@@ -108,8 +108,8 @@ public class SupplyChannelController {
 	/**
 	 * 根据机器查询可用商品
 	 */
-	@RequestMapping(value="getGoodsByMachineId",method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72Goods>> getGoodsByMachineId(@RequestBody SupplyRequestVo vo){
+	@RequestMapping(value="getGoodsByMachineId",method = {RequestMethod.GET })
+	public Result<List<Inno72Goods>> getGoodsByMachineId(SupplyRequestVo vo){
 		logger.info("根据机器查询可用商品接口参数：{}",JSON.toJSON(vo));
 		return supplyChannelService.getGoodsByMachineId(vo.getMachineId());
 	}
@@ -135,7 +135,7 @@ public class SupplyChannelController {
 	/**
 	 * 提交补货
 	 */
-	@RequestMapping(value="submit",method = { RequestMethod.POST, RequestMethod.GET })
+	@RequestMapping(value="submit",method = { RequestMethod.POST})
 	public Result<String> submit(@RequestBody Map<String,Object> map){
 		List<Map<String,Object>> mapList = (List<Map<String,Object>>) map.get("list");
 		logger.info("提交补货接口参数：{}",JSON.toJSON(mapList));

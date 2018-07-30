@@ -21,4 +21,6 @@ public interface MachineService extends Service<Inno72Machine> {
 
 	Result<Integer> getMachineStatus(Map<String, Object> msg);
 
+	Result<String> getMachineLocale(Map<String, Object> msg);
+
 }
