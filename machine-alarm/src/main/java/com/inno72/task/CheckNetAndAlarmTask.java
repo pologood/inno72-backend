@@ -133,10 +133,14 @@ public class CheckNetAndAlarmTask {
                             Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
                             inno72CheckUserPhone.setMachineCode(machineLogInfo.getMachineCode());
                             List<Inno72CheckUserPhone> inno72CheckUserPhones = checkUserService.selectPhoneByMachineCode(inno72CheckUserPhone);
-                            for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-                                String code = "sms_alarm_common";
-                                String phone = inno72CheckUserPhone1.getPhone();
-                                msgUtil.sendSMS(code, params, phone, "machineAlarm-CheckNetAndAlarmTask");
+                            String active = System.getenv("spring_profiles_active");
+                            log.info("获取spring_profiles_active：{}", active);
+                            if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
+                                for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                                    String code = "sms_alarm_common";
+                                    String phone = inno72CheckUserPhone1.getPhone();
+                                    msgUtil.sendSMS(code, params, phone, "machineAlarm-CheckNetAndAlarmTask");
+                                }
                             }
                             for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
                                 String phone = inno72CheckUserPhone1.getPhone();
@@ -154,7 +158,7 @@ public class CheckNetAndAlarmTask {
                             params.put("machineCode", machineLogInfo.getMachineCode());
                             params.put("localStr", machineLogInfo.getLocaleStr());
                             params.put("text", "出现网络连接不上的情况，请及时处理");
-                            log.info("检查网络状态动态参数是，params：{}", params.toString());
+                            log.info("closeNet alarm, param:{}", params.toString());
                             msgUtil.sendDDTextByGroup(code, params, groupId, "machineAlarm-CheckNetAndAlarmTask");
                         }
                     }
