@@ -9,9 +9,16 @@ import java.util.List;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
+ * @author
  */
 public interface LocaleService extends Service<Inno72Locale> {
 
+    /**
+     * find locale
+     *
+     * @param list
+     * @return
+     */
     List<MachineLocaleInfo> selectLocaleByMachineCode(List<MachineLocaleInfo> list);
 
 }

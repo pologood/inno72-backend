@@ -6,8 +6,6 @@ import com.inno72.common.Results;
 import com.inno72.mapper.Inno72MachineMapper;
 import com.inno72.model.Inno72Machine;
 import com.inno72.service.MachineService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,12 +14,12 @@ import java.util.List;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
+ * @author
  */
 @Service
 @Transactional
 public class MachineServiceImpl extends AbstractService<Inno72Machine> implements MachineService {
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Resource
     private Inno72MachineMapper inno72MachineMapper;

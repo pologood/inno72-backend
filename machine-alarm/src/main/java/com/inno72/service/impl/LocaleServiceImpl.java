@@ -5,8 +5,6 @@ import com.inno72.mapper.Inno72LocaleMapper;
 import com.inno72.model.Inno72Locale;
 import com.inno72.model.MachineLocaleInfo;
 import com.inno72.service.LocaleService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +14,11 @@ import java.util.List;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
+ * @author
  */
 @Service
 @Transactional
 public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements LocaleService {
-    private static Logger logger = LoggerFactory.getLogger(LocaleServiceImpl.class);
 
     @Resource
     private Inno72LocaleMapper inno72LocaleMapper;

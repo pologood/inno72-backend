@@ -16,11 +16,11 @@ import java.util.List;
 
 /**
  * Created by CodeGenerator on 2018/07/11.
+ * @author
  */
 @Service
 @Transactional
 public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan> implements ActivityPlanService {
-    private static Logger logger = LoggerFactory.getLogger(ActivityPlanServiceImpl.class);
 
     @Resource
     private Inno72ActivityPlanMapper inno72ActivityPlanMapper;
@@ -33,7 +33,6 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 
         return noPlanedMachineList;
     }
-
 
     @Override
     public List<Inno72ActivityPlan> findByPage(Object condition) {

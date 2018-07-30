@@ -9,13 +9,14 @@ import java.util.List;
 
 /**
  * Created by CodeGenerator on 2018/07/18.
+ * @author
  */
 public interface SupplyChannelStatusService extends Service<Inno72SupplyChannelStatus> {
 
     /**
+     * find channel error describtion
      * @param goodsChannelStatus
      * @return
-     * @author wxt
      */
     List<GoodsChannelBean> getChannelErrorDetail(List<GoodsChannelBean> goodsChannelStatus);
 

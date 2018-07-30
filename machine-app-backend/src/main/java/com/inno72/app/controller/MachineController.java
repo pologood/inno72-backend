@@ -87,6 +87,17 @@ public class MachineController {
 		return machineService.getMachineStatus(msg);
 	}
 
+	/**
+	 * 获取机器点位信息
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	@RequestMapping(value = "/getMachineLocale", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> getMachineLocale(@RequestBody Map<String, Object> msg) {
+		return machineService.getMachineLocale(msg);
+	}
+
 	@PostMapping("encrypt")
 	public String encrypt(HttpServletRequest request) throws IOException {
 		byte[] encryptRequestBodyBytes = StreamUtils.copyToByteArray(request.getInputStream());
