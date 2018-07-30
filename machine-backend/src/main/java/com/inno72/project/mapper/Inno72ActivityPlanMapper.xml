@@ -133,8 +133,8 @@
 			LEFT JOIN inno72_activity_plan_machine apm ON apm.activity_plan_id = ap.id
 		 where  is_delete =0 
 		 and ( <![CDATA[
-		 	#{startTime} BETWEEN ap.start_time AND ap.end_time or 
-		 	#{endTime} BETWEEN ap.start_time AND ap.end_time
+		 	ap.start_time BETWEEN #{startTime} AND #{endTime} or 
+		 	ap.end_time BETWEEN #{startTime} AND #{endTime}
 		 ]]>
 		 )
   </select>
