@@ -9,13 +9,14 @@ import java.util.List;
 
 /**
  * Created by CodeGenerator on 2018/07/11.
+ * @author
  */
 public interface ActivityPlanService extends Service<Inno72ActivityPlan> {
 
     /**
+     * find no plan machine
+     * @return
      * @param taskTime
-     * @describtion 查询没有活动的机器
-     * @author wxt
      */
     List<Inno72NoPlanInfoVo> selectNoPlanMachineList(String taskTime);
 

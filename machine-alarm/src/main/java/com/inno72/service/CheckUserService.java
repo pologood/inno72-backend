@@ -9,9 +9,16 @@ import java.util.List;
 
 /**
  * Created by CodeGenerator on 2018/07/18.
+ * @author
  */
 public interface CheckUserService extends Service<Inno72CheckUser> {
 
+    /**
+     * find phone
+     *
+     * @param inno72CheckUserPhone
+     * @return
+     */
     List<Inno72CheckUserPhone> selectPhoneByMachineCode(Inno72CheckUserPhone inno72CheckUserPhone);
 
 }
