@@ -63,7 +63,10 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
             map.put("time",new Date());
             redisUtil.setex(key,60*10, JSON.toJSONString(map));//验证码有效期10分钟
             params.put("code", smsCode);
-            msgUtil.sendSMS(code, params, phone, appName);
+            String active = System.getenv("spring_profiles_active");
+            if(StringUtil.isNotEmpty(active) && active.equals("prod")){
+                msgUtil.sendSMS(code, params, phone, appName);
+            }
             logger.info(key+"验证码为"+smsCode);
             return ResultGenerator.genSuccessResult();
         }
