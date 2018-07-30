@@ -73,6 +73,7 @@ public class CheckNetAndAlarmTask {
         Query query = new Query();
         query.addCriteria(Criteria.where("createTime").lte(before));
         List<MachineLogInfo> list = mongoTpl.find(query, MachineLogInfo.class, "MachineLogInfo");
+        log.info("mongo中查到的数据，list:{}", ((JSONArray) JSONArray.toJSON(list)).toJSONString());
         if (null != list && list.size() > 0) {
             //查询后台数据库中机器状态是4的机器列表
             Result<List<Inno72Machine>> result = machineService.findMachineByMachineStatus(CommonConstants.MACHINESTATUS_NUMAUL);
@@ -97,6 +98,7 @@ public class CheckNetAndAlarmTask {
                 }
 
                 if (null != newList && newList.size() > 0) {
+                    log.info("newList:{}", ((JSONArray) JSONArray.toJSON(machines)).toJSONString());
                     for (Inno72Machine machineLogInfo : newList) {
                         LocalDateTime createTime = machineLogInfo.getCreateTime();
                         Duration duration = Duration.between(createTime, LocalDateTime.now());
