@@ -7,7 +7,6 @@ import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.utils.page.Pagination;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -29,9 +28,9 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	@Resource
 	private IRedisUtil redisUtil; // memcachedClient
 
-	private static List<String> doNotCheckUs = Arrays.asList(new String[] { "/check/user/smsCode","/check/user/login",
-	"/check/user/encrypt","/machine/channel/split","/machine/channel/merge","/check/user/decrypt",
-	"/machine/channel/findAndPushByTaskParam"});
+	private static List<String> doNotCheckUs = Arrays.asList("/check/user/smsCode","/check/user/login",
+            "/check/user/encrypt","/machine/channel/split","/machine/channel/merge","/check/user/decrypt",
+            "/machine/channel/findAndPushByTaskParam");
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
