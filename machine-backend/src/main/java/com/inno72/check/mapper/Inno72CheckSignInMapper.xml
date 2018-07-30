@@ -45,6 +45,7 @@
 				or u.enterprise LIKE '%${keyword}%'
 				)
 			</if>
+			ORDER BY sin.create_time DESC
   </select>
   
   

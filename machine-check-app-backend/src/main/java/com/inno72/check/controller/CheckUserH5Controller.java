@@ -16,10 +16,10 @@ import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-@RequestMapping(value = "/check/user")
+@RequestMapping(value = "/check/user/h5")
 @RestController
 @CrossOrigin
-public class CheckUserController {
+public class CheckUserH5Controller {
 
     @Resource
     private CheckUserService checkUserService;
@@ -41,8 +41,8 @@ public class CheckUserController {
     /**
      * 登录
      */
-    @RequestMapping(value="/login", method = {RequestMethod.POST})
-    public Result<SessionData> login(@RequestBody Inno72CheckUser inno72CheckUser){
+    @RequestMapping(value="/login", method = {RequestMethod.GET})
+    public Result<SessionData> login(Inno72CheckUser inno72CheckUser){
         logger.info("登录接口参数：{}",JSON.toJSON(inno72CheckUser));
         Result<SessionData> result = checkUserService.login(inno72CheckUser.getPhone(),inno72CheckUser.getSmsCode());
         logger.info("登录接口结果：{}",JSON.toJSON(result));
@@ -74,7 +74,7 @@ public class CheckUserController {
     /**
      * 加密
      */
-    @RequestMapping(value="/encrypt",method = {RequestMethod.POST})
+    @RequestMapping(value="/encrypt",method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
     public Result<String> encrypt(@RequestBody Map<String,Object> map){
         return ResultGenerator.genSuccessResult(AesUtils.encrypt(JSON.toJSONString(map)));

@@ -16,10 +16,10 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import java.util.List;
 
-@RequestMapping("/check/fault")
+@RequestMapping("/check/fault/h5")
 @CrossOrigin
 @RestController
-public class CheckFaultController {
+public class CheckFaultH5Controller {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
@@ -53,8 +53,8 @@ public class CheckFaultController {
     /**
      * 故障集合
      */
-    @RequestMapping(value="/list",method = {RequestMethod.POST})
-    public ModelAndView list(@RequestBody Inno72CheckFault checkFault){
+    @RequestMapping(value="/list",method = {RequestMethod.GET})
+    public ModelAndView list(Inno72CheckFault checkFault){
         logger.info("查询故障分页列表接口参数：{}", JSON.toJSON(checkFault));
         List<Inno72CheckFault> list = checkFaultService.findForPage(checkFault.getStatus());
         logger.info("查询故障分页列表接口结果：{}", JSON.toJSON(list));
@@ -86,8 +86,8 @@ public class CheckFaultController {
     /**
      * 查询详情
      */
-    @RequestMapping(value="/detail",method = {RequestMethod.POST})
-    public Result<Inno72CheckFault> detail(@RequestBody Inno72CheckFault inno72CheckFault){
+    @RequestMapping(value="/detail",method = {RequestMethod.GET})
+    public Result<Inno72CheckFault> detail(Inno72CheckFault inno72CheckFault){
         logger.info("查询故障详情接口参数：{}",JSON.toJSON(inno72CheckFault));
         Result<Inno72CheckFault> result = checkFaultService.getDetail(inno72CheckFault.getId());
         logger.info("查询故障详情接口结果：{}",JSON.toJSON(result));
@@ -97,8 +97,8 @@ public class CheckFaultController {
     /**
      * 查询故障类型
      */
-    @RequestMapping(value = "/typeList", method = {RequestMethod.POST})
-    public Result<List<Inno72CheckFaultType>> typeList(@RequestBody Inno72CheckFault inno72CheckFault){
+    @RequestMapping(value = "/typeList", method = {RequestMethod.GET})
+    public Result<List<Inno72CheckFaultType>> typeList(Inno72CheckFault inno72CheckFault){
         logger.info("查询故障类型接口参数：{}",JSON.toJSON(inno72CheckFault));
         Result<List<Inno72CheckFaultType>> result = checkFaultService.getTypeList(inno72CheckFault.getType());
         logger.info("查询故障类型接口结果：{}",JSON.toJSON(result));

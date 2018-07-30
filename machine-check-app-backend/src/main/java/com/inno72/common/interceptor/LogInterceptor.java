@@ -29,6 +29,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	private IRedisUtil redisUtil; // memcachedClient
 
 	private static List<String> doNotCheckUs = Arrays.asList("/check/user/smsCode","/check/user/login",
+			"/check/user/smsCode/h5","/check/user/login/h5",
             "/check/user/encrypt","/machine/channel/split","/machine/channel/merge","/check/user/decrypt",
             "/machine/channel/findAndPushByTaskParam");
 
