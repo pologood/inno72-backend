@@ -122,8 +122,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 		}
 		// 客户端会重复传入是3的状态值
-		/*if (status == Inno72Machine.Machine_Status.PASSTEST.v()
-				&& machine.getMachineStatus() != Inno72Machine.Machine_Status.PASSTEST.v()) {
+		if (status == Inno72Machine.Machine_Status.PASSTEST.v()
+				&& machine.getMachineStatus() == Inno72Machine.Machine_Status.PASSTEST.v()) {
 			return Results.success();
 		}
 		if (status == Inno72Machine.Machine_Status.PASSTEST.v()
@@ -133,8 +133,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (status == Inno72Machine.Machine_Status.INLOCAL.v()
 				&& machine.getMachineStatus() != Inno72Machine.Machine_Status.PASSTEST.v()) {
 			return Results.failure("status传入错误");
-		}*/
-		
+		}
+
 		machine.setUpdateId("updateMachineStatus");
 		machine.setUpdateTime(LocalDateTime.now());
 		machine.setMachineStatus(status);
