@@ -224,9 +224,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     }
 
     @Override
-    public List<Inno72SupplyChannel> getList(String machineId) {
+    public Result<List<Inno72SupplyChannel>> getList(String machineId) {
         if(StringUtil.isEmpty(machineId)){
-            return null;
+            return Results.failure("参数不能为空");
         }
         Condition condition = new Condition(Inno72SupplyChannel.class);
         condition.createCriteria().andEqualTo("machineId",machineId).andEqualTo("status",0);
@@ -234,7 +234,8 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         Map<String,Object> map= new HashMap<>();
         map.put("machineId",machineId);
         map.put("status",0);
-        return inno72SupplyChannelMapper.selectListByParam(map);
+        List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectListByParam(map);
+        return ResultGenerator.genSuccessResult(list);
     }
 
     @Override

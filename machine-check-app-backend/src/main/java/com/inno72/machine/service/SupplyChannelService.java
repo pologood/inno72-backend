@@ -24,7 +24,7 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
 	Result<Map<String, Object>> history(Inno72SupplyChannel supplyChannel);
 
-	List<Inno72SupplyChannel> getList(String machineId);
+	Result<List<Inno72SupplyChannel>> getList(String machineId);
 
     Result<List<Inno72Machine>> getMachineLackGoods();
 

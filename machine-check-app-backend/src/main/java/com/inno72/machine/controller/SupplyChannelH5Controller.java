@@ -37,8 +37,7 @@ public class SupplyChannelH5Controller {
 	@RequestMapping(value = "/list", method = {RequestMethod.GET })
 	public Result<List<Inno72SupplyChannel>> list(SupplyRequestVo vo) {
 		logger.info("货道列表H5接口参数：{}", JSON.toJSON(vo));
-		List<Inno72SupplyChannel> list = supplyChannelService.getList(vo.getMachineId());
-		return ResultGenerator.genSuccessResult(list);
+		return supplyChannelService.getList(vo.getMachineId());
 	}
 
 	/**
