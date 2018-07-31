@@ -48,7 +48,7 @@ select
 sum(sc.goods_count)   goods_count,apg.activity_plan_id,apg.goods_id,sc.machine_id from inno72_activity_plan_goods  apg 
 left join inno72_supply_channel_goods scg  on  scg.goods_id=apg.goods_id
 left join inno72_supply_channel sc on sc.id=scg.supply_channel_id
-
+where sc.is_delete=0
 group by apg.activity_plan_id,apg.goods_id,sc.machine_id
 ) aa left  join inno72_goods g on aa.goods_id=g.id
 
