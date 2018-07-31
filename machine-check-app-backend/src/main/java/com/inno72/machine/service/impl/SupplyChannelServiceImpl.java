@@ -129,28 +129,34 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         map.put("code", code);
         supplyChannel = inno72SupplyChannelMapper.selectByParam(map);
         if (supplyChannel != null) {
+            Integer newCode = codeInteger+1;
+            map.put("code",newCode.toString());
+            Inno72SupplyChannel childChannel = inno72SupplyChannelMapper.selectByParam(map);
+            if(childChannel != null){
+                return Results.failure("货道未合并不能拆分");
+            }
             supplyChannel.setGoodsCount(0);
             supplyChannel.setUpdateTime(LocalDateTime.now());
             inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
             Condition condition = new Condition(Inno72SupplyChannelGoods.class);
             condition.createCriteria().andEqualTo("supplyChannelId",supplyChannel.getId());
             inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
-            Inno72SupplyChannel childChannel = new Inno72SupplyChannel();
+            childChannel = new Inno72SupplyChannel();
             childChannel.setId(StringUtil.getUUID());
-            Integer codeInt = Integer.parseInt(code)+1;
+
             int volumeCount = 50;
-            if(codeInt<20){
+            if(newCode<20){
                 volumeCount = 11;
-            }else if(codeInt>20 && codeInt<30){
+            }else if(newCode>20 && newCode<30){
                 volumeCount = 5;
             }
             childChannel.setVolumeCount(volumeCount);
-            childChannel.setCode(codeInt.toString());
+            childChannel.setCode(newCode.toString());
             childChannel.setCreateTime(LocalDateTime.now());
             childChannel.setCreateId("系统");
             childChannel.setUpdateTime(LocalDateTime.now());
             childChannel.setUpdateId("系统");
-            childChannel.setName("货道"+codeInt);
+            childChannel.setName("货道"+newCode);
             childChannel.setGoodsCount(0);
             childChannel.setWorkStatus(0);
             childChannel.setMachineId(supplyChannel.getMachineId());
