@@ -118,7 +118,11 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         String code = supplyChannel.getCode();
         String machineId = supplyChannel.getMachineId();
         if (StringUtil.isEmpty(code) || StringUtil.isEmpty(machineId)) {
-            return ResultGenerator.genFailResult("参数有误");
+            return Results.failure("参数有误");
+        }
+        int codeInteger = Integer.parseInt(code);
+        if(codeInteger %2 == 0){
+            return Results.failure("当前货道不能拆分");
         }
         Map<String, Object> map = new HashMap<>();
         map.put("machineId", machineId);
