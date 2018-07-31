@@ -2,7 +2,7 @@ package com.inno72.task;
 
 import com.alibaba.fastjson.JSONObject;
 import com.inno72.common.CommonConstants;
-import com.inno72.common.MachineMonitorBackendProperties;
+import com.inno72.common.MachineAlarmProperties;
 import com.inno72.common.Result;
 import com.inno72.model.MachineLogInfo;
 import com.inno72.plugin.http.HttpClient;
@@ -38,7 +38,7 @@ public class CheckNetStatusSchedule {
 	private MongoOperations mongoTpl;
 
 	@Autowired
-	private MachineMonitorBackendProperties machineMonitorBackendProperties;
+    private MachineAlarmProperties machineAlarmProperties;
 
     @Resource
     private MachineService machineService;
@@ -82,7 +82,7 @@ public class CheckNetStatusSchedule {
                 if (null != machineNetInfoList && machineNetInfoList.size() > 0) {
                     String machineNetInfoString = JSONObject.toJSON(machineNetInfoList).toString();
                     log.info("断开的机器列表，machineNetInfoString：{}", machineNetInfoString);
-                    String urlProp = machineMonitorBackendProperties.getProps().get("updateMachineListNetStatusUrl");
+                    String urlProp = machineAlarmProperties.getProps().get("updateMachineListNetStatusUrl");
                     String res = HttpClient.post(urlProp, machineNetInfoString);
                     JSONObject jsonObject = JSONObject.parseObject(res);
                     if (CommonConstants.RESULT_SUCCESS.equals(jsonObject.getInteger("code"))) {
@@ -110,7 +110,7 @@ public class CheckNetStatusSchedule {
                 if (null != machineNetInfoList && machineNetInfoList.size() > 0) {
                     String machineNetInfoString = JSONObject.toJSON(machineNetInfoList).toString();
                     log.info("断开的机器列表，machineNetInfoString：{}", machineNetInfoString);
-                    String urlProp = machineMonitorBackendProperties.getProps().get("updateMachineListNetStatusUrl");
+                    String urlProp = machineAlarmProperties.getProps().get("updateMachineListNetStatusUrl");
                     String res = HttpClient.post(urlProp, machineNetInfoString);
                     JSONObject jsonObject = JSONObject.parseObject(res);
                     if (CommonConstants.RESULT_SUCCESS.equals(jsonObject.getInteger("code"))) {

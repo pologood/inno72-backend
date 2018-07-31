@@ -44,4 +44,18 @@
 	    m.machine_code = #{machineCode}
 	</select>
 
+    <select id="findMachineNetStatusOpenList" parameterType="String" resultType="com.inno72.model.Inno72Machine">
+        SELECT
+        m.machine_code AS machineCode,
+        m.net_status AS netStatus
+        FROM
+        inno72_machine m
+        WHERE
+        m.machine_code IN
+        <foreach item="item" index="index" collection="list"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
 </mapper>
