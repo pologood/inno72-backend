@@ -496,7 +496,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
             alarmMessageBean.setType("machineLackGoodsException");
             for(Inno72SupplyChannel supplyChannel:list){
                 String id = supplyChannel.getId();
-                String key = "LACK_GOODS_TYPE_"+lackGoodsType+"_"+id;
+                String key = CommonConstants.SUPPLY_CHANNEL_LACK_GOODS_PREF+lackGoodsType+"_"+id;
                 String value = redisUtil.get(key);
                 if(StringUtil.isEmpty(value)){
                     ChannelGoodsAlarmBean alarmBean = new ChannelGoodsAlarmBean();
