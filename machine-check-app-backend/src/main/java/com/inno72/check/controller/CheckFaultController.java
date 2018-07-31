@@ -66,9 +66,9 @@ public class CheckFaultController {
      */
     @RequestMapping(value="/upload",method = {RequestMethod.POST})
     public Result<String> upload(MultipartFile file){
-        logger.info("上传头像接口开始上传");
+        logger.info("添加故障上传头像接口开始上传");
         Result<String> result = checkFaultService.upload(file);
-        logger.info("上传头像接口返回图片路径：{}",JSON.toJSON(result));
+        logger.info("添加故障上传头像接口返回图片路径：{}",JSON.toJSON(result));
         return result;
     }
 

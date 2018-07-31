@@ -36,7 +36,7 @@ public class SupplyChannelH5Controller {
 	 */
 	@RequestMapping(value = "/list", method = {RequestMethod.GET })
 	public Result<List<Inno72SupplyChannel>> list(SupplyRequestVo vo) {
-		logger.info("货道列表接口参数：{}", JSON.toJSON(vo));
+		logger.info("货道列表H5接口参数：{}", JSON.toJSON(vo));
 		List<Inno72SupplyChannel> list = supplyChannelService.getList(vo.getMachineId());
 		return ResultGenerator.genSuccessResult(list);
 	}
@@ -46,7 +46,7 @@ public class SupplyChannelH5Controller {
 	 */
 	@RequestMapping(value="machineLack",method = {RequestMethod.GET })
 	public Result<List<Inno72Machine>> getMachineLack(){
-		logger.info("机器维度缺货接口");
+		logger.info("机器维度缺货H5接口");
 		return supplyChannelService.getMachineLackGoods();
 	}
 
@@ -55,7 +55,7 @@ public class SupplyChannelH5Controller {
 	 */
 	@RequestMapping(value="goodsLack",method = {RequestMethod.GET })
 	public Result<List<Inno72Goods>> getGoodsLack(){
-		logger.info("商品维度缺货接口");
+		logger.info("商品维度缺货H5接口");
 		return supplyChannelService.getGoodsLack();
 	}
 
@@ -64,7 +64,7 @@ public class SupplyChannelH5Controller {
 	 */
 	@RequestMapping(value="machineByLackGoods",method = {RequestMethod.GET })
 	public Result<List<Inno72Machine>> getMachineByLackGoods(SupplyRequestVo vo){
-		logger.info("查询单个商品缺货的机器接口参数：{}",JSON.toJSON(vo));
+		logger.info("查询单个商品缺货的机器H5接口参数：{}",JSON.toJSON(vo));
 		return supplyChannelService.getMachineByLackGoods(vo.getGoodsId());
 	}
 
@@ -73,7 +73,7 @@ public class SupplyChannelH5Controller {
 	 */
 	@RequestMapping(value="getGoodsByMachineId",method = {RequestMethod.GET })
 	public Result<List<Inno72Goods>> getGoodsByMachineId(SupplyRequestVo vo){
-		logger.info("根据机器查询可用商品接口参数：{}",JSON.toJSON(vo));
+		logger.info("根据机器查询可用商品H5接口参数：{}",JSON.toJSON(vo));
 		return supplyChannelService.getGoodsByMachineId(vo.getMachineId());
 	}
 
@@ -83,7 +83,7 @@ public class SupplyChannelH5Controller {
 	@RequestMapping(value="submit",method = { RequestMethod.POST})
 	public Result<String> submit(@RequestBody Map<String,Object> map){
 		List<Map<String,Object>> mapList = (List<Map<String,Object>>) map.get("list");
-		logger.info("提交补货接口参数：{}",JSON.toJSON(mapList));
+		logger.info("提交补货H5接口参数：{}",JSON.toJSON(mapList));
         return supplyChannelService.submit(mapList);
 	}
 
@@ -92,7 +92,7 @@ public class SupplyChannelH5Controller {
 	 */
 	@RequestMapping(value="workOrderList",method = {RequestMethod.GET })
 	public ModelAndView workOrderList(SupplyRequestVo vo){
-		logger.info("查询工单列表接口参数：{}",JSON.toJSON(vo));
+		logger.info("查询工单列表H5接口参数：{}",JSON.toJSON(vo));
 		List<WorkOrderVo> list = supplyChannelService.workOrderList(vo.getKeyword(),vo.getFindTime());
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
@@ -102,19 +102,8 @@ public class SupplyChannelH5Controller {
 	 */
 	@RequestMapping(value="workOrderDetail",method = {RequestMethod.GET})
 	public Result<WorkOrderVo> workOrderDetail(SupplyRequestVo vo){
-		logger.info("查询工单详情接口参数：{}",JSON.toJSON(vo));
+		logger.info("查询工单详情H5接口参数：{}",JSON.toJSON(vo));
         return supplyChannelService.workOrderDetail(vo.getMachineId(),vo.getBatchNo());
 	}
-
-
-	/**
-	 * 查询缺货货道并发送push
-	 */
-	@RequestMapping(value = "findAndPushByTaskParam",method = {RequestMethod.POST,RequestMethod.GET})
-	public void findAndPushByTaskParam(@RequestBody SupplyRequestVo vo){
-		logger.info("查询缺货货道并发送push接口参数：{}",JSON.toJSON(vo));
-		supplyChannelService.findAndPushByTaskParam(vo.getLackGoodsType());
-	}
-
 
 }

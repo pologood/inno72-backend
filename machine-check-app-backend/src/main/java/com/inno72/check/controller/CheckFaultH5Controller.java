@@ -33,9 +33,9 @@ public class CheckFaultH5Controller {
      */
     @RequestMapping(value="/add" , method = {RequestMethod.POST})
     public Result<String> add(@RequestBody Inno72CheckFault checkFault){
-        logger.info("上报故障接口参数：{}", JSON.toJSON(checkFault));
+        logger.info("上报故障H5接口参数：{}", JSON.toJSON(checkFault));
         Result result = checkFaultService.addCheckFault(checkFault);
-        logger.info("上报故障接口结果：{}",JSON.toJSON(result));
+        logger.info("上报故障H5接口结果：{}",JSON.toJSON(result));
         return result;
     }
 
@@ -44,9 +44,9 @@ public class CheckFaultH5Controller {
      */
     @RequestMapping(value="/finish",method = {RequestMethod.POST})
     public Result<String> finish(@RequestBody Inno72CheckFault checkFault){
-        logger.info("解决故障接口参数：{}", JSON.toJSON(checkFault));
+        logger.info("解决故障H5接口参数：{}", JSON.toJSON(checkFault));
         Result<String> result = checkFaultService.finish(checkFault);
-        logger.info("解决故障接口结果：{}", JSON.toJSON(result));
+        logger.info("解决故障H5接口结果：{}", JSON.toJSON(result));
         return result;
     }
 
@@ -55,9 +55,9 @@ public class CheckFaultH5Controller {
      */
     @RequestMapping(value="/list",method = {RequestMethod.GET})
     public ModelAndView list(Inno72CheckFault checkFault){
-        logger.info("查询故障分页列表接口参数：{}", JSON.toJSON(checkFault));
+        logger.info("查询故障分页列表H5接口参数：{}", JSON.toJSON(checkFault));
         List<Inno72CheckFault> list = checkFaultService.findForPage(checkFault.getStatus());
-        logger.info("查询故障分页列表接口结果：{}", JSON.toJSON(list));
+        logger.info("查询故障分页列表H5接口结果：{}", JSON.toJSON(list));
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
 
@@ -66,9 +66,9 @@ public class CheckFaultH5Controller {
      */
     @RequestMapping(value="/upload",method = {RequestMethod.POST})
     public Result<String> upload(MultipartFile file){
-        logger.info("上传头像接口开始上传");
+        logger.info("添加故障上传头像H5接口开始上传");
         Result<String> result = checkFaultService.upload(file);
-        logger.info("上传头像接口返回图片路径：{}",JSON.toJSON(result));
+        logger.info("添加故障上传头像H5接口返回图片路径：{}",JSON.toJSON(result));
         return result;
     }
 
@@ -77,9 +77,9 @@ public class CheckFaultH5Controller {
      */
     @RequestMapping(value="/edit",method = {RequestMethod.POST})
     public Result<String> edit(@RequestBody Inno72CheckFault inno72CheckFault){
-        logger.info("编辑回复故障备注接口参数：{}",JSON.toJSON(inno72CheckFault));
+        logger.info("编辑回复故障备注H5接口参数：{}",JSON.toJSON(inno72CheckFault));
         Result<String> result = checkFaultService.editRemark(inno72CheckFault.getId(),inno72CheckFault.getRemark());
-        logger.info("编辑回复故障备注接口结果：{}",JSON.toJSON(result));
+        logger.info("编辑回复故障备注H5接口结果：{}",JSON.toJSON(result));
         return result;
     }
 
@@ -88,9 +88,9 @@ public class CheckFaultH5Controller {
      */
     @RequestMapping(value="/detail",method = {RequestMethod.GET})
     public Result<Inno72CheckFault> detail(Inno72CheckFault inno72CheckFault){
-        logger.info("查询故障详情接口参数：{}",JSON.toJSON(inno72CheckFault));
+        logger.info("查询故障详情H5接口参数：{}",JSON.toJSON(inno72CheckFault));
         Result<Inno72CheckFault> result = checkFaultService.getDetail(inno72CheckFault.getId());
-        logger.info("查询故障详情接口结果：{}",JSON.toJSON(result));
+        logger.info("查询故障详情H5接口结果：{}",JSON.toJSON(result));
         return result;
     }
 
@@ -99,9 +99,9 @@ public class CheckFaultH5Controller {
      */
     @RequestMapping(value = "/typeList", method = {RequestMethod.GET})
     public Result<List<Inno72CheckFaultType>> typeList(Inno72CheckFault inno72CheckFault){
-        logger.info("查询故障类型接口参数：{}",JSON.toJSON(inno72CheckFault));
+        logger.info("查询故障类型H5接口参数：{}",JSON.toJSON(inno72CheckFault));
         Result<List<Inno72CheckFaultType>> result = checkFaultService.getTypeList(inno72CheckFault.getType());
-        logger.info("查询故障类型接口结果：{}",JSON.toJSON(result));
+        logger.info("查询故障类型H5接口结果：{}",JSON.toJSON(result));
         return result;
     }
 }

@@ -29,9 +29,9 @@ public class MachineH5Controller {
      */
     @RequestMapping(value="set" ,method = {RequestMethod.POST})
     public Result<String> setMachine(@RequestBody SupplyRequestVo vo){
-        logger.info("设置机器点位及管理人接口参数：{}",JSON.toJSON(vo));
+        logger.info("设置机器点位及管理人H5接口参数：{}",JSON.toJSON(vo));
         Result<String> result = machineService.setMachine(vo);
-        logger.info("设置机器点位及管理人接口结果：{}",JSON.toJSON(result));
+        logger.info("设置机器点位及管理人H5接口结果：{}",JSON.toJSON(result));
         return result;
     }
 
@@ -40,9 +40,9 @@ public class MachineH5Controller {
      */
     @RequestMapping(value="list", method = {RequestMethod.GET})
     public Result<List<Inno72Machine>> list(){
-        logger.info("查询管理的机器接口");
+        logger.info("查询管理的机器H5接口");
         Result<List<Inno72Machine>> result = machineService.getMachineList();
-        logger.info("查询管理的机器接口结果{}",JSON.toJSON(result));
+        logger.info("查询管理的机器H5接口结果{}",JSON.toJSON(result));
         return result;
 
     }
@@ -53,7 +53,7 @@ public class MachineH5Controller {
     @RequestMapping(value="findAreaByCode", method = {RequestMethod.GET})
     @ResponseBody
     public Result<Inno72AdminArea> findAreaByCode(Inno72AdminArea adminArea){
-        logger.info("查询单个一级区域及子区域接口参数：{}",JSON.toJSON(adminArea));
+        logger.info("查询单个一级区域及子区域H5接口参数：{}",JSON.toJSON(adminArea));
         return machineService.findByFirstLevelCode(adminArea.getCode());
     }
 
@@ -63,7 +63,7 @@ public class MachineH5Controller {
      */
     @RequestMapping(value="findFirstLevelArea", method = {RequestMethod.GET})
     public Result<List<Inno72AdminArea>> findFirstLevelArea(){
-        logger.info("查询单个一级区域及子区域接口");
+        logger.info("查询单个一级区域及子区域H5接口");
         return machineService.findFirstLevelArea();
     }
 
@@ -72,7 +72,7 @@ public class MachineH5Controller {
      */
     @RequestMapping(value="findLocaleByAreaCode", method = {RequestMethod.GET})
     public Result<List<Inno72Locale>> findLocaleByAreaCode(Inno72Locale locale){
-        logger.info("查询点位接口参数：{}",JSON.toJSON(locale));
+        logger.info("查询点位H5接口参数：{}",JSON.toJSON(locale));
         return machineService.selectLocaleByAreaCode(locale.getAreaCode());
     }
 
