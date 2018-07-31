@@ -41,8 +41,8 @@ public class CheckUserH5Controller {
     /**
      * 登录
      */
-    @RequestMapping(value="/login", method = {RequestMethod.GET})
-    public Result<SessionData> login(Inno72CheckUser inno72CheckUser){
+    @RequestMapping(value="/login", method = {RequestMethod.POST})
+    public Result<SessionData> login(@RequestBody Inno72CheckUser inno72CheckUser){
         logger.info("登录H5接口参数：{}",JSON.toJSON(inno72CheckUser));
         Result<SessionData> result = checkUserService.login(inno72CheckUser.getPhone(),inno72CheckUser.getSmsCode());
         logger.info("登录H5接口结果：{}",JSON.toJSON(result));
