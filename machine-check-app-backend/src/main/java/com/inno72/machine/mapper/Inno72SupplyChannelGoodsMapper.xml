@@ -10,11 +10,4 @@
     <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
   </resultMap>
 
-  <delete id="deleteBySupplyChannelIds">
-    delete from inno72_supply_channel_goods
-    where
-        <foreach collection="supplyChannelIds" item="item" separator="or" open="(" close=")">
-          supply_channel_id = #{item,jdbcType=VARCHAR}
-        </foreach>
-  </delete>
 </mapper>

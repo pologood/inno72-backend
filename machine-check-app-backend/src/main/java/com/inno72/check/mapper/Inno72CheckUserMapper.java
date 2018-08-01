@@ -7,5 +7,4 @@ import java.util.List;
 
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72CheckUserMapper extends Mapper<Inno72CheckUser> {
-    List<Inno72CheckUser> selectByMachineId(String id);
 }

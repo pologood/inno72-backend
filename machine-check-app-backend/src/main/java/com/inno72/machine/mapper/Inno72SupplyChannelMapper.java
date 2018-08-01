@@ -17,13 +17,7 @@ public interface Inno72SupplyChannelMapper extends Mapper<Inno72SupplyChannel> {
 
 	int updateByParam(Inno72SupplyChannel supplyChannel);
 
-	int updateChild(Inno72SupplyChannel upChildChannel);
-
 	int updateListByParam(Inno72SupplyChannel supplyChannel);
-
-	Inno72SupplyChannel selectByParentCode(Map<String, Object> map);
-
-	List<Inno72SupplyChannel> selectListForPage(Inno72SupplyChannel supplyChannel);
 
     List<Inno72SupplyChannel> selectTaskParam(@Param("lackGoodsType") int lackGoodsType);
 }

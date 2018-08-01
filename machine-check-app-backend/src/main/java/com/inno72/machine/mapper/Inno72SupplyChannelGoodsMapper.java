@@ -8,5 +8,4 @@ import java.util.Map;
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72SupplyChannelGoodsMapper extends Mapper<Inno72SupplyChannelGoods> {
 
-    int deleteBySupplyChannelIds(String[] supplyChannelIds);
 }
