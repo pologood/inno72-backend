@@ -86,7 +86,7 @@
 		t3.machine_id,
 		t3.parent_code,
 		t3.volume_count,
-		t3.goods_count
+		t3.goods_count,
 		CONCAT(
             t5.province,
             t5.city,
