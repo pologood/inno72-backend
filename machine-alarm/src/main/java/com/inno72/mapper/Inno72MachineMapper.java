@@ -27,5 +27,13 @@ public interface Inno72MachineMapper extends Mapper<Inno72Machine> {
      */
     Inno72Machine findMachineByMachineCode(String machineCode);
 
+    /**
+     * find machineList
+     *
+     * @param :machineList
+     * @return :List<Inno72Machine>
+     */
+    List<Inno72Machine> findMachineNetStatusOpenList(List<String> machineList);
+
 
 }

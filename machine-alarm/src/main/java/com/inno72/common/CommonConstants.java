@@ -36,7 +36,14 @@ public class CommonConstants {
     //缺货百分之二十
     public static final int TWENTY_PERSENT = 20;
 
+    //网络关闭
+    public final static Integer NET_CLOSE = 0;
+    //网络开启
+    public final static Integer NET_OPEN = 1;
 
+    public final static Integer RESULT_SUCCESS = 0;
+
+    public final static Integer MACHINE_DOOR_OPEN = 1;
 
 
 
