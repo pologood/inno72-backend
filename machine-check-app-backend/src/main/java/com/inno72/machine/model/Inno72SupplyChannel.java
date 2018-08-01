@@ -110,12 +110,6 @@ public class Inno72SupplyChannel {
 	private String[] codes;
 
 	@Transient
-	private String fromCode;
-
-	@Transient
-	private String toCode;
-
-	@Transient
 	private String goodsId;
 
 	@Transient
@@ -399,22 +393,6 @@ public class Inno72SupplyChannel {
 
 	public void setGoodsCodes(String[] goodsCodes) {
 		this.goodsCodes = goodsCodes;
-	}
-
-	public String getFromCode() {
-		return fromCode;
-	}
-
-	public void setFromCode(String fromCode) {
-		this.fromCode = fromCode;
-	}
-
-	public String getToCode() {
-		return toCode;
-	}
-
-	public void setToCode(String toCode) {
-		this.toCode = toCode;
 	}
 
 	public String getGoodsId() {
