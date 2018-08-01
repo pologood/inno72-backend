@@ -12,13 +12,4 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
   </resultMap>
 
-  <sql id="Columns_List">
-    id,fault_id,image,is_delete,create_time
-  </sql>
-
-  <select id="selectByFaultId" resultMap="BaseResultMap">
-    select <include refid="Columns_List"/>
-    from inno72_check_fault_image
-    where fault_id = #{faultId}
-  </select>
 </mapper>

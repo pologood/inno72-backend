@@ -7,5 +7,4 @@ import java.util.List;
 
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72CheckFaultImageMapper extends Mapper<Inno72CheckFaultImage> {
-    List<Inno72CheckFaultImage> selectByFaultId(String faultId);
 }
