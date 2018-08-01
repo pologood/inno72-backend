@@ -134,33 +134,6 @@
     where machine_id=#{machineId} and code=#{code}
   </update>
 
-  <update id="updateChild">
-    update inno72_supply_channel
-    <set>
-      <if test="name != null">
-        name=#{name},
-      </if>
-      <if test="status != null">
-        status = #{status},
-      </if>
-      <if test="volumeCount != null">
-        volume_count = #{volumeCount},
-      </if>
-      <if test="goodsCount != null">
-        goods_count = #{goodsCount},
-      </if>
-      <if test="updateId != null">
-        update_id = #{updateId},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime},
-      </if>
-      <if test="parentCode != null">
-        parent_code=''
-      </if>
-    </set>
-    where machine_id=#{machineId} and parent_code=#{parentCode}
-  </update>
 
   <update id="updateListByParam">
     update inno72_supply_channel
