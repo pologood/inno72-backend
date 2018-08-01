@@ -118,35 +118,45 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         String code = supplyChannel.getCode();
         String machineId = supplyChannel.getMachineId();
         if (StringUtil.isEmpty(code) || StringUtil.isEmpty(machineId)) {
-            return ResultGenerator.genFailResult("参数有误");
+            return Results.failure("参数有误");
+        }
+        int codeInteger = Integer.parseInt(code);
+        if(codeInteger %2 == 0){
+            return Results.failure("当前货道不能拆分");
         }
         Map<String, Object> map = new HashMap<>();
         map.put("machineId", machineId);
         map.put("code", code);
         supplyChannel = inno72SupplyChannelMapper.selectByParam(map);
         if (supplyChannel != null) {
+            Integer newCode = codeInteger+1;
+            map.put("code",newCode.toString());
+            Inno72SupplyChannel childChannel = inno72SupplyChannelMapper.selectByParam(map);
+            if(childChannel != null){
+                return Results.failure("货道未合并不能拆分");
+            }
             supplyChannel.setGoodsCount(0);
             supplyChannel.setUpdateTime(LocalDateTime.now());
             inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
             Condition condition = new Condition(Inno72SupplyChannelGoods.class);
             condition.createCriteria().andEqualTo("supplyChannelId",supplyChannel.getId());
             inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
-            Inno72SupplyChannel childChannel = new Inno72SupplyChannel();
+            childChannel = new Inno72SupplyChannel();
             childChannel.setId(StringUtil.getUUID());
-            Integer codeInt = Integer.parseInt(code)+1;
+
             int volumeCount = 50;
-            if(codeInt<20){
+            if(newCode<20){
                 volumeCount = 11;
-            }else if(codeInt>20 && codeInt<30){
+            }else if(newCode>20 && newCode<30){
                 volumeCount = 5;
             }
             childChannel.setVolumeCount(volumeCount);
-            childChannel.setCode(codeInt.toString());
+            childChannel.setCode(newCode.toString());
             childChannel.setCreateTime(LocalDateTime.now());
             childChannel.setCreateId("系统");
             childChannel.setUpdateTime(LocalDateTime.now());
             childChannel.setUpdateId("系统");
-            childChannel.setName("货道"+codeInt);
+            childChannel.setName("货道"+newCode);
             childChannel.setGoodsCount(0);
             childChannel.setWorkStatus(0);
             childChannel.setMachineId(supplyChannel.getMachineId());
@@ -214,9 +224,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     }
 
     @Override
-    public List<Inno72SupplyChannel> getList(String machineId) {
+    public Result<List<Inno72SupplyChannel>> getList(String machineId) {
         if(StringUtil.isEmpty(machineId)){
-            return null;
+            return Results.failure("参数不能为空");
         }
         Condition condition = new Condition(Inno72SupplyChannel.class);
         condition.createCriteria().andEqualTo("machineId",machineId).andEqualTo("status",0);
@@ -224,7 +234,8 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         Map<String,Object> map= new HashMap<>();
         map.put("machineId",machineId);
         map.put("status",0);
-        return inno72SupplyChannelMapper.selectListByParam(map);
+        List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectListByParam(map);
+        return ResultGenerator.genSuccessResult(list);
     }
 
     @Override

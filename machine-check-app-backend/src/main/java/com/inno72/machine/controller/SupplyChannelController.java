@@ -37,8 +37,7 @@ public class SupplyChannelController {
 	@RequestMapping(value = "/list", method = {RequestMethod.POST })
 	public Result<List<Inno72SupplyChannel>> list(@RequestBody SupplyRequestVo vo) {
 		logger.info("货道列表接口参数：{}", JSON.toJSON(vo));
-		List<Inno72SupplyChannel> list = supplyChannelService.getList(vo.getMachineId());
-		return ResultGenerator.genSuccessResult(list);
+		return supplyChannelService.getList(vo.getMachineId());
 	}
 
 	/**
