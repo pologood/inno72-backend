@@ -28,6 +28,7 @@ public class CheckFaultController {
     @Resource
     private CheckFaultService checkFaultService;
 
+
     /**
      * 添加报障
      */
