@@ -79,7 +79,7 @@ public class Inno72CheckFault {
      * 状态
      */
     @Column(name="status")
-    private int status;
+    private Integer status;
 
     /**
      * 解决方案
@@ -192,11 +192,11 @@ public class Inno72CheckFault {
         this.finishTime = finishTime;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
