@@ -47,7 +47,6 @@
     left join inno72_check_fault_remark t5 on t1.id=t5.fault_id
     left join inno72_check_fault_type t6 on t1.type=t6.code
     left join inno72_check_fault_type t7 on t1.type = t7.parent_code
-
     where t3.check_user_id=#{checkUserId}
     <if test="status != null">
       and t1.status=#{status}
@@ -68,6 +67,7 @@
     left join inno72_check_fault_remark t5 on t1.id=t5.fault_id
     left join inno72_check_fault_type t6 on t1.type=t6.code
     left join inno72_check_fault_type t7 on t1.type = t7.parent_code
+    and t7.code in(t1.child_type)
     where t1.id = #{faultId}
   </select>
 </mapper>

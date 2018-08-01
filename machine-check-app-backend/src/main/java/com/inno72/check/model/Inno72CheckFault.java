@@ -112,6 +112,9 @@ public class Inno72CheckFault {
     @Transient
     private String typeName;
 
+    @Transient
+    private String title;
+
     public String getId() {
         return id;
     }
@@ -262,5 +265,13 @@ public class Inno72CheckFault {
 
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
