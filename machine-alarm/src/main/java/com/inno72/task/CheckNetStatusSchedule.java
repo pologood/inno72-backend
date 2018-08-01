@@ -81,7 +81,7 @@ public class CheckNetStatusSchedule {
                 }
                 if (null != machineNetInfoList && machineNetInfoList.size() > 0) {
                     String machineNetInfoString = JSONObject.toJSON(machineNetInfoList).toString();
-                    log.info("断开的机器列表，machineNetInfoString：{}", machineNetInfoString);
+                    log.info("网络状态需要修改的机器列表，machineNetInfoString：{}", machineNetInfoString);
                     String urlProp = machineAlarmProperties.getProps().get("updateMachineListNetStatusUrl");
                     String res = HttpClient.post(urlProp, machineNetInfoString);
                     JSONObject jsonObject = JSONObject.parseObject(res);
@@ -109,7 +109,7 @@ public class CheckNetStatusSchedule {
                     }
                 if (null != machineNetInfoList && machineNetInfoList.size() > 0) {
                     String machineNetInfoString = JSONObject.toJSON(machineNetInfoList).toString();
-                    log.info("断开的机器列表，machineNetInfoString：{}", machineNetInfoString);
+                    log.info("需要修改状态的机器列表，machineNetInfoString：{}", machineNetInfoString);
                     String urlProp = machineAlarmProperties.getProps().get("updateMachineListNetStatusUrl");
                     String res = HttpClient.post(urlProp, machineNetInfoString);
                     JSONObject jsonObject = JSONObject.parseObject(res);
