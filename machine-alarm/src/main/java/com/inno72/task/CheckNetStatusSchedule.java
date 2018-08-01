@@ -82,9 +82,8 @@ public class CheckNetStatusSchedule {
                 if (null != machineNetInfoList && machineNetInfoList.size() > 0) {
                     String machineNetInfoString = JSONObject.toJSON(machineNetInfoList).toString();
                     log.info("断开的机器列表，machineNetInfoString：{}", machineNetInfoString);
-                    /*String urlProp = machineAlarmProperties.getProps().get("updateMachineListNetStatusUrl");
-                    String res = HttpClient.post(urlProp, machineNetInfoString);*/
-                    String res = HttpClient.post("http://api.erp.32solo.com/machine/machine/updateMachineListNetStatus", machineNetInfoString);
+                    String urlProp = machineAlarmProperties.getProps().get("updateMachineListNetStatusUrl");
+                    String res = HttpClient.post(urlProp, machineNetInfoString);
                     JSONObject jsonObject = JSONObject.parseObject(res);
                     if (CommonConstants.RESULT_SUCCESS.equals(jsonObject.getInteger("code"))) {
                         log.info("修改后台网络状态成功");
@@ -111,9 +110,8 @@ public class CheckNetStatusSchedule {
                 if (null != machineNetInfoList && machineNetInfoList.size() > 0) {
                     String machineNetInfoString = JSONObject.toJSON(machineNetInfoList).toString();
                     log.info("断开的机器列表，machineNetInfoString：{}", machineNetInfoString);
-                    /*String urlProp = machineAlarmProperties.getProps().get("updateMachineListNetStatusUrl");
-                    String res = HttpClient.post(urlProp, machineNetInfoString);*/
-                    String res = HttpClient.post("http://api.erp.32solo.com/machine/machine/updateMachineListNetStatus", machineNetInfoString);
+                    String urlProp = machineAlarmProperties.getProps().get("updateMachineListNetStatusUrl");
+                    String res = HttpClient.post(urlProp, machineNetInfoString);
                     JSONObject jsonObject = JSONObject.parseObject(res);
                     if (CommonConstants.RESULT_SUCCESS.equals(jsonObject.getInteger("code"))) {
                         log.info("修改后台网络状态成功");
