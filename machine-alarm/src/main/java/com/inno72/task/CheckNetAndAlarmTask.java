@@ -62,7 +62,7 @@ public class CheckNetAndAlarmTask {
     private CheckUserService checkUserService;
 
     @Scheduled(cron = "0 0/1 * * * ?")
-    //@Scheduled(cron = "0/3 * * * * ?")
+    // @Scheduled(cron = "0/5 * * * * ?")
     public void checkNetStatus() {
 
         log.info("检查网络状态并预警的定时任务，开始执行");
@@ -121,6 +121,13 @@ public class CheckNetAndAlarmTask {
                             }
                             //保存接口
                             saveAlarmMsg(machineLogInfo);
+                            //发送给企业微信
+                            //企业微信提醒
+                            Map<String, String> m = new HashMap<>();
+                            m.put("touser", "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi");
+                            m.put("agentid", "1000002");
+                            m.put("msgtype", "text");
+                            msgUtil.sendQyWechatMsg("qywechat_msg", params, m, "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi", "machineAlarm-RedisReceiver");
 
                         } else if (between == 8) {
                             //组合报警接口
@@ -150,6 +157,13 @@ public class CheckNetAndAlarmTask {
 
                             //保存接口
                             saveAlarmMsg(machineLogInfo);
+
+                            //企业微信提醒
+                            Map<String, String> m = new HashMap<>();
+                            m.put("touser", "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi");
+                            m.put("agentid", "1000002");
+                            m.put("msgtype", "text");
+                            msgUtil.sendQyWechatMsg("qywechat_msg", params, m, "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi", "machineAlarm-RedisReceiver");
 
                         } else if (between == 10 || between == 30) {
                             //钉钉报警接口

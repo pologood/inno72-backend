@@ -105,17 +105,20 @@ public class RedisReceiver {
                     if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
                         for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
                             String phone = inno72CheckUserPhone1.getPhone();
-                            String code = "sms_alarm_common";
-                            msgUtil.sendSMS(code, params, phone, "machineAlarm-RedisReceiver");
+                            msgUtil.sendSMS("sms_alarm_common", params, phone, "machineAlarm-RedisReceiver");
                         }
                     }
                     //发巡检app提醒
                     for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
                         String phone = inno72CheckUserPhone1.getPhone();
-                        String code = "push_alarm_common";
-                        msgUtil.sendSMS(code, params, phone, "machineAlarm-RedisReceiver");
+                        msgUtil.sendSMS("push_alarm_common", params, phone, "machineAlarm-RedisReceiver");
                     }
-
+                    //企业微信提醒
+                    Map<String, String> m = new HashMap<>();
+                    m.put("touser", "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi");
+                    m.put("agentid", "1000002");
+                    m.put("msgtype", "text");
+                    msgUtil.sendQyWechatMsg("qywechat_msg", params, m, "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi", "machineAlarm-RedisReceiver");
                 }
 
             } else {
@@ -148,9 +151,8 @@ public class RedisReceiver {
                     mongoTpl.remove(query, "DropGoodsExceptionInfo");
                     mongoTpl.save(dropGoodsExceptionInfo, "DropGoodsExceptionInfo");
                     //连续掉货两次
-                    if (updateNum == 2 || updateNum == 5) {
+                    if (updateNum == 2) {
                         //巡检app接口
-                        String code = "push_alarm_common";
                         Map<String, String> params = new HashMap<>();
                         params.put("machineCode", machineCode);
                         params.put("localStr", localStr);
@@ -160,21 +162,44 @@ public class RedisReceiver {
                         List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
                         for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
                             String phone = inno72CheckUserPhone1.getPhone();
-                            msgUtil.sendPush(code, params, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
+                            msgUtil.sendPush("push_alarm_common", params, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
                         }
 
                         //保存接口
                         int lackNum = 0;
                         saveAlarmMsg(type, system, machineCode, lackNum);
 
+                    } else if (updateNum == 5) {
+                        //巡检app接口
+                        Map<String, String> params = new HashMap<>();
+                        params.put("machineCode", machineCode);
+                        params.put("localStr", localStr);
+                        params.put("text", "出现掉货异常，请及时处理");
+                        log.info("machineDropGoods send msg ，params：{}", params.toString());
+                        //查询巡检人员手机号
+                        List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
+                        for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                            String phone = inno72CheckUserPhone1.getPhone();
+                            msgUtil.sendPush("push_alarm_common", params, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
+                        }
+                        //保存接口
+                        int lackNum = 0;
+                        saveAlarmMsg(type, system, machineCode, lackNum);
+
+                        //企业微信提醒
+                        Map<String, String> m = new HashMap<>();
+                        m.put("touser", "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi");
+                        m.put("agentid", "1000002");
+                        m.put("msgtype", "text");
+                        msgUtil.sendQyWechatMsg("qywechat_msg", params, m, "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi", "machineAlarm-RedisReceiver");
+
                     } else if (updateNum > 5 && (updateNum - 5) % 2 == 0) {
                         //钉钉报警接口
-                        String code = "dingding_alarm_common";
                         Map<String, String> params = new HashMap<>();
                         params.put("machineCode", machineCode);
                         params.put("localStr", localStr);
                         params.put("text", channelNum + "," + "出现掉货异常，请及时处理。");
-                        msgUtil.sendDDTextByGroup(code, params, groupId, "machineAlarm-RedisReceiver");
+                        msgUtil.sendDDTextByGroup("dingding_alarm_common", params, groupId, "machineAlarm-RedisReceiver");
 
                     }
                 }
@@ -214,12 +239,19 @@ public class RedisReceiver {
             log.info("machineDropGoods send msg ，params：{}", params.toString());
             //缺货百分之二十到百分之十之间，巡检报警方式
             if (percent > CommonConstants.TEN_PERSENT && percent <= CommonConstants.TWENTY_PERSENT) {
+                //巡检app报警
                 List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(channelGoodsAlarmBean.getMachineCode());
                 for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
                     String phone = inno72CheckUserPhone1.getPhone();
-                    String code = "push_alarm_common";
-                    msgUtil.sendPush(code, params, phone, "machineAlarm-RedisReceiver", "【缺货】您负责的机器需要补货", "");
+                    msgUtil.sendPush("push_alarm_common", params, phone, "machineAlarm-RedisReceiver", "【缺货】您负责的机器需要补货", "");
                 }
+                //企业微信提醒
+                Map<String, String> m = new HashMap<>();
+                m.put("touser", "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi");
+                m.put("agentid", "1000002");
+                m.put("msgtype", "text");
+                msgUtil.sendQyWechatMsg("qywechat_msg", params, m, "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi", "machineAlarm-RedisReceiver");
+
             } else if (percent <= CommonConstants.TEN_PERSENT) {
                 //组合报警接口
                 //查询巡检人员手机号
@@ -228,20 +260,23 @@ public class RedisReceiver {
                 log.info("获取spring_profiles_active：{}", active);
                 if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
                     for (Inno72CheckUserPhone inno72CheckUserPhoneOne : inno72CheckUserPhones) {
-                        String code = "sms_alarm_common";
                         String phone = inno72CheckUserPhoneOne.getPhone();
-                        msgUtil.sendSMS(code, params, phone, "machineAlarm-RedisReceiver");
+                        msgUtil.sendSMS("sms_alarm_common", params, phone, "machineAlarm-RedisReceiver");
                     }
                 }
                 for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
                     String phone = inno72CheckUserPhone1.getPhone();
-                    String code = "push_alarm_common";
-                    msgUtil.sendPush(code, params, phone, "machineAlarm-RedisReceiver", "【缺货】您负责的机器需要补货", "");
+                    msgUtil.sendPush("push_alarm_common", params, phone, "machineAlarm-RedisReceiver", "【缺货】您负责的机器需要补货", "");
                 }
             }
             //保存接口
             saveAlarmMsg(type, system, channelGoodsAlarmBean.getMachineCode(), channelGoodsAlarmBean.getLackNum());
-
+            //企业微信提醒
+            Map<String, String> m = new HashMap<>();
+            m.put("touser", "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi");
+            m.put("agentid", "1000002");
+            m.put("msgtype", "text");
+            msgUtil.sendQyWechatMsg("qywechat_msg", params, m, "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi", "machineAlarm-RedisReceiver");
         } else {
             return;
         }
