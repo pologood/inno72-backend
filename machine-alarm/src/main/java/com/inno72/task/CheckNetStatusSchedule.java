@@ -45,7 +45,7 @@ public class CheckNetStatusSchedule {
 
 
     @Scheduled(cron = "0 0/5 * * * ?")
-    //@Scheduled(cron = "0/5 * * * * ?")
+    //@Scheduled(cron = "0/3 * * * * ?")
 	public void checkNetStatus() {
 
 		log.info("检查并修改网络状态的定时任务，开始执行");
@@ -88,8 +88,6 @@ public class CheckNetStatusSchedule {
                     if (CommonConstants.RESULT_SUCCESS.equals(jsonObject.getInteger("code"))) {
                         log.info("修改后台网络状态成功");
                     }
-                } else {
-                    return;
                 }
 
 
@@ -116,8 +114,6 @@ public class CheckNetStatusSchedule {
                     if (CommonConstants.RESULT_SUCCESS.equals(jsonObject.getInteger("code"))) {
                         log.info("修改后台网络状态成功");
                     }
-                } else {
-                    return;
                 }
 
 

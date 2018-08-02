@@ -38,8 +38,8 @@
 			ap.create_time,
 			ap.update_time,
 			CASE 
-			WHEN ap.start_time &gt; NOW() THEN '1'
-			WHEN ap.start_time &lt;  NOW() and ap.end_time &gt; NOW() THEN '2'
+			WHEN ap.start_time &gt; NOW() THEN '2'
+			WHEN ap.start_time &lt;  NOW() and ap.end_time &gt; NOW() THEN '1'
 			WHEN ap.end_time &lt; NOW() THEN '3'
 			ELSE '未排期'
 			END state
@@ -60,6 +60,9 @@
 		<if test="startTime !=null and startTime !='' ">
 			<![CDATA[and ( ap.start_time  BETWEEN #{startTime} AND #{endTime} OR ap.end_time BETWEEN #{startTime} AND #{endTime} ) ]]>
 		</if>
+		<if test="status ==1"> and NOW() &lt;  ap.start_time </if>
+		<if test="status ==2"> and (NOW() BETWEEN ap.start_time and ap.end_time ) </if>
+		<if test="status ==3"> and NOW() &gt; ap.end_time  </if>
 		ORDER BY state
   </select>
   <!-- 联动区域机器列表-->
