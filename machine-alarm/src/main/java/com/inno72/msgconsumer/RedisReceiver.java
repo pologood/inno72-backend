@@ -112,7 +112,7 @@ public class RedisReceiver {
                     //发巡检app提醒
                     for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
                         String phone = inno72CheckUserPhone1.getPhone();
-                        msgUtil.sendSMS("push_alarm_common", params, phone, "machineAlarm-RedisReceiver");
+                        msgUtil.sendPush("push_alarm_common", params, phone, "machineAlarm-RedisReceiver", "【故障】您负责的机器出现货道故障", "");
                     }
                     //企业微信提醒
                     List<String> userIdList = new ArrayList<>();
