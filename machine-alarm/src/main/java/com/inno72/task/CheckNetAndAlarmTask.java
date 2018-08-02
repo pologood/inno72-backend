@@ -132,6 +132,7 @@ public class CheckNetAndAlarmTask {
                             Map<String, String> m = new HashMap<>();
                             m.put("touser", userIdString);
                             m.put("agentid", "1000002");
+                            log.info("closeNet alarm, param:{},m:{}", params.toString(), m.toString());
                             msgUtil.sendQyWechatMsg("qywechat_msg", params, m, userIdString, "machineAlarm-CheckNetAndAlarmTask");
 
                         } else if (between == 8) {
