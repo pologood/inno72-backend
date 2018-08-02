@@ -14,6 +14,8 @@
     <result column="sex" jdbcType="INTEGER" property="sex" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="head_image" jdbcType="VARCHAR" property="headImage" />
+    <result column="head_image" jdbcType="VARCHAR" property="headImage" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="update_time" />
@@ -38,8 +40,11 @@
 		ORDER BY u.update_time DESC
   </select>
   
-  <select id="getCount" parameterType="String" resultType="int">
+  <select id="checkCardNoIsExist" parameterType="String" resultType="int">
 		SELECT count(1) from inno72_check_user  u WHERE u.is_delete=0 and u.card_no=#{cardNo}
+  </select>
+   <select id="checkPhoneIsExist" parameterType="String" resultType="int">
+		SELECT count(1) from inno72_check_user  u WHERE u.is_delete=0 and u.phone=#{phone}
   </select>
   
   <!-- 人员详情-->
