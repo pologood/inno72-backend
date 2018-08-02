@@ -13,6 +13,7 @@ import com.inno72.msg.MsgUtil;
 import com.inno72.service.AlarmMsgService;
 import com.inno72.service.CheckUserService;
 import com.inno72.service.MachineService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,13 +122,17 @@ public class CheckNetAndAlarmTask {
                             }
                             //保存接口
                             saveAlarmMsg(machineLogInfo);
-                            //发送给企业微信
                             //企业微信提醒
+                            List<String> userIdList = new ArrayList<>();
+                            for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                                userIdList.add(inno72CheckUserPhone1.getUserId());
+                            }
+                            String userIdString = StringUtils.join(userIdList.toArray(), "|");
+                            log.info("userIdString:{}", userIdString);
                             Map<String, String> m = new HashMap<>();
-                            m.put("touser", "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi");
+                            m.put("touser", userIdString);
                             m.put("agentid", "1000002");
-                            m.put("msgtype", "text");
-                            msgUtil.sendQyWechatMsg("qywechat_msg", params, m, "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi", "machineAlarm-RedisReceiver");
+                            msgUtil.sendQyWechatMsg("qywechat_msg", params, m, userIdString, "machineAlarm-CheckNetAndAlarmTask");
 
                         } else if (between == 8) {
                             //组合报警接口
@@ -158,12 +163,17 @@ public class CheckNetAndAlarmTask {
                             //保存接口
                             saveAlarmMsg(machineLogInfo);
 
-                            //企业微信提醒
+                            //企业微信
+                            List<String> userIdList = new ArrayList<>();
+                            for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                                userIdList.add(inno72CheckUserPhone1.getUserId());
+                            }
+                            String userIdString = StringUtils.join(userIdList.toArray(), "|");
+                            log.info("userIdString:{}", userIdString);
                             Map<String, String> m = new HashMap<>();
-                            m.put("touser", "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi");
+                            m.put("touser", userIdString);
                             m.put("agentid", "1000002");
-                            m.put("msgtype", "text");
-                            msgUtil.sendQyWechatMsg("qywechat_msg", params, m, "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi", "machineAlarm-RedisReceiver");
+                            msgUtil.sendQyWechatMsg("qywechat_msg", params, m, userIdString, "machineAlarm-CheckNetAndAlarmTask");
 
                         } else if (between == 10 || between == 30) {
                             //钉钉报警接口
