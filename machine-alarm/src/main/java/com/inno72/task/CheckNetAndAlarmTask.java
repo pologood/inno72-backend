@@ -208,7 +208,7 @@ public class CheckNetAndAlarmTask {
      */
     private void saveAlarmMsg(Inno72Machine machineLogInfo) {
         Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
-        inno72AlarmMsg.setTitle("报警");
+        inno72AlarmMsg.setTitle("您负责的机器出现网络异常");
         inno72AlarmMsg.setType(4);
         inno72AlarmMsg.setCreateTime(LocalDateTime.now());
         inno72AlarmMsg.setSystem("machineCloseNet");

@@ -325,11 +325,11 @@ public class RedisReceiver {
     private void saveAlarmMsg(String type, String system, String machineCode, int lackNum) {
         Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
         if ((CommonConstants.MACHINE_DROPGOODS_EXCEPTION).equals(type)) {
-            inno72AlarmMsg.setTitle("报警");
+            inno72AlarmMsg.setTitle("您负责的机器出现掉货异常");
             inno72AlarmMsg.setType(2);
             inno72AlarmMsg.setDetail(machineCode + "," + "出现掉货异常，请及时处理");
         } else if (CommonConstants.MACHINE_LACKGOODS_EXCEPTION.equals(type)) {
-            inno72AlarmMsg.setTitle("补货");
+            inno72AlarmMsg.setTitle("您负责的机器需要补货");
             inno72AlarmMsg.setType(3);
             inno72AlarmMsg.setDetail(machineCode + "," + "缺货" + lackNum + "个，请及时处理");
         }
