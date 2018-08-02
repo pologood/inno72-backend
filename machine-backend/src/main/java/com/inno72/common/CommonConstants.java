@@ -28,10 +28,26 @@ public class CommonConstants {
 	public static final String OSS_PATH = "backend";
 	/** OSS基础路径 **/
 	public static final String ALI_OSS = "https://inno72.oss-cn-beijing.aliyuncs.com/";
-	
+
 	/** 每次下载条数 **/
 	public final static int ONE_THOUSAND = 10000;
-	
+
+	/** 计划ID key **/
 	public static final String REDIS_ACTIVITY_PLAN_CACHE_KEY = "machine_plan:";
+
+	/** 企业微信获取Token **/
+	public static final String qyWeChatGetsAccessTokenUrl = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={0}&corpsecret={1}";
+
+	/** 企业微信发消息 **/
+	public final static String qyWeChatMsgSendUrl = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={0}";
+
+	/** 企业微信添加用户 **/
+	public final static String qyWeChatAddUserUrl = "https://qyapi.weixin.qq.com/cgi-bin/user/create?access_token={0}";
+
+	/** 企业微信用户USERID转换OpenID **/
+	public final static String qyWeChatConvertOpenidUrl = "https://qyapi.weixin.qq.com/cgi-bin/user/convert_to_openid?access_token={0}";
+
+	/** 企业微信用户邀请成员 **/
+	public final static String qyWeChatInviteUserUrl = "https://qyapi.weixin.qq.com/cgi-bin/batch/invite?access_token={0}";
 
 }
