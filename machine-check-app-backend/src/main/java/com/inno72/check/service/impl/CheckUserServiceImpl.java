@@ -59,11 +59,15 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         if(StringUtil.isEmpty(message) || sub>60){
             //发送
             String smsCode = StringUtil.createVerificationCode(6);
+            String active = System.getenv("spring_profiles_active");
+            if(StringUtil.isEmpty(active) || !active.equals("prod")){
+                smsCode = "123456";
+            }
             map.put("smsCode",smsCode);
             map.put("time",new Date());
             redisUtil.setex(key,60*10, JSON.toJSONString(map));//验证码有效期10分钟
             params.put("code", smsCode);
-            String active = System.getenv("spring_profiles_active");
+
             if(StringUtil.isNotEmpty(active) && active.equals("prod")){
                 msgUtil.sendSMS(code, params, phone, appName);
             }
