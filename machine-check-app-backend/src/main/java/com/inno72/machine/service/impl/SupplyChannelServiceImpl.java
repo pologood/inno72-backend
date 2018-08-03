@@ -249,11 +249,14 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 List<SupplyChannelVo> supplyChannelVoList = machine.getSupplyChannelVoList();
                 if(supplyChannelVoList != null && supplyChannelVoList.size()>0){
                     for(SupplyChannelVo supplyChannelVo:supplyChannelVoList){
-                        int volumeCount = supplyChannelVo.getVolumeCount();
-                        int goodsCount = supplyChannelVo.getGoodsCount();
-                        if(goodsCount/volumeCount<0.2){
-                            lackGoodsStatus = 1;
-                            break;
+                        String goodsId = supplyChannelVo.getGoodsId();
+                        if(StringUtil.isNotEmpty(goodsId)){
+                            int volumeCount = supplyChannelVo.getVolumeCount();
+                            int goodsCount = supplyChannelVo.getGoodsCount();
+                            if(goodsCount/volumeCount<0.2){
+                                lackGoodsStatus = 1;
+                                break;
+                            }
                         }
                     }
                 }
@@ -286,6 +289,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                         inno72Goods.setLackGoodsStatus(1);
                         inno72Goods.setLackGoodsCount(totalVolumeCount-totalGoodsCount);
                         inno72Goods.setSupplyChannelVoList(null);
+                        inno72Goods.setImg(ImageUtil.getLongImageUrl(inno72Goods.getImg()));
                         resultList.add(inno72Goods);
                     }
                 }
