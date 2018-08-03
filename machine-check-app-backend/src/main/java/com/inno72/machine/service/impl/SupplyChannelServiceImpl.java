@@ -243,7 +243,6 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         Inno72CheckUser checkUser = UserUtil.getUser();
         String checkUserId = checkUser.getId();
         List<Inno72Machine> machineList = inno72MachineMapper.getMachine(checkUserId);
-        List<Inno72Machine> resultList = new ArrayList<>();
         if(machineList != null && machineList.size()>0){
             for(Inno72Machine machine:machineList){
                 Integer lackGoodsStatus = 0;
@@ -260,13 +259,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 }
                 machine.setLackGoodsStatus(lackGoodsStatus);
                 machine.setSupplyChannelVoList(null);
-                if(lackGoodsStatus == 1){
-                    resultList.add(machine);
-                }
-
             }
         }
-        return ResultGenerator.genSuccessResult(resultList);
+        return ResultGenerator.genSuccessResult(machineList);
     }
 
     @Override
