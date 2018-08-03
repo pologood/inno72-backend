@@ -75,6 +75,7 @@
 	left join inno72_goods t7 on t6.goods_id=t7.id
     where t5.check_user_id=#{checkUserId}
     and t1.machine_id=#{machineId} and t1.batch_no=#{batchNo}
+    and t1.after_count>0
   </select>
 
 </mapper>
