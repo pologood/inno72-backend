@@ -5,13 +5,15 @@ import java.util.List;
 import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.project.vo.Inno72MachineVo;
 
-public class Inno72CheckUserVo extends Inno72CheckUser{
-	
-	 private String localeName;
-	 
-	 private String machineCode;
-	
-	 private List<Inno72MachineVo> machines;
+public class Inno72CheckUserVo extends Inno72CheckUser {
+
+	private String localeName;
+
+	private String machineCode;
+
+	private String province;
+
+	private List<Inno72MachineVo> machines;
 
 	public List<Inno72MachineVo> getMachines() {
 		return machines;
@@ -36,10 +38,13 @@ public class Inno72CheckUserVo extends Inno72CheckUser{
 	public void setMachineCode(String machineCode) {
 		this.machineCode = machineCode;
 	}
-    
-	
-	
-	 
-	 
-	 
+
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
 }

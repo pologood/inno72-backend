@@ -63,7 +63,7 @@ public class StringUtil {
 		sb.append(_random);
 		return sb.toString();
 	}
-	
+
 	public static int getAreaCodeNum(String s) {
 		for (int i = s.length() - 1; i >= 0; i--) {
 			if (!"0".equals(String.valueOf(s.charAt(i)))) {
@@ -71,6 +71,25 @@ public class StringUtil {
 			}
 		}
 		return 0;
+	}
+
+	/**
+	 * 根据区域code 获取父级code 省：level = 1，市：level = 2，县：level = 3
+	 */
+	public static String getAreaParentCode(String areaCode, int level) {
+
+		String coed = "";
+
+		if (level == 1) {
+			coed = areaCode.substring(0, 2) + "0000000";
+		} else if (level == 2) {
+			coed = areaCode.substring(0, 4) + "00000";
+		} else if (level == 3) {
+			coed = areaCode.substring(0, 6) + "000";
+		}
+
+		return coed;
+
 	}
 
 	/**

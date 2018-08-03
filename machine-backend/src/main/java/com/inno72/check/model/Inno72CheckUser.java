@@ -66,6 +66,12 @@ public class Inno72CheckUser {
 	private String email;
 
 	/**
+	 * 区域
+	 */
+	@Column(name = "area")
+	private String area;
+
+	/**
 	 * 头像
 	 */
 	@Column(name = "head_image")
@@ -82,6 +88,12 @@ public class Inno72CheckUser {
 	 */
 	@Column(name = "open_id")
 	private String openId;
+
+	/**
+	 * 人员状态
+	 */
+	@Column(name = "status")
+	private String status;
 
 	/**
 	 * 创建人
@@ -275,6 +287,14 @@ public class Inno72CheckUser {
 		this.email = email;
 	}
 
+	public String getArea() {
+		return area;
+	}
+
+	public void setArea(String area) {
+		this.area = area;
+	}
+
 	/**
 	 * 获取头像
 	 *
@@ -308,6 +328,14 @@ public class Inno72CheckUser {
 
 	public void setOpenId(String openId) {
 		this.openId = openId;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	public String getCreateId() {

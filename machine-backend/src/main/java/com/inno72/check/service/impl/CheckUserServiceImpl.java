@@ -241,8 +241,11 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 
 	@Override
 	public Inno72CheckUserVo findDetail(String id) {
-
-		return inno72CheckUserMapper.selectUserDetail(id);
+		Inno72CheckUserVo u = inno72CheckUserMapper.selectUserDetail(id);
+		String area = u.getArea();
+		String province = StringUtil.getAreaParentCode(area, 1);
+		u.setProvince(province);
+		return u;
 	}
 
 	@Override

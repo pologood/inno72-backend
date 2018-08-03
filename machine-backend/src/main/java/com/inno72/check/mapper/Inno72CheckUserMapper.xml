@@ -13,9 +13,11 @@
     <result column="enterprise" jdbcType="VARCHAR" property="enterprise" />
     <result column="sex" jdbcType="INTEGER" property="sex" />
     <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
     <result column="head_image" jdbcType="VARCHAR" property="headImage" />
     <result column="wechat_user_id" jdbcType="VARCHAR" property="wechatUserId" />
     <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="update_time" />
@@ -33,8 +35,11 @@
 			u.enterprise,
 			u.sex,
 			u.head_image,
+			u.status,
+			a.city as area,
 			u.is_delete
 		from inno72_check_user  u
+		LEFT JOIN inno72_admin_area a ON a.code = u.area
 		WHERE u.is_delete=0 
 		<if test="keyword !=null and keyword !=''">and ( u.name LIKE '%${keyword}%' or u.phone LIKE '%${keyword}%' or u.enterprise LIKE '%${keyword}%' )</if>
 		ORDER BY u.update_time DESC

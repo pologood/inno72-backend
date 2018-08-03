@@ -49,13 +49,13 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		logger.info("---------------------点位新增-------------------");
 		try {
 			SessionData session = CommonConstants.SESSION_DATA;
-    		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
-    		if (mUser == null) {
-    			logger.info("登陆用户为空");
-    			return Results.failure("未找到用户登录信息");
-    		}
-    		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-			
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+
 			model.setId(StringUtil.getUUID());
 			model.setCreateId(userId);
 			model.setUpdateId(userId);
@@ -65,8 +65,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 			logger.info(e.getMessage());
 			return Results.failure("操作失败");
 		}
-		
-		
+
 		return ResultGenerator.genSuccessResult();
 	}
 
@@ -84,7 +83,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		if (n > 0) {
 			return Results.failure("机器使用中，不能删除！");
 		}
-		//已排期未结束，不能修改
+		// 已排期未结束，不能修改
 		int m = inno72LocaleMapper.selectIsUseingPlan(id);
 		if (m > 0) {
 			return Results.failure("此点位机器已进行活动排期，暂不能删除！");
@@ -121,14 +120,14 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
-			//已排期未结束，不能修改
+			// 已排期未结束，不能修改
 			int n = inno72LocaleMapper.selectIsUseingPlan(model.getId());
 			if (n > 0) {
 				return Results.failure("此点位机器已进行活动排期，暂不能修改！");
 			}
-			
+
 			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-			
+
 			model.setUpdateId(userId);
 			model.setUpdateTime(LocalDateTime.now());
 			super.update(model);
@@ -136,7 +135,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 			logger.info(e.getMessage());
 			return Results.failure("操作失败");
 		}
-		
+
 		return ResultGenerator.genSuccessResult();
 	}
 
@@ -145,9 +144,9 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		logger.info("---------------------点位详情（返回省市县商圈）-------------------");
 		Inno72LocaleVo vo = inno72LocaleMapper.selectById(id);
 		String areaCode = vo.getAreaCode();// 一共9位 省前2位后补0 市4位后补0 县6位后补0 商圈直接取
-		String province = areaCode.substring(0, 2) + "0000000";
-		String city = areaCode.substring(0, 4) + "00000";
-		String district = areaCode.substring(0, 6) + "000";
+		String province = StringUtil.getAreaParentCode(areaCode, 1);
+		String city = StringUtil.getAreaParentCode(areaCode, 2);
+		String district = StringUtil.getAreaParentCode(areaCode, 3);
 		vo.setProvince(province);
 		vo.setCity(city);
 		vo.setDistrict(district);
@@ -185,6 +184,5 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		condition.createCriteria().andEqualTo(locale);
 		return super.findByCondition(condition);
 	}
-
 
 }
