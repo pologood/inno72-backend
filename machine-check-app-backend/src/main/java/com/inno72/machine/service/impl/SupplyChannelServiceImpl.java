@@ -260,7 +260,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 }
                 machine.setLackGoodsStatus(lackGoodsStatus);
                 machine.setSupplyChannelVoList(null);
-                if(lackGoodsStatus == 0){
+                if(lackGoodsStatus == 1){
                     resultList.add(machine);
                 }
 
