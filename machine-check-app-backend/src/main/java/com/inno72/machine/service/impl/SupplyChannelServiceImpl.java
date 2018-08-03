@@ -259,7 +259,6 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                             BigDecimal volumeCountDecimal = new BigDecimal(volumeCount);
                             BigDecimal goodsCountDecimal = new BigDecimal(goodsCount);
                             BigDecimal countDecimal = goodsCountDecimal.divide(volumeCountDecimal,2, RoundingMode.HALF_UP);
-
                             if(countDecimal.compareTo(new BigDecimal(0.2))<0){
                                 lackGoodsStatus = 1;
                                 break;
@@ -271,6 +270,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 machine.setSupplyChannelVoList(null);
             }
         }
+        logger.info("机器缺货返回数据：{}",JSON.toJSON(machineList));
         return ResultGenerator.genSuccessResult(machineList);
     }
 
