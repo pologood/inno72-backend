@@ -281,8 +281,10 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         List<Inno72Goods> inno72GoodsList = inno72GoodsMapper.getLackGoods(checkUserId);
         List<Inno72Goods> resultList = new ArrayList<>();
         if(inno72GoodsList != null && inno72GoodsList.size()>0){
+
             for(Inno72Goods inno72Goods:inno72GoodsList){
                 List<SupplyChannelVo> supplyChannelVoList = inno72Goods.getSupplyChannelVoList();
+                logger.info("商品数据{}",JSON.toJSON(supplyChannelVoList));
                 if(supplyChannelVoList != null && supplyChannelVoList.size()>0){
                     int totalVolumeCount = 0;
                     int totalGoodsCount = 0;
@@ -298,7 +300,6 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                     if(countDecimal.compareTo(new BigDecimal(0.2))<0){
                         inno72Goods.setLackGoodsCount(totalVolumeCount-totalGoodsCount);
                         inno72Goods.setLackGoodsStatus(1);
-                        inno72Goods.setLackGoodsCount(totalVolumeCount-totalGoodsCount);
                         inno72Goods.setSupplyChannelVoList(null);
                         inno72Goods.setImg(ImageUtil.getLongImageUrl(inno72Goods.getImg()));
                         resultList.add(inno72Goods);
