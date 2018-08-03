@@ -176,6 +176,7 @@
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="user_max_times" jdbcType="INTEGER" property="userMaxTimes" />
+    <result column="day_user_max_times" jdbcType="INTEGER" property="dayUserMaxTimes" />
     <result column="prize_type" jdbcType="VARCHAR" property="prizeType" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
