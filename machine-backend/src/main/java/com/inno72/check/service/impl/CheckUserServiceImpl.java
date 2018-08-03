@@ -240,6 +240,31 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	}
 
 	@Override
+	public Result<String> updateStatus(String id, int status) {
+		try {
+			logger.info("----------------巡检人员	状态操作--------------");
+			SessionData session = CommonConstants.SESSION_DATA;
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+			// 删除条件
+
+			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+			Inno72CheckUser model = inno72CheckUserMapper.selectByPrimaryKey(id);
+			model.setStatus(status);
+			model.setUpdateId(mUserId);
+			model.setUpdateTime(LocalDateTime.now());
+			super.update(model);
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+		return Results.success();
+	}
+
+	@Override
 	public Inno72CheckUserVo findDetail(String id) {
 		Inno72CheckUserVo u = inno72CheckUserMapper.selectUserDetail(id);
 		String area = u.getArea();
