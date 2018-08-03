@@ -141,7 +141,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         Inno72CheckUser checkUser = UserUtil.getUser();
         Map<String,Object> map = new HashMap<>();
         map.put("checkUserId",checkUser.getId());
-        if(status != null){
+        if(status != null && status !=-1){
             map.put("status",status);
         }
         List<Inno72CheckFault> list = inno72CheckFaultMapper.selectForPage(map);
