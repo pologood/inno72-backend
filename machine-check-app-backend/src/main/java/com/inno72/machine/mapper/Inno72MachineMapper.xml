@@ -72,6 +72,7 @@
 		left join inno72_supply_channel t3 on t2.machine_id = t3.machine_id
 		LEFT JOIN inno72_locale t4 ON t4.id = t1.locale_id
     	LEFT JOIN inno72_admin_area t5 ON t5.CODE = t4.area_code
+    	inner join inno72_supply_channel_goods t6 on t3.id=t6.supply_channel_id
 		where t2.check_user_id=#{checkUserId,jdbcType=VARCHAR}
 		and t3.status=0 and t3.is_delete=0
 	</select>
