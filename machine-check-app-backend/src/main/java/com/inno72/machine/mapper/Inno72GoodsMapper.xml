@@ -31,6 +31,7 @@
     </resultMap>
     <select id="getLackGoods" resultMap="BaseResultMap">
         select t1.*,
+        t6.machine_id,
         t6.code channelCode,
         t6.volume_count,
         t6.goods_count,
