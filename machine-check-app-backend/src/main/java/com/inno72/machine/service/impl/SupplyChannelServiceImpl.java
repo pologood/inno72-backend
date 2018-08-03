@@ -284,7 +284,6 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 
             for(Inno72Goods inno72Goods:inno72GoodsList){
                 List<SupplyChannelVo> supplyChannelVoList = inno72Goods.getSupplyChannelVoList();
-                logger.info("商品数据{}",JSON.toJSON(supplyChannelVoList));
                 if(supplyChannelVoList != null && supplyChannelVoList.size()>0){
                     int totalVolumeCount = 0;
                     int totalGoodsCount = 0;
