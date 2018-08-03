@@ -51,7 +51,7 @@
     <if test="status != null">
       and t1.status=#{status}
     </if>
-    order by t1.submit_time desc,t4.create_time desc,t5.create_time desc
+    order by t1.finish_time desc,t1.submit_time desc,t4.create_time desc,t5.create_time desc
   </select>
 
   <select id="selectDetail" resultMap="BaseResultMap">
