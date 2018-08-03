@@ -1,5 +1,8 @@
 package com.inno72.machine.service.impl;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -253,7 +256,11 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                         if(StringUtil.isNotEmpty(goodsId)){
                             int volumeCount = supplyChannelVo.getVolumeCount();
                             int goodsCount = supplyChannelVo.getGoodsCount();
-                            if(goodsCount/volumeCount<0.2){
+                            BigDecimal volumeCountDecimal = new BigDecimal(volumeCount);
+                            BigDecimal goodsCountDecimal = new BigDecimal(goodsCount);
+                            BigDecimal countDecimal = goodsCountDecimal.divide(volumeCountDecimal,2, RoundingMode.HALF_UP);
+
+                            if(countDecimal.compareTo(new BigDecimal(0.2))<0){
                                 lackGoodsStatus = 1;
                                 break;
                             }
