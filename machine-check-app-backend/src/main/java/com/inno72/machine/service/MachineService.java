@@ -8,6 +8,7 @@ import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.vo.SupplyRequestVo;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MachineService extends Service<Inno72Machine> {
 
@@ -20,4 +21,6 @@ public interface MachineService extends Service<Inno72Machine> {
     Result<Inno72AdminArea> findByFirstLevelCode(String code);
 
     Result<List<Inno72Locale>> selectLocaleByAreaCode(String areaCode);
+
+    Result<Map<String,Object>> selectMachineLocale(Inno72Machine inno72Machine);
 }

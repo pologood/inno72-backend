@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -73,6 +74,19 @@ public class MachineController {
     public Result<List<Inno72Locale>> findLocaleByAreaCode(@RequestBody Inno72Locale locale){
         logger.info("查询点位接口参数：{}",JSON.toJSON(locale));
         return machineService.selectLocaleByAreaCode(locale.getAreaCode());
+    }
+
+    /**
+     * 获取当前点位
+     * @param inno72Machine
+     * @return
+     */
+    @RequestMapping(value="getLocale", method = {RequestMethod.POST})
+    public Result<Map<String,Object>> getLocale(@RequestBody Inno72Machine inno72Machine){
+        logger.info("获取当前点位接口参数：{}",JSON.toJSON(inno72Machine));
+        Result<Map<String,Object>> result = machineService.selectMachineLocale(inno72Machine);
+        logger.info("获取当前点位接口结果：{}",JSON.toJSON(result));
+        return result;
     }
 
 

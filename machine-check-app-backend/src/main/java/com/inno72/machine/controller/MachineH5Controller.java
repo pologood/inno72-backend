@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -74,6 +75,18 @@ public class MachineH5Controller {
     public Result<List<Inno72Locale>> findLocaleByAreaCode(Inno72Locale locale){
         logger.info("查询点位H5接口参数：{}",JSON.toJSON(locale));
         return machineService.selectLocaleByAreaCode(locale.getAreaCode());
+    }
+
+    /**
+     * 获取当前点位
+     * @return
+     */
+    @RequestMapping(value="getLocale", method = {RequestMethod.GET})
+    public Result<Map<String,Object>> getLocale(Inno72Machine inno72Machine){
+        logger.info("获取当前点位H5接口参数：{}",JSON.toJSON(inno72Machine));
+        Result<Map<String,Object>> result = machineService.selectMachineLocale(inno72Machine);
+        logger.info("获取当前点位H5接口结果：{}",JSON.toJSON(result));
+        return result;
     }
 
 

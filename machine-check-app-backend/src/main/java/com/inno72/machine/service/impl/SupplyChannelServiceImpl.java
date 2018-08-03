@@ -249,11 +249,14 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 List<SupplyChannelVo> supplyChannelVoList = machine.getSupplyChannelVoList();
                 if(supplyChannelVoList != null && supplyChannelVoList.size()>0){
                     for(SupplyChannelVo supplyChannelVo:supplyChannelVoList){
-                        int volumeCount = supplyChannelVo.getVolumeCount();
-                        int goodsCount = supplyChannelVo.getGoodsCount();
-                        if(goodsCount/volumeCount<0.2){
-                            lackGoodsStatus = 1;
-                            break;
+                        String goodsId = supplyChannelVo.getGoodsId();
+                        if(StringUtil.isNotEmpty(goodsId)){
+                            int volumeCount = supplyChannelVo.getVolumeCount();
+                            int goodsCount = supplyChannelVo.getGoodsCount();
+                            if(goodsCount/volumeCount<0.2){
+                                lackGoodsStatus = 1;
+                                break;
+                            }
                         }
                     }
                 }
@@ -286,6 +289,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                         inno72Goods.setLackGoodsStatus(1);
                         inno72Goods.setLackGoodsCount(totalVolumeCount-totalGoodsCount);
                         inno72Goods.setSupplyChannelVoList(null);
+                        inno72Goods.setImg(ImageUtil.getLongImageUrl(inno72Goods.getImg()));
                         resultList.add(inno72Goods);
                     }
                 }
@@ -487,13 +491,30 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         map.put("batchNo",batchNo);
         WorkOrderVo workOrderVo = new WorkOrderVo();
         List<Inno72SupplyChannelHistory> historyList = inno72SupplyChannelHistoryMapper.getWorkOrderGoods(map);
+        List<Inno72SupplyChannelHistory> resultLsit = new ArrayList<>();
         if(historyList != null && historyList.size()>0){
             workOrderVo.setBatchNo(batchNo);
             workOrderVo.setMachineCode(historyList.get(0).getMachineCode());
             workOrderVo.setCreateTime(historyList.get(0).getCreateTime());
             workOrderVo.setLocaleStr(historyList.get(0).getLocaleStr());
             workOrderVo.setMachineId(machineId);
-            workOrderVo.setHistoryList(historyList);
+            Set<String> set = new HashSet<>();
+            for(Inno72SupplyChannelHistory history:historyList){
+                String goodsName = history.getGoodsName();
+                if(!set.contains(goodsName)){
+                    set.add(goodsName);
+                    int count = 0;
+                    for(Inno72SupplyChannelHistory his:historyList){
+                        String name = history.getGoodsName();
+                        if(name.equals(goodsName)){
+                            count += his.getSubCount();
+                        }
+                    }
+                    history.setSubCount(count);
+                }
+                resultLsit.add(history);
+            }
+            workOrderVo.setHistoryList(resultLsit);
         }
         return ResultGenerator.genSuccessResult(workOrderVo);
     }
