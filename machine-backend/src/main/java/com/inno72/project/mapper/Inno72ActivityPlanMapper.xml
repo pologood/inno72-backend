@@ -36,13 +36,7 @@
 			ap.remark,
 			ap.is_delete,
 			ap.create_time,
-			ap.update_time,
-			CASE 
-			WHEN ap.start_time &gt; NOW() THEN '2'
-			WHEN ap.start_time &lt;  NOW() and ap.end_time &gt; NOW() THEN '1'
-			WHEN ap.end_time &lt; NOW() THEN '3'
-			ELSE '未排期'
-			END state
+			ap.update_time
 		FROM
 			inno72_activity_plan ap
 			LEFT JOIN inno72_activity a ON a.id = ap.activity_id 
@@ -53,17 +47,17 @@
 				where LEFT(locale.area_code,#{num}) = #{code}
 				GROUP BY apm.activity_plan_id
 			) m ON m.activity_plan_id = ap.id
-			
 		WHERE 1=1 
 		<if test="code !=null and code !='' "> and m.area_code LIKE '%${code}%'</if>
 		and ap.is_delete = 0 
 		<if test="startTime !=null and startTime !='' ">
 			<![CDATA[and ( ap.start_time  BETWEEN #{startTime} AND #{endTime} OR ap.end_time BETWEEN #{startTime} AND #{endTime} ) ]]>
 		</if>
+		<if test="status ==null or status =='' ">and NOW() &lt; ap.end_time</if>
 		<if test="status ==1"> and NOW() &lt;  ap.start_time </if>
 		<if test="status ==2"> and (NOW() BETWEEN ap.start_time and ap.end_time ) </if>
 		<if test="status ==3"> and NOW() &gt; ap.end_time  </if>
-		ORDER BY state
+		ORDER BY ap.start_time
   </select>
   <!-- 联动区域机器列表-->
   <resultMap id="ResultAreaMachineMap" type="com.inno72.project.vo.Inno72AdminAreaVo">
