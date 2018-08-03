@@ -82,9 +82,9 @@ public class MachineController {
      * @return
      */
     @RequestMapping(value="getLocale", method = {RequestMethod.POST})
-    public Result<String> getLocale(@RequestBody Inno72Machine inno72Machine){
+    public Result<Map<String,Object>> getLocale(@RequestBody Inno72Machine inno72Machine){
         logger.info("获取当前点位接口参数：{}",JSON.toJSON(inno72Machine));
-        Result<String> result = machineService.selectMachineLocale(inno72Machine);
+        Result<Map<String,Object>> result = machineService.selectMachineLocale(inno72Machine);
         logger.info("获取当前点位接口结果：{}",JSON.toJSON(result));
         return result;
     }

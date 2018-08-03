@@ -22,5 +22,5 @@ public interface MachineService extends Service<Inno72Machine> {
 
     Result<List<Inno72Locale>> selectLocaleByAreaCode(String areaCode);
 
-    Result<String> selectMachineLocale(Inno72Machine inno72Machine);
+    Result<Map<String,Object>> selectMachineLocale(Inno72Machine inno72Machine);
 }

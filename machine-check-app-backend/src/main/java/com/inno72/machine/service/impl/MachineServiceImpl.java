@@ -20,7 +20,9 @@ import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -123,14 +125,27 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
     }
 
     @Override
-    public Result<String> selectMachineLocale(Inno72Machine inno72Machine) {
+    public Result<Map<String,Object>> selectMachineLocale(Inno72Machine inno72Machine) {
         String machineCode = inno72Machine.getMachineCode();
         if(StringUtil.isEmpty(machineCode)){
             return Results.failure("参数不能为空");
         }
         Inno72Machine machineLocale = inno72MachineMapper.getMachineByCode(machineCode);
         if(machineLocale != null){
-            return ResultGenerator.genSuccessResult(machineLocale.getLocaleStr());
+            Map<String,Object> map = new HashMap<>();
+            map.put("localeStr",machineLocale.getLocaleStr());
+            map.put("localeId",machineLocale.getLocaleId());
+            Condition condition = new Condition(Inno72CheckUserMachine.class);
+            condition.createCriteria().andEqualTo("checkUserId",UserUtil.getUser().getId())
+                    .andEqualTo("machineId",machineLocale.getId());
+
+            List<Inno72CheckUserMachine> list = inno72CheckUserMachineMapper.selectByCondition(condition);
+            int machineFlag = 0;
+            if(list != null && list.size()>0){
+                machineFlag = 1;
+            }
+            map.put("machineFlag",machineFlag);
+            return ResultGenerator.genSuccessResult(map);
         }else{
             return Results.failure("机器有误");
         }
