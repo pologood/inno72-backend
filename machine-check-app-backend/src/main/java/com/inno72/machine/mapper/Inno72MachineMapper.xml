@@ -75,7 +75,7 @@
 		LEFT JOIN inno72_locale t4 ON t4.id = t1.locale_id
     	LEFT JOIN inno72_admin_area t5 ON t5.CODE = t4.area_code
     	left join inno72_supply_channel_goods t6 on t3.id=t6.supply_channel_id
-		where t2.check_user_id=#{checkUserId,jdbcType=VARCHAR}
+		where t1.minchine_status=4 and t2.check_user_id=#{checkUserId,jdbcType=VARCHAR}
 		and t3.status=0 and t3.is_delete=0
 	</select>
 
@@ -102,7 +102,7 @@
 		LEFT JOIN inno72_locale t4 ON t4.id = t1.locale_id
     	LEFT JOIN inno72_admin_area t5 ON t5.CODE = t4.area_code
     	left join inno72_supply_channel_goods t6 on t6.supply_channel_id=t3.id
-		where t2.check_user_id=#{checkUserId,jdbcType=VARCHAR}
+		where t1.machine_status=4 and t2.check_user_id=#{checkUserId,jdbcType=VARCHAR}
 		and t3.status=0 and t3.is_delete=0 and t6.goods_id=#{goodsId}
 	</select>
 
@@ -128,7 +128,7 @@
 		left join inno72_check_sign_in t6 on t2.machine_id=t6.machine_id
     	and date_format(t6.create_time,'%Y%M%D') = date_format(CURRENT_DATE,'%Y%M%D')
     	and t6.check_user_id=#{checkUserId,jdbcType=VARCHAR}
-		where t2.check_user_id=#{checkUserId,jdbcType=VARCHAR}
+		where t1.machine_status=4 and t2.check_user_id=#{checkUserId,jdbcType=VARCHAR}
 	</select>
 
 	<select id="selectByParam" resultMap="BaseResultMap">
@@ -147,7 +147,7 @@
 		left join inno72_check_user t3 on t2.check_user_id=t3.id
 		LEFT JOIN inno72_locale t4 ON t4.id = t1.locale_id
 		LEFT JOIN inno72_admin_area t5 ON t5.CODE = t4.area_code
-		where t2.check_user_id=#{checkUserId,jdbcType=VARCHAR}
+		where t1.machine_status=4 and t2.check_user_id=#{checkUserId,jdbcType=VARCHAR}
 		<if test="machineIds != null">
 			AND
 			<foreach collection="machineIds" open="(" close=")" separator="or" item="item" index="index">
