@@ -13,6 +13,7 @@ import com.inno72.msg.MsgUtil;
 import com.inno72.service.AlarmMsgService;
 import com.inno72.service.CheckUserService;
 import com.inno72.service.MachineService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,7 +107,7 @@ public class CheckNetAndAlarmTask {
                         if (between == 5) {
                             //巡检app
                             String code = "push_alarm_common";
-                            Map<String, String> params = new HashMap<>();
+                            Map<String, String> params = new HashMap<>(16);
                             params.put("machineCode", machineLogInfo.getMachineCode());
                             params.put("localStr", machineLogInfo.getLocaleStr());
                             params.put("text", "出现网络连接不上的情况，请及时处理");
@@ -115,19 +116,25 @@ public class CheckNetAndAlarmTask {
                             Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
                             inno72CheckUserPhone.setMachineCode(machineLogInfo.getMachineCode());
                             List<Inno72CheckUserPhone> inno72CheckUserPhones = checkUserService.selectPhoneByMachineCode(inno72CheckUserPhone);
+                            //企业微信提醒
+                            List<String> userIdList = new ArrayList<>();
+                            for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                                userIdList.add(inno72CheckUserPhone1.getUserId());
+                            }
+                            String userIdString = StringUtils.join(userIdList.toArray(), "|");
+                            log.info("userIdString:{}", userIdString);
+                            Map<String, String> m = new HashMap<>();
+                            m.put("touser", userIdString);
+                            m.put("agentid", "1000002");
+                            log.info("closeNet alarm, param:{},m:{}", params.toString(), m.toString());
+                            msgUtil.sendQyWechatMsg("qywechat_msg", params, m, userIdString, "machineAlarm-CheckNetAndAlarmTask");
+                            //push
                             for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
                                 String phone = inno72CheckUserPhone1.getPhone();
                                 msgUtil.sendPush(code, params, phone, "machineAlarm-CheckNetAndAlarmTask", "【报警】您负责的机器出现网络异常", "");
                             }
                             //保存接口
                             saveAlarmMsg(machineLogInfo);
-                            //发送给企业微信
-                            //企业微信提醒
-                            Map<String, String> m = new HashMap<>();
-                            m.put("touser", "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi");
-                            m.put("agentid", "1000002");
-                            m.put("msgtype", "text");
-                            msgUtil.sendQyWechatMsg("qywechat_msg", params, m, "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi", "machineAlarm-RedisReceiver");
 
                         } else if (between == 8) {
                             //组合报警接口
@@ -140,6 +147,19 @@ public class CheckNetAndAlarmTask {
                             Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
                             inno72CheckUserPhone.setMachineCode(machineLogInfo.getMachineCode());
                             List<Inno72CheckUserPhone> inno72CheckUserPhones = checkUserService.selectPhoneByMachineCode(inno72CheckUserPhone);
+
+                            //企业微信
+                            List<String> userIdList = new ArrayList<>();
+                            for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+                                userIdList.add(inno72CheckUserPhone1.getUserId());
+                            }
+                            String userIdString = StringUtils.join(userIdList.toArray(), "|");
+                            log.info("userIdString:{}", userIdString);
+                            Map<String, String> m = new HashMap<>();
+                            m.put("touser", userIdString);
+                            m.put("agentid", "1000002");
+                            msgUtil.sendQyWechatMsg("qywechat_msg", params, m, userIdString, "machineAlarm-CheckNetAndAlarmTask");
+                            //短信
                             String active = System.getenv("spring_profiles_active");
                             log.info("获取spring_profiles_active：{}", active);
                             if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
@@ -149,6 +169,7 @@ public class CheckNetAndAlarmTask {
                                     msgUtil.sendSMS(code, params, phone, "machineAlarm-CheckNetAndAlarmTask");
                                 }
                             }
+                            //push
                             for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
                                 String phone = inno72CheckUserPhone1.getPhone();
                                 String code = "push_alarm_common";
@@ -157,13 +178,6 @@ public class CheckNetAndAlarmTask {
 
                             //保存接口
                             saveAlarmMsg(machineLogInfo);
-
-                            //企业微信提醒
-                            Map<String, String> m = new HashMap<>();
-                            m.put("touser", "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi");
-                            m.put("agentid", "1000002");
-                            m.put("msgtype", "text");
-                            msgUtil.sendQyWechatMsg("qywechat_msg", params, m, "GongZi.Jie|Hao|WangXiuTing|LengYeXiaoDi", "machineAlarm-RedisReceiver");
 
                         } else if (between == 10 || between == 30) {
                             //钉钉报警接口
@@ -198,10 +212,11 @@ public class CheckNetAndAlarmTask {
      */
     private void saveAlarmMsg(Inno72Machine machineLogInfo) {
         Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
-        inno72AlarmMsg.setTitle("报警");
+        inno72AlarmMsg.setTitle("您负责的机器出现网络异常");
         inno72AlarmMsg.setType(4);
         inno72AlarmMsg.setCreateTime(LocalDateTime.now());
         inno72AlarmMsg.setSystem("machineCloseNet");
+        inno72AlarmMsg.setDetail(machineLogInfo.getLocaleStr() + "," + machineLogInfo.getMachineCode() + "," + "出现网络连接不上的情况，请及时处理");
         inno72AlarmMsg.setMachineCode(machineLogInfo.getMachineCode());
         inno72AlarmMsg.setId(StringUtil.getUUID());
         alarmMsgService.save(inno72AlarmMsg);

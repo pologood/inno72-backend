@@ -25,7 +25,8 @@
     <select id="selectPhoneByMachineCode" parameterType="String" resultType="com.inno72.model.Inno72CheckUserPhone">
 		SELECT
 		 icu.phone,
-		 im.machine_code as machineCode
+		 im.machine_code as machineCode,
+		 icu.wechat_user_id as userId
 		FROM
 		inno72_machine im
 		LEFT JOIN inno72_check_user_machine cum ON im.id = cum.machine_id
