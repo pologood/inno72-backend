@@ -93,7 +93,7 @@ public class Inno72CheckUser {
 	 * 人员状态
 	 */
 	@Column(name = "status")
-	private String status;
+	private int status;
 
 	/**
 	 * 创建人
@@ -330,11 +330,11 @@ public class Inno72CheckUser {
 		this.openId = openId;
 	}
 
-	public String getStatus() {
+	public int getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(int status) {
 		this.status = status;
 	}
 
