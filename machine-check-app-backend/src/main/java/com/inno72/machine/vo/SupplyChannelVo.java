@@ -52,6 +52,8 @@ public class SupplyChannelVo {
     @Column(name = "goods_count")
     private Integer goodsCount;
 
+    private String goodsId;
+
     public String getId() {
         return id;
     }
@@ -114,5 +116,13 @@ public class SupplyChannelVo {
 
     public void setGoodsCount(Integer goodsCount) {
         this.goodsCount = goodsCount;
+    }
+
+    public String getGoodsId() {
+        return goodsId;
+    }
+
+    public void setGoodsId(String goodsId) {
+        this.goodsId = goodsId;
     }
 }
