@@ -243,6 +243,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         Inno72CheckUser checkUser = UserUtil.getUser();
         String checkUserId = checkUser.getId();
         List<Inno72Machine> machineList = inno72MachineMapper.getMachine(checkUserId);
+        List<Inno72Machine> resultList = new ArrayList<>();
         if(machineList != null && machineList.size()>0){
             for(Inno72Machine machine:machineList){
                 Integer lackGoodsStatus = 0;
@@ -259,9 +260,13 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 }
                 machine.setLackGoodsStatus(lackGoodsStatus);
                 machine.setSupplyChannelVoList(null);
+                if(lackGoodsStatus == 0){
+                    resultList.add(machine);
+                }
+
             }
         }
-        return ResultGenerator.genSuccessResult(machineList);
+        return ResultGenerator.genSuccessResult(resultList);
     }
 
     @Override
@@ -487,13 +492,30 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         map.put("batchNo",batchNo);
         WorkOrderVo workOrderVo = new WorkOrderVo();
         List<Inno72SupplyChannelHistory> historyList = inno72SupplyChannelHistoryMapper.getWorkOrderGoods(map);
+        List<Inno72SupplyChannelHistory> resultLsit = new ArrayList<>();
         if(historyList != null && historyList.size()>0){
             workOrderVo.setBatchNo(batchNo);
             workOrderVo.setMachineCode(historyList.get(0).getMachineCode());
             workOrderVo.setCreateTime(historyList.get(0).getCreateTime());
             workOrderVo.setLocaleStr(historyList.get(0).getLocaleStr());
             workOrderVo.setMachineId(machineId);
-            workOrderVo.setHistoryList(historyList);
+            Set<String> set = new HashSet<>();
+            for(Inno72SupplyChannelHistory history:historyList){
+                String goodsName = history.getGoodsName();
+                if(!set.contains(goodsName)){
+                    set.add(goodsName);
+                    int count = 0;
+                    for(Inno72SupplyChannelHistory his:historyList){
+                        String name = history.getGoodsName();
+                        if(name.equals(goodsName)){
+                            count += his.getSubCount();
+                        }
+                    }
+                    history.setSubCount(count);
+                }
+                resultLsit.add(history);
+            }
+            workOrderVo.setHistoryList(resultLsit);
         }
         return ResultGenerator.genSuccessResult(workOrderVo);
     }
