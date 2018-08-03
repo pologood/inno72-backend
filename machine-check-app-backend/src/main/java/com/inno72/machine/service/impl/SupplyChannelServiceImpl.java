@@ -279,6 +279,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         Inno72CheckUser checkUser = UserUtil.getUser();
         String checkUserId = checkUser.getId();
         List<Inno72Goods> inno72GoodsList = inno72GoodsMapper.getLackGoods(checkUserId);
+        logger.info("商品数据：{}",JSON.toJSON(inno72GoodsList));
         List<Inno72Goods> resultList = new ArrayList<>();
         if(inno72GoodsList != null && inno72GoodsList.size()>0){
 
