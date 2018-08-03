@@ -59,7 +59,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 				logger.info("商品编码已存在");
 				return Results.failure("商品编码已存在");
 			}
-			if (StringUtil.isNotBlank(model.getPrice().toString())) {
+			if (null != model.getPrice()) {
 				Matcher match = pattern.matcher(model.getPrice().toString());
 				if (!match.matches()) {
 					return Results.failure("商品价格最大整数6位，小数点后两位");
@@ -99,7 +99,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 					return Results.failure("商品编码已存在,请确认");
 				}
 			}
-			if (StringUtil.isNotBlank(model.getPrice().toString())) {
+			if (null != model.getPrice()) {
 				Matcher match = pattern.matcher(model.getPrice().toString());
 				if (!match.matches()) {
 					return Results.failure("商品价格最大整数6位，小数点后两位");
