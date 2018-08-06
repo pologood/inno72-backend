@@ -57,6 +57,9 @@ public class Inno72CheckFaultRemark {
     @Column(name="is_delete")
     private int isDelete;
 
+    @Transient
+    private String name;
+
     public String getId() {
         return id;
     }
@@ -111,5 +114,13 @@ public class Inno72CheckFaultRemark {
 
     public void setIsDelete(int isDelete) {
         this.isDelete = isDelete;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

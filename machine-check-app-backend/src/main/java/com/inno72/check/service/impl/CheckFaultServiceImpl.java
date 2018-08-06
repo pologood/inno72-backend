@@ -188,6 +188,17 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
                 image.setImage(ImageUtil.getLongImageUrl(imageUrl));
             }
         }
+        List<Inno72CheckFaultRemark> remarkList = fault.getRemarkList();
+        if(remarkList != null && remarkList.size()>0){
+            for(Inno72CheckFaultRemark remark:remarkList){
+                int type = remark.getType();
+                if(type==1){
+                    remark.setName("巡检人员");
+                }else if(type==2){
+                    remark.setName("运营人员");
+                }
+            }
+        }
         return ResultGenerator.genSuccessResult(fault);
     }
 

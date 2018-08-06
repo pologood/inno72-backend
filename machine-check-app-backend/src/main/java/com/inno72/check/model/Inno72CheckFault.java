@@ -94,6 +94,9 @@ public class Inno72CheckFault {
     private int remindStatus;
 
     @Transient
+    private String machineCode;
+
+    @Transient
     private List<Inno72CheckFaultImage> imageList;
 
 
@@ -273,5 +276,13 @@ public class Inno72CheckFault {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getMachineCode() {
+        return machineCode;
+    }
+
+    public void setMachineCode(String machineCode) {
+        this.machineCode = machineCode;
     }
 }
