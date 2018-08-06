@@ -33,7 +33,7 @@
     <result column="remarkStr" jdbcType="VARCHAR" property="remark"/>
     <result column="userId" jdbcType="VARCHAR" property="userId"/>
     <result column="remarkType" jdbcType="INTEGER" property="type"/>
-    <result column="remarkTime" jdbcType="TIMESTAMP" property="creteTime" />
+    <result column="remarkTime" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <resultMap id="TypeList" type="com.inno72.check.model.Inno72CheckFaultType">
     <result column="childTypeName" jdbcType="VARCHAR"  property="name"/>
