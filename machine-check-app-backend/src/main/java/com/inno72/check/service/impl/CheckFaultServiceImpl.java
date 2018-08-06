@@ -196,12 +196,16 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         Inno72CheckFault fault = inno72CheckFaultMapper.selectDetail(faultId);
         fault.setTitle("您所管理的机器出现了故障");
         List<Inno72CheckFaultImage> imageList = fault.getImageList();
-        if(imageList != null && imageList.size()>0){
-            for(Inno72CheckFaultImage image:imageList){
-                String imageUrl = image.getImage();
-                image.setImage(ImageUtil.getLongImageUrl(imageUrl));
+        if(fault != null){
+            fault.setTitle("您所管理的机器出现了故障");
+            if(imageList != null && imageList.size()>0){
+                for(Inno72CheckFaultImage image:imageList){
+                    String imageUrl = image.getImage();
+                    image.setImage(ImageUtil.getLongImageUrl(imageUrl));
+                }
             }
         }
+
         return ResultGenerator.genSuccessResult(fault);
     }
 

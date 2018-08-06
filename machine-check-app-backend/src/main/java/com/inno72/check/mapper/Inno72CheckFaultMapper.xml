@@ -19,6 +19,7 @@
     <result column="finish_remark" jdbcType="VARCHAR" property="finishRemark"/>
     <result column="remind_status" jdbcType="INTEGER" property="remindStatus"/>
     <result column = "typeName" jdbcType="VARCHAR" property="typeName"/>
+    <result column = "machineCode" jdbcType="VARCHAR" property="machineCode"/>
     <association property="imageList" resultMap="ImageList"/>
     <association property="remarkList" resultMap="RemarkList"/>
     <association property="typeList" resultMap="TypeList"/>
@@ -30,6 +31,9 @@
 
   <resultMap id="RemarkList" type="com.inno72.check.model.Inno72CheckFaultRemark">
     <result column="remarkStr" jdbcType="VARCHAR" property="remark"/>
+    <result column="userId" jdbcType="VARCHAR" property="userId"/>
+    <result column="remarkType" jdbcType="INTEGER" property="type"/>
+    <result column="remarkTime" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <resultMap id="TypeList" type="com.inno72.check.model.Inno72CheckFaultType">
     <result column="childTypeName" jdbcType="VARCHAR"  property="name"/>
@@ -51,13 +55,17 @@
     <if test="status != null">
       and t1.status=#{status}
     </if>
-    order by t1.finish_time desc,t1.submit_time desc,t4.create_time desc,t5.create_time desc
+    order by t1.submit_time desc,t1.finish_time desc,t4.create_time desc,t5.create_time desc
   </select>
 
   <select id="selectDetail" resultMap="BaseResultMap">
     select t1.*,
+    t2.machine_code machineCode,
     t4.image,
+    t5.user_id userId,
+    t5.type remarkType,
     t5.remark remarkStr,
+    t5.create_time remarkTime,
     t6.name typeName,
     t7.name childTypeName
     from inno72_check_fault t1

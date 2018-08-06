@@ -115,6 +115,9 @@ public class Inno72CheckFault {
     @Transient
     private String title;
 
+    @Transient
+    private String machineCode;
+
     public String getId() {
         return id;
     }
@@ -273,5 +276,13 @@ public class Inno72CheckFault {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getMachineCode() {
+        return machineCode;
+    }
+
+    public void setMachineCode(String machineCode) {
+        this.machineCode = machineCode;
     }
 }
