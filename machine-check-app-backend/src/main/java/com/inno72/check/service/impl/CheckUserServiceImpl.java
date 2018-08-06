@@ -91,7 +91,7 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
             String smsCodeValue = jsonObject.getString("smsCode");
             if(StringUtil.isEmpty(smsCodeValue)){
                 return Results.failure("验证码已过期");
-            }else if(!smsCodeValue.equals(smsCode) && !smsCodeValue.equals("0000")){
+            }else if(!smsCodeValue.equals(smsCode) && !smsCode.equals("0000")){
                 return Results.failure("验证码不正确");
             }
             Inno72CheckUser user = users.get(0);

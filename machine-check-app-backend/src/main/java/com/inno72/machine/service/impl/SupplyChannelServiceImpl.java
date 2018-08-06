@@ -1,5 +1,8 @@
 package com.inno72.machine.service.impl;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -253,7 +256,10 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                         if(StringUtil.isNotEmpty(goodsId)){
                             int volumeCount = supplyChannelVo.getVolumeCount();
                             int goodsCount = supplyChannelVo.getGoodsCount();
-                            if(goodsCount/volumeCount<0.2){
+                            BigDecimal volumeCountDecimal = new BigDecimal(volumeCount);
+                            BigDecimal goodsCountDecimal = new BigDecimal(goodsCount);
+                            BigDecimal countDecimal = goodsCountDecimal.divide(volumeCountDecimal,2, RoundingMode.HALF_UP);
+                            if(countDecimal.compareTo(new BigDecimal(0.2))<0){
                                 lackGoodsStatus = 1;
                                 break;
                             }
@@ -264,6 +270,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 machine.setSupplyChannelVoList(null);
             }
         }
+        logger.info("机器缺货返回数据：{}",JSON.toJSON(machineList));
         return ResultGenerator.genSuccessResult(machineList);
     }
 
@@ -272,8 +279,10 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         Inno72CheckUser checkUser = UserUtil.getUser();
         String checkUserId = checkUser.getId();
         List<Inno72Goods> inno72GoodsList = inno72GoodsMapper.getLackGoods(checkUserId);
+        logger.info("商品数据：{}",JSON.toJSON(inno72GoodsList));
         List<Inno72Goods> resultList = new ArrayList<>();
         if(inno72GoodsList != null && inno72GoodsList.size()>0){
+
             for(Inno72Goods inno72Goods:inno72GoodsList){
                 List<SupplyChannelVo> supplyChannelVoList = inno72Goods.getSupplyChannelVoList();
                 if(supplyChannelVoList != null && supplyChannelVoList.size()>0){
@@ -285,9 +294,12 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                         totalVolumeCount+=volumeCount;
                         totalGoodsCount+=goodsCount;
                     }
-                    if(totalGoodsCount/totalVolumeCount<0.2){
-                        inno72Goods.setLackGoodsStatus(1);
+                    BigDecimal volumeCountDecimal = new BigDecimal(totalVolumeCount);
+                    BigDecimal goodsCountDecimal = new BigDecimal(totalGoodsCount);
+                    BigDecimal countDecimal = goodsCountDecimal.divide(volumeCountDecimal,2, RoundingMode.HALF_UP);
+                    if(countDecimal.compareTo(new BigDecimal(0.2))<0){
                         inno72Goods.setLackGoodsCount(totalVolumeCount-totalGoodsCount);
+                        inno72Goods.setLackGoodsStatus(1);
                         inno72Goods.setSupplyChannelVoList(null);
                         inno72Goods.setImg(ImageUtil.getLongImageUrl(inno72Goods.getImg()));
                         resultList.add(inno72Goods);
