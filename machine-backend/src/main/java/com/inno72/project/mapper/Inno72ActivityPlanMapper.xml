@@ -78,6 +78,7 @@
   <result column="machine_id" property="machineId" />
   <result column="machine_code" property="machineCode"/>
   <result column="state" property="state"/>
+  <result column="machine_province" property="province"/>
  </resultMap>
   
   <select id="selectAreaMachineList" parameterType="java.util.Map" resultMap="ResultAreaMachineMap">
@@ -191,6 +192,7 @@
     <result column="gameName" jdbcType="VARCHAR" property="gameName" />
     <association property="goods" resultMap="goodsResult" />
     <association property="coupons" resultMap="couponsResult" />
+    <association property="machines" resultMap="machinesResult" />
   </resultMap>
   
   <resultMap id="goodsResult" type="com.inno72.project.model.Inno72ActivityPlanGameResult">
@@ -226,7 +228,10 @@
 			m.merchant_name AS merchantName,
 			s.shop_name AS shopName,
 			a.shop_id AS shop_id,
-			gm.name AS gameName
+			gm.name AS gameName,
+			ma.id AS machine_id,
+			ma.machine_code,
+			area.province as machine_province
 		FROM
 			inno72_activity_plan ap
 			LEFT JOIN inno72_activity_plan_game_result rg ON rg.activity_plan_id = ap.id and rg.prize_type=1
@@ -237,6 +242,10 @@
 			LEFT JOIN inno72_merchant m ON m.id=a.seller_id
 			LEFT JOIN inno72_shops s ON s.id=a.shop_id
 			LEFT JOIN inno72_game gm ON gm.id = ap.game_id
+			LEFT JOIN inno72_activity_plan_machine apm on apm.activity_plan_id=ap.id
+			LEFT JOIN inno72_machine ma ON ma.id = apm.machine_id
+			LEFT JOIN inno72_locale l ON l.id = ma.locale_id
+			LEFT JOIN inno72_admin_area area ON area.code = l.area_code
 			
 		WHERE ap.is_delete =0
 			and ap.id=#{id}

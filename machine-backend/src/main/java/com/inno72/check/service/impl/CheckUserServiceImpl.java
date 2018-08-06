@@ -171,6 +171,10 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			Inno72CheckUser model = inno72CheckUserMapper.selectByPrimaryKey(id);
+			if (model.getStatus() == 0) {
+				logger.info("启用状态的用户不能删除");
+				return Results.failure("启用状态的用户不能删除");
+			}
 			model.setIsDelete(1);
 			model.setUpdateId(mUserId);
 			model.setUpdateTime(LocalDateTime.now());
@@ -267,6 +271,19 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	@Override
 	public Inno72CheckUserVo findDetail(String id) {
 		Inno72CheckUserVo u = inno72CheckUserMapper.selectUserDetail(id);
+		List<Inno72MachineVo> machines = u.getMachines();
+		if (null != machines && machines.size() > 0) {
+			List<String> pList = new ArrayList<>();
+			machines.forEach(machine -> {
+				String province = machine.getProvince();
+				if (!pList.contains(province)) {
+					pList.add(province);
+				}
+			});
+			String r = "已选择" + machines.size() + "台机器，分别位于:" + pList.toString();
+			u.setRemark(r);
+		}
+
 		String area = u.getArea();
 		String province = StringUtil.getAreaParentCode(area, 1);
 		u.setProvince(province);

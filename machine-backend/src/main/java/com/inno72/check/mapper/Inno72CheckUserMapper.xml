@@ -63,6 +63,7 @@
 			u.phone,
 			u.card_no,
 			u.enterprise,
+			u.area,
 			u.sex,
 			u.head_image,
 			u.is_delete,

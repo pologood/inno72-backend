@@ -271,7 +271,22 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 
 	@Override
 	public Inno72ActivityPlanVo findById(String id) {
-		return inno72ActivityPlanMapper.selectPlanDetail(id);
+
+		Inno72ActivityPlanVo plan = inno72ActivityPlanMapper.selectPlanDetail(id);
+		List<Inno72MachineVo> machines = plan.getMachines();
+		if (null != machines && machines.size() > 0) {
+			List<String> pList = new ArrayList<>();
+			machines.forEach(machine -> {
+				String province = machine.getProvince();
+				if (!pList.contains(province)) {
+					pList.add(province);
+				}
+			});
+			String r = "已选择" + machines.size() + "台机器，分别位于:" + pList.toString();
+			plan.setRemark(r);
+		}
+
+		return plan;
 	}
 
 	@Override
