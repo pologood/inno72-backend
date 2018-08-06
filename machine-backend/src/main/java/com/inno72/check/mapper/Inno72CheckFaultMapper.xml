@@ -64,6 +64,7 @@
  		finish_user,
  		submit_time,
  		finish_time,
+ 		finish_remark,
 		fr.remark AS answer,
 		CONCAT(#{path},img.image) AS image
  		 from inno72_check_fault f

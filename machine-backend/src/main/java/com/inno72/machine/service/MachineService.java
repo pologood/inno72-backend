@@ -7,6 +7,7 @@ import com.inno72.common.Service;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.vo.ChannelListVo;
 import com.inno72.machine.vo.MachineAppStatus;
+import com.inno72.machine.vo.MachineListVo;
 import com.inno72.machine.vo.MachineNetInfo;
 import com.inno72.machine.vo.MachineStatusVo;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
@@ -43,4 +44,6 @@ public interface MachineService extends Service<Inno72Machine> {
 	Result<String> installApp(String machineId, String appPackageName, String url, Integer versionCode);
 
 	Result<List<String>> findMachineByMachineStatus(int id);
+
+	Result<List<MachineListVo>> findMachinePlan(String machineCode, String localCode, String startTime, String endTime);
 }

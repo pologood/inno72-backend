@@ -29,6 +29,7 @@
 		<result column="channel_status" jdbcType="VARCHAR" property="channelStatus" />
 		<result column="goods_status" jdbcType="VARCHAR" property="goodsStatus" />
 		<result column="machine_status" jdbcType="VARCHAR" property="machineStatus" />
+		<association property="planTime" resultMap="planTimeResult" />
 	</resultMap>
 
 	<select id="selectMachinesByPage" parameterType="java.util.Map"
@@ -75,5 +76,29 @@ where 1=1
 	<select id="findMachineByMachineStatus" parameterType="Integer" resultType="String">
 		select s.machine_code from inno72_machine s where s.machine_status = #{machineStatus}
 	</select>
+	<resultMap id="planTimeResult" type="java.util.Map">
+	  <result column="start_time" property="startTime" />
+	  <result column="end_time" property="endTime"/>
+	 </resultMap>
+	<select id="findMachinePlan" parameterType="java.util.Map" resultMap="VoResultMap">
+		SELECT
+			m.id,
+			m.machine_code,
+			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL( l.name,"") ) AS local_desc,
+			date_format(ap.start_time,'%Y-%m-%d %H:%i:%s') AS start_time,
+			date_format(ap.end_time,'%Y-%m-%d %H:%i:%s') AS end_time
+		FROM
+			inno72_machine m
+			LEFT JOIN inno72_locale l ON l.id = m.locale_id
+			LEFT JOIN inno72_admin_area area on area.`code`=l.area_code
+			LEFT JOIN inno72_activity_plan_machine apm on apm.machine_id = m.id
+			LEFT JOIN inno72_activity_plan ap ON ap.id = apm.activity_plan_id
+		where 1=1 
+		<if test="code !=null and code !='' ">and LEFT(l.area_code,#{num})='${code}'</if>
+		<if test="machineCode !=null and machineCode !=''">
+			AND m.machine_code=#{machineCode}
+		</if>
+	</select>
+	
 
 </mapper>

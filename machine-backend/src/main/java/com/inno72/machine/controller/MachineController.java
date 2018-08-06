@@ -18,6 +18,7 @@ import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.vo.ChannelListVo;
 import com.inno72.machine.vo.MachineAppStatus;
+import com.inno72.machine.vo.MachineListVo;
 import com.inno72.machine.vo.MachineNetInfo;
 import com.inno72.machine.vo.MachineStatusVo;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
@@ -77,7 +78,7 @@ public class MachineController {
 	 * @param machineStatus
 	 * @return
 	 */
-	@RequestMapping(value = "/findMachineByMachineStatus", method = {RequestMethod.POST, RequestMethod.GET})
+	@RequestMapping(value = "/findMachineByMachineStatus", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<List<String>> findMachineByMachineStatus(@RequestParam int machineStatus) {
 		return machineService.findMachineByMachineStatus(machineStatus);
 
@@ -94,6 +95,21 @@ public class MachineController {
 	public ModelAndView list(@RequestParam(required = false) String machineCode,
 			@RequestParam(required = false) String localCode) {
 		Result<List<Inno72Machine>> list = machineService.findMachines(machineCode, localCode);
+		return ResultPages.page(list);
+	}
+
+	/**
+	 * 查看机器排期计划
+	 *
+	 * @param machineCode
+	 * @param localCode
+	 * @return
+	 */
+	@RequestMapping(value = "/planList", method = { RequestMethod.POST, RequestMethod.GET })
+	public ModelAndView planList(@RequestParam(required = false) String machineCode,
+			@RequestParam(required = false) String localCode, @RequestParam(required = false) String startTime,
+			@RequestParam(required = false) String endTime) {
+		Result<List<MachineListVo>> list = machineService.findMachinePlan(machineCode, localCode, startTime, endTime);
 		return ResultPages.page(list);
 	}
 

@@ -1,5 +1,8 @@
 package com.inno72.machine.vo;
 
+import java.util.List;
+import java.util.Map;
+
 public class MachineListVo {
 	private String id;
 	private String machineCode;
@@ -9,6 +12,8 @@ public class MachineListVo {
 	private String channelStatus;
 	private String goodsStatus;
 	private String machineStatus;
+
+	private List<Map<String, Object>> planTime;
 
 	public String getId() {
 		return id;
@@ -72,6 +77,14 @@ public class MachineListVo {
 
 	public void setMachineStatus(String machineStatus) {
 		this.machineStatus = machineStatus;
+	}
+
+	public List<Map<String, Object>> getPlanTime() {
+		return planTime;
+	}
+
+	public void setPlanTime(List<Map<String, Object>> planTime) {
+		this.planTime = planTime;
 	}
 
 }

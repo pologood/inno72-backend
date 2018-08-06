@@ -37,6 +37,7 @@ import com.inno72.machine.vo.AppStatus;
 import com.inno72.machine.vo.ChannelListVo;
 import com.inno72.machine.vo.MachineAppStatus;
 import com.inno72.machine.vo.MachineInstallAppBean;
+import com.inno72.machine.vo.MachineListVo;
 import com.inno72.machine.vo.MachineNetInfo;
 import com.inno72.machine.vo.MachineStartAppBean;
 import com.inno72.machine.vo.MachineStatus;
@@ -101,6 +102,26 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		return Results.success(machines);
 	}
 
+	@Override
+	public Result<List<MachineListVo>> findMachinePlan(String machineCode, String localCode, String startTime,
+			String endTime) {
+		Map<String, Object> param = new HashMap<>();
+		if (StringUtil.isNotEmpty(localCode)) {
+			int num = StringUtil.getAreaCodeNum(localCode);
+			if (num < 4) {
+				num = 3;
+			}
+			String likeCode = localCode.substring(0, num);
+			param.put("code", likeCode);
+			param.put("num", num);
+		}
+		param.put("machineCode", machineCode);
+		param.put("startTime", startTime);
+		param.put("endTime", endTime);
+
+		List<MachineListVo> machines = inno72MachineMapper.findMachinePlan(param);
+		return Results.success(machines);
+	}
 
 	@Override
 	public Result<String> updateLocale(String id, String localeId, String address) {
