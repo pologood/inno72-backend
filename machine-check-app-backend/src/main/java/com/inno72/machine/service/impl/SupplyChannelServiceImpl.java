@@ -19,6 +19,7 @@ import com.inno72.machine.vo.WorkOrderVo;
 import com.inno72.model.AlarmMessageBean;
 import com.inno72.model.ChannelGoodsAlarmBean;
 import com.inno72.redis.IRedisUtil;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
@@ -556,7 +557,6 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                     logger.info("货道缺货发送push{}",JSONObject.toJSONString(alarmMessageBean));
                     redisUtil.publish("moniterAlarm",JSONObject.toJSONString(alarmMessageBean));
                     redisUtil.setex(key,60*60*2,"1");
-
                 }
             }
         }
