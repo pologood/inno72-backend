@@ -118,6 +118,9 @@ public class Inno72CheckFault {
     @Transient
     private String title;
 
+    @Transient
+    private String machineCode;
+
     public String getId() {
         return id;
     }

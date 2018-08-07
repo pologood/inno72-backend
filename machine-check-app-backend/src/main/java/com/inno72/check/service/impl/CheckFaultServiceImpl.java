@@ -10,6 +10,7 @@ import com.inno72.common.*;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.msg.MsgUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Condition;
@@ -96,10 +97,12 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
                     params.put("remark",remark);
                     params.put("messgeInfo",messgeInfo);
                     List<CheckUserVo> checkUserList = machine.getCheckUserVoList();
+                    List<String> userIdList = new ArrayList<>();
                     if(checkUserList != null && checkUserList.size()>0){
                         for(CheckUserVo checkUser:checkUserList){
                             String phone = checkUser.getPhone();
                             if(StringUtil.isNotEmpty(phone)){
+                                userIdList.add(checkUser.getId());
                                 msgUtil.sendPush(pushCode,params,phone,appName,title,messgeInfo);
                                 msgUtil.sendSMS(smsCode,params,phone,appName);
                             }
@@ -115,6 +118,16 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
                     alarmMsg.setType(1);
                     alarmMsg.setDetail(messgeInfo);
                     inno72AlarmMsgMapper.insertSelective(alarmMsg);
+
+                    Map<String,Object> paramsMap = new HashMap<>();
+                    paramsMap.put("machineCode", machineCode);
+                    paramsMap.put("localStr", localeStr);
+                    paramsMap.put("text", "出现故障，故障类型："+faultType+"，故障描述："+remark+"，请及时处理。");
+                    String userIdString = StringUtils.join(userIdList.toArray(), "|");
+                    Map<String,String> m = new HashMap<>();
+                    m.put("touser", userIdString);
+                    m.put("agentid", "1000002");
+                    msgUtil.sendQyWechatMsg("qywechat_msg", params, m, userIdString, appName);
                 }
 
             }
@@ -181,21 +194,14 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
     @Override
     public Result<Inno72CheckFault> getDetail(String faultId) {
         Inno72CheckFault fault = inno72CheckFaultMapper.selectDetail(faultId);
+        fault.setTitle("您所管理的机器出现了故障");
         List<Inno72CheckFaultImage> imageList = fault.getImageList();
-        if(imageList != null && imageList.size()>0){
-            for(Inno72CheckFaultImage image:imageList){
-                String imageUrl = image.getImage();
-                image.setImage(ImageUtil.getLongImageUrl(imageUrl));
-            }
-        }
-        List<Inno72CheckFaultRemark> remarkList = fault.getRemarkList();
-        if(remarkList != null && remarkList.size()>0){
-            for(Inno72CheckFaultRemark remark:remarkList){
-                int type = remark.getType();
-                if(type==1){
-                    remark.setName("巡检人员");
-                }else if(type==2){
-                    remark.setName("运营人员");
+        if(fault != null){
+            fault.setTitle("您所管理的机器出现了故障");
+            if(imageList != null && imageList.size()>0){
+                for(Inno72CheckFaultImage image:imageList){
+                    String imageUrl = image.getImage();
+                    image.setImage(ImageUtil.getLongImageUrl(imageUrl));
                 }
             }
         }
