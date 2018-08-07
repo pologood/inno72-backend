@@ -7,7 +7,9 @@
     -->
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="fault_id" jdbcType="VARCHAR" property="faultId"/>
+    <result column="remark_id" jdbcType="VARCHAR" property="remarkId"/>
     <result column="image" jdbcType="VARCHAR" property="image"/>
+    <result column="sort" jdbcType="INTEGER" property="sort"/>
     <result column="is_delete" jdbcType="INTEGER" property="isDelete"/>
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
   </resultMap>

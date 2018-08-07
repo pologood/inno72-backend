@@ -45,6 +45,10 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 
     @Override
     public Result<String> addCheckFault(Inno72CheckFault checkFault) {
+        String remark = checkFault.getRemark();
+        if(StringUtil.isEmpty(remark)){
+            Results.failure("故障描述不能为空");
+        }
         String[] machineIds = checkFault.getMachineIds();
         if(machineIds != null && machineIds.length>0){
             for (String machineId : machineIds) {
@@ -64,14 +68,26 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
                 checkFault.setUrgentStatus(urgentStatus);
                 checkFault.setSubmitId(UserUtil.getUser().getId());
                 checkFault.setSubmitUserType(1);
+                checkFault.setUpdateTime(LocalDateTime.now());
                 inno72CheckFaultMapper.insertSelective(checkFault);
+                Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
+                faultRemark.setRemark(remark);
+                faultRemark.setUserId(UserUtil.getUser().getId());
+                faultRemark.setType(1);
+                faultRemark.setCreateTime(LocalDateTime.now());
+                faultRemark.setFaultId(id);
+                String remarkId = StringUtil.getUUID();
+                faultRemark.setId(remarkId);
+                inno72CheckFaultRemarkMapper.insertSelective(faultRemark);
                 String[] images = checkFault.getImages();
                 if (images != null && images.length > 0) {
-                    for (String image1 : images) {
+                    for (int i=0;i<images.length;i++) {
                         Inno72CheckFaultImage image = new Inno72CheckFaultImage();
                         image.setId(StringUtil.getUUID());
                         image.setFaultId(id);
-                        image.setImage(ImageUtil.getLackImageUrl(image1));
+                        image.setRemarkId(remarkId);
+                        image.setSort(i+1);
+                        image.setImage(ImageUtil.getLackImageUrl(images[i]));
                         image.setCreateTime(LocalDateTime.now());
                         inno72CheckFaultImageMapper.insertSelective(image);
                     }
@@ -88,7 +104,6 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
             }
             if(machines != null && machines.size()>0){
                 String title = "您负责的机器出现故障";
-                String remark = checkFault.getRemark();
                 String appName = "machine_check_app_backend";
                 String pushCode = "push_check_app_fault";
                 String smsCode = "sms_check_app_fault";
@@ -170,13 +185,17 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         if(list != null && list.size()>0){
             for(Inno72CheckFault checkFault:list){
                 checkFault.setTitle("您所管理的机器出现了故障");
-                List<Inno72CheckFaultImage> imageList = checkFault.getImageList();
-                if(imageList != null && imageList.size()>0){
-                    for(Inno72CheckFaultImage image:imageList){
-                        String imageUrl = image.getImage();
-                        image.setImage(ImageUtil.getLongImageUrl(imageUrl));
+                for(Inno72CheckFaultRemark remark:checkFault.getRemarkList()){
+                    List<Inno72CheckFaultImage> imageList = remark.getImageList();
+                    if(imageList != null && imageList.size()>0){
+                        for(Inno72CheckFaultImage image:imageList){
+                            String imageUrl = image.getImage();
+                            image.setImage(ImageUtil.getLongImageUrl(imageUrl));
+                        }
                     }
                 }
+
+
             }
         }
         return list;
@@ -204,16 +223,10 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
     public Result<Inno72CheckFault> getDetail(String faultId) {
         Inno72CheckFault fault = inno72CheckFaultMapper.selectDetail(faultId);
         fault.setTitle("您所管理的机器出现了故障");
-        List<Inno72CheckFaultImage> imageList = fault.getImageList();
+
         List<Inno72CheckFaultRemark> remarkList = fault.getRemarkList();
         if(fault != null){
             fault.setTitle("您所管理的机器出现了故障");
-            if(imageList != null && imageList.size()>0){
-                for(Inno72CheckFaultImage image:imageList){
-                    String imageUrl = image.getImage();
-                    image.setImage(ImageUtil.getLongImageUrl(imageUrl));
-                }
-            }
             if(remarkList != null && remarkList.size()>0){
                 for(Inno72CheckFaultRemark remark:remarkList){
                     int type = remark.getType();
@@ -221,6 +234,13 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
                         remark.setName("巡检人员");
                     }else if(type == 2){
                         remark.setName("运营人员");
+                    }
+                    List<Inno72CheckFaultImage> imageList = remark.getImageList();
+                    if(imageList != null && imageList.size()>0){
+                        for(Inno72CheckFaultImage image:imageList){
+                            String imageUrl = image.getImage();
+                            image.setImage(ImageUtil.getLongImageUrl(imageUrl));
+                        }
                     }
                 }
             }

@@ -148,10 +148,6 @@ public class Inno72CheckFault {
     private String machineCode;
 
     @Transient
-    private List<Inno72CheckFaultImage> imageList;
-
-
-    @Transient
     private List<Inno72CheckFaultRemark> remarkList;
 
     @Transient
@@ -160,8 +156,6 @@ public class Inno72CheckFault {
     @Transient
     private String[] machineIds;
 
-    @Transient
-    private List<Inno72CheckFaultType> typeList;
 
     @Transient
     private String typeName;
@@ -337,14 +331,6 @@ public class Inno72CheckFault {
         this.machineCode = machineCode;
     }
 
-    public List<Inno72CheckFaultImage> getImageList() {
-        return imageList;
-    }
-
-    public void setImageList(List<Inno72CheckFaultImage> imageList) {
-        this.imageList = imageList;
-    }
-
     public List<Inno72CheckFaultRemark> getRemarkList() {
         return remarkList;
     }
@@ -367,14 +353,6 @@ public class Inno72CheckFault {
 
     public void setMachineIds(String[] machineIds) {
         this.machineIds = machineIds;
-    }
-
-    public List<Inno72CheckFaultType> getTypeList() {
-        return typeList;
-    }
-
-    public void setTypeList(List<Inno72CheckFaultType> typeList) {
-        this.typeList = typeList;
     }
 
     public String getTypeName() {

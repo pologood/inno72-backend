@@ -60,6 +60,9 @@ public class Inno72CheckFaultRemark {
     @Transient
     private String name;
 
+    @Transient
+    private List<Inno72CheckFaultImage> imageList;
+
     public String getId() {
         return id;
     }
@@ -122,5 +125,13 @@ public class Inno72CheckFaultRemark {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Inno72CheckFaultImage> getImageList() {
+        return imageList;
+    }
+
+    public void setImageList(List<Inno72CheckFaultImage> imageList) {
+        this.imageList = imageList;
     }
 }

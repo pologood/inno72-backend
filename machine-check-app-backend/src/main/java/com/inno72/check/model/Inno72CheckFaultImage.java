@@ -20,16 +20,28 @@ public class Inno72CheckFaultImage {
     private String id;
 
     /**
-     * 故障ID
+     * 工单ID
      */
     @Column(name="fault_id")
     private String faultId;
+
+    /**
+     * 备注ID
+     */
+    @Column(name="remark_id")
+    private String remarkId;
 
     /**
      * 图片
      */
     @Column(name="image")
     private String image;
+
+    /**
+     * 排序
+     */
+    @Column(name="sort")
+    private Integer sort;
 
     /**
      * 是否删除
@@ -62,12 +74,28 @@ public class Inno72CheckFaultImage {
         this.faultId = faultId;
     }
 
+    public String getRemarkId() {
+        return remarkId;
+    }
+
+    public void setRemarkId(String remarkId) {
+        this.remarkId = remarkId;
+    }
+
     public String getImage() {
         return image;
     }
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 
     public int getIsDelete() {
