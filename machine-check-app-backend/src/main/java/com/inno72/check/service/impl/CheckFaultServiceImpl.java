@@ -55,6 +55,15 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
                 checkFault.setSubmitTime(LocalDateTime.now());
                 checkFault.setSubmitUser(UserUtil.getUser().getName());
                 checkFault.setMachineId(machineId);
+                checkFault.setWorkType(1);
+                checkFault.setSource(1);
+                Integer urgentStatus = checkFault.getUrgentStatus();
+                if(urgentStatus == 0){
+                    urgentStatus = 1;
+                }
+                checkFault.setUrgentStatus(urgentStatus);
+                checkFault.setSubmitId(UserUtil.getUser().getId());
+                checkFault.setSubmitUserType(1);
                 inno72CheckFaultMapper.insertSelective(checkFault);
                 String[] images = checkFault.getImages();
                 if (images != null && images.length > 0) {
