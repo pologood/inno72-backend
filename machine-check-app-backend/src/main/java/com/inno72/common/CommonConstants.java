@@ -39,6 +39,6 @@ public class CommonConstants {
 	/**
 	 *APP下载地址前缀
 	 */
-	public static final String DOWNLOAD_APP_PREF = "https://inno72.oss.72solo.com";
+	public static final String DOWNLOAD_APP_PREF = "http://inno72.oss.72solo.com";
 
 }
