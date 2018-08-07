@@ -160,7 +160,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         List<Inno72CheckFault> list = inno72CheckFaultMapper.selectForPage(map);
         if(list != null && list.size()>0){
             for(Inno72CheckFault checkFault:list){
-                checkFault.setTitle("您所管理的机器出现了故障");
+                checkFault.setTitle(checkFault.getMachineCode());
                 List<Inno72CheckFaultImage> imageList = checkFault.getImageList();
                 if(imageList != null && imageList.size()>0){
                     for(Inno72CheckFaultImage image:imageList){
@@ -197,7 +197,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         List<Inno72CheckFaultImage> imageList = fault.getImageList();
         List<Inno72CheckFaultRemark> remarkList = fault.getRemarkList();
         if(fault != null){
-            fault.setTitle("您所管理的机器出现了故障");
+            fault.setTitle(fault.getMachineCode());
             if(imageList != null && imageList.size()>0){
                 for(Inno72CheckFaultImage image:imageList){
                     String imageUrl = image.getImage();

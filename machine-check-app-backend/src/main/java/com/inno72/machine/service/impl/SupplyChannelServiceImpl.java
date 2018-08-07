@@ -258,10 +258,12 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                             int goodsCount = supplyChannelVo.getGoodsCount();
                             BigDecimal volumeCountDecimal = new BigDecimal(volumeCount);
                             BigDecimal goodsCountDecimal = new BigDecimal(goodsCount);
-                            BigDecimal countDecimal = goodsCountDecimal.divide(volumeCountDecimal,2, RoundingMode.HALF_UP);
-                            if(countDecimal.compareTo(new BigDecimal(0.2))<0){
-                                lackGoodsStatus = 1;
-                                break;
+                            if(goodsCount>0){
+                                BigDecimal countDecimal = goodsCountDecimal.divide(volumeCountDecimal,2, RoundingMode.HALF_UP);
+                                if(countDecimal.compareTo(new BigDecimal(0.2))<0){
+                                    lackGoodsStatus = 1;
+                                    break;
+                                }
                             }
                         }
                     }
