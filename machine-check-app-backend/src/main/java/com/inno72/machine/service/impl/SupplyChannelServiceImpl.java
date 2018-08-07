@@ -298,13 +298,15 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                     }
                     BigDecimal volumeCountDecimal = new BigDecimal(totalVolumeCount);
                     BigDecimal goodsCountDecimal = new BigDecimal(totalGoodsCount);
-                    BigDecimal countDecimal = goodsCountDecimal.divide(volumeCountDecimal,2, RoundingMode.HALF_UP);
-                    if(countDecimal.compareTo(new BigDecimal(0.2))<0){
-                        inno72Goods.setLackGoodsCount(totalVolumeCount-totalGoodsCount);
-                        inno72Goods.setLackGoodsStatus(1);
-                        inno72Goods.setSupplyChannelVoList(null);
-                        inno72Goods.setImg(ImageUtil.getLongImageUrl(inno72Goods.getImg()));
-                        resultList.add(inno72Goods);
+                    if(totalVolumeCount>0){
+                        BigDecimal countDecimal = goodsCountDecimal.divide(volumeCountDecimal,2, RoundingMode.HALF_UP);
+                        if(countDecimal.compareTo(new BigDecimal(0.2))<0){
+                            inno72Goods.setLackGoodsCount(totalVolumeCount-totalGoodsCount);
+                            inno72Goods.setLackGoodsStatus(1);
+                            inno72Goods.setSupplyChannelVoList(null);
+                            inno72Goods.setImg(ImageUtil.getLongImageUrl(inno72Goods.getImg()));
+                            resultList.add(inno72Goods);
+                        }
                     }
                 }
             }
