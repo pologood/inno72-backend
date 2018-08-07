@@ -8,6 +8,7 @@
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
     <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="submit_user" jdbcType="VARCHAR" property="submitUser" />
     <result column="finish_user" jdbcType="VARCHAR" property="finishUser" />
     <result column="submit_time" jdbcType="TIMESTAMP" property="submitTime" />
@@ -21,6 +22,7 @@
   <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
   
  		SELECT f.id,
+ 		f.code,
  		m.machine_code AS machine_id,
  		submit_user,
  		finish_user,
