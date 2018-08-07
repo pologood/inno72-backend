@@ -196,6 +196,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         Inno72CheckFault fault = inno72CheckFaultMapper.selectDetail(faultId);
         fault.setTitle("您所管理的机器出现了故障");
         List<Inno72CheckFaultImage> imageList = fault.getImageList();
+        List<Inno72CheckFaultRemark> remarkList = fault.getRemarkList();
         if(fault != null){
             fault.setTitle("您所管理的机器出现了故障");
             if(imageList != null && imageList.size()>0){
@@ -204,6 +205,17 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
                     image.setImage(ImageUtil.getLongImageUrl(imageUrl));
                 }
             }
+            if(remarkList != null && remarkList.size()>0){
+                for(Inno72CheckFaultRemark remark:remarkList){
+                    int type = remark.getType();
+                    if(type == 1){
+                        remark.setName("巡检人员");
+                    }else if(type == 2){
+                        remark.setName("运营人员");
+                    }
+                }
+            }
+
         }
         return ResultGenerator.genSuccessResult(fault);
     }
