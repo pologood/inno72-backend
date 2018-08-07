@@ -1,5 +1,6 @@
 package com.inno72.machine.service.impl;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -38,7 +40,9 @@ import com.inno72.machine.vo.ChannelListVo;
 import com.inno72.machine.vo.MachineAppStatus;
 import com.inno72.machine.vo.MachineInstallAppBean;
 import com.inno72.machine.vo.MachineListVo;
+import com.inno72.machine.vo.MachineLogInfo;
 import com.inno72.machine.vo.MachineNetInfo;
+import com.inno72.machine.vo.MachinePortalVo;
 import com.inno72.machine.vo.MachineStartAppBean;
 import com.inno72.machine.vo.MachineStatus;
 import com.inno72.machine.vo.MachineStatusVo;
@@ -71,20 +75,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	private MachineBackendProperties machineBackendProperties;
 
 	@Override
-	public Result<String> updateNetStatus(String machineCode, Integer netStatus) {
-		Inno72Machine machine = findBy("machineCode", machineCode);
-		if (machine != null) {
-			if (!machine.getNetStatus().equals(netStatus)) {
-				machine.setNetStatus(netStatus);
-				inno72MachineMapper.updateByPrimaryKeySelective(machine);
-			}
-		} else {
-			return Results.failure("机器code传入错误");
-		}
-		return Results.success();
-	}
-
-	@Override
 	public Result<List<Inno72Machine>> findMachines(String machineCode, String localCode) {
 		Map<String, Object> param = new HashMap<>();
 		if (StringUtil.isNotEmpty(localCode)) {
@@ -100,6 +90,54 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 		List<Inno72Machine> machines = inno72MachineMapper.selectMachinesByPage(param);
 		return Results.success(machines);
+	}
+
+	@Override
+	public Result<MachinePortalVo> findMachinePortalData() {
+		MachinePortalVo vo = new MachinePortalVo();
+		List<Inno72Machine> machines = inno72MachineMapper.selectAll();
+		List<MachineLogInfo> netList = mongoTpl.find(new Query(), MachineLogInfo.class, "MachineLogInfo");
+		int online = 0;
+		for (MachineLogInfo machineLogInfo : netList) {
+			LocalDateTime createTime = machineLogInfo.getCreateTime();
+			Duration duration = Duration.between(createTime, LocalDateTime.now());
+			long between = duration.toMinutes();
+			if (between <= 2) {
+				online += 1;
+			}
+		}
+		int exception = 0;
+		List<MachineStatus> statusList = mongoTpl.find(new Query(), MachineStatus.class, "MachineStatus");
+		for (MachineStatus machineStatus : statusList) {
+			if (machineStatus.getMachineDoorStatus() == 1) {
+				exception += 1;
+				continue;
+			}
+			if (machineStatus.getDropGoodsSwitch() == 0) {
+				exception += 1;
+				continue;
+			}
+			if (!StringUtils.isEmpty(machineStatus.getGoodsChannelStatus())) {
+				exception += 1;
+				continue;
+			}
+			if (machineStatus.getScreenIntensity() < 20) {
+				exception += 1;
+				continue;
+			}
+			if (machineStatus.getVoice() < 20) {
+				exception += 1;
+				continue;
+			}
+		}
+		vo.setOnline(online);
+		vo.setOffline(machines.size() - online);
+		vo.setException(exception);
+		vo.setStockout(2);
+		vo.setWaitConfirm(1);
+		vo.setProcessed(3);
+		vo.setWaitOrder(1);
+		return Results.success(vo);
 	}
 
 	@Override

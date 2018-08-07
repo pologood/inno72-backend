@@ -1,6 +1,9 @@
 package com.inno72.machine.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -12,14 +15,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.common.Result;
 import com.inno72.common.ResultPages;
+import com.inno72.common.Results;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.vo.ChannelListVo;
 import com.inno72.machine.vo.MachineAppStatus;
 import com.inno72.machine.vo.MachineListVo;
 import com.inno72.machine.vo.MachineNetInfo;
+import com.inno72.machine.vo.MachinePortalVo;
 import com.inno72.machine.vo.MachineStatusVo;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
 
@@ -32,33 +38,6 @@ import com.inno72.machine.vo.UpdateMachineChannelVo;
 public class MachineController {
 	@Resource
 	private MachineService machineService;
-
-	// /**
-	// * 初始化机器id
-	// *
-	// * @param deviceId
-	// * @return
-	// */
-	// @RequestMapping(value = "/initMachine", method = { RequestMethod.POST,
-	// RequestMethod.GET })
-	// public Result<String> initMachine(@RequestParam String deviceId,
-	// @RequestParam String channelJson) {
-	// return machineService.initMachine(deviceId, channelJson);
-	//
-	// }
-
-	/**
-	 * 更新机器网络状态
-	 * 
-	 * @param machineCode
-	 * @param netStatus
-	 * @return
-	 */
-	@RequestMapping(value = "/updateNetStatus", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> updateNetStatus(@RequestParam String machineCode, @RequestParam Integer netStatus) {
-		return machineService.updateNetStatus(machineCode, netStatus);
-
-	}
 
 	/**
 	 * 更新机器网络状态
@@ -85,6 +64,16 @@ public class MachineController {
 	}
 
 	/**
+	 * 获取机器首页数据
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/findMachinePortalData", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<MachinePortalVo> findMachinePortalData() {
+		return machineService.findMachinePortalData();
+	}
+
+	/**
 	 * 查看机器列表
 	 *
 	 * @param machineCode
@@ -98,6 +87,32 @@ public class MachineController {
 		return ResultPages.page(list);
 	}
 
+	public static void main(String[] args) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("id", "abcde");
+		map.put("machineCode", "1234");
+		map.put("local", "北京市朝阳区大悦城一层");
+		map.put("offline_time", "2018.08.03 12:02:30");
+		List<Map<String, Object>> list = new ArrayList<>();
+		Map<String, Object> mm = new HashMap<>();
+		mm.put("goodName", "娃哈哈");
+		mm.put("goodCount", 10);
+		Map<String, Object> mm1 = new HashMap<>();
+		mm1.put("goodName", "娃哇哇");
+		mm1.put("goodCount", 5);
+		list.add(mm);
+		list.add(mm1);
+		map.put("stockoutInfo", list);
+		map.put("machineDoorStatus", 1);
+		map.put("dropGoodsSwitch", 1);
+		map.put("temperature", 36);
+		map.put("screenIntensity", 10);
+		map.put("goodsChannelStatus", "");
+		map.put("voice", 10);
+		map.put("update_time", "2018.08.03 12:02:30");
+		System.out.println(JSON.toJSONString(Results.success(map)));
+	}
+
 	/**
 	 * 查看机器排期计划
 	 *
@@ -106,11 +121,11 @@ public class MachineController {
 	 * @return
 	 */
 	@RequestMapping(value = "/planList", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView planList(@RequestParam(required = false) String machineCode,
+	public Result<List<MachineListVo>> planList(@RequestParam(required = false) String machineCode,
 			@RequestParam(required = false) String localCode, @RequestParam(required = false) String startTime,
 			@RequestParam(required = false) String endTime) {
 		Result<List<MachineListVo>> list = machineService.findMachinePlan(machineCode, localCode, startTime, endTime);
-		return ResultPages.page(list);
+		return list;
 	}
 
 	/**
