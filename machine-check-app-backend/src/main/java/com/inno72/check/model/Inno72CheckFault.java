@@ -25,37 +25,76 @@ public class Inno72CheckFault {
     private String machineId;
 
     /**
-     * 故障编号
+     * 工单号
      */
     @Column(name="code")
     private String code;
 
     /**
-     * 类型
+     * 工单类型（1.故障，2.报警，3.补货，4.投诉）
+     */
+    @Column(name="work_type")
+    private Integer workType;
+
+    /**
+     * 工单状态（1.待接单，2.待处理，3.已完成，4.已确认，5.已关闭）
+     */
+    @Column(name="status")
+    private Integer status;
+
+    /**
+     * 来源(1.巡检上报，2.运营派单，3.报警派单)
+     */
+    @Column(name="source")
+    private Integer source;
+
+    /**
+     * 紧急状态（1.日常，2.紧急）
+     */
+    @Column(name="urgent_status")
+    private Integer urgentStatus;
+    /**
+     * 故障类型
      */
     @Column(name="type")
     private String type;
 
-    @Column(name="child_type")
-    private String childType;
 
     /**
-     * 备注
+     * 工单描述
      */
     @Column(name="remark")
     private String remark;
 
     /**
-     * 提交人
+     * 派单人
      */
     @Column(name="submit_user")
     private String submitUser;
+
+    /**
+     * 派单人ID
+     */
+    @Column(name="submit_id")
+    private String submitId;
+
+    /**
+     * 派单人类型（1.巡检人员，2.运营人员）
+     */
+    @Column(name="submit_user_type")
+    private Integer submitUserType;
 
     /**
      * 解决人
      */
     @Column(name="finish_user")
     private String finishUser;
+
+    /**
+     * 解决人ID
+     */
+    @Column(name="finish_id")
+    private String finishId;
 
     /**
      * 提交时间
@@ -67,6 +106,15 @@ public class Inno72CheckFault {
     private LocalDateTime submitTime;
 
     /**
+     *接单时间
+     */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
+    @Column(name="talking_time")
+    private LocalDateTime talkingTime;
+
+    /**
      * 解决时间
      */
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
@@ -76,10 +124,13 @@ public class Inno72CheckFault {
     private LocalDateTime finishTime;
 
     /**
-     * 状态
+     * 修改时间
      */
-    @Column(name="status")
-    private Integer status;
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
+    @Column(name="update_time")
+    private LocalDateTime updateTime;
 
     /**
      * 解决方案
@@ -91,7 +142,7 @@ public class Inno72CheckFault {
      * 提醒状态（0.未提醒，1.已提醒）
      */
     @Column(name="remind_status")
-    private int remindStatus;
+    private Integer remindStatus;
 
     @Transient
     private String machineCode;
@@ -118,9 +169,6 @@ public class Inno72CheckFault {
     @Transient
     private String title;
 
-    @Transient
-    private String machineCode;
-
     public String getId() {
         return id;
     }
@@ -145,20 +193,44 @@ public class Inno72CheckFault {
         this.code = code;
     }
 
+    public Integer getWorkType() {
+        return workType;
+    }
+
+    public void setWorkType(Integer workType) {
+        this.workType = workType;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getSource() {
+        return source;
+    }
+
+    public void setSource(Integer source) {
+        this.source = source;
+    }
+
+    public Integer getUrgentStatus() {
+        return urgentStatus;
+    }
+
+    public void setUrgentStatus(Integer urgentStatus) {
+        this.urgentStatus = urgentStatus;
+    }
+
     public String getType() {
         return type;
     }
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public String getChildType() {
-        return childType;
-    }
-
-    public void setChildType(String childType) {
-        this.childType = childType;
     }
 
     public String getRemark() {
@@ -177,12 +249,36 @@ public class Inno72CheckFault {
         this.submitUser = submitUser;
     }
 
+    public String getSubmitId() {
+        return submitId;
+    }
+
+    public void setSubmitId(String submitId) {
+        this.submitId = submitId;
+    }
+
+    public Integer getSubmitUserType() {
+        return submitUserType;
+    }
+
+    public void setSubmitUserType(Integer submitUserType) {
+        this.submitUserType = submitUserType;
+    }
+
     public String getFinishUser() {
         return finishUser;
     }
 
     public void setFinishUser(String finishUser) {
         this.finishUser = finishUser;
+    }
+
+    public String getFinishId() {
+        return finishId;
+    }
+
+    public void setFinishId(String finishId) {
+        this.finishId = finishId;
     }
 
     public LocalDateTime getSubmitTime() {
@@ -193,6 +289,14 @@ public class Inno72CheckFault {
         this.submitTime = submitTime;
     }
 
+    public LocalDateTime getTalkingTime() {
+        return talkingTime;
+    }
+
+    public void setTalkingTime(LocalDateTime talkingTime) {
+        this.talkingTime = talkingTime;
+    }
+
     public LocalDateTime getFinishTime() {
         return finishTime;
     }
@@ -201,12 +305,12 @@ public class Inno72CheckFault {
         this.finishTime = finishTime;
     }
 
-    public Integer getStatus() {
-        return status;
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
     }
 
     public String getFinishRemark() {
@@ -217,12 +321,20 @@ public class Inno72CheckFault {
         this.finishRemark = finishRemark;
     }
 
-    public int getRemindStatus() {
+    public Integer getRemindStatus() {
         return remindStatus;
     }
 
-    public void setRemindStatus(int remindStatus) {
+    public void setRemindStatus(Integer remindStatus) {
         this.remindStatus = remindStatus;
+    }
+
+    public String getMachineCode() {
+        return machineCode;
+    }
+
+    public void setMachineCode(String machineCode) {
+        this.machineCode = machineCode;
     }
 
     public List<Inno72CheckFaultImage> getImageList() {
@@ -233,20 +345,20 @@ public class Inno72CheckFault {
         this.imageList = imageList;
     }
 
-    public String[] getImages() {
-        return images;
-    }
-
-    public void setImages(String[] images) {
-        this.images = images;
-    }
-
     public List<Inno72CheckFaultRemark> getRemarkList() {
         return remarkList;
     }
 
     public void setRemarkList(List<Inno72CheckFaultRemark> remarkList) {
         this.remarkList = remarkList;
+    }
+
+    public String[] getImages() {
+        return images;
+    }
+
+    public void setImages(String[] images) {
+        this.images = images;
     }
 
     public String[] getMachineIds() {
@@ -279,13 +391,5 @@ public class Inno72CheckFault {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getMachineCode() {
-        return machineCode;
-    }
-
-    public void setMachineCode(String machineCode) {
-        this.machineCode = machineCode;
     }
 }
