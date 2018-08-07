@@ -43,6 +43,12 @@ public class Inno72AppVersion {
     private int appType;
 
     /**
+     * 更新内容
+     */
+    @Column(name="remark")
+    private String remark;
+
+    /**
      * 下载地址
      */
     @Column(name="url")
@@ -111,6 +117,14 @@ public class Inno72AppVersion {
 
     public void setAppType(int appType) {
         this.appType = appType;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public String getUrl() {
