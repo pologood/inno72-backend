@@ -59,6 +59,7 @@
   <select id="selectFaultDetail" parameterType="java.util.Map" resultMap="ResultFaultDetailMap">
   
  		SELECT f.id,
+ 		f.code,
  		m.machine_code AS machine_id,
  		submit_user,
  		finish_user,

@@ -117,36 +117,40 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 			}
 			super.save(model);
 			// 调用企业微信添加成员
+			String active = System.getenv("spring_profiles_active");
+			logger.info("获取spring_profiles_active：{}", active);
+			if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
+				String accessTokenKey = qyhProperties.getProps().get("qyUserAccTokenKey");
+				String accessToken = redisUtil.get(accessTokenKey);
 
-			String accessTokenKey = qyhProperties.getProps().get("qyUserAccTokenKey");
-			String accessToken = redisUtil.get(accessTokenKey);
+				String addUserUrl = MessageFormat.format(CommonConstants.qyWeChatAddUserUrl, accessToken);
+				Map<String, Object> user = new HashMap<String, Object>();
+				user.put("userid", model.getId());
+				user.put("name", model.getName());
+				user.put("mobile", model.getPhone());
+				user.put("department", new int[] { 2 });
+				String result = HttpClient.post(addUserUrl, JSON.toJSONString(user));
 
-			String addUserUrl = MessageFormat.format(CommonConstants.qyWeChatAddUserUrl, accessToken);
-			Map<String, Object> user = new HashMap<String, Object>();
-			user.put("userid", model.getId());
-			user.put("name", model.getName());
-			user.put("mobile", model.getPhone());
-			user.put("department", new int[] { 2 });
-			String result = HttpClient.post(addUserUrl, JSON.toJSONString(user));
+				JSONObject resultJson = JSON.parseObject(result);
+				if (resultJson.getInteger("errcode") == 0) {
+					logger.info("企业微信添加成员完成");
+					// 调用企业微信添加成员
+					logger.info("企业微信成员邀请------------开始------------");
+					String inviteUserUrl = MessageFormat.format(CommonConstants.qyWeChatInviteUserUrl, accessToken);
+					Map<String, Object> invite = new HashMap<String, Object>();
+					invite.put("user", new String[] { checkUserId });
+					String res = HttpClient.post(inviteUserUrl, JSON.toJSONString(invite));
+					JSONObject resJson = JSON.parseObject(res);
+					if (resJson.getInteger("errcode") == 0) {
+						logger.info("企业微信成员邀请成功");
+					} else {
+						logger.info("企业微信成员邀请失败：{}", resJson.getString("errmsg"));
+					}
 
-			JSONObject resultJson = JSON.parseObject(result);
-			if (resultJson.getInteger("errcode") == 0) {
-				logger.info("企业微信添加成员完成");
-				// 调用企业微信添加成员
-				logger.info("企业微信成员邀请------------开始------------");
-				String inviteUserUrl = MessageFormat.format(CommonConstants.qyWeChatInviteUserUrl, accessToken);
-				Map<String, Object> invite = new HashMap<String, Object>();
-				invite.put("user", new String[] { checkUserId });
-				String res = HttpClient.post(inviteUserUrl, JSON.toJSONString(invite));
-				JSONObject resJson = JSON.parseObject(res);
-				if (resJson.getInteger("errcode") == 0) {
-					logger.info("企业微信成员邀请成功");
 				} else {
-					logger.info("企业微信成员邀请失败：{}", resJson.getString("errmsg"));
+					logger.info("企业微信添加失败：{}", resultJson.getString("errmsg"));
 				}
 
-			} else {
-				logger.info("企业微信添加失败：{}", resultJson.getString("errmsg"));
 			}
 
 		} catch (Exception e) {
@@ -283,10 +287,12 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 			String r = "已选择" + machines.size() + "台机器，分别位于:" + pList.toString();
 			u.setRemark(r);
 		}
+		if (null != u.getArea()) {
+			String area = u.getArea();
+			String province = StringUtil.getAreaParentCode(area, 1);
+			u.setProvince(province);
+		}
 
-		String area = u.getArea();
-		String province = StringUtil.getAreaParentCode(area, 1);
-		u.setProvince(province);
 		return u;
 	}
 
