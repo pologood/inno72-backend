@@ -141,7 +141,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	}
 
 	@Override
-	public Result<List<MachineListVo>> findMachinePlan(String machineCode, String localCode, String startTime,
+	public Result<List<MachineListVo>> findMachinePlanByPage(String machineCode, String localCode, String startTime,
 			String endTime) {
 		Map<String, Object> param = new HashMap<>();
 		if (StringUtil.isNotEmpty(localCode)) {
@@ -154,10 +154,13 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			param.put("num", num);
 		}
 		param.put("machineCode", machineCode);
-		param.put("startTime", startTime);
-		param.put("endTime", endTime);
 
-		List<MachineListVo> machines = inno72MachineMapper.findMachinePlan(param);
+		if (StringUtil.isNotBlank(startTime) && StringUtil.isNotBlank(endTime)) {
+			param.put("startTime", startTime);
+			param.put("endTime", endTime + " 23:59:59");
+		}
+
+		List<MachineListVo> machines = inno72MachineMapper.findMachinePlanByPage(param);
 		return Results.success(machines);
 	}
 

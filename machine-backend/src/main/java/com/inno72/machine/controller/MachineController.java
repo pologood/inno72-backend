@@ -121,11 +121,12 @@ public class MachineController {
 	 * @return
 	 */
 	@RequestMapping(value = "/planList", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<MachineListVo>> planList(@RequestParam(required = false) String machineCode,
+	public ModelAndView planList(@RequestParam(required = false) String machineCode,
 			@RequestParam(required = false) String localCode, @RequestParam(required = false) String startTime,
 			@RequestParam(required = false) String endTime) {
-		Result<List<MachineListVo>> list = machineService.findMachinePlan(machineCode, localCode, startTime, endTime);
-		return list;
+		Result<List<MachineListVo>> list = machineService.findMachinePlanByPage(machineCode, localCode, startTime,
+				endTime);
+		return ResultPages.page(list);
 	}
 
 	/**
