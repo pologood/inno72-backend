@@ -80,7 +80,7 @@ where 1=1
 	  <result column="start_time" property="startTime" />
 	  <result column="end_time" property="endTime"/>
 	 </resultMap>
-	<select id="findMachinePlan" parameterType="java.util.Map" resultMap="VoResultMap">
+	<select id="findMachinePlanByPage" parameterType="java.util.Map" resultMap="VoResultMap">
 		SELECT
 			m.id,
 			m.machine_code,
@@ -92,7 +92,9 @@ where 1=1
 			LEFT JOIN inno72_locale l ON l.id = m.locale_id
 			LEFT JOIN inno72_admin_area area on area.`code`=l.area_code
 			LEFT JOIN inno72_activity_plan_machine apm on apm.machine_id = m.id
-			LEFT JOIN inno72_activity_plan ap ON ap.id = apm.activity_plan_id
+			LEFT JOIN inno72_activity_plan ap ON ap.id = apm.activity_plan_id <if test="startTime !=null and startTime !='' ">
+			<![CDATA[and ( ap.start_time  BETWEEN #{startTime} AND #{endTime} OR ap.end_time BETWEEN #{startTime} AND #{endTime} ) ]]>
+		</if>
 		where 1=1 
 		<if test="code !=null and code !='' ">and LEFT(l.area_code,#{num})='${code}'</if>
 		<if test="machineCode !=null and machineCode !=''">

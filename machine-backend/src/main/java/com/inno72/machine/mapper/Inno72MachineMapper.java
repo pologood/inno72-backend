@@ -12,7 +12,7 @@ public interface Inno72MachineMapper extends Mapper<Inno72Machine> {
 
 	List<Inno72Machine> selectMachinesByPage(Map<String, Object> param);
 
-	List<MachineListVo> findMachinePlan(Map<String, Object> param);
+	List<MachineListVo> findMachinePlanByPage(Map<String, Object> param);
 
 	List<String> findMachineByMachineStatus(int machineStatus);
 

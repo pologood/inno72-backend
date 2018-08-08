@@ -25,7 +25,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.inno72.common.CommonConstants;
-import com.inno72.common.MachineMonitorBackendProperties;
 import com.inno72.model.AlarmMessageBean;
 import com.inno72.model.MachineAppStatus;
 import com.inno72.model.MachineLogInfo;
@@ -56,9 +55,9 @@ public class SocketIOStartHandler {
 			public String process(String key, String data, Map<String, List<String>> params) {
 				// 解压缩及解密
 				String message = AesUtils.decrypt(GZIPUtil.uncompress(data));
-				String machine = Optional.ofNullable(params.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
+				String machineId = Optional.ofNullable(params.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
 						.orElse("");
-				log.info("收到机器：{}发送的消息{}", machine, message);
+				log.info("收到机器：{}发送的消息{}", machineId, message);
 				JSONObject $json = JSON.parseObject(message);
 				int eventType = $json.getInteger("eventType");
 				int subEventType = $json.getInteger("subEventType");
@@ -71,11 +70,10 @@ public class SocketIOStartHandler {
 								new TypeReference<MessageBean<MachineStatus>>() {
 								});
 						MachineStatus machineStatus = messageBean.getData();
-						String machineId = machineStatus.getMachineId();
 						machineStatus.setCreateTime(LocalDateTime.now());
 						// 将货道故障信息推送到预警系统
 						if (!StringUtils.isEmpty(machineStatus.getGoodsChannelStatus())) {
-							AlarmMessageBean alarmMessageBean = new AlarmMessageBean();
+							AlarmMessageBean<MachineStatus> alarmMessageBean = new AlarmMessageBean<>();
 							alarmMessageBean.setSystem("machineChannel");
 							alarmMessageBean.setType("machineChannelException");
 							alarmMessageBean.setData(machineStatus);
@@ -91,7 +89,6 @@ public class SocketIOStartHandler {
 								new TypeReference<MessageBean<MachineAppStatus>>() {
 								});
 						MachineAppStatus apps = appStatus.getData();
-						String machineId = apps.getMachineId();
 						apps.setCreateTime(LocalDateTime.now());
 						// 保存到mongo表中
 						Query query = new Query();
@@ -107,11 +104,12 @@ public class SocketIOStartHandler {
 
 			@Override
 			public void monitorResponse(String key, String data, Map<String, List<String>> params) {
+				String machineId = Optional.ofNullable(params.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
+						.orElse("");
 				// 将机器系统监控信息存入mongo数据库中
 				String message = AesUtils.decrypt(GZIPUtil.uncompress(data));
 				SystemStatus systemStatus = JSONObject.parseObject(message, SystemStatus.class);
 				systemStatus.setCreateTime(LocalDateTime.now());
-				String machineId = systemStatus.getMachineId();
 				Query querySystemStatus = new Query();
 				querySystemStatus.addCriteria(Criteria.where("machineId").is(machineId));
 				mongoTpl.remove(querySystemStatus, "SystemStatus");
@@ -145,8 +143,6 @@ public class SocketIOStartHandler {
 						.orElse("");
 				if (!StringUtils.isEmpty(machineId)) {
 					log.info("断开连接，机器machineId:{}", machineId);
-					// String machinKey = CommonConstants.REDIS_BASE_PATH +
-					// machineId;
 					// 暂时不删除
 					// redisUtil.del(machinKey);
 				}
