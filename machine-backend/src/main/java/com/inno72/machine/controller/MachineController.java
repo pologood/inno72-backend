@@ -23,10 +23,12 @@ import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.vo.ChannelListVo;
 import com.inno72.machine.vo.MachineAppStatus;
+import com.inno72.machine.vo.MachineExceptionVo;
 import com.inno72.machine.vo.MachineListVo;
 import com.inno72.machine.vo.MachineNetInfo;
 import com.inno72.machine.vo.MachinePortalVo;
 import com.inno72.machine.vo.MachineStatusVo;
+import com.inno72.machine.vo.MachineStockOutInfo;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
 
 /**
@@ -61,16 +63,6 @@ public class MachineController {
 	public Result<List<String>> findMachineByMachineStatus(@RequestParam int machineStatus) {
 		return machineService.findMachineByMachineStatus(machineStatus);
 
-	}
-
-	/**
-	 * 获取机器首页数据
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/findMachinePortalData", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<MachinePortalVo> findMachinePortalData() {
-		return machineService.findMachinePortalData();
 	}
 
 	/**
@@ -247,4 +239,35 @@ public class MachineController {
 
 	}
 
+	/**
+	 * 获取机器首页数据
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/findMachinePortalData", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<MachinePortalVo> findMachinePortalData() {
+		return machineService.findMachinePortalData();
+	}
+
+	/**
+	 * 查询异常机器列表
+	 * 
+	 * @param type
+	 * @return
+	 */
+	@RequestMapping(value = "/findExceptionMachine", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<MachineExceptionVo>> findExceptionMachine(@RequestParam Integer type) {
+		return machineService.findExceptionMachine(type);
+	}
+
+	/**
+	 * 查询机器缺货详情
+	 * 
+	 * @param machineId
+	 * @return
+	 */
+	@RequestMapping(value = "/findMachineStockoutInfo", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<MachineStockOutInfo>> findMachineStockoutInfo(@RequestParam String machineId) {
+		return machineService.findMachineStockoutInfo(machineId);
+	}
 }

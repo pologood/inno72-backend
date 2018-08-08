@@ -7,10 +7,12 @@ import com.inno72.common.Service;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.vo.ChannelListVo;
 import com.inno72.machine.vo.MachineAppStatus;
+import com.inno72.machine.vo.MachineExceptionVo;
 import com.inno72.machine.vo.MachineListVo;
 import com.inno72.machine.vo.MachineNetInfo;
 import com.inno72.machine.vo.MachinePortalVo;
 import com.inno72.machine.vo.MachineStatusVo;
+import com.inno72.machine.vo.MachineStockOutInfo;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
 
 /**
@@ -46,4 +48,8 @@ public interface MachineService extends Service<Inno72Machine> {
 			String endTime);
 
 	Result<MachinePortalVo> findMachinePortalData();
+
+	Result<List<MachineExceptionVo>> findExceptionMachine(Integer type);
+
+	Result<List<MachineStockOutInfo>> findMachineStockoutInfo(String machineId);
 }

@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,8 +23,11 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.inno72.check.model.Inno72CheckFault;
+import com.inno72.check.service.CheckFaultService;
 import com.inno72.common.AbstractService;
 import com.inno72.common.CommonConstants;
+import com.inno72.common.DateUtil;
 import com.inno72.common.MachineBackendProperties;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
@@ -38,6 +42,7 @@ import com.inno72.machine.service.SupplyChannelService;
 import com.inno72.machine.vo.AppStatus;
 import com.inno72.machine.vo.ChannelListVo;
 import com.inno72.machine.vo.MachineAppStatus;
+import com.inno72.machine.vo.MachineExceptionVo;
 import com.inno72.machine.vo.MachineInstallAppBean;
 import com.inno72.machine.vo.MachineListVo;
 import com.inno72.machine.vo.MachineLogInfo;
@@ -46,6 +51,7 @@ import com.inno72.machine.vo.MachinePortalVo;
 import com.inno72.machine.vo.MachineStartAppBean;
 import com.inno72.machine.vo.MachineStatus;
 import com.inno72.machine.vo.MachineStatusVo;
+import com.inno72.machine.vo.MachineStockOutInfo;
 import com.inno72.machine.vo.SendMessageBean;
 import com.inno72.machine.vo.SystemStatus;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
@@ -73,6 +79,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	private AppService appService;
 	@Autowired
 	private MachineBackendProperties machineBackendProperties;
+	@Autowired
+	private CheckFaultService checkFaultService;
 
 	@Override
 	public Result<List<Inno72Machine>> findMachines(String machineCode, String localCode) {
@@ -90,54 +98,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 		List<Inno72Machine> machines = inno72MachineMapper.selectMachinesByPage(param);
 		return Results.success(machines);
-	}
-
-	@Override
-	public Result<MachinePortalVo> findMachinePortalData() {
-		MachinePortalVo vo = new MachinePortalVo();
-		List<Inno72Machine> machines = inno72MachineMapper.selectAll();
-		List<MachineLogInfo> netList = mongoTpl.find(new Query(), MachineLogInfo.class, "MachineLogInfo");
-		int online = 0;
-		for (MachineLogInfo machineLogInfo : netList) {
-			LocalDateTime createTime = machineLogInfo.getCreateTime();
-			Duration duration = Duration.between(createTime, LocalDateTime.now());
-			long between = duration.toMinutes();
-			if (between <= 2) {
-				online += 1;
-			}
-		}
-		int exception = 0;
-		List<MachineStatus> statusList = mongoTpl.find(new Query(), MachineStatus.class, "MachineStatus");
-		for (MachineStatus machineStatus : statusList) {
-			if (machineStatus.getMachineDoorStatus() == 1) {
-				exception += 1;
-				continue;
-			}
-			if (machineStatus.getDropGoodsSwitch() == 0) {
-				exception += 1;
-				continue;
-			}
-			if (!StringUtils.isEmpty(machineStatus.getGoodsChannelStatus())) {
-				exception += 1;
-				continue;
-			}
-			if (machineStatus.getScreenIntensity() < 20) {
-				exception += 1;
-				continue;
-			}
-			if (machineStatus.getVoice() < 20) {
-				exception += 1;
-				continue;
-			}
-		}
-		vo.setOnline(online);
-		vo.setOffline(machines.size() - online);
-		vo.setException(exception);
-		vo.setStockout(2);
-		vo.setWaitConfirm(1);
-		vo.setProcessed(3);
-		vo.setWaitOrder(1);
-		return Results.success(vo);
 	}
 
 	@Override
@@ -418,4 +378,136 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		return Results.success();
 	}
 
+	@Override
+	public Result<MachinePortalVo> findMachinePortalData() {
+		MachinePortalVo vo = new MachinePortalVo();
+		List<Inno72Machine> machines = inno72MachineMapper.selectAll();
+		List<MachineLogInfo> netList = mongoTpl.find(new Query(), MachineLogInfo.class, "MachineLogInfo");
+		int online = 0;
+		for (MachineLogInfo machineLogInfo : netList) {
+			LocalDateTime createTime = machineLogInfo.getCreateTime();
+			Duration duration = Duration.between(createTime, LocalDateTime.now());
+			long between = duration.toMinutes();
+			if (between <= 2) {
+				online += 1;
+			}
+		}
+		int exception = 0;
+		List<MachineStatus> statusList = mongoTpl.find(new Query(), MachineStatus.class, "MachineStatus");
+		for (MachineStatus machineStatus : statusList) {
+			if (machineStatus.getMachineDoorStatus() == 1 || machineStatus.getDropGoodsSwitch() == 0
+					|| !StringUtils.isEmpty(machineStatus.getGoodsChannelStatus())
+					|| machineStatus.getScreenIntensity() < 20 || machineStatus.getVoice() < 20) {
+				exception += 1;
+				continue;
+			}
+		}
+		vo.setOnline(online);
+		vo.setOffline(machines.size() - online);
+		vo.setException(exception);
+		List<MachineExceptionVo> stockOutVos = inno72MachineMapper.findStockOutMachines();
+		vo.setStockout(stockOutVos == null ? 0 : stockOutVos.size());
+		Condition condition = new Condition(Inno72CheckFault.class);
+		List<String> list = new ArrayList<>();
+		list.add("1");
+		list.add("2");
+		list.add("3");
+		condition.createCriteria().andIn("status", list);
+		int waitConfirm = 0;
+		int processed = 0;
+		int waitOrder = 0;
+		List<Inno72CheckFault> faults = checkFaultService.findByCondition(condition);
+		for (Inno72CheckFault fault : faults) {
+			switch (fault.getStatus()) {
+			case 1:
+				waitOrder += 1;
+				break;
+			case 2:
+				processed += 1;
+				break;
+			case 3:
+				waitConfirm += 1;
+				break;
+			default:
+				break;
+			}
+		}
+		vo.setWaitConfirm(waitConfirm);
+		vo.setProcessed(processed);
+		vo.setWaitOrder(waitOrder);
+		return Results.success(vo);
+	}
+
+	@Override
+	public Result<List<MachineExceptionVo>> findExceptionMachine(Integer type) {
+		switch (type) {
+		case 1:
+			List<MachineLogInfo> netList = mongoTpl.find(new Query(), MachineLogInfo.class, "MachineLogInfo");
+			Map<String, String> online = new HashMap<>();
+			Map<String, String> offline = new HashMap<>();
+			for (MachineLogInfo machineLogInfo : netList) {
+				LocalDateTime createTime = machineLogInfo.getCreateTime();
+				Duration duration = Duration.between(createTime, LocalDateTime.now());
+				long between = duration.toMinutes();
+				if (between > 2) {
+					offline.put(machineLogInfo.getMachineId(), DateUtil.toTimeStr(createTime, DateUtil.DF_FULL_S1));
+				} else {
+					online.put(machineLogInfo.getMachineId(), "");
+				}
+			}
+			List<MachineExceptionVo> exceptionVos = inno72MachineMapper.findMachines();
+			Iterator<MachineExceptionVo> it = exceptionVos.iterator();
+			while (it.hasNext()) {
+				MachineExceptionVo vo = it.next();
+				if (online.containsKey(vo.getMachineCode())) {
+					it.remove();
+				} else {
+					vo.setOfflineTime(Optional.ofNullable(offline.get(vo.getMachineCode())).orElse("未知"));
+				}
+			}
+			return Results.success(exceptionVos);
+		case 2:
+			List<MachineStatus> statusList = mongoTpl.find(new Query(), MachineStatus.class, "MachineStatus");
+			Map<String, MachineStatus> exception = new HashMap<>();
+			for (MachineStatus machineStatus : statusList) {
+				if (machineStatus.getMachineDoorStatus() == 1 || machineStatus.getDropGoodsSwitch() == 0
+						|| !StringUtils.isEmpty(machineStatus.getGoodsChannelStatus())
+						|| machineStatus.getScreenIntensity() < 20 || machineStatus.getVoice() < 20) {
+					exception.put(machineStatus.getMachineId(), machineStatus);
+				}
+			}
+			List<MachineExceptionVo> exceptionVos1 = inno72MachineMapper.findMachines();
+			Iterator<MachineExceptionVo> it1 = exceptionVos1.iterator();
+			while (it1.hasNext()) {
+				MachineExceptionVo vo = it1.next();
+				if (!exception.containsKey(vo.getMachineCode())) {
+					it1.remove();
+				} else {
+					MachineStatus status = exception.get(vo.getMachineCode());
+					vo.setMachineDoorStatus(status.getMachineDoorStatus());
+					vo.setDropGoodsSwitch(status.getDropGoodsSwitch());
+					vo.setTemperature(status.getTemperatureSwitchStatus());
+					vo.setScreenIntensity(status.getScreenIntensity());
+					String channelStatus = Optional.ofNullable(status.getGoodsChannelStatus())
+							.map(a -> a.replace("[]", "")).orElse("");
+					vo.setGoodsChannelStatus(channelStatus);
+					vo.setVoice(status.getVoice());
+					vo.setUpdateTime(DateUtil.toTimeStr(status.getCreateTime(), DateUtil.DF_FULL_S1));
+				}
+			}
+			return Results.success(exceptionVos1);
+		case 3:
+			List<MachineExceptionVo> stockOutVos = inno72MachineMapper.findStockOutMachines();
+			return Results.success(stockOutVos);
+		default:
+			return Results.failure("参数传入错误");
+		}
+
+	}
+
+	@Override
+	public Result<List<MachineStockOutInfo>> findMachineStockoutInfo(String machineId) {
+		List<MachineStockOutInfo> result = inno72MachineMapper.findMachineStockoutInfo(machineId);
+		return Results.success(result);
+	}
 }
