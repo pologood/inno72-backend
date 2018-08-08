@@ -1,6 +1,7 @@
 package com.inno72.machine.model;
 
 import com.inno72.machine.vo.CityVo;
+import com.inno72.machine.vo.DistrictVo;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -58,7 +59,7 @@ public class Inno72AdminArea {
     @Column(name="level")
     private int level;
 
-    private List<CityVo> cityVoList;
+    private List<DistrictVo> districtVoList;
 
     public String getCode() {
         return code;
@@ -120,15 +121,17 @@ public class Inno72AdminArea {
         return level;
     }
 
+    public List<DistrictVo> getDistrictVoList() {
+        return districtVoList;
+    }
+
+    public void setDistrictVoList(List<DistrictVo> districtVoList) {
+        this.districtVoList = districtVoList;
+    }
+
     public void setLevel(int level) {
         this.level = level;
     }
 
-    public List<CityVo> getCityVoList() {
-        return cityVoList;
-    }
 
-    public void setCityVoList(List<CityVo> cityVoList) {
-        this.cityVoList = cityVoList;
-    }
 }

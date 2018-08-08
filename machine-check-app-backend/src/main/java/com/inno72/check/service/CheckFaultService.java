@@ -14,13 +14,15 @@ public interface CheckFaultService extends Service<Inno72CheckFault> {
 
     Result<String> finish(Inno72CheckFault checkFault);
 
-    List<Inno72CheckFault> findForPage(Integer status);
+    List<Inno72CheckFault> findForPage(Inno72CheckFault inno72CheckFault);
 
     Result<String> upload(MultipartFile file);
 
-    Result<String> editRemark(String faultId, String remark);
+    Result<String> editRemark(Inno72CheckFault inno72CheckFault);
 
     Result<Inno72CheckFault> getDetail(String faultId);
 
     Result<List<Inno72CheckFaultType>> getTypeList(String parentCode);
+
+    Result<String> receive(Inno72CheckFault inno72CheckFault);
 }

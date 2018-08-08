@@ -11,6 +11,6 @@ public interface Inno72AdminAreaMapper extends Mapper<Inno72AdminArea> {
 	
 	public List<Inno72AdminArea> selectFistLevelArea();
 
-	public Inno72AdminArea selectByFirstLevelCode(String code);
+	public Inno72AdminArea cityLevelArea(String code);
 
 }

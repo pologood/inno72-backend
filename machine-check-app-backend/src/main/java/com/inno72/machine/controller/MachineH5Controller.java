@@ -53,9 +53,9 @@ public class MachineH5Controller {
      */
     @RequestMapping(value="findAreaByCode", method = {RequestMethod.GET})
     @ResponseBody
-    public Result<Inno72AdminArea> findAreaByCode(Inno72AdminArea adminArea){
-        logger.info("查询单个一级区域及子区域H5接口参数：{}",JSON.toJSON(adminArea));
-        return machineService.findByFirstLevelCode(adminArea.getCode());
+    public Result<Inno72AdminArea> findAreaByCode(){
+        logger.info("查询城市及子区域H5接口");
+        return machineService.cityLevelArea();
     }
 
 

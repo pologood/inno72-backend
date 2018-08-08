@@ -1,6 +1,7 @@
 package com.inno72.machine.service.impl;
 
 import com.inno72.check.mapper.Inno72CheckUserMachineMapper;
+import com.inno72.check.mapper.Inno72CheckUserMapper;
 import com.inno72.check.model.Inno72CheckSignIn;
 import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.check.model.Inno72CheckUserMachine;
@@ -39,6 +40,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
     @Resource
     private Inno72LocaleMapper inno72LocaleMapper;
+
+    @Resource
+    private Inno72CheckUserMapper inno72CheckUserMapper;
     @Override
     public Result<String> setMachine(SupplyRequestVo vo) {
         String localeId = vo.getLocaleId();
@@ -113,8 +117,16 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
      * 查询单个一级地址及以下地址
      */
     @Override
-    public Result<Inno72AdminArea> findByFirstLevelCode(String code) {
-        Inno72AdminArea adminArea = inno72AdminAreaMapper.selectByFirstLevelCode(code);
+    public Result<Inno72AdminArea> cityLevelArea() {
+        String area = UserUtil.getUser().getArea();
+        if(StringUtil.isEmpty(area)){
+            Inno72CheckUser user = inno72CheckUserMapper.selectByPrimaryKey(UserUtil.getUser().getId());
+            area = user.getArea();
+            if(StringUtil.isEmpty(area)){
+                Results.failure("用户未设置区域");
+            }
+        }
+        Inno72AdminArea adminArea = inno72AdminAreaMapper.cityLevelArea(area);
         return ResultGenerator.genSuccessResult(adminArea);
     }
 

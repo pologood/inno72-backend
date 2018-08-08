@@ -31,6 +31,12 @@ public class Inno72CheckFault {
     private String code;
 
     /**
+     * title
+     */
+    @Column(name="title")
+    private String title;
+
+    /**
      * 工单类型（1.故障，2.报警，3.补货，4.投诉）
      */
     @Column(name="work_type")
@@ -83,6 +89,18 @@ public class Inno72CheckFault {
      */
     @Column(name="submit_user_type")
     private Integer submitUserType;
+
+    /**
+     * 接单人
+     */
+    @Column(name="receive_user")
+    private String receiveUser;
+
+    /**
+     * 接单人ID
+     */
+    @Column(name="receive_id")
+    private String receiveId;
 
     /**
      * 解决人
@@ -161,7 +179,7 @@ public class Inno72CheckFault {
     private String typeName;
 
     @Transient
-    private String title;
+    private Integer finishShow;
 
     public String getId() {
         return id;
@@ -185,6 +203,14 @@ public class Inno72CheckFault {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Integer getWorkType() {
@@ -257,6 +283,22 @@ public class Inno72CheckFault {
 
     public void setSubmitUserType(Integer submitUserType) {
         this.submitUserType = submitUserType;
+    }
+
+    public String getReceiveUser() {
+        return receiveUser;
+    }
+
+    public void setReceiveUser(String receiveUser) {
+        this.receiveUser = receiveUser;
+    }
+
+    public String getReceiveId() {
+        return receiveId;
+    }
+
+    public void setReceiveId(String receiveId) {
+        this.receiveId = receiveId;
     }
 
     public String getFinishUser() {
@@ -363,11 +405,11 @@ public class Inno72CheckFault {
         this.typeName = typeName;
     }
 
-    public String getTitle() {
-        return title;
+    public Integer getFinishShow() {
+        return finishShow;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setFinishShow(Integer finishShow) {
+        this.finishShow = finishShow;
     }
 }

@@ -2,6 +2,7 @@ package com.inno72.machine.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.inno72.common.Result;
+import com.inno72.common.UserUtil;
 import com.inno72.machine.model.Inno72AdminArea;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Machine;
@@ -52,9 +53,9 @@ public class MachineController {
      */
     @RequestMapping(value="findAreaByCode", method = {RequestMethod.POST})
     @ResponseBody
-    public Result<Inno72AdminArea> findAreaByCode(@RequestBody Inno72AdminArea adminArea){
-        logger.info("查询单个一级区域及子区域接口参数：{}",JSON.toJSON(adminArea));
-        return machineService.findByFirstLevelCode(adminArea.getCode());
+    public Result<Inno72AdminArea> findAreaByCode(){
+        logger.info("查询城市及子区域接口");
+        return machineService.cityLevelArea();
     }
 
 

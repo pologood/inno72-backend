@@ -63,12 +63,17 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
                 checkFault.setSource(1);//巡检
                 checkFault.setUrgentStatus(1);//日常
                 checkFault.setSubmitId(UserUtil.getUser().getId());
-                checkFault.setSubmitUserType(1);
+                checkFault.setSubmitUserType(1);//巡检人员
+                checkFault.setStatus(2);//处理中
+                checkFault.setReceiveUser(UserUtil.getUser().getName());
+                checkFault.setReceiveId(UserUtil.getUser().getId());
                 checkFault.setUpdateTime(LocalDateTime.now());
+                checkFault.setTitle("您所管理的机器出现了故障");
                 inno72CheckFaultMapper.insertSelective(checkFault);
                 Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
                 faultRemark.setRemark(remark);
                 faultRemark.setUserId(UserUtil.getUser().getId());
+                faultRemark.setName(UserUtil.getUser().getName());
                 faultRemark.setType(1);
                 faultRemark.setCreateTime(LocalDateTime.now());
                 faultRemark.setFaultId(id);
@@ -163,37 +168,29 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         upCheckFault.setId(checkFault.getId());
         upCheckFault.setFinishRemark(checkFault.getFinishRemark());
         upCheckFault.setFinishTime(LocalDateTime.now());
-        upCheckFault.setStatus(1);
+        upCheckFault.setStatus(3);//已完成
+        upCheckFault.setFinishId(UserUtil.getUser().getId());
         upCheckFault.setFinishUser(UserUtil.getUser().getName());
+        upCheckFault.setUpdateTime(LocalDateTime.now());
         inno72CheckFaultMapper.updateByPrimaryKeySelective(upCheckFault);
         return ResultGenerator.genSuccessResult();
     }
 
     @Override
-    public List<Inno72CheckFault> findForPage(Integer status) {
+    public List<Inno72CheckFault> findForPage(Inno72CheckFault inno72CheckFault) {
+        Integer status = inno72CheckFault.getStatus();
         Inno72CheckUser checkUser = UserUtil.getUser();
         Map<String,Object> map = new HashMap<>();
         map.put("checkUserId",checkUser.getId());
         if(status != null && status !=-1){
             map.put("status",status);
         }
-        List<Inno72CheckFault> list = inno72CheckFaultMapper.selectForPage(map);
-        if(list != null && list.size()>0){
-            for(Inno72CheckFault checkFault:list){
-                checkFault.setTitle("您所管理的机器出现了故障");
-                for(Inno72CheckFaultRemark remark:checkFault.getRemarkList()){
-                    List<Inno72CheckFaultImage> imageList = remark.getImageList();
-                    if(imageList != null && imageList.size()>0){
-                        for(Inno72CheckFaultImage image:imageList){
-                            String imageUrl = image.getImage();
-                            image.setImage(ImageUtil.getLongImageUrl(imageUrl));
-                        }
-                    }
-                }
-
-
-            }
+        Integer workType = inno72CheckFault.getWorkType();
+        if(workType != null && workType !=-1){
+            map.put("workType",workType);
         }
+
+        List<Inno72CheckFault> list = inno72CheckFaultMapper.selectForPage(map);
         return list;
     }
 
@@ -203,32 +200,44 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
     }
 
     @Override
-    public Result<String> editRemark(String faultId, String remark) {
+    public Result<String> editRemark(Inno72CheckFault inno72CheckFault) {
+        String faultId = inno72CheckFault.getId();
+        String remark = inno72CheckFault.getRemark();
+        String[] images = inno72CheckFault.getImages();
         Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
-        faultRemark.setId(StringUtil.getUUID());
+        String id = StringUtil.getUUID();
+        faultRemark.setId(id);
         faultRemark.setFaultId(faultId);
         faultRemark.setUserId(UserUtil.getUser().getId());
         faultRemark.setType(1);
         faultRemark.setRemark(remark);
         faultRemark.setCreateTime(LocalDateTime.now());
         inno72CheckFaultRemarkMapper.insertSelective(faultRemark);
+        if(images != null && images.length>0){
+            for(int i=0;i<images.length;i++){
+                Inno72CheckFaultImage image = new Inno72CheckFaultImage();
+                image.setId(StringUtil.getUUID());
+                image.setFaultId(faultId);
+                image.setSort(i+1);
+                image.setRemarkId(id);
+                image.setImage(ImageUtil.getLackImageUrl(images[i]));
+                image.setCreateTime(LocalDateTime.now());
+                inno72CheckFaultImageMapper.insertSelective(image);
+            }
+        }
         return ResultGenerator.genSuccessResult();
     }
 
     @Override
     public Result<Inno72CheckFault> getDetail(String faultId) {
         Inno72CheckFault fault = inno72CheckFaultMapper.selectDetail(faultId);
-        fault.setTitle("您所管理的机器出现了故障");
-
         List<Inno72CheckFaultRemark> remarkList = fault.getRemarkList();
         if(fault != null){
             fault.setTitle("您所管理的机器出现了故障");
             if(remarkList != null && remarkList.size()>0){
                 for(Inno72CheckFaultRemark remark:remarkList){
                     int type = remark.getType();
-                    if(type == 1){
-                        remark.setName("巡检人员");
-                    }else if(type == 2){
+                    if(type == 2){
                         remark.setName("运营人员");
                     }
                     List<Inno72CheckFaultImage> imageList = remark.getImageList();
@@ -239,6 +248,13 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
                         }
                     }
                 }
+            }
+            int status = fault.getStatus();
+            String receiveId = fault.getReceiveId();
+            if(status == 2 && StringUtil.isNotEmpty(receiveId) && receiveId.equals(UserUtil.getUser().getId())){
+                fault.setFinishShow(1);
+            }else{
+                fault.setFinishShow(-1);
             }
 
         }
@@ -255,6 +271,26 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         }
         List<Inno72CheckFaultType> list = inno72CheckFaultTypeMapper.selectByCondition(condition);
         return ResultGenerator.genSuccessResult(list);
+    }
+
+    @Override
+    public Result<String> receive(Inno72CheckFault inno72CheckFault) {
+        Inno72CheckUser checkUser = UserUtil.getUser();
+        inno72CheckFault = inno72CheckFaultMapper.selectByPrimaryKey(inno72CheckFault.getId());
+        if(inno72CheckFault == null){
+            return Results.failure("参数有误");
+        }
+        int status = inno72CheckFault.getStatus();
+        if(status != 1){
+            return Results.failure("当前状态不可接单");
+        }
+        inno72CheckFault.setReceiveId(checkUser.getId());
+        inno72CheckFault.setReceiveUser(checkUser.getName());
+        inno72CheckFault.setTalkingTime(LocalDateTime.now());
+        inno72CheckFault.setUpdateTime(LocalDateTime.now());
+        inno72CheckFault.setStatus(2);//处理中
+        inno72CheckFaultMapper.updateByPrimaryKeySelective(inno72CheckFault);
+        return ResultGenerator.genSuccessResult();
     }
 
 

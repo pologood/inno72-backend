@@ -43,6 +43,11 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         if(userList == null || userList.size()==0){
             return Results.failure("用户不存在");
         }
+        Inno72CheckUser checkUser = userList.get(0);
+        int status = checkUser.getStatus();
+        if(status == 1){
+            return Results.failure("该用户已禁用");
+        }
         String code = "yp_validate_code";
         Map<String, String> params = new HashMap<>();
         String key = CommonConstants.CHECK_USER_SMS_CODE_KEY_PREF+phone;

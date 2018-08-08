@@ -33,6 +33,12 @@ public class Inno72CheckFaultRemark {
     /**
      * 用户姓名
      */
+    @Column(name="name")
+    private String name;
+
+    /**
+     * 用户类型
+     */
     @Column(name="type")
     private int type;
 
@@ -56,9 +62,6 @@ public class Inno72CheckFaultRemark {
      */
     @Column(name="is_delete")
     private int isDelete;
-
-    @Transient
-    private String name;
 
     @Transient
     private List<Inno72CheckFaultImage> imageList;

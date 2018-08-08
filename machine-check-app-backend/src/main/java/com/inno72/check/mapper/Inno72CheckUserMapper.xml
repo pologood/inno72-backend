@@ -8,14 +8,22 @@
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
-    <result column="password" jdbcType="VARCHAR" property="password"/>
+    <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
     <result column="enterprise" jdbcType="VARCHAR" property="enterprise" />
-    <result column="sex" jdbcType="INTEGER" property="sex"/>
+    <result column="sex" jdbcType="INTEGER" property="sex" />
     <result column="email" jdbcType="VARCHAR" property="email" />
-    <result column="head_image" jdbcType="VARCHAR" property="headImage"/>
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="head_image" jdbcType="VARCHAR" property="headImage" />
+    <result column="wechat_user_id" jdbcType="VARCHAR" property="wechatUserId" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="update_time" />
+    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
 
 

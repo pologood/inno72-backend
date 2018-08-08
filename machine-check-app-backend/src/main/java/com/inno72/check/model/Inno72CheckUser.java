@@ -63,12 +63,40 @@ public class Inno72CheckUser {
     private String email;
 
     /**
+     * 区域
+     */
+    @Column(name = "area")
+    private String area;
+
+    /**
      * 头像
      */
-    @Column(name="head_image")
+    @Column(name = "head_image")
     private String headImage;
 
+    /**
+     * 企业微信user_id
+     */
+    @Column(name = "wechat_user_id")
+    private String wechatUserId;
 
+    /**
+     * 企业微信OpenId
+     */
+    @Column(name = "open_id")
+    private String openId;
+
+    /**
+     * 人员状态
+     */
+    @Column(name = "status")
+    private int status;
+
+    /**
+     * 创建人
+     */
+    @Column(name = "create_id")
+    private String createId;
 
     /**
      * 创建时间
@@ -80,10 +108,30 @@ public class Inno72CheckUser {
     private LocalDateTime createTime;
 
     /**
+     * 更新人
+     */
+    @Column(name = "update_id")
+    private String updateId;
+
+    /**
+     * 更新时间
+     */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "update_time")
+    private LocalDateTime updateTime;
+
+    /**
      * 是否删除
      */
     @Column(name="is_delete")
     private int isDelete;
+
+    /**
+     * 备注描述
+     */
+    @Column(name = "remark")
+    private String remark;
 
     @Transient
     private String smsCode;
@@ -152,12 +200,52 @@ public class Inno72CheckUser {
         this.email = email;
     }
 
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
     public String getHeadImage() {
         return headImage;
     }
 
     public void setHeadImage(String headImage) {
         this.headImage = headImage;
+    }
+
+    public String getWechatUserId() {
+        return wechatUserId;
+    }
+
+    public void setWechatUserId(String wechatUserId) {
+        this.wechatUserId = wechatUserId;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getCreateId() {
+        return createId;
+    }
+
+    public void setCreateId(String createId) {
+        this.createId = createId;
     }
 
     public LocalDateTime getCreateTime() {
@@ -168,12 +256,36 @@ public class Inno72CheckUser {
         this.createTime = createTime;
     }
 
+    public String getUpdateId() {
+        return updateId;
+    }
+
+    public void setUpdateId(String updateId) {
+        this.updateId = updateId;
+    }
+
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
+    }
+
     public int getIsDelete() {
         return isDelete;
     }
 
     public void setIsDelete(int isDelete) {
         this.isDelete = isDelete;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public String getSmsCode() {

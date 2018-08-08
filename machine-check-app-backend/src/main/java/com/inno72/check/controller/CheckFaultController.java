@@ -57,7 +57,7 @@ public class CheckFaultController {
     @RequestMapping(value="/list",method = {RequestMethod.POST})
     public ModelAndView list(@RequestBody Inno72CheckFault checkFault){
         logger.info("查询故障分页列表接口参数：{}", JSON.toJSON(checkFault));
-        List<Inno72CheckFault> list = checkFaultService.findForPage(checkFault.getStatus());
+        List<Inno72CheckFault> list = checkFaultService.findForPage(checkFault);
         logger.info("查询故障分页列表接口结果：{}", JSON.toJSON(list));
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
@@ -79,7 +79,7 @@ public class CheckFaultController {
     @RequestMapping(value="/edit",method = {RequestMethod.POST})
     public Result<String> edit(@RequestBody Inno72CheckFault inno72CheckFault){
         logger.info("编辑回复故障备注接口参数：{}",JSON.toJSON(inno72CheckFault));
-        Result<String> result = checkFaultService.editRemark(inno72CheckFault.getId(),inno72CheckFault.getRemark());
+        Result<String> result = checkFaultService.editRemark(inno72CheckFault);
         logger.info("编辑回复故障备注接口结果：{}",JSON.toJSON(result));
         return result;
     }
@@ -103,6 +103,18 @@ public class CheckFaultController {
         logger.info("查询故障类型接口参数：{}",JSON.toJSON(inno72CheckFault));
         Result<List<Inno72CheckFaultType>> result = checkFaultService.getTypeList(inno72CheckFault.getType());
         logger.info("查询故障类型接口结果：{}",JSON.toJSON(result));
+        return result;
+    }
+
+    /**
+     * 接单
+     * @param inno72CheckFault
+     * @return
+     */
+    @RequestMapping(value = "receive", method = {RequestMethod.POST})
+    public Result<String> receive(@RequestBody Inno72CheckFault inno72CheckFault){
+        logger.info("工单接单接口参数：{}",JSON.toJSON(inno72CheckFault));
+        Result<String> result = checkFaultService.receive(inno72CheckFault);
         return result;
     }
 }
