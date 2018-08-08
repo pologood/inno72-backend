@@ -18,4 +18,6 @@ public interface CheckFaultService extends Service<Inno72CheckFault> {
 
 	Inno72CheckFaultVo selectFaultDetail(String id);
 
+	Result<String> saveModel(Inno72CheckFault model);
+
 }

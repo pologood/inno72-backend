@@ -45,7 +45,7 @@
 				or u.enterprise LIKE '%${keyword}%'
 				)
 			</if>
-			<if test="startTime !=null and keyword !='' ">
+			<if test="startTime !=null and startTime !='' ">
 			<![CDATA[ and ( sin.create_time  BETWEEN #{startTime} AND #{endTime} ) ]]>
 			</if>
 			ORDER BY sin.create_time DESC

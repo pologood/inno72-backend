@@ -2,30 +2,28 @@ package com.inno72.check.vo;
 
 import java.util.List;
 
-
 import com.inno72.check.model.Inno72CheckFault;
 
-public class Inno72CheckFaultVo extends Inno72CheckFault{
-	
-	private List<String> imgList;
-	
-	private List<String> answerList;
+public class Inno72CheckFaultVo extends Inno72CheckFault {
 
-	public List<String> getImgList() {
-		return imgList;
+	private String machineCode;
+
+	private List<Inno72CheckFaultRemarkVo> answerList;
+
+	public String getMachineCode() {
+		return machineCode;
 	}
 
-	public void setImgList(List<String> imgList) {
-		this.imgList = imgList;
+	public void setMachineCode(String machineCode) {
+		this.machineCode = machineCode;
 	}
 
-	public List<String> getAnswerList() {
+	public List<Inno72CheckFaultRemarkVo> getAnswerList() {
 		return answerList;
 	}
 
-	public void setAnswerList(List<String> answerList) {
+	public void setAnswerList(List<Inno72CheckFaultRemarkVo> answerList) {
 		this.answerList = answerList;
 	}
-	
-    
+
 }
