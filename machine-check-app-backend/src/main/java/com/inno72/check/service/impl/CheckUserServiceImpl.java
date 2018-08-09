@@ -85,7 +85,7 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
     @Override
     public Result<SessionData> login(String phone, String smsCode) {
         Condition condition = new Condition(Inno72CheckUser.class);
-        condition.createCriteria().andEqualTo("phone", phone);
+        condition.createCriteria().andEqualTo("phone", phone).andEqualTo("isDelete",0);
         List<Inno72CheckUser> users = inno72CheckUserMapper.selectByCondition(condition);
         if (users == null || users.size() != 1) {
             return Results.failure("用户不存在");
