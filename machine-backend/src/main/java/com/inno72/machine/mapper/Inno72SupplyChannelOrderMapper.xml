@@ -17,12 +17,13 @@
 
 
   <resultMap id="SupplyOrderVoList" type="com.inno72.machine.vo.SupplyOrderVo">
-    <result column="batch_no" jdbcType="VARCHAR" property="batchNo"/>
+    <result column="batchNo" jdbcType="VARCHAR" property="batchNo"/>
     <result column="machine_id" jdbcType="VARCHAR" property="machineId"/>
     <result column="machine_code" jdbcType="VARCHAR" property="machineCode"/>
     <result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
     <result column="name" jdbcType="VARCHAR" property="name"/>
+    <result column="phone" jdbcType="VARCHAR" property="phone"/>
     <result column="area" jdbcType="VARCHAR" property="area"/>
   </resultMap>
 

@@ -10,7 +10,6 @@ import java.util.Map;
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72SupplyChannelHistoryMapper extends Mapper<Inno72SupplyChannelHistory> {
 
-	List<SupplyOrderVo> getSupplyOrderVoListForPage(Map<String, Object> map);
+    List<Inno72SupplyChannelHistory> getSupplyOrderGoods(Map<String, Object> map);
 
-    List<Inno72SupplyChannelHistory> getWorkOrderGoods(Map<String, Object> map);
 }
