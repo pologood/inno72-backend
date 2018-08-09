@@ -41,7 +41,7 @@ public class SupplyChannelHistoryServiceImpl extends AbstractService<Inno72Suppl
         if(StringUtil.isNotEmpty(keyword) && StringUtil.isNotEmpty(keyword.trim())){
             map.put("keyword",keyword.trim());
         }
-        List<SupplyOrderVo> list = inno72SupplyChannelOrderMapper.getOrderList(map);
+        List<SupplyOrderVo> list = inno72SupplyChannelOrderMapper.getOrderListForPage(map);
         return list;
     }
 
