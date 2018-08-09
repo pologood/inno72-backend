@@ -126,18 +126,27 @@ public class Inno72CheckFault {
 	/**
 	 * 接单时间
 	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Convert(converter = LocalDateTimeConverter.class)
 	@Column(name = "talking_time")
 	private LocalDateTime talkingTime;
 
 	/**
 	 * 解决时间
 	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Convert(converter = LocalDateTimeConverter.class)
 	@Column(name = "finish_time")
 	private LocalDateTime finishTime;
 
 	/**
 	 * 修改时间
 	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Convert(converter = LocalDateTimeConverter.class)
 	@Column(name = "update_time")
 	private LocalDateTime updateTime;
 

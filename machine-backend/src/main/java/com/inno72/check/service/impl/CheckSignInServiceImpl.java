@@ -45,9 +45,11 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
 			params.put("code", likeCode);
 			params.put("num", num);
 		}
+		if (StringUtil.isNotBlank(startTime) && StringUtil.isNotBlank(endTime)) {
+			params.put("startTime", startTime);
+			params.put("endTime", endTime + " 23:59:59");
+		}
 		params.put("keyword", keyword);
-		params.put("startTime", startTime);
-		params.put("endTime", endTime + " 23:59:59");
 
 		return inno72CheckSignInMapper.selectByPage(params);
 	}
