@@ -14,10 +14,12 @@ public interface CheckFaultService extends Service<Inno72CheckFault> {
 
 	List<Inno72CheckFault> findByPage(String keyword, String status, String type, String startTime, String endTime);
 
-	Result<String> faultAnswer(String id, String remark);
+	Result<String> faultAnswer(String id, String remark, String userId);
 
 	Inno72CheckFaultVo selectFaultDetail(String id);
 
 	Result<String> saveModel(Inno72CheckFault model);
+
+	Result<String> updateStatus(String id, int status);
 
 }

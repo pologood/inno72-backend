@@ -265,6 +265,18 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 			model.setUpdateId(mUserId);
 			model.setUpdateTime(LocalDateTime.now());
 			super.update(model);
+			// 获取用户token使用
+			String userTokenKey = "machine-check-app-backend:login_user_token:" + model.getId();
+			// 获取用户之前登录的token
+			String oldToken = redisUtil.get(userTokenKey);
+			// 清除之前的登录信息
+			if (StringUtil.isNotBlank(oldToken)) {
+				redisUtil.del("machine-check-app-backend:login_user:" + oldToken);
+				// 记录被踢出
+				redisUtil.sadd("machine-check-app-backend:checkout_user_token_set:", oldToken);
+				redisUtil.del("machine-check-app-backend:sms_code:" + model.getPhone());
+			}
+
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 			return Results.failure("操作失败");

@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters.LocalDateTimeConverter;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -27,6 +28,7 @@ public class Inno72CheckFault {
 	/**
 	 * 机器ID
 	 */
+	@NotBlank(message = "请选择机器")
 	@Column(name = "machine_id")
 	private String machineId;
 
@@ -43,6 +45,7 @@ public class Inno72CheckFault {
 	/**
 	 * 工单类型（1.故障，2.报警，3.补货，4.投诉）
 	 */
+	@NotBlank(message = "请选择工单类型")
 	@Column(name = "work_type")
 	private Integer workType;
 
@@ -59,6 +62,7 @@ public class Inno72CheckFault {
 	/**
 	 * 紧急状态（1.日常，2.紧急）
 	 */
+	@NotBlank(message = "请选择紧急状态")
 	@Column(name = "urgent_status")
 	private Integer urgentStatus;
 
@@ -70,6 +74,7 @@ public class Inno72CheckFault {
 	/**
 	 * 备注
 	 */
+	@NotBlank(message = "请填写工单描述")
 	private String remark;
 
 	/**

@@ -3,7 +3,9 @@ package com.inno72.check.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,15 +31,19 @@ public class CheckFaultController {
 	private CheckFaultService checkFaultService;
 
 	@RequestMapping(value = "/save", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> save(Inno72CheckFault checkFault) {
-		checkFaultService.update(checkFault);
-		return ResultGenerator.genSuccessResult();
+	public Result<String> save(@Valid Inno72CheckFault checkFault, BindingResult bindingResult) {
+
+		if (bindingResult.hasErrors()) {
+			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
+		} else {
+			return checkFaultService.saveModel(checkFault);
+		}
+
 	}
 
-	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> update(Inno72CheckFault checkFault) {
-		checkFaultService.update(checkFault);
-		return ResultGenerator.genSuccessResult();
+	@RequestMapping(value = "/updateStatus", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> updateStatus(String id, @RequestParam(required = false) int status) {
+		return checkFaultService.updateStatus(id, status);
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
@@ -53,7 +59,7 @@ public class CheckFaultController {
 	}
 
 	@RequestMapping(value = "/answer", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> answer(String id, String remark) {
-		return checkFaultService.faultAnswer(id, remark);
+	public Result<String> answer(String id, String remark, @RequestParam(required = false) String userId) {
+		return checkFaultService.faultAnswer(id, remark, userId);
 	}
 }

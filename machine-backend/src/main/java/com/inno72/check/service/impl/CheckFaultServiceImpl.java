@@ -16,12 +16,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSON;
 import com.inno72.check.mapper.Inno72CheckFaultMapper;
 import com.inno72.check.mapper.Inno72CheckFaultRemarkMapper;
+import com.inno72.check.mapper.Inno72CheckUserMapper;
 import com.inno72.check.model.Inno72CheckFault;
 import com.inno72.check.model.Inno72CheckFaultRemark;
+import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.check.service.CheckFaultService;
 import com.inno72.check.vo.Inno72CheckFaultVo;
 import com.inno72.common.AbstractService;
 import com.inno72.common.CommonConstants;
+import com.inno72.common.DateUtil;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
@@ -40,11 +43,13 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 	private Inno72CheckFaultMapper inno72CheckFaultMapper;
 	@Resource
 	private Inno72CheckFaultRemarkMapper inno72CheckFaultRemarkMapper;
+	@Resource
+	private Inno72CheckUserMapper inno72CheckUserMapper;
 
 	@Override
 	public Result<String> saveModel(Inno72CheckFault model) {
 
-		logger.info("----------------故障类型添加--------------");
+		logger.info("----------------工单添加--------------");
 		logger.info("参数:{}", JSON.toJSONString(model));
 		SessionData session = CommonConstants.SESSION_DATA;
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
@@ -57,10 +62,36 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 
 			model.setSubmitId(mUserId);
 			model.setSubmitUser(mUser.getName());
-			model.setSource(2);
-			model.setStatus(1);
+			model.setSource(2);// 来源：1.巡检上报，2.运营派单，3.报警派单
+			model.setStatus(1);// 工单状态（1.待接单，2.处理中，3.已完成，4.已确认，5.已关闭
+			String time = DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S2);
+			model.setCode("F" + StringUtil.createRandomCode(6) + time);
+
 			model.setUpdateTime(LocalDateTime.now());
 			inno72CheckFaultMapper.insert(model);
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+		return Results.success();
+	}
+
+	@Override
+	public Result<String> updateStatus(String id, int status) {
+
+		logger.info("----------------工单状态操作--------------");
+		SessionData session = CommonConstants.SESSION_DATA;
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
+		try {
+			Inno72CheckFault checkFault = inno72CheckFaultMapper.selectByPrimaryKey(id);
+			checkFault.setStatus(status);
+
+			checkFault.setUpdateTime(LocalDateTime.now());
+			inno72CheckFaultMapper.updateByPrimaryKey(checkFault);
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 			return Results.failure("操作失败");
@@ -85,7 +116,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 	}
 
 	@Override
-	public Result<String> faultAnswer(String id, String remark) {
+	public Result<String> faultAnswer(String id, String remark, String toUserId) {
 
 		try {
 			SessionData session = CommonConstants.SESSION_DATA;
@@ -96,6 +127,9 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			}
 			if (StringUtil.isBlank(remark)) {
 				return Results.failure("回复内容不能为空！");
+			}
+			if (StringUtil.isBlank(id)) {
+				return Results.failure("参数异常！");
 			}
 			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
@@ -108,6 +142,19 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			faultRemark.setCreateTime(LocalDateTime.now());
 
 			inno72CheckFaultRemarkMapper.insert(faultRemark);
+			// 派单
+			if (StringUtil.isNotBlank(toUserId)) {
+				Inno72CheckUser receiveUser = inno72CheckUserMapper.selectByPrimaryKey(toUserId);
+				Inno72CheckFault checkFault = inno72CheckFaultMapper.selectByPrimaryKey(id);
+				checkFault.setSubmitUser(mUser.getName());
+				checkFault.setSubmitId(userId);
+				checkFault.setSubmitTime(LocalDateTime.now());
+				checkFault.setReceiveId(receiveUser.getId());
+				checkFault.setReceiveUser(receiveUser.getName());
+				checkFault.setTalkingTime(LocalDateTime.now());
+
+				inno72CheckFaultMapper.updateByPrimaryKey(checkFault);
+			}
 
 		} catch (Exception e) {
 			logger.info(e.getMessage());
