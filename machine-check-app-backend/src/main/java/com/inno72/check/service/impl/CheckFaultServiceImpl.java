@@ -181,6 +181,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         faultRemark.setFaultId(checkFault.getId());
         faultRemark.setCreateTime(LocalDateTime.now());
         faultRemark.setType(1);
+        faultRemark.setRemark(checkFault.getFinishRemark());
         inno72CheckFaultRemarkMapper.insertSelective(faultRemark);
         String [] images = checkFault.getImages();
         if(images != null && images.length>0){
