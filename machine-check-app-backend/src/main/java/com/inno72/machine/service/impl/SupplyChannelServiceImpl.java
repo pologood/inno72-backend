@@ -426,11 +426,11 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectByIds(supplyChannelIds);
         if(supplyChannelList != null && supplyChannelList.size()>0){
             String batchNo = StringUtil.getUUID();
+            LocalDateTime now = LocalDateTime.now();
             supplyChannelList.forEach(supplyChannel -> {
                 String supplyChannelId = supplyChannel.getId();
                 mapList.forEach(map -> {
                     String id = map.get("id").toString();
-                    LocalDateTime now = LocalDateTime.now();
                     if(id.equals(supplyChannelId)){
                         Object goodsCount = map.get("goodsCount");
                         int afterGoodsCount = 0;
