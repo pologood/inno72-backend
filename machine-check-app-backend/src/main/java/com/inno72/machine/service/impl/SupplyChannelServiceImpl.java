@@ -65,6 +65,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     @Resource
     private IRedisUtil redisUtil;
 
+    @Resource
+    private Inno72SupplyChannelOrderMapper inno72SupplyChannelOrderMapper;
+
 
     @Override
     public Result<String> merge(Inno72SupplyChannel supplyChannel) {
@@ -427,6 +430,13 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
         if(supplyChannelList != null && supplyChannelList.size()>0){
             String batchNo = StringUtil.getUUID();
             LocalDateTime now = LocalDateTime.now();
+            Inno72SupplyChannelOrder order = new Inno72SupplyChannelOrder();
+            order.setId(batchNo);
+            order.setCreateTime(now);
+            order.setMachineId(supplyChannelList.get(0).getMachineId());
+            order.setType(1);
+            order.setUserId(UserUtil.getUser().getId());
+            inno72SupplyChannelOrderMapper.insertSelective(order);
             supplyChannelList.forEach(supplyChannel -> {
                 String supplyChannelId = supplyChannel.getId();
                 mapList.forEach(map -> {
@@ -488,7 +498,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
             map.put("beginTime",findTime.trim()+" 00:00:00");
             map.put("endTime",findTime.trim()+" 23:59:59");
         }
-        return inno72SupplyChannelHistoryMapper.getWorkOrderVoList(map);
+        return inno72SupplyChannelOrderMapper.getWorkOrderVoList(map);
     }
 
     @Override
