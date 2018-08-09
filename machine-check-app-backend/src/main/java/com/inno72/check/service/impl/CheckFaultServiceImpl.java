@@ -173,6 +173,28 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         upCheckFault.setFinishUser(UserUtil.getUser().getName());
         upCheckFault.setUpdateTime(LocalDateTime.now());
         inno72CheckFaultMapper.updateByPrimaryKeySelective(upCheckFault);
+        Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
+        String remarkId = StringUtil.getUUID();
+        faultRemark.setId(remarkId);
+        faultRemark.setUserId(UserUtil.getUser().getId());
+        faultRemark.setName(UserUtil.getUser().getName());
+        faultRemark.setFaultId(checkFault.getId());
+        faultRemark.setCreateTime(LocalDateTime.now());
+        faultRemark.setType(1);
+        inno72CheckFaultRemarkMapper.insertSelective(faultRemark);
+        String [] images = checkFault.getImages();
+        if(images != null && images.length>0){
+            for(int i=0;i<images.length;i++){
+                Inno72CheckFaultImage faultImage = new Inno72CheckFaultImage();
+                faultImage.setId(StringUtil.getUUID());
+                faultImage.setRemarkId(remarkId);
+                faultImage.setSort(i+1);
+                faultImage.setImage(ImageUtil.getLackImageUrl(images[i]));
+                faultImage.setCreateTime(LocalDateTime.now());
+                faultImage.setFaultId(checkFault.getId());
+                inno72CheckFaultImageMapper.insertSelective(faultImage);
+            }
+        }
         return ResultGenerator.genSuccessResult();
     }
 

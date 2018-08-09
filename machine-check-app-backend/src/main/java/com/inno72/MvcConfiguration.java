@@ -92,12 +92,12 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 		registry.addInterceptor(logInterceptor).addPathPatterns("/**");
 	}
 
-	@Bean
-	public FilterRegistrationBean someFilterRegistration() {
-		FilterRegistrationBean registration = new FilterRegistrationBean();
-		registration.setFilter(new ProcessDataFilter());
-		registration.addUrlPatterns("/*");
-		return registration;
-	}
+//	@Bean
+//	public FilterRegistrationBean someFilterRegistration() {
+//		FilterRegistrationBean registration = new FilterRegistrationBean();
+//		registration.setFilter(new ProcessDataFilter());
+//		registration.addUrlPatterns("/*");
+//		return registration;
+//	}
 
 }
