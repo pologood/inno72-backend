@@ -503,18 +503,14 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 
     @Override
     public Result<WorkOrderVo> workOrderDetail(String machineId, String batchNo) {
-        if(StringUtil.isEmpty(machineId) || StringUtil.isEmpty(batchNo)){
+        if(StringUtil.isEmpty(batchNo)){
             return Results.failure("参数不能为空");
         }
-        Inno72CheckUser checkUser = UserUtil.getUser();
-        String checkUserId = checkUser.getId();
         Map<String,Object> map = new HashMap<>();
-        map.put("checkUserId",checkUserId);
-        map.put("machineId",machineId);
         map.put("batchNo",batchNo);
         WorkOrderVo workOrderVo = new WorkOrderVo();
         List<Inno72SupplyChannelHistory> historyList = inno72SupplyChannelHistoryMapper.getWorkOrderGoods(map);
-        List<Inno72SupplyChannelHistory> resultLsit = new ArrayList<>();
+        List<Inno72SupplyChannelHistory> resultList = new ArrayList<>();
         if(historyList != null && historyList.size()>0){
             workOrderVo.setBatchNo(batchNo);
             workOrderVo.setMachineCode(historyList.get(0).getMachineCode());
@@ -534,10 +530,11 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                         }
                     }
                     history.setSubCount(count);
+                    resultList.add(history);
                 }
-                resultLsit.add(history);
+
             }
-            workOrderVo.setHistoryList(resultLsit);
+            workOrderVo.setHistoryList(resultList);
         }
         return ResultGenerator.genSuccessResult(workOrderVo);
     }
