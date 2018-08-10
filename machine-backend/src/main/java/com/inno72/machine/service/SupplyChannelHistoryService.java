@@ -12,5 +12,5 @@ public interface SupplyChannelHistoryService extends Service<Inno72SupplyChannel
 
     public List<SupplyOrderVo> list(SupplyOrderVo supplyOrderVo);
 
-    Result<SupplyOrderVo> detail(SupplyRequestVo vo);
+    Result<List<Inno72SupplyChannelHistory>> detail(SupplyRequestVo vo);
 }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
+import com.inno72.machine.model.Inno72SupplyChannelHistory;
 import com.inno72.machine.service.SupplyChannelHistoryService;
 import com.inno72.machine.vo.SupplyOrderVo;
 import com.inno72.machine.vo.SupplyRequestVo;
@@ -34,7 +35,7 @@ public class SupplyChannelHistoryController {
      * 补货详情
      */
     @RequestMapping(value="/detail",method = {RequestMethod.POST})
-    public Result<SupplyOrderVo> workOrderDetail(@RequestBody SupplyRequestVo vo){
+    public Result<List<Inno72SupplyChannelHistory>> workOrderDetail(@RequestBody SupplyRequestVo vo){
         logger.info("查询补货记录详情接口参数：{}",JSON.toJSON(vo));
         return supplyChannelHistoryService.detail(vo);
     }
