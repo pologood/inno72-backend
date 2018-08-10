@@ -145,9 +145,9 @@ public class SupplyChannelController {
 	 * 工单列表
 	 */
 	@RequestMapping(value="workOrderList",method = {RequestMethod.POST})
-	public ModelAndView workOrderList(@RequestBody SupplyRequestVo vo){
+	public ModelAndView workOrderListByPage(@RequestBody SupplyRequestVo vo){
 		logger.info("查询工单列表接口参数：{}",JSON.toJSON(vo));
-		List<WorkOrderVo> list = supplyChannelService.workOrderList(vo.getKeyword(),vo.getFindTime());
+		List<WorkOrderVo> list = supplyChannelService.workOrderListByPage(vo.getKeyword(),vo.getFindTime());
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 

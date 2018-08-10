@@ -486,7 +486,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     }
 
     @Override
-    public List<WorkOrderVo> workOrderList(String keyword,String findTime) {
+    public List<WorkOrderVo> workOrderListByPage(String keyword,String findTime) {
         Inno72CheckUser checkUser = UserUtil.getUser();
         String checkUserId = checkUser.getId();
         Map<String,Object> map = new HashMap<>();
