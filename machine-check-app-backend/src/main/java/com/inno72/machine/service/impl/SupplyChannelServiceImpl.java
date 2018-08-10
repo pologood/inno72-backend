@@ -498,7 +498,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
             map.put("beginTime",findTime.trim()+" 00:00:00");
             map.put("endTime",findTime.trim()+" 23:59:59");
         }
-        return inno72SupplyChannelOrderMapper.getWorkOrderVoListForPage(map);
+        return inno72SupplyChannelOrderMapper.getWorkOrderVoListByPage(map);
     }
 
     @Override
