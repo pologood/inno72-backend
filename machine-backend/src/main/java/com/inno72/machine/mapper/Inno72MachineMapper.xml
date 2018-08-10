@@ -130,7 +130,7 @@
 		LEFT JOIN
 		inno72_activity_plan ap ON ap.id = apm.activity_plan_id and NOW() &lt; ap.end_time
 		<if test="startTime !=null and startTime !='' ">
-			<![CDATA[and ( ap.start_time  BETWEEN #{startTime} AND #{endTime} OR ap.end_time BETWEEN #{startTime} AND #{endTime} ) ]]>
+			<![CDATA[AND ( #{startTime} <= ap.end_time AND #{endTime} >= ap.start_time ) ]]>
 		</if>
 		LEFT JOIN
 		inno72_activity a ON a.id = ap.activity_id
