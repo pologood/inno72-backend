@@ -56,21 +56,22 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
             while((str = reader.readLine()) != null){//一行一行的读取body体里面的内容；
                 wholeStr += str;
             }
-            JSONObject t=JSONObject.fromObject(wholeStr);//转化成json对象
-            Object pageNoObj = t.get("pageNo");
+            if(StringUtil.isNotEmpty(wholeStr)){
+                JSONObject t=JSONObject.fromObject(wholeStr);//转化成json对象
+                Object pageNoObj = t.get("pageNo");
 
-            if(pageNoObj != null){
-            	Integer pageNo = Integer.parseInt(pageNoObj.toString());
-				if(pageNo != null){
-					if(pageNo<1){
-						pageNo = 1;
-					}
-					Pagination pagination = new Pagination();
-					pagination.setPageNo(pageNo);
-					Pagination.threadLocal.set(pagination);
-				}
-			}
-
+                if(pageNoObj != null){
+                    Integer pageNo = Integer.parseInt(pageNoObj.toString());
+                    if(pageNo != null){
+                        if(pageNo<1){
+                            pageNo = 1;
+                        }
+                        Pagination pagination = new Pagination();
+                        pagination.setPageNo(pageNo);
+                        Pagination.threadLocal.set(pagination);
+                    }
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
