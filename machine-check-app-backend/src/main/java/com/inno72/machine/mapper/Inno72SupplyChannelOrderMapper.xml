@@ -24,7 +24,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
   </resultMap>
 
-  <select id="getWorkOrderVoListByPage" resultMap="WorkOrderVoList">
+  <select id="selectByPage" resultMap="WorkOrderVoList">
     select t1.id batchNo,t1.machine_id,t1.create_time,t2.machine_code,
     CONCAT(
     t4.province,

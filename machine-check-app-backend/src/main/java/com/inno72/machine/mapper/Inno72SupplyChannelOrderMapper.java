@@ -11,5 +11,5 @@ import java.util.Map;
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72SupplyChannelOrderMapper extends Mapper<Inno72SupplyChannelOrder> {
 
-	List<WorkOrderVo> getWorkOrderVoListByPage(Map<String, Object> map);
+	List<WorkOrderVo> selectByPage(Map<String, Object> map);
 }

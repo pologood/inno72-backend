@@ -40,7 +40,7 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
 	Result<String> submit(List<Map<String,Object>> mapList);
 
-	List<WorkOrderVo> workOrderListByPage(String keyword,String findTime);
+	List<WorkOrderVo> findByPage(String keyword,String findTime);
 
     Result<WorkOrderVo> workOrderDetail(String machineId, String batchNo);
 

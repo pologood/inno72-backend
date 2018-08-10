@@ -486,7 +486,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     }
 
     @Override
-    public List<WorkOrderVo> workOrderListByPage(String keyword,String findTime) {
+    public List<WorkOrderVo> findByPage(String keyword,String findTime) {
         Inno72CheckUser checkUser = UserUtil.getUser();
         String checkUserId = checkUser.getId();
         Map<String,Object> map = new HashMap<>();
@@ -498,7 +498,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
             map.put("beginTime",findTime.trim()+" 00:00:00");
             map.put("endTime",findTime.trim()+" 23:59:59");
         }
-        return inno72SupplyChannelOrderMapper.getWorkOrderVoListByPage(map);
+        return inno72SupplyChannelOrderMapper.selectByPage(map);
     }
 
     @Override

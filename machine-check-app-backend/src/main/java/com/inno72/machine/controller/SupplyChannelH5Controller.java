@@ -92,7 +92,7 @@ public class SupplyChannelH5Controller {
 	@RequestMapping(value="workOrderList",method = {RequestMethod.GET })
 	public ModelAndView workOrderListByPage(SupplyRequestVo vo){
 		logger.info("查询工单列表H5接口参数：{}",JSON.toJSON(vo));
-		List<WorkOrderVo> list = supplyChannelService.workOrderListByPage(vo.getKeyword(),vo.getFindTime());
+		List<WorkOrderVo> list = supplyChannelService.findByPage(vo.getKeyword(),vo.getFindTime());
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 
