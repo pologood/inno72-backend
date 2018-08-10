@@ -26,8 +26,8 @@ public class SupplyChannelHistoryController {
     @Resource
     private SupplyChannelHistoryService supplyChannelHistoryService;
     @RequestMapping(value="/list")
-    public ModelAndView list(@RequestBody SupplyOrderVo supplyOrderVo){
-        List<SupplyOrderVo> list = supplyChannelHistoryService.list(supplyOrderVo);
+    public ModelAndView findListByPage(@RequestBody SupplyOrderVo supplyOrderVo){
+        List<SupplyOrderVo> list = supplyChannelHistoryService.findListByPage(supplyOrderVo);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
 

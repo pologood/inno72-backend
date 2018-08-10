@@ -23,7 +23,7 @@ public class SupplyChannelHistoryServiceImpl extends AbstractService<Inno72Suppl
     @Resource
     private Inno72SupplyChannelOrderMapper inno72SupplyChannelOrderMapper;
     @Override
-    public List<SupplyOrderVo> list(SupplyOrderVo supplyOrderVo) {
+    public List<SupplyOrderVo> findListByPage(SupplyOrderVo supplyOrderVo) {
         Map<String,Object> map = new HashMap<>();
         String areaCode = supplyOrderVo.getAreaCode();
         String beginTime = supplyOrderVo.getBeginTime();
@@ -41,7 +41,7 @@ public class SupplyChannelHistoryServiceImpl extends AbstractService<Inno72Suppl
         if(StringUtil.isNotEmpty(keyword) && StringUtil.isNotEmpty(keyword.trim())){
             map.put("keyword",keyword.trim());
         }
-        List<SupplyOrderVo> list = inno72SupplyChannelOrderMapper.getOrderListForPage(map);
+        List<SupplyOrderVo> list = inno72SupplyChannelOrderMapper.getOrderListByPage(map);
         return list;
     }
 

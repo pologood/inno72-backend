@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface SupplyChannelHistoryService extends Service<Inno72SupplyChannelHistory> {
 
-    public List<SupplyOrderVo> list(SupplyOrderVo supplyOrderVo);
+    public List<SupplyOrderVo> findListByPage(SupplyOrderVo supplyOrderVo);
 
     Result<List<Inno72SupplyChannelHistory>> detail(SupplyRequestVo vo);
 }

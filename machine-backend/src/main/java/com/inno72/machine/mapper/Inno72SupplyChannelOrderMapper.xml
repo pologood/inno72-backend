@@ -27,7 +27,7 @@
     <result column="area" jdbcType="VARCHAR" property="area"/>
   </resultMap>
 
-  <select id="getOrderListForPage" resultMap="SupplyOrderVoList">
+  <select id="getOrderListByPage" resultMap="SupplyOrderVoList">
     select t1.id batchNo,t1.machine_id,t1.create_time,t2.machine_code,
     CONCAT(
     t4.province,
