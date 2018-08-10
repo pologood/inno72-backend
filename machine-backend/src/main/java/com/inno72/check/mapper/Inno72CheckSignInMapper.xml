@@ -50,6 +50,34 @@
 			</if>
 			ORDER BY sin.create_time DESC
   </select>
+  <select id="selectExportList" parameterType="java.util.Map" resultMap="SignInResultMap">
+		SELECT
+			sin.id,
+			u.NAME,
+			u.phone,
+			u.enterprise,
+			m.machine_code,
+			sin.create_time,
+			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL( l.name,"")) AS localeName
+		FROM
+			inno72_check_sign_in sin
+			LEFT JOIN inno72_check_user u ON u.id = sin.check_user_id
+			LEFT JOIN inno72_machine m ON m.id = sin.machine_id
+			LEFT JOIN inno72_locale l ON l.id = m.locale_id
+			LEFT JOIN inno72_admin_area area ON area.code = l.area_code
+			where 1=1
+			<if test="code !=null and code !=''">and LEFT(l.area_code,#{num}) = #{code}</if>
+			<if test="keyword !=null and keyword !='' ">
+				AND ( u.name LIKE '%${keyword}%' 
+				or u.phone LIKE '%${keyword}%' 
+				or u.enterprise LIKE '%${keyword}%'
+				)
+			</if>
+			<if test="startTime !=null and startTime !='' ">
+			<![CDATA[ and ( sin.create_time  BETWEEN #{startTime} AND #{endTime} ) ]]>
+			</if>
+			ORDER BY sin.create_time DESC
+  </select>
   
   
   
