@@ -1,8 +1,6 @@
 package com.inno72.common.interceptor;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -14,7 +12,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
@@ -54,30 +51,10 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 		if (result) {
 			@SuppressWarnings("rawtypes")
 			Enumeration enumeration = request.getParameterNames();
+			StringBuffer parm = new StringBuffer();
+
 			// 移除分页对象
 			Pagination.threadLocal.remove();
-			BufferedReader reader = null;
-			try {
-				reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
-				String str = "";
-				String wholeStr = "";
-				while((str = reader.readLine()) != null){//一行一行的读取body体里面的内容；
-					wholeStr += str;
-				}
-				JSONObject t=JSONObject.fromObject(wholeStr);//转化成json对象
-				Integer pageNo = t.getInt("pageNo");
-				if(pageNo != null){
-					if(pageNo<1){
-						pageNo = 1;
-					}
-					Pagination pagination = new Pagination();
-					pagination.setPageNo(pageNo);
-					Pagination.threadLocal.set(pagination);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			StringBuilder parm = new StringBuilder();
 			while (enumeration.hasMoreElements()) {
 				Object element = enumeration.nextElement();
 				if (element instanceof String) {
@@ -96,17 +73,14 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 							Pagination pagination = new Pagination();
 							int pageNo = 1;
 							try {
-								if (attrStr.contains("_")) {
+								if (attrStr.indexOf("_") != -1) {
 									pageNo = Integer.parseInt(attrStr.split("_")[0]);
 									pagination.setPageSize(Integer.parseInt(attrStr.split("_")[1]));
 								} else {
 									pageNo = Integer.parseInt(attrStr);
 								}
 								pagination.setPageNo(pageNo);
-							} catch (Exception ignored) {
-							}
-							if(pageNo<1){
-								pageNo = 1;
+							} catch (Exception e) {
 							}
 							pagination.setPageNo(pageNo);
 							Pagination.threadLocal.set(pagination);
