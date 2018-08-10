@@ -65,8 +65,9 @@ public class SupplyChannelHistoryServiceImpl extends AbstractService<Inno72Suppl
                         }
                     }
                     history.setSubCount(count);
+                    resultList.add(history);
                 }
-                resultList.add(history);
+
             }
         }
         return ResultGenerator.genSuccessResult(resultList);
