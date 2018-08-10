@@ -34,8 +34,8 @@ public class SupplyChannelHistoryController {
     /**
      * 补货详情
      */
-    @RequestMapping(value="/detail",method = {RequestMethod.POST})
-    public Result<List<Inno72SupplyChannelHistory>> workOrderDetail(@RequestBody SupplyRequestVo vo){
+    @RequestMapping(value="/detail",method = {RequestMethod.GET})
+    public Result<List<Inno72SupplyChannelHistory>> workOrderDetail(SupplyRequestVo vo){
         logger.info("查询补货记录详情接口参数：{}",JSON.toJSON(vo));
         return supplyChannelHistoryService.detail(vo);
     }
