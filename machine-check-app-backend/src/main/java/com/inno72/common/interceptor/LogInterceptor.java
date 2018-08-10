@@ -70,9 +70,6 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 								pagination.setPageSize(Integer.parseInt(attrStr.split("_")[1]));
 							} else {
 								pageNo = Integer.parseInt(attrStr);
-								if(pageNo<1){
-									pageNo = 1;
-								}
 							}
 							pagination.setPageNo(pageNo);
 						} catch (Exception ignored) {
