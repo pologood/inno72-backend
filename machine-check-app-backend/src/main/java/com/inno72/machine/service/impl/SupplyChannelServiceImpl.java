@@ -530,8 +530,11 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                             count += his.getSubCount();
                         }
                     }
-                    history.setSubCount(count);
-                    resultList.add(history);
+                    if(count>0){
+                        history.setSubCount(count);
+                        resultList.add(history);
+                    }
+
                 }
 
             }
