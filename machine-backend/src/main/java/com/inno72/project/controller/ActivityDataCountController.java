@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -29,7 +30,7 @@ public class ActivityDataCountController {
 
 
     @RequestMapping(value="list")
-    public Result<List<Inno72ActivityDataCount>> list(@RequestBody Inno72ActivityDataCount inno72ActivityDataCount){
+    public Result<Map<String,Object>> list(@RequestBody Inno72ActivityDataCount inno72ActivityDataCount){
         return activityDataCountService.findList(inno72ActivityDataCount);
     }
 }

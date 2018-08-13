@@ -33,7 +33,7 @@ public class ActivityDataCountServiceImpl extends AbstractService<Inno72Activity
     }
 
     @Override
-    public Result<List<Inno72ActivityDataCount>> findList(Inno72ActivityDataCount inno72ActivityDataCount) {
+    public Result<Map<String,Object>> findList(Inno72ActivityDataCount inno72ActivityDataCount) {
         Map<String,Object> map = new HashMap<>();
         String activityId = inno72ActivityDataCount.getActivityId();
         if(StringUtil.isNotEmpty(activityId)){
@@ -44,6 +44,27 @@ public class ActivityDataCountServiceImpl extends AbstractService<Inno72Activity
             map.put("activityPlanId",activityPlanId);
         }
         List<Inno72ActivityDataCount> list = inno72ActivityDataCountMapper.selectByParam(map);
-        return ResultGenerator.genSuccessResult(list);
+        int totalOrderCount = 0;
+        int totalPayCount = 0;
+        int totalGoodsCount = 0;
+        int totalCouponCount = 0;
+        int totalUserCount = 0;
+        if(list != null && list.size()>0){
+            for(Inno72ActivityDataCount count:list){
+                totalOrderCount+=count.getOrderCount();
+                totalPayCount+=count.getPayCount();
+                totalGoodsCount+=count.getGoodsCount();
+                totalCouponCount+=count.getCouponCount();
+                totalUserCount+=count.getUserCount();
+            }
+        }
+        Map<String,Object> resultMap = new HashMap<>();
+        resultMap.put("list",list);
+        resultMap.put("totalOrderCount",totalOrderCount);
+        resultMap.put("totalPayCount",totalPayCount);
+        resultMap.put("totalGoodsCount",totalGoodsCount);
+        resultMap.put("totalCouponCount",totalCouponCount);
+        resultMap.put("totalUserCount",totalUserCount);
+        return ResultGenerator.genSuccessResult(resultMap);
     }
 }
