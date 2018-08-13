@@ -67,4 +67,16 @@ public class ActivityDataCountServiceImpl extends AbstractService<Inno72Activity
         resultMap.put("totalUserCount",totalUserCount);
         return ResultGenerator.genSuccessResult(resultMap);
     }
+
+    @Override
+    public Result<String> setHistory() {
+        List<Inno72ActivityDataCount> historyList = inno72ActivityDataCountMapper.selectHistoryList();
+        if(historyList != null && historyList.size()>0){
+            for(Inno72ActivityDataCount count:historyList){
+                count.setId(StringUtil.getUUID());
+                inno72ActivityDataCountMapper.insertSelective(count);
+            }
+        }
+        return ResultGenerator.genSuccessResult();
+    }
 }

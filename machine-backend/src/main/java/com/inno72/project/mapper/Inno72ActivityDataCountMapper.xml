@@ -19,7 +19,7 @@
 
 
 	<select id="selectList" resultMap="BaseResultMap">
-		SELECT
+		SELECT DATE_FORMAT(t1.create_time,'%Y-%m-%d') create_date,
 		t1.id activity_plan_id,
 		t1.activity_id,
 		(SELECT DISTINCT count(*) FROM inno72_game_user_life t2 WHERE t1.activity_id=t2.activity_id ) user_count,
@@ -27,9 +27,8 @@
 		(select count(*) from inno72_order t4 where t1.id=t4.inno72_activity_plan_id and pay_status=1) pay_count,
 		(select count(*) from inno72_order t5 where t5.inno72_activity_plan_id=t1.id and t5.goods_type=1 and t5.goods_status=1) goods_count,
 		(select count(*) from inno72_order t6 where t6.inno72_activity_plan_id=t1.id and t6.goods_type=2 and t6.goods_status=1) coupon_count,
-		date_sub(curdate(),interval 1 day) create_date,
         CURRENT_TIMESTAMP submit_time
-        FROM inno72_activity_plan t1 where date_sub(curdate(),interval 1 day) BETWEEN t1.start_time and t1.end_time
+        FROM inno72_activity_plan t1 where date_sub(curdate(),interval 1 day) =DATE_FORMAT(t1.create_time,'%Y-%m-%d');
 	</select>
 
     <select id="selectByParam" resultMap="BaseResultMap">
@@ -46,6 +45,18 @@
         order by create_date desc
     </select>
 
-  
+
+
+    <select id="selectHistoryList" resultMap="BaseResultMap">
+      SELECT DATE_FORMAT(t1.create_time,'%Y-%m-%d') create_date,t1.id activity_plan_id,t1.activity_id,
+      (SELECT DISTINCT count(*) FROM inno72_game_user_life t2 WHERE t1.activity_id=t2.activity_id ) user_count,
+      (select count(*) from inno72_order t3 where t1.id=t3.inno72_activity_plan_id) order_count,
+      (select count(*) from inno72_order t4 where t1.id=t4.inno72_activity_plan_id and pay_status=1) pay_count,
+      (select count(*) from inno72_order t5 where t5.inno72_activity_plan_id=t1.id and t5.goods_type=1 and t5.goods_status=1) goods_count,
+      (select count(*) from inno72_order t6 where t6.inno72_activity_plan_id=t1.id and t6.goods_type=2 and t6.goods_status=1) coupon_count,
+      CURRENT_TIMESTAMP submit_time
+      FROM inno72_activity_plan t1 group by DATE_FORMAT(t1.create_time,'%Y-%m-%d'),t1.id,t1.activity_id
+      order by create_time desc
+    </select>
   
 </mapper>

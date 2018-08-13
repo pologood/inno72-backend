@@ -12,4 +12,6 @@ public interface Inno72ActivityDataCountMapper extends Mapper<Inno72ActivityData
     public List<Inno72ActivityDataCount> selectList();
 
     public List<Inno72ActivityDataCount> selectByParam(Map<String,Object> map);
+
+    public List<Inno72ActivityDataCount> selectHistoryList();
 }

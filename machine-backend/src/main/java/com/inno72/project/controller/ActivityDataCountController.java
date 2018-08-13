@@ -33,4 +33,9 @@ public class ActivityDataCountController {
     public Result<Map<String,Object>> list(@RequestBody Inno72ActivityDataCount inno72ActivityDataCount){
         return activityDataCountService.findList(inno72ActivityDataCount);
     }
+
+    @RequestMapping(value = "history")
+    public Result<String> setHistory(){
+        return activityDataCountService.setHistory();
+    }
 }
