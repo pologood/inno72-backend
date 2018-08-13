@@ -87,9 +87,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		Map<String, Object> param = new HashMap<>();
 		if (StringUtil.isNotEmpty(localCode)) {
 			int num = StringUtil.getAreaCodeNum(localCode);
-			if (num < 4) {
-				num = 3;
-			}
 			String likeCode = localCode.substring(0, num);
 			param.put("code", likeCode);
 			param.put("num", num);
@@ -105,9 +102,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		Map<String, Object> param = new HashMap<>();
 		if (StringUtil.isNotEmpty(localCode)) {
 			int num = StringUtil.getAreaCodeNum(localCode);
-			if (num < 4) {
-				num = 3;
-			}
 			String likeCode = localCode.substring(0, num);
 			param.put("code", likeCode);
 			param.put("num", num);

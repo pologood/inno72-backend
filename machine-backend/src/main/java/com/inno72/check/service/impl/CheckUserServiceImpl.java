@@ -346,8 +346,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 			params.put("level", level);
 		} else {
 			int num = StringUtil.getAreaCodeNum(code);
-			if (num < 4)
-				num = 3;
+
 			String likeCode = code.substring(0, num);
 			params.put("code", likeCode);
 			params.put("num", num);

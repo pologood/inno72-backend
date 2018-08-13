@@ -510,9 +510,6 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 		params.put("status", status);
 		if (StringUtil.isNotEmpty(code)) {
 			int num = StringUtil.getAreaCodeNum(code);
-			if (num < 4) {
-				num = 3;
-			}
 			String likeCode = code.substring(0, num);
 			params.put("code", likeCode);
 			params.put("num", num);
