@@ -55,8 +55,10 @@
       (select count(*) from inno72_order t5 where t5.inno72_activity_plan_id=t1.id and t5.goods_type=1 and t5.goods_status=1) goods_count,
       (select count(*) from inno72_order t6 where t6.inno72_activity_plan_id=t1.id and t6.goods_type=2 and t6.goods_status=1) coupon_count,
       CURRENT_TIMESTAMP submit_time
-      FROM inno72_activity_plan t1 group by DATE_FORMAT(t1.create_time,'%Y-%m-%d'),t1.id,t1.activity_id
-      order by create_time desc
+      FROM inno72_activity_plan t1
+      where date_sub(curdate(),interval 1 day) <![CDATA[>]]> DATE_FORMAT(t1.create_time,'%Y-%m-%d')
+	  group by DATE_FORMAT(t1.create_time,'%Y-%m-%d'),t1.id,t1.activity_id
+      order by t1.create_time desc
     </select>
   
 </mapper>
