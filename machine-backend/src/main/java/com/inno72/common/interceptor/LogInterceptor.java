@@ -42,7 +42,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 			"/project/activityPlan/selectNoPlanMachines", "/machine/locale/selectLocaleByMachineCode",
 			"/supply/channel/status/getChannelErrorDetail", "/check/signIn/userExcel",
 			"/machine/locale/selectLocaleByMachineCode", "/supply/channel/status/getChannelErrorDetail",
-			"/check/user/selectAreaMachines", "/check/user/selectPhoneByMachineCode"});
+			"/check/user/selectAreaMachines", "/check/user/selectPhoneByMachineCode","/activity/data/count/add"});
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
