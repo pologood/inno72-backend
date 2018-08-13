@@ -38,9 +38,7 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		if (StringUtil.isNotEmpty(code)) {
 			int num = StringUtil.getAreaCodeNum(code);
-			if (num < 4) {
-				num = 3;
-			}
+
 			String likeCode = code.substring(0, num);
 			params.put("code", likeCode);
 			params.put("num", num);
@@ -65,9 +63,6 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		if (StringUtil.isNotEmpty(code)) {
 			int num = StringUtil.getAreaCodeNum(code);
-			if (num < 4) {
-				num = 3;
-			}
 			String likeCode = code.substring(0, num);
 			params.put("code", likeCode);
 			params.put("num", num);
