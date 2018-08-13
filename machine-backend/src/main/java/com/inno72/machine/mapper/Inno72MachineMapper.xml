@@ -103,8 +103,9 @@
 		<result column="start_time" property="startTime" />
 		<result column="end_time" property="endTime" />
 	</resultMap>
-	<select id="findMachinePlanByPage" parameterType="java.util.Map"
+	<select id="findMachinePlan" parameterType="java.util.Map"
 		resultMap="VoResultMap">
+		select * from (
 		SELECT
 		m.id,
 		m.machine_code,
@@ -120,7 +121,8 @@
 			WHEN ap.start_time &gt; NOW() THEN '1'
 			WHEN ap.start_time &lt;  NOW() and ap.end_time &gt; NOW() THEN '2'
 			ELSE null
-		END state
+		END state,
+		l.area_code
 		FROM
 		inno72_machine m
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
@@ -139,6 +141,7 @@
 		<if test="machineCode !=null and machineCode !=''">
 			AND m.machine_code=#{machineCode}
 		</if>
+		) o order by area_code
 	</select>
 
 
