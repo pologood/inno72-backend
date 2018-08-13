@@ -264,7 +264,6 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         Inno72CheckFault fault = inno72CheckFaultMapper.selectDetail(faultId);
         List<Inno72CheckFaultRemark> remarkList = fault.getRemarkList();
         if(fault != null){
-            fault.setTitle("您所管理的机器出现了故障");
             if(remarkList != null && remarkList.size()>0){
                 for(Inno72CheckFaultRemark remark:remarkList){
                     int type = remark.getType();
