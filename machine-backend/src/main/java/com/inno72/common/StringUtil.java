@@ -67,8 +67,10 @@ public class StringUtil {
 	public static int getAreaCodeNum(String s) {
 		for (int i = s.length() - 1; i >= 0; i--) {
 			if (!"0".equals(String.valueOf(s.charAt(i)))) {
-				if ((i + 1) < 4) {
+				if (i < 2) {
 					return 2;
+				} else if ((i + 1) < 4) {
+					return 3;
 				} else {
 					return i + 1;
 				}
