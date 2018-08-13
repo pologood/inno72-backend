@@ -103,7 +103,7 @@
 		<result column="start_time" property="startTime" />
 		<result column="end_time" property="endTime" />
 	</resultMap>
-	<select id="findMachinePlanByPage" parameterType="java.util.Map"
+	<select id="findMachinePlan" parameterType="java.util.Map"
 		resultMap="VoResultMap">
 		SELECT
 		m.id,

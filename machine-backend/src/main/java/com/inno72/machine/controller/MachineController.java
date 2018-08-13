@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
 import com.inno72.common.Result;
+import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.common.Results;
 import com.inno72.machine.model.Inno72Machine;
@@ -113,12 +114,11 @@ public class MachineController {
 	 * @return
 	 */
 	@RequestMapping(value = "/planList", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView planList(@RequestParam(required = false) String machineCode,
+	public Result<List<MachineListVo>> planList(@RequestParam(required = false) String machineCode,
 			@RequestParam(required = false) String localCode, @RequestParam(required = false) String startTime,
 			@RequestParam(required = false) String endTime) {
-		Result<List<MachineListVo>> list = machineService.findMachinePlanByPage(machineCode, localCode, startTime,
-				endTime);
-		return ResultPages.page(list);
+		List<MachineListVo> list = machineService.findMachinePlan(machineCode, localCode, startTime, endTime);
+		return ResultGenerator.genSuccessResult(list);
 	}
 
 	/**
