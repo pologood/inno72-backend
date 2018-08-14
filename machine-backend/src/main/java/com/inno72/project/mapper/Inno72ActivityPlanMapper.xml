@@ -52,7 +52,7 @@
 		<if test="code !=null and code !='' "> and m.area_code LIKE '%${code}%'</if>
 		and ap.is_delete = 0 
 		<if test="startTime !=null and startTime !='' ">
-			<![CDATA[and ( ap.start_time  BETWEEN #{startTime} AND #{endTime} OR ap.end_time BETWEEN #{startTime} AND #{endTime} ) ]]>
+			<![CDATA[AND ( #{startTime} <= ap.end_time AND #{endTime} >= ap.start_time ) ]]>
 		</if>
 		<if test="status ==null or status =='' ">and NOW() &lt; ap.end_time</if>
 		<if test="status ==1"> and NOW() &lt;  ap.start_time </if>

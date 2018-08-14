@@ -68,7 +68,15 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
                 checkFault.setReceiveUser(UserUtil.getUser().getName());
                 checkFault.setReceiveId(UserUtil.getUser().getId());
                 checkFault.setUpdateTime(LocalDateTime.now());
-                checkFault.setTitle("您所管理的机器出现了故障");
+                String type = checkFault.getType();
+                Inno72CheckFaultType inno72CheckFaultType = inno72CheckFaultTypeMapper.selectByPrimaryKey(type);
+                String typeName = "";
+                if(inno72CheckFaultType != null){
+                    typeName = inno72CheckFaultType.getName();
+                }
+                Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+                String machineCode = machine.getMachineCode();
+                checkFault.setTitle(machineCode+"出现普通"+typeName+"的故障，请尽快处理");
                 inno72CheckFaultMapper.insertSelective(checkFault);
                 Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
                 faultRemark.setRemark(remark);
@@ -256,7 +264,6 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         Inno72CheckFault fault = inno72CheckFaultMapper.selectDetail(faultId);
         List<Inno72CheckFaultRemark> remarkList = fault.getRemarkList();
         if(fault != null){
-            fault.setTitle("您所管理的机器出现了故障");
             if(remarkList != null && remarkList.size()>0){
                 for(Inno72CheckFaultRemark remark:remarkList){
                     int type = remark.getType();

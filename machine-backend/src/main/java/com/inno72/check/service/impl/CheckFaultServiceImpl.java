@@ -16,9 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSON;
 import com.inno72.check.mapper.Inno72CheckFaultMapper;
 import com.inno72.check.mapper.Inno72CheckFaultRemarkMapper;
+import com.inno72.check.mapper.Inno72CheckFaultTypeMapper;
 import com.inno72.check.mapper.Inno72CheckUserMapper;
 import com.inno72.check.model.Inno72CheckFault;
 import com.inno72.check.model.Inno72CheckFaultRemark;
+import com.inno72.check.model.Inno72CheckFaultType;
 import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.check.service.CheckFaultService;
 import com.inno72.check.vo.Inno72CheckFaultVo;
@@ -29,6 +31,8 @@ import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
+import com.inno72.machine.mapper.Inno72MachineMapper;
+import com.inno72.machine.model.Inno72Machine;
 import com.inno72.system.model.Inno72User;
 
 /**
@@ -45,6 +49,10 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 	private Inno72CheckFaultRemarkMapper inno72CheckFaultRemarkMapper;
 	@Resource
 	private Inno72CheckUserMapper inno72CheckUserMapper;
+	@Resource
+	private Inno72MachineMapper inno72MachineMapper;
+	@Resource
+	private Inno72CheckFaultTypeMapper inno72CheckFaultTypeMapper;
 
 	@Override
 	public Result<String> saveModel(Inno72CheckFault model) {
@@ -66,7 +74,33 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			model.setStatus(1);// 工单状态（1.待接单，2.处理中，3.已完成，4.已确认，5.已关闭
 			String time = DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S2);
 			model.setCode("F" + StringUtil.createRandomCode(6) + time);
+			// 故障类：显示机器编号+出现紧急/普通+故障类型 故障，请尽快处理；补货/缺货类：显示机器编号+需要 紧急/普通
+			// 补货，请尽快处理；报警类：显示机器编号+出现紧急/普通+报警类型，请尽快处理；其他类：显示机器编号+出现紧急/普通问题，请尽快处理
+			Integer workType = model.getWorkType();
+			Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(model.getMachineId());
+			String title = machine.getMachineCode();
+			String urgentType = "";
+			if (model.getUrgentStatus() == 1) {
+				urgentType = "出现普通";
+			} else if (model.getUrgentStatus() == 2) {
+				urgentType = "出现紧急";
+			}
 
+			String typeStr = "";
+			if (workType == 1) {
+				Inno72CheckFaultType faultType = inno72CheckFaultTypeMapper.selectByPrimaryKey(model.getType());
+				typeStr = faultType.getName() + " 故障，请尽快处理";
+			} else if (workType == 2) {
+				typeStr = "报警类型，请尽快处理";
+			} else if (workType == 3) {
+				typeStr = "补货，请尽快处理";
+			} else if (workType == 4) {
+				typeStr = "投诉类型，请尽快处理";
+			} else {
+				typeStr = "问题，请尽快处理";
+			}
+
+			model.setTitle(title + urgentType + typeStr);
 			model.setUpdateTime(LocalDateTime.now());
 			inno72CheckFaultMapper.insert(model);
 		} catch (Exception e) {
@@ -170,6 +204,15 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		params.put("path", CommonConstants.ALI_OSS);
 
 		return inno72CheckFaultMapper.selectFaultDetail(params);
+	}
+
+	@Override
+	public List<Inno72CheckUser> selectMachineUserList(String keyword, String machineId) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("keyword", keyword);
+		params.put("machineId", machineId);
+
+		return inno72CheckFaultMapper.selectMachineUserList(params);
 	}
 
 }

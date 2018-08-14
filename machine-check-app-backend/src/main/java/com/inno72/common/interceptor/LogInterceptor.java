@@ -7,13 +7,16 @@ import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.utils.page.Pagination;
+import net.sf.json.JSONObject;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.*;
 
@@ -43,10 +46,36 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
          }
 		@SuppressWarnings("rawtypes")
 		Enumeration enumeration = request.getParameterNames();
-		StringBuilder parm = new StringBuilder();
+        // 移除分页对象
+        Pagination.threadLocal.remove();
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+            String str = "";
+            String wholeStr = "";
+            while((str = reader.readLine()) != null){//一行一行的读取body体里面的内容；
+                wholeStr += str;
+            }
+            if(StringUtil.isNotEmpty(wholeStr)){
+                JSONObject t=JSONObject.fromObject(wholeStr);//转化成json对象
+                Object pageNoObj = t.get("pageNo");
 
-		// 移除分页对象
-		Pagination.threadLocal.remove();
+                if(pageNoObj != null){
+                    Integer pageNo = Integer.parseInt(pageNoObj.toString());
+                    if(pageNo != null){
+                        if(pageNo<1){
+                            pageNo = 1;
+                        }
+                        Pagination pagination = new Pagination();
+                        pagination.setPageNo(pageNo);
+                        Pagination.threadLocal.set(pagination);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        StringBuilder parm = new StringBuilder();
 		while (enumeration.hasMoreElements()) {
 			Object element = enumeration.nextElement();
 			if (element instanceof String) {
@@ -70,13 +99,13 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 								pagination.setPageSize(Integer.parseInt(attrStr.split("_")[1]));
 							} else {
 								pageNo = Integer.parseInt(attrStr);
-								if(pageNo<1){
-									pageNo = 1;
-								}
 							}
 							pagination.setPageNo(pageNo);
 						} catch (Exception ignored) {
 						}
+						if(pageNo<1){
+						    pageNo = 1;
+                        }
 						pagination.setPageNo(pageNo);
 						Pagination.threadLocal.set(pagination);
 					}

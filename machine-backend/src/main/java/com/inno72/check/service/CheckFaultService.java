@@ -3,6 +3,7 @@ package com.inno72.check.service;
 import java.util.List;
 
 import com.inno72.check.model.Inno72CheckFault;
+import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.check.vo.Inno72CheckFaultVo;
 import com.inno72.common.Result;
 import com.inno72.common.Service;
@@ -21,5 +22,7 @@ public interface CheckFaultService extends Service<Inno72CheckFault> {
 	Result<String> saveModel(Inno72CheckFault model);
 
 	Result<String> updateStatus(String id, int status);
+
+	List<Inno72CheckUser> selectMachineUserList(String keyword, String machineId);
 
 }

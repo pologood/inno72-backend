@@ -59,13 +59,16 @@ public class SupplyChannelHistoryServiceImpl extends AbstractService<Inno72Suppl
                     set.add(goodsName);
                     int count = 0;
                     for(Inno72SupplyChannelHistory his:historyList){
-                        String name = history.getGoodsName();
+                        String name = his.getGoodsName();
                         if(name.equals(goodsName)){
                             count += his.getSubCount();
                         }
                     }
-                    history.setSubCount(count);
-                    resultList.add(history);
+                    if(count>0){
+                        history.setSubCount(count);
+                        resultList.add(history);
+                    }
+
                 }
 
             }

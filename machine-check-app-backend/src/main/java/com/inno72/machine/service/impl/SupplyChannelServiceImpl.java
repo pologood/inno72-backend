@@ -518,19 +518,23 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
             workOrderVo.setLocaleStr(historyList.get(0).getLocaleStr());
             workOrderVo.setMachineId(machineId);
             Set<String> set = new HashSet<>();
+
             for(Inno72SupplyChannelHistory history:historyList){
                 String goodsName = history.getGoodsName();
                 if(!set.contains(goodsName)){
                     set.add(goodsName);
                     int count = 0;
                     for(Inno72SupplyChannelHistory his:historyList){
-                        String name = history.getGoodsName();
+                        String name = his.getGoodsName();
                         if(name.equals(goodsName)){
                             count += his.getSubCount();
                         }
                     }
-                    history.setSubCount(count);
-                    resultList.add(history);
+                    if(count>0){
+                        history.setSubCount(count);
+                        resultList.add(history);
+                    }
+
                 }
 
             }

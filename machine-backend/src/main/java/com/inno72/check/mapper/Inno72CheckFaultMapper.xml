@@ -70,6 +70,7 @@
   </select>
   
   <resultMap id="ResultFaultDetailMap" extends="BaseResultMap" type="com.inno72.check.vo.Inno72CheckFaultVo">
+  <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
 	    <association property="answerList" resultMap="answerResult" />
 	</resultMap>
 	<resultMap id="imgResult" type="java.util.Map">
@@ -88,6 +89,8 @@
   
  		SELECT f.id,
  		f.code,
+ 		f.machine_id,
+ 		m.machine_code,
  		f.title,
  		f.work_type,
  		f.status,
@@ -113,6 +116,15 @@
 		LEFT JOIN inno72_check_fault_image img ON img.remark_id = fr.id
 		WHERE f.id=#{id}
 		ORDER BY fr.create_time DESC,img.sort
+  </select>
+  
+  <select id="selectMachineUserList" parameterType="java.util.Map" resultType="java.util.Map">
+  		SELECT
+			u.id,u.name
+		FROM
+			inno72_check_user u
+			LEFT JOIN inno72_check_user_machine m ON m.check_user_id=u.id
+		WHERE m.machine_id =#{machineId}
   </select>
   
 </mapper>
