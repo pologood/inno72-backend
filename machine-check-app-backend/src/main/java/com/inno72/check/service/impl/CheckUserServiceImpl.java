@@ -104,25 +104,12 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
             SessionData sessionData = new SessionData(token, user);
             String headImage = sessionData.getUser().getHeadImage();
             sessionData.getUser().setHeadImage(ImageUtil.getLongImageUrl(headImage));
-            // 获取用户token使用
-//            String userTokenKey = CommonConstants.USER_LOGIN_TOKEN_CACHE_KEY_PREF + user.getId();
-//            // 获取用户之前登录的token
-//            String oldToken = redisUtil.get(userTokenKey);
-//            // 清除之前的登录信息
-//            if (StringUtil.isNotBlank(oldToken)) {
-//                redisUtil.del(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + oldToken);
-//                // 记录被踢出
-//                redisUtil.sadd(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, oldToken);
-//                redisUtil.del(CommonConstants.CHECK_USER_SMS_CODE_KEY_PREF+phone);
-//            }
-            // 保存新登录的token
-//            redisUtil.set(userTokenKey, token);
+            redisUtil.del(CommonConstants.CHECK_USER_SMS_CODE_KEY_PREF+phone);
             // 用户登录信息缓存
             String userInfoKey = CommonConstants.USER_LOGIN_CACHE_KEY_PREF + token;
             // 缓存用户登录sessionData
             redisUtil.set(userInfoKey, JsonUtil.toJson(sessionData));
             redisUtil.expire(userInfoKey, CommonConstants.SESSION_DATA_EXP);
-//            redisUtil.expire(userTokenKey, CommonConstants.SESSION_DATA_EXP);
             return Results.success(sessionData);
         }else{
             return Results.failure("验证码不正确");
