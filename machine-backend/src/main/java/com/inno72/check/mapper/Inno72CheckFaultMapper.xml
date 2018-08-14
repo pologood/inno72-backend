@@ -88,6 +88,7 @@
   
  		SELECT f.id,
  		f.code,
+ 		f.machine_id,
  		f.title,
  		f.work_type,
  		f.status,
@@ -113,6 +114,15 @@
 		LEFT JOIN inno72_check_fault_image img ON img.remark_id = fr.id
 		WHERE f.id=#{id}
 		ORDER BY fr.create_time DESC,img.sort
+  </select>
+  
+  <select id="selectMachineUserList" parameterType="java.util.Map" resultType="java.util.Map">
+  		SELECT
+			u.id,u.name
+		FROM
+			inno72_check_user u
+			LEFT JOIN inno72_check_user_machine m ON m.check_user_id=u.id
+		WHERE m.machine_id =#{machineId}
   </select>
   
 </mapper>

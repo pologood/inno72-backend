@@ -15,6 +15,6 @@ public interface Inno72CheckFaultMapper extends Mapper<Inno72CheckFault> {
 
 	Inno72CheckFaultVo selectFaultDetail(Map<String, Object> params);
 
-	List<Inno72CheckUser> getMachineUserList(Map<String, Object> params);
+	List<Inno72CheckUser> selectMachineUserList(Map<String, Object> params);
 
 }

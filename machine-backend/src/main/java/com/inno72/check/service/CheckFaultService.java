@@ -23,6 +23,6 @@ public interface CheckFaultService extends Service<Inno72CheckFault> {
 
 	Result<String> updateStatus(String id, int status);
 
-	List<Inno72CheckUser> getMachineUserList(String keyword);
+	List<Inno72CheckUser> selectMachineUserList(String keyword, String machineId);
 
 }

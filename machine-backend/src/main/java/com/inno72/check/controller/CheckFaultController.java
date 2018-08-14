@@ -65,8 +65,8 @@ public class CheckFaultController {
 	}
 
 	@RequestMapping(value = "/getMachineUserList", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72CheckUser>> getMachineUserList(String keyword) {
-		List<Inno72CheckUser> list = checkFaultService.getMachineUserList(keyword);
+	public Result<List<Inno72CheckUser>> getMachineUserList(String keyword, String machineId) {
+		List<Inno72CheckUser> list = checkFaultService.selectMachineUserList(keyword, machineId);
 		return ResultGenerator.genSuccessResult(list);
 	}
 
