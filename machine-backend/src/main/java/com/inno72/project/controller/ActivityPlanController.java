@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
-import com.inno72.common.ResultPages;
 import com.inno72.common.Results;
 import com.inno72.common.StringUtil;
 import com.inno72.project.model.Inno72ActivityPlan;
@@ -75,9 +73,9 @@ public class ActivityPlanController {
 	}
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list(String code, String status, String startTime, String endTime) {
+	public Result<List<Inno72ActivityPlanVo>> list(String code, String status, String startTime, String endTime) {
 		List<Inno72ActivityPlanVo> list = activityPlanService.selectPlanList(code, status, startTime, endTime);
-		return ResultPages.page(ResultGenerator.genSuccessResult(list));
+		return ResultGenerator.genSuccessResult(list);
 	}
 
 	@RequestMapping(value = "/selectAreaMachines", method = { RequestMethod.POST, RequestMethod.GET })
