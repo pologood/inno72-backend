@@ -85,6 +85,12 @@ public class Inno72Machine {
 	@Column(name = "bluetooth_address")
 	private String bluetoothAddress;
 
+	@Column(name = "monitor_start")
+	private String monitorStart;
+
+	@Column(name = "monitor_end")
+	private String monitorEnd;
+
 	public enum Machine_Status {
 		// 开机
 		START(1),
@@ -324,6 +330,30 @@ public class Inno72Machine {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public String getBluetoothAddress() {
+		return bluetoothAddress;
+	}
+
+	public void setBluetoothAddress(String bluetoothAddress) {
+		this.bluetoothAddress = bluetoothAddress;
+	}
+
+	public String getMonitorStart() {
+		return monitorStart;
+	}
+
+	public void setMonitorStart(String monitorStart) {
+		this.monitorStart = monitorStart;
+	}
+
+	public String getMonitorEnd() {
+		return monitorEnd;
+	}
+
+	public void setMonitorEnd(String monitorEnd) {
+		this.monitorEnd = monitorEnd;
 	}
 
 }
