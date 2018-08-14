@@ -70,6 +70,7 @@
   </select>
   
   <resultMap id="ResultFaultDetailMap" extends="BaseResultMap" type="com.inno72.check.vo.Inno72CheckFaultVo">
+  <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
 	    <association property="answerList" resultMap="answerResult" />
 	</resultMap>
 	<resultMap id="imgResult" type="java.util.Map">
@@ -89,6 +90,7 @@
  		SELECT f.id,
  		f.code,
  		f.machine_id,
+ 		m.machine_code,
  		f.title,
  		f.work_type,
  		f.status,
