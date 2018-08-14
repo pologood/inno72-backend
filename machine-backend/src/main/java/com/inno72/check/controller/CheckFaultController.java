@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.inno72.check.model.Inno72CheckFault;
+import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.check.service.CheckFaultService;
 import com.inno72.check.vo.Inno72CheckFaultVo;
 import com.inno72.common.Result;
@@ -62,4 +63,11 @@ public class CheckFaultController {
 	public Result<String> answer(String id, String remark, @RequestParam(required = false) String userId) {
 		return checkFaultService.faultAnswer(id, remark, userId);
 	}
+
+	@RequestMapping(value = "/getMachineUserList", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Inno72CheckUser>> getMachineUserList(String keyword) {
+		List<Inno72CheckUser> list = checkFaultService.getMachineUserList(keyword);
+		return ResultGenerator.genSuccessResult(list);
+	}
+
 }

@@ -206,4 +206,12 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		return inno72CheckFaultMapper.selectFaultDetail(params);
 	}
 
+	@Override
+	public List<Inno72CheckUser> getMachineUserList(String keyword) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("keyword", keyword);
+
+		return inno72CheckFaultMapper.getMachineUserList(params);
+	}
+
 }
