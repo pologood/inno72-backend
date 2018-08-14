@@ -17,6 +17,8 @@
 		<result column="device_id" jdbcType="VARCHAR" property="deviceId" />
 		<result column="address" jdbcType="VARCHAR" property="address" />
 		<result column="bluetooth_address" jdbcType="VARCHAR" property="bluetoothAddress" />
+		<result column="monitor_start" jdbcType="VARCHAR" property="monitorStart" />
+		<result column="monitor_end" jdbcType="VARCHAR" property="monitorEnd" />
 
 	</resultMap>
 

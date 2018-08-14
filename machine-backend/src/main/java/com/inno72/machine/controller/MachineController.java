@@ -30,6 +30,7 @@ import com.inno72.machine.vo.MachinePortalVo;
 import com.inno72.machine.vo.MachineStatusVo;
 import com.inno72.machine.vo.MachineStockOutInfo;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
+import com.inno72.machine.vo.UpdateMachineVo;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
@@ -132,6 +133,18 @@ public class MachineController {
 	public Result<String> updateLocale(@RequestParam String id, @RequestParam String localeId,
 			@RequestParam(defaultValue = "") String address) {
 		return machineService.updateLocale(id, localeId, address);
+
+	}
+
+	/**
+	 * 更新机器
+	 * 
+	 * @param vo
+	 * @return
+	 */
+	@RequestMapping(value = "/updateMachine", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> updateMachine(UpdateMachineVo vo) {
+		return machineService.updateMachine(vo);
 
 	}
 

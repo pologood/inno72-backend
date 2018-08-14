@@ -14,6 +14,7 @@ import com.inno72.machine.vo.MachinePortalVo;
 import com.inno72.machine.vo.MachineStatusVo;
 import com.inno72.machine.vo.MachineStockOutInfo;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
+import com.inno72.machine.vo.UpdateMachineVo;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
@@ -52,4 +53,6 @@ public interface MachineService extends Service<Inno72Machine> {
 	Result<List<MachineExceptionVo>> findExceptionMachine(Integer type);
 
 	Result<List<MachineStockOutInfo>> findMachineStockoutInfo(String machineId);
+
+	Result<String> updateMachine(UpdateMachineVo vo);
 }

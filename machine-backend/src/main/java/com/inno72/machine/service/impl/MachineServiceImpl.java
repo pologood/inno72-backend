@@ -55,6 +55,7 @@ import com.inno72.machine.vo.MachineStockOutInfo;
 import com.inno72.machine.vo.SendMessageBean;
 import com.inno72.machine.vo.SystemStatus;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
+import com.inno72.machine.vo.UpdateMachineVo;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.system.model.Inno72User;
 
@@ -509,5 +510,33 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	public Result<List<MachineStockOutInfo>> findMachineStockoutInfo(String machineId) {
 		List<MachineStockOutInfo> result = inno72MachineMapper.findMachineStockoutInfo(machineId);
 		return Results.success(result);
+	}
+
+	@Override
+	public Result<String> updateMachine(UpdateMachineVo vo) {
+		SessionData session = CommonConstants.SESSION_DATA;
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
+		String machineId = Optional.ofNullable(vo).map(a -> a.getMachineId()).orElse("");
+		String localId = Optional.ofNullable(vo).map(a -> a.getMachineId()).orElse("");
+		String monitorStart = Optional.ofNullable(vo).map(a -> a.getMonitorStart()).orElse("");
+		String monitorEnd = Optional.ofNullable(vo).map(a -> a.getMonitorEnd()).orElse("");
+		Inno72Machine machine = findById(machineId);
+		if (machine == null) {
+			return Results.failure("机器id传入错误");
+		}
+		machine.setLocaleId(localId);
+		machine.setMonitorStart(monitorStart);
+		machine.setMonitorEnd(monitorEnd);
+		machine.setUpdateId(mUser.getId());
+		machine.setUpdateTime(LocalDateTime.now());
+		int result = inno72MachineMapper.updateByPrimaryKeySelective(machine);
+		if (result != 1) {
+			return Results.failure("修改点位失败");
+		}
+		return Results.success();
 	}
 }
