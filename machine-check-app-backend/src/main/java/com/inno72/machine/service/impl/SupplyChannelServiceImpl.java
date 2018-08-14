@@ -255,18 +255,24 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 Integer lackGoodsStatus = 0;
                 List<SupplyChannelVo> supplyChannelVoList = machine.getSupplyChannelVoList();
                 if(supplyChannelVoList != null && supplyChannelVoList.size()>0){
+                    Map<String,Integer> map = new HashMap<>();
                     for(SupplyChannelVo supplyChannelVo:supplyChannelVoList){
                         String goodsId = supplyChannelVo.getGoodsId();
                         if(StringUtil.isNotEmpty(goodsId)){
-                            int volumeCount = supplyChannelVo.getVolumeCount();
                             int goodsCount = supplyChannelVo.getGoodsCount();
-                            BigDecimal volumeCountDecimal = new BigDecimal(volumeCount);
-                            BigDecimal goodsCountDecimal = new BigDecimal(goodsCount);
-                            BigDecimal countDecimal = goodsCountDecimal.divide(volumeCountDecimal,2, RoundingMode.HALF_UP);
-                            if(countDecimal.compareTo(new BigDecimal(0.2))<0){
-                                lackGoodsStatus = 1;
-                                break;
+                            if(map.containsKey(goodsId)){
+                                int count = map.get(goodsId);
+                                count+=goodsCount;
+                                map.put(goodsId,count);
+                            }else{
+                                map.put(goodsId,goodsCount);
                             }
+                        }
+                    }
+                    for(Integer value:map.values()){
+                        if(value<5){
+                            lackGoodsStatus = 1;
+                            break;
                         }
                     }
                 }
@@ -298,16 +304,11 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                         totalVolumeCount+=volumeCount;
                         totalGoodsCount+=goodsCount;
                     }
-                    BigDecimal volumeCountDecimal = new BigDecimal(totalVolumeCount);
-                    BigDecimal goodsCountDecimal = new BigDecimal(totalGoodsCount);
-                    BigDecimal countDecimal = goodsCountDecimal.divide(volumeCountDecimal,2, RoundingMode.HALF_UP);
-                    if(countDecimal.compareTo(new BigDecimal(0.2))<0){
-                        inno72Goods.setLackGoodsCount(totalVolumeCount-totalGoodsCount);
-                        inno72Goods.setLackGoodsStatus(1);
-                        inno72Goods.setSupplyChannelVoList(null);
-                        inno72Goods.setImg(ImageUtil.getLongImageUrl(inno72Goods.getImg()));
-                        resultList.add(inno72Goods);
-                    }
+                    inno72Goods.setLackGoodsCount(totalVolumeCount-totalGoodsCount);
+                    inno72Goods.setSupplyChannelVoList(null);
+                    inno72Goods.setImg(ImageUtil.getLongImageUrl(inno72Goods.getImg()));
+                    inno72Goods.setTotalGoodsCount(totalGoodsCount);
+                    resultList.add(inno72Goods);
                 }
             }
         }
@@ -337,9 +338,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
                 if(totalVolumeCount-totalGoodsCount>0){
                     machine.setLackGoodsCount(totalVolumeCount-totalGoodsCount);
                     machine.setSupplyChannelVoList(null);
+                    machine.setTotalGoodsCount(totalGoodsCount);
                     resultList.add(machine);
                 }
-
             }
         }
         return ResultGenerator.genSuccessResult(resultList);

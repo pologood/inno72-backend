@@ -100,4 +100,13 @@ public class CheckUserController {
     public Result<String> logout(){
         return checkUserService.logout();
     }
+
+    /**
+     * 运维检测
+     * @return
+     */
+    @RequestMapping(value="operation")
+    public Result<String> operation(){
+        return ResultGenerator.genSuccessResult();
+    }
 }

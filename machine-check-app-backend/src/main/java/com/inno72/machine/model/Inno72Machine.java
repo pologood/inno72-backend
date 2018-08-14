@@ -101,6 +101,9 @@ public class Inno72Machine {
 	private int lackGoodsCount;
 
 	@Transient
+	private int totalGoodsCount;
+
+	@Transient
 	private String localeStr;
 
 	@Transient
@@ -431,5 +434,13 @@ public class Inno72Machine {
 
 	public void setSignInStatus(int signInStatus) {
 		this.signInStatus = signInStatus;
+	}
+
+	public int getTotalGoodsCount() {
+		return totalGoodsCount;
+	}
+
+	public void setTotalGoodsCount(int totalGoodsCount) {
+		this.totalGoodsCount = totalGoodsCount;
 	}
 }

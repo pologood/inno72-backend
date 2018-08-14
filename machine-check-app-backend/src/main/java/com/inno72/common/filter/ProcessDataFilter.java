@@ -2,6 +2,7 @@ package com.inno72.common.filter;
 
 import com.inno72.common.AesUtils;
 import com.inno72.common.StringUtil;
+import com.inno72.utils.page.Pagination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -27,6 +28,7 @@ public class ProcessDataFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		String url = request.getServletPath();
 		boolean match = doNotCheckUs.parallelStream().anyMatch(url::contains);
+		Pagination.threadLocal.remove();
 		if (!match && !url.equals("/") && !url.contains("/h5")) {
 			CustomerHttpServletRequestWrapper req = new CustomerHttpServletRequestWrapper(request);
 			CustomerServletResponseWrapper resp = new CustomerServletResponseWrapper(response);

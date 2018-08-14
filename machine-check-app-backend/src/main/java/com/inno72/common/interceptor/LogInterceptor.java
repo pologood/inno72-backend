@@ -32,7 +32,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	private IRedisUtil redisUtil; // memcachedClient
 
 	private static List<String> doNotCheckUs = Arrays.asList("/check/user/smsCode","/check/user/login",
-			"/check/user/h5/smsCode","/check/user/h5/login",
+			"/check/user/h5/smsCode","/check/user/h5/login","/check/user/operation",
             "/check/user/encrypt","/machine/channel/split","/machine/channel/merge","/check/user/decrypt",
             "/machine/channel/findAndPushByTaskParam");
 
@@ -46,35 +46,6 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
          }
 		@SuppressWarnings("rawtypes")
 		Enumeration enumeration = request.getParameterNames();
-        // 移除分页对象
-        Pagination.threadLocal.remove();
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
-            String str = "";
-            String wholeStr = "";
-            while((str = reader.readLine()) != null){//一行一行的读取body体里面的内容；
-                wholeStr += str;
-            }
-            if(StringUtil.isNotEmpty(wholeStr)){
-                JSONObject t=JSONObject.fromObject(wholeStr);//转化成json对象
-                Object pageNoObj = t.get("pageNo");
-
-                if(pageNoObj != null){
-                    Integer pageNo = Integer.parseInt(pageNoObj.toString());
-                    if(pageNo != null){
-                        if(pageNo<1){
-                            pageNo = 1;
-                        }
-                        Pagination pagination = new Pagination();
-                        pagination.setPageNo(pageNo);
-                        Pagination.threadLocal.set(pagination);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         StringBuilder parm = new StringBuilder();
 		while (enumeration.hasMoreElements()) {
 			Object element = enumeration.nextElement();
@@ -209,16 +180,17 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
             String info = redisUtil.get(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + token);
             if (info == null) {
                 // 判断用户是否被踢出
-                boolean checkout = redisUtil.sismember(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, token);
-                redisUtil.srem(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, token);
+//                boolean checkout = redisUtil.sismember(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, token);
+//                redisUtil.srem(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, token);
                 Result<String> result = new Result<>();
-                if (checkout) {
-                    result.setCode(888);
-                    result.setMsg("你的账号在另一处登录，你已被踢出");
-                } else {
-                    result.setCode(999);
-                    result.setMsg("你登录超时，请重新登录");
-                }
+//                if (checkout) {
+//                    result.setCode(888);
+//                    result.setMsg("你的账号在另一处登录，你已被踢出");
+//                } else {
+//
+//                }
+				result.setCode(999);
+				result.setMsg("你登录超时，请重新登录");
                 String origin = request.getHeader("Origin");
                 response(response, origin);
                 try (PrintWriter out = response.getWriter()) {

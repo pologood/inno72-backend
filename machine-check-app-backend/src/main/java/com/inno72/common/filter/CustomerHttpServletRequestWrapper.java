@@ -1,6 +1,9 @@
 package com.inno72.common.filter;
 
 import com.inno72.common.AesUtils;
+import com.inno72.common.StringUtil;
+import com.inno72.utils.page.Pagination;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StreamUtils;
@@ -27,6 +30,23 @@ public class CustomerHttpServletRequestWrapper extends HttpServletRequestWrapper
 			String message = AesUtils.decrypt(encryptRequestBody);
 			logger.info("请求{}接口参数为{}", request.getRequestURI(), new String(message));
 			requestBody = message.getBytes();
+			String data = new String(requestBody);
+			if(StringUtil.isNotEmpty(data)){
+				JSONObject t=JSONObject.fromObject(data);//转化成json对象
+				Object pageNoObj = t.get("pageNo");
+
+				if(pageNoObj != null){
+					Integer pageNo = Integer.parseInt(pageNoObj.toString());
+					if(pageNo != null){
+						if(pageNo<1){
+							pageNo = 1;
+						}
+						Pagination pagination = new Pagination();
+						pagination.setPageNo(pageNo);
+						Pagination.threadLocal.set(pagination);
+					}
+				}
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -103,6 +103,8 @@ public class Inno72Goods {
 
     private int lackGoodsCount;
 
+    private int totalGoodsCount;
+
     /**
      * 获取商品ID
      *
@@ -343,5 +345,13 @@ public class Inno72Goods {
 
     public void setLackGoodsCount(int lackGoodsCount) {
         this.lackGoodsCount = lackGoodsCount;
+    }
+
+    public int getTotalGoodsCount() {
+        return totalGoodsCount;
+    }
+
+    public void setTotalGoodsCount(int totalGoodsCount) {
+        this.totalGoodsCount = totalGoodsCount;
     }
 }
