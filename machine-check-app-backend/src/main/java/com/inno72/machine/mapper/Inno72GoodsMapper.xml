@@ -56,5 +56,6 @@
         left join inno72_activity_plan_machine t4 on t3.id=t4.activity_plan_id
         left join inno72_machine t5 on t4.machine_id = t5.id
         where t5.id=#{machineId}
+        and now() BETWEEN t3.start_time and t3.end_time
     </select>
 </mapper>
