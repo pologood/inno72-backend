@@ -70,6 +70,8 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			model.setId(StringUtil.getUUID());
 			model.setSubmitId(mUserId);
 			model.setSubmitUser(mUser.getName());
+			model.setSubmitTime(LocalDateTime.now());
+			model.setUpdateTime(LocalDateTime.now());
 			model.setSource(2);// 来源：1.巡检上报，2.运营派单，3.报警派单
 			model.setStatus(1);// 工单状态（1.待接单，2.处理中，3.已完成，4.已确认，5.已关闭
 			String time = DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S2);
@@ -105,7 +107,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			}
 
 			model.setTitle(title + urgentType + typeStr);
-			model.setUpdateTime(LocalDateTime.now());
+
 			inno72CheckFaultMapper.insert(model);
 		} catch (Exception e) {
 			logger.info(e.getMessage());
