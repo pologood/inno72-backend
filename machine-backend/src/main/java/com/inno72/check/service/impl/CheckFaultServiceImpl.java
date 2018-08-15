@@ -67,7 +67,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		}
 		try {
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-
+			model.setId(StringUtil.getUUID());
 			model.setSubmitId(mUserId);
 			model.setSubmitUser(mUser.getName());
 			model.setSource(2);// 来源：1.巡检上报，2.运营派单，3.报警派单
