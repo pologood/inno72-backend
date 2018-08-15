@@ -92,16 +92,16 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			if (workType == 1) {
 				if (StringUtil.isNotBlank(model.getType())) {
 					Inno72CheckFaultType faultType = inno72CheckFaultTypeMapper.selectByPrimaryKey(model.getType());
-					typeStr = faultType.getName() + " 故障，请尽快处理";
+					typeStr = faultType.getName() + "故障，请尽快处理";
 				} else {
-					typeStr = " 故障，请尽快处理";
+					typeStr = "故障，请尽快处理";
 				}
 			} else if (workType == 2) {
-				typeStr = "报警类型，请尽快处理";
+				typeStr = "报警，请尽快处理";
 			} else if (workType == 3) {
 				typeStr = "补货，请尽快处理";
 			} else if (workType == 4) {
-				typeStr = "投诉类型，请尽快处理";
+				typeStr = "投诉，请尽快处理";
 			} else {
 				typeStr = "问题，请尽快处理";
 			}
@@ -140,11 +140,13 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 	}
 
 	@Override
-	public List<Inno72CheckFault> findByPage(String keyword, String status, String type, String startTime,
-			String endTime) {
+	public List<Inno72CheckFault> findByPage(String keyword, String status, String workType, String source, String type,
+			String startTime, String endTime) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		params.put("status", status);
+		params.put("workType", workType);
+		params.put("source", source);
 		params.put("keyword", keyword);
 		params.put("type", type);
 		params.put("startTime", startTime);
