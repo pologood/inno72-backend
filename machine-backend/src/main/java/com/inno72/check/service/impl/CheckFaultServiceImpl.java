@@ -88,8 +88,12 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 
 			String typeStr = "";
 			if (workType == 1) {
-				Inno72CheckFaultType faultType = inno72CheckFaultTypeMapper.selectByPrimaryKey(model.getType());
-				typeStr = faultType.getName() + " 故障，请尽快处理";
+				if (StringUtil.isNotBlank(model.getType())) {
+					Inno72CheckFaultType faultType = inno72CheckFaultTypeMapper.selectByPrimaryKey(model.getType());
+					typeStr = faultType.getName() + " 故障，请尽快处理";
+				} else {
+					typeStr = " 故障，请尽快处理";
+				}
 			} else if (workType == 2) {
 				typeStr = "报警类型，请尽快处理";
 			} else if (workType == 3) {
