@@ -241,6 +241,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
         faultRemark.setFaultId(faultId);
         faultRemark.setUserId(UserUtil.getUser().getId());
         faultRemark.setType(1);
+        faultRemark.setName(UserUtil.getUser().getName());
         faultRemark.setRemark(remark);
         faultRemark.setCreateTime(LocalDateTime.now());
         inno72CheckFaultRemarkMapper.insertSelective(faultRemark);
