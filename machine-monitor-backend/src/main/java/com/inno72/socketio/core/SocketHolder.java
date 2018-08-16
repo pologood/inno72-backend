@@ -48,8 +48,13 @@ public class SocketHolder {
 	 * @return
 	 */
 	public static boolean send(String key, String data) {
-        //logger.info("发送数据: {} --> {}", key, data);
+		// logger.info("发送数据: {} --> {}", key, data);
 		return send(get(key), "message", data);
+	}
+
+	public static boolean have(String key) {
+		// logger.info("发送数据: {} --> {}", key, data);
+		return map.containsKey(key);
 	}
 
 	/**
