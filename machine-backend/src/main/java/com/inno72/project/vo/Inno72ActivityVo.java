@@ -1,18 +1,21 @@
 package com.inno72.project.vo;
 
-import com.inno72.project.model.Inno72Activity;
+import java.util.List;
 
-public class Inno72ActivityVo extends Inno72Activity{
-	
-    private String state;
-    
-    private String prizeType;
-    
-    private String shopName;
-    
-    private String merchantName;
-    
-    
+import com.inno72.project.model.Inno72Activity;
+import com.inno72.project.model.Inno72Shops;
+
+public class Inno72ActivityVo extends Inno72Activity {
+
+	private String state;
+
+	private String prizeType;
+
+	private String shopName;
+
+	private String merchantName;
+
+	private List<Inno72Shops> shops;
 
 	public String getState() {
 		return state;
@@ -46,7 +49,12 @@ public class Inno72ActivityVo extends Inno72Activity{
 		this.merchantName = merchantName;
 	}
 
-	
-    
-    
+	public List<Inno72Shops> getShops() {
+		return shops;
+	}
+
+	public void setShops(List<Inno72Shops> shops) {
+		this.shops = shops;
+	}
+
 }

@@ -1,6 +1,7 @@
 package com.inno72.project.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,10 @@ import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72ActivityMapper;
+import com.inno72.project.mapper.Inno72ActivityShopsMapper;
 import com.inno72.project.model.Inno72Activity;
+import com.inno72.project.model.Inno72ActivityShops;
+import com.inno72.project.model.Inno72Shops;
 import com.inno72.project.service.ActivityService;
 import com.inno72.project.vo.Inno72ActivityVo;
 import com.inno72.redis.IRedisUtil;
@@ -38,9 +42,11 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 	private IRedisUtil redisUtil;
 	@Resource
 	private Inno72ActivityMapper inno72ActivityMapper;
+	@Resource
+	private Inno72ActivityShopsMapper inno72ActivityShopsMapper;
 
 	@Override
-	public Result<String> saveModel(Inno72Activity model) {
+	public Result<String> saveModel(Inno72ActivityVo model) {
 		logger.info("--------------------活动新增-------------------");
 		try {
 			SessionData session = CommonConstants.SESSION_DATA;
@@ -55,6 +61,12 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 			model.setManagerId(userId);// 负责人
 			model.setCreateId(userId);
 			model.setUpdateId(userId);
+			if (StringUtil.isBlank(model.getName())) {
+				return Results.failure("请填写活动名称");
+			}
+			if (StringUtil.isBlank(model.getCode())) {
+				return Results.failure("请填写活动编码");
+			}
 			if (0 == model.getIsDefault()) {// 常规活动选择商户，店铺
 				if (StringUtil.isNotBlank(model.getCode())) {
 					int n = inno72ActivityMapper.getCountByCode(model.getCode());
@@ -62,12 +74,28 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 						return Results.failure("活动编码已存在，请确认！");
 					}
 				}
-				if (StringUtil.isBlank(model.getSellerId())) {
-					return Results.failure("请选择所属商户");
+
+				List<Inno72Shops> shops = model.getShops();
+				if (null == shops || shops.size() == 0) {
+					return Results.failure("请选择活动店铺");
 				}
-				if (StringUtil.isBlank(model.getSellerId())) {
-					return Results.failure("请选择所属店铺");
+				// 处理活动店铺关系
+				List<Inno72ActivityShops> insertActivityShopsList = new ArrayList<>();
+				for (Inno72Shops inno72Shops : shops) {
+					Inno72ActivityShops activityShops = new Inno72ActivityShops();
+					activityShops.setId(StringUtil.getUUID());
+					activityShops.setActivityId(model.getId());
+					activityShops.setShopsId(inno72Shops.getId());
+
+					if (insertActivityShopsList.contains(activityShops)) {
+						logger.info("选择店铺有重复");
+						return Results.failure("选择店铺有重复");
+					}
+					insertActivityShopsList.add(activityShops);
 				}
+
+				inno72ActivityShopsMapper.insertActivityShopsList(insertActivityShopsList);
+
 			} else {
 				Inno72Activity defaultAct = inno72ActivityMapper.selectDefaultActivity();
 				if (null != defaultAct) {
@@ -108,7 +136,7 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 	}
 
 	@Override
-	public Result<String> updateModel(Inno72Activity model) {
+	public Result<String> updateModel(Inno72ActivityVo model) {
 		logger.info("--------------------活动更新-------------------");
 		try {
 			SessionData session = CommonConstants.SESSION_DATA;
@@ -126,6 +154,29 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			model.setUpdateId(userId);
 			model.setUpdateTime(LocalDateTime.now());
+
+			List<Inno72Shops> shops = model.getShops();
+			if (null == shops || shops.size() == 0) {
+				return Results.failure("请选择活动店铺");
+			}
+
+			// 处理活动店铺关系
+			List<Inno72ActivityShops> insertActivityShopsList = new ArrayList<>();
+			for (Inno72Shops inno72Shops : shops) {
+				Inno72ActivityShops activityShops = new Inno72ActivityShops();
+				activityShops.setShopsId(inno72Shops.getId());
+				if (insertActivityShopsList.contains(activityShops)) {
+					logger.info("选择店铺有重复");
+					return Results.failure("选择店铺有重复");
+				}
+				insertActivityShopsList.add(activityShops);
+			}
+
+			// 删除与原有店铺关系
+			inno72ActivityShopsMapper.deleteByActivityId(model.getId());
+
+			// 新增店铺关系
+			inno72ActivityShopsMapper.insertActivityShopsList(insertActivityShopsList);
 
 			super.update(model);
 		} catch (Exception e) {
@@ -154,7 +205,15 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 
 	@Override
 	public Inno72ActivityVo selectById(String id) {
-
+		Inno72ActivityVo activity = inno72ActivityMapper.selectById(id);
+		List<Inno72Shops> shops = activity.getShops();
+		String shopNames = "";
+		if (null != shops && shops.size() > 0) {
+			for (Inno72Shops inno72Shops : shops) {
+				shopNames = shopNames + " " + inno72Shops.getShopName();
+			}
+			activity.setShopName(shopNames);
+		}
 		return inno72ActivityMapper.selectById(id);
 	}
 

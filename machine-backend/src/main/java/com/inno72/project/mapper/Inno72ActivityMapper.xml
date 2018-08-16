@@ -27,8 +27,12 @@
     <result column="prize_type" jdbcType="VARCHAR" property="prizeType" />
     <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
     <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
-    
+    <association property="shops" resultMap="shopsResult" />
   </resultMap>
+   <resultMap id="shopsResult" type="com.inno72.project.model.Inno72Shops">
+  <result column="shop_id" property="id" />
+  <result column="shop_name" property="shopName"/>
+ </resultMap>
   
   <select id="selectByPage" parameterType="java.util.Map" resultMap="VoResultMap">
 		
@@ -87,9 +91,7 @@
 			a.code,
 			a.is_default,
 			s.id as shop_id,
-			m.id as seller_id,
 			s.shop_name as shop_name,
-			m.merchant_name as merchant_name,
 			u.name as manager_id,
 			a.is_delete,
 			a.create_time,
@@ -97,9 +99,9 @@
 			a.remark
 		FROM
 			inno72_activity a
-			LEFT JOIN inno72_shops s ON s.id = a.shop_id
-			LEFT JOIN inno72_merchant m ON m.id = s.seller_id
 			LEFT JOIN inno72_user u ON u.id =a.manager_id
+			LEFT JOIN inno72_activity_shops ap on ap.activity_id = a.id
+			LEFT JOIN inno72_shops s ON s.id = ap.shops_id
 			where a.is_delete = 0 and a.is_default=0
 			and a.id = #{id}
 			ORDER BY a.update_time DESC

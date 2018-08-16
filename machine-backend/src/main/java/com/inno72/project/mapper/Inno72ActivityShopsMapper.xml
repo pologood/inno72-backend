@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.project.mapper.Inno72ActivityShopsMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.project.model.Inno72ActivityShops">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="shops_id" jdbcType="VARCHAR" property="shopsId" />
+  </resultMap>
+  
+  <insert id="insertActivityShopsList" parameterType="java.util.List">
+        insert into inno72_activity_shops (id, activity_id,shops_id)
+        values
+        <foreach collection="list" item="as" index="index" separator=",">
+            (#{as.id},#{as.activityId},#{as.shopsId})
+        </foreach>
+    </insert>
+    
+    <delete id="deleteByActivityId" parameterType="String">
+		DELETE FROM inno72_activity_shops WHERE activity_id=#{activityId}
+	</delete>
+    
+</mapper>
