@@ -101,8 +101,6 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			} else if (workType == 3) {
 				typeStr = "补货，请尽快处理";
 			} else if (workType == 4) {
-				typeStr = "投诉，请尽快处理";
-			} else {
 				typeStr = "问题，请尽快处理";
 			}
 
@@ -128,6 +126,19 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		}
 		try {
 			Inno72CheckFault checkFault = inno72CheckFaultMapper.selectByPrimaryKey(id);
+			if (5 == status) {// 后台关闭工单显示已完成
+				checkFault.setFinishRemark("已解决");
+				checkFault.setFinishId(mUser.getId());
+				checkFault.setFinishUser(mUser.getName());
+				checkFault.setFinishTime(LocalDateTime.now());
+			}
+			if (4 == status) {// 巡检人员已完成 3状态后台此时可确认
+				if (3 != checkFault.getStatus()) {
+					logger.info("登陆用户为空");
+					return Results.failure("工单未完成，不能关闭");
+				}
+
+			}
 			checkFault.setStatus(status);
 
 			checkFault.setUpdateTime(LocalDateTime.now());
@@ -180,8 +191,10 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			faultRemark.setFaultId(id);
 			faultRemark.setRemark(remark);
 			faultRemark.setUserId(userId);
+			faultRemark.setName(mUser.getName());
 			faultRemark.setType(2);
 			faultRemark.setCreateTime(LocalDateTime.now());
+			faultRemark.setIsDelete(0);
 
 			inno72CheckFaultRemarkMapper.insert(faultRemark);
 			// 派单

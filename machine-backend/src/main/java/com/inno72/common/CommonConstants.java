@@ -35,9 +35,6 @@ public class CommonConstants {
 	/** 计划ID key **/
 	public static final String REDIS_ACTIVITY_PLAN_CACHE_KEY = "machine_plan:";
 
-	/** 默认活动计划ID key **/
-	public static final String REDIS_ACTIVITY_DEFAULT_PLAN_CACHE_KEY = "machine_default_plan:";
-
 	/** 企业微信获取Token **/
 	public static final String qyWeChatGetsAccessTokenUrl = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={0}&corpsecret={1}";
 
@@ -52,5 +49,6 @@ public class CommonConstants {
 
 	/** 企业微信用户邀请成员 **/
 	public final static String qyWeChatInviteUserUrl = "https://qyapi.weixin.qq.com/cgi-bin/batch/invite?access_token={0}";
-
+	/** 默认活动计划ID key **/
+	public static final String REDIS_ACTIVITY_DEFAULT_PLAN_CACHE_KEY = "machine_default_plan:";
 }
