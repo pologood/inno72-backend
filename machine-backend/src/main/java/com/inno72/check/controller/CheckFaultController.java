@@ -54,8 +54,10 @@ public class CheckFaultController {
 	}
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list(String keyword, String status, String type, String startTime, String endTime) {
-		List<Inno72CheckFault> list = checkFaultService.findByPage(keyword, status, type, startTime, endTime);
+	public ModelAndView list(String keyword, String status, String workType, String source, String type,
+			String startTime, String endTime) {
+		List<Inno72CheckFault> list = checkFaultService.findByPage(keyword, status, workType, source, type, startTime,
+				endTime);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 

@@ -461,7 +461,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			if (q > 0) {
 				logger.info("游戏结果规则处理完成");
 			}
-			redisUtil.del(CommonConstants.REDIS_ACTIVITY_PLAN_CACHE_KEY + activityPlan.getId());
+			redisUtil.del(CommonConstants.REDIS_ACTIVITY_PLAN_CACHE_KEY + activityPlan.getId() + "*");
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 			return Results.failure("操作失败！");

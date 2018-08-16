@@ -13,7 +13,8 @@ import com.inno72.common.Service;
  */
 public interface CheckFaultService extends Service<Inno72CheckFault> {
 
-	List<Inno72CheckFault> findByPage(String keyword, String status, String type, String startTime, String endTime);
+	List<Inno72CheckFault> findByPage(String keyword, String status, String workType, String source, String type,
+			String startTime, String endTime);
 
 	Result<String> faultAnswer(String id, String remark, String userId);
 

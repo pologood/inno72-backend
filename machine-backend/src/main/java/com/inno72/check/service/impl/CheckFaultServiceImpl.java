@@ -67,9 +67,11 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		}
 		try {
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-
+			model.setId(StringUtil.getUUID());
 			model.setSubmitId(mUserId);
 			model.setSubmitUser(mUser.getName());
+			model.setSubmitTime(LocalDateTime.now());
+			model.setUpdateTime(LocalDateTime.now());
 			model.setSource(2);// 来源：1.巡检上报，2.运营派单，3.报警派单
 			model.setStatus(1);// 工单状态（1.待接单，2.处理中，3.已完成，4.已确认，5.已关闭
 			String time = DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S2);
@@ -88,20 +90,24 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 
 			String typeStr = "";
 			if (workType == 1) {
-				Inno72CheckFaultType faultType = inno72CheckFaultTypeMapper.selectByPrimaryKey(model.getType());
-				typeStr = faultType.getName() + " 故障，请尽快处理";
+				if (StringUtil.isNotBlank(model.getType())) {
+					Inno72CheckFaultType faultType = inno72CheckFaultTypeMapper.selectByPrimaryKey(model.getType());
+					typeStr = faultType.getName() + "故障，请尽快处理";
+				} else {
+					typeStr = "故障，请尽快处理";
+				}
 			} else if (workType == 2) {
-				typeStr = "报警类型，请尽快处理";
+				typeStr = "报警，请尽快处理";
 			} else if (workType == 3) {
 				typeStr = "补货，请尽快处理";
 			} else if (workType == 4) {
-				typeStr = "投诉类型，请尽快处理";
+				typeStr = "投诉，请尽快处理";
 			} else {
 				typeStr = "问题，请尽快处理";
 			}
 
 			model.setTitle(title + urgentType + typeStr);
-			model.setUpdateTime(LocalDateTime.now());
+
 			inno72CheckFaultMapper.insert(model);
 		} catch (Exception e) {
 			logger.info(e.getMessage());
@@ -134,11 +140,13 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 	}
 
 	@Override
-	public List<Inno72CheckFault> findByPage(String keyword, String status, String type, String startTime,
-			String endTime) {
+	public List<Inno72CheckFault> findByPage(String keyword, String status, String workType, String source, String type,
+			String startTime, String endTime) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		params.put("status", status);
+		params.put("workType", workType);
+		params.put("source", source);
 		params.put("keyword", keyword);
 		params.put("type", type);
 		params.put("startTime", startTime);
