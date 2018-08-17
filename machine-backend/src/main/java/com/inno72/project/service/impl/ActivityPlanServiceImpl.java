@@ -1,5 +1,6 @@
 package com.inno72.project.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -533,20 +534,27 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			params.put("endTime", endTime + ":59");
 		}
 
-		if (StringUtil.isEmpty(code)) {
-			params.put("level", 1);
+		if (StringUtil.isNotBlank(level)) {
+			if (level.equals("1")) {
+				params.put("num", 2);
+			} else if (level.equals("2")) {
+				params.put("num", 4);
+			} else if (level.equals("3")) {
+				params.put("num", 6);
+			} else if (level.equals("4")) {
+				params.put("num", 9);
+			}
+			params.put("level", level);
+		} else {
+			int num = StringUtil.getAreaCodeNum(code);
+
+			String likeCode = code.substring(0, num);
+			params.put("code", likeCode);
+			params.put("num", num);
 		}
-		if (level.equals("1")) {
-			params.put("num", 2);
-		} else if (level.equals("2")) {
-			params.put("num", 4);
-		} else if (level.equals("3")) {
-			params.put("num", 6);
-		} else if (level.equals("4")) {
-			params.put("num", 9);
-		}
+
 		List<Inno72AdminAreaVo> list = new ArrayList<>();
-		if (level.equals("5")) {
+		if (StringUtil.isEmpty(level)) {
 			list = inno72ActivityPlanMapper.selectMachineList(params);
 		} else {
 			list = inno72ActivityPlanMapper.selectAreaMachineList(params);

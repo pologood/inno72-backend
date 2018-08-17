@@ -101,9 +101,9 @@
 				OR ap.end_time < #{startTime})]]>and is_delete=0) and  
 				app.is_delete=0 and apm.machine_id is not null  and length(apm.machine_id)>0 and app.start_time is not null 
 				) aa on m.id=aa.machine_id
-		WHERE
-		<if test="code !=null and code !='' ">a.parent_code = #{code}  </if>
-		<if test="level !=null and level !='' ">a.LEVEL = #{level}  </if>
+		WHERE 1=1
+		<if test="code !=null and code !='' ">and a.parent_code = #{code}  </if>
+		<if test="level !=null and level !='' ">and a.LEVEL = #{level}  </if>
 		
   </select>
   <select id="selectMachineList" parameterType="java.util.Map" resultMap="ResultAreaMachineMap">
