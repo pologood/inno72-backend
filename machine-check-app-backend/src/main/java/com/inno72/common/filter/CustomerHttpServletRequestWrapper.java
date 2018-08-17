@@ -27,26 +27,29 @@ public class CustomerHttpServletRequestWrapper extends HttpServletRequestWrapper
 		try {
 			byte[] encryptRequestBodyBytes = StreamUtils.copyToByteArray(request.getInputStream());
 			String encryptRequestBody = new String(encryptRequestBodyBytes);
-			String message = AesUtils.decrypt(encryptRequestBody);
-			logger.info("请求{}接口参数为{}", request.getRequestURI(), new String(message));
-			requestBody = message.getBytes();
-			String data = new String(requestBody);
-			if(StringUtil.isNotEmpty(data)){
-				JSONObject t=JSONObject.fromObject(data);//转化成json对象
-				Object pageNoObj = t.get("pageNo");
+			if(StringUtil.isNotEmpty(encryptRequestBody)){
+				String message = AesUtils.decrypt(encryptRequestBody);
+				logger.info("请求{}接口参数为{}", request.getRequestURI(), new String(message));
+				requestBody = message.getBytes();
+				String data = new String(requestBody);
+				if(StringUtil.isNotEmpty(data)){
+					JSONObject t=JSONObject.fromObject(data);//转化成json对象
+					Object pageNoObj = t.get("pageNo");
 
-				if(pageNoObj != null){
-					Integer pageNo = Integer.parseInt(pageNoObj.toString());
-					if(pageNo != null){
-						if(pageNo<1){
-							pageNo = 1;
+					if(pageNoObj != null){
+						Integer pageNo = Integer.parseInt(pageNoObj.toString());
+						if(pageNo != null){
+							if(pageNo<1){
+								pageNo = 1;
+							}
+							Pagination pagination = new Pagination();
+							pagination.setPageNo(pageNo);
+							Pagination.threadLocal.set(pagination);
 						}
-						Pagination pagination = new Pagination();
-						pagination.setPageNo(pageNo);
-						Pagination.threadLocal.set(pagination);
 					}
 				}
 			}
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
