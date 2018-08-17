@@ -53,9 +53,9 @@ public class MachineController {
      */
     @RequestMapping(value="findAreaByCode", method = {RequestMethod.POST})
     @ResponseBody
-    public Result<Inno72AdminArea> findAreaByCode(){
+    public Result<Inno72AdminArea> findAreaByCode(@RequestBody Inno72AdminArea adminArea){
         logger.info("查询城市及子区域接口");
-        return machineService.cityLevelArea();
+        return machineService.cityLevelArea(adminArea);
     }
 
 

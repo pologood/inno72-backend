@@ -59,7 +59,7 @@ public class Inno72AdminArea {
     @Column(name="level")
     private int level;
 
-    private List<DistrictVo> districtVoList;
+    private List<CityVo> cityVoList;
 
     public String getCode() {
         return code;
@@ -121,12 +121,12 @@ public class Inno72AdminArea {
         return level;
     }
 
-    public List<DistrictVo> getDistrictVoList() {
-        return districtVoList;
+    public List<CityVo> getCityVoList() {
+        return cityVoList;
     }
 
-    public void setDistrictVoList(List<DistrictVo> districtVoList) {
-        this.districtVoList = districtVoList;
+    public void setCityVoList(List<CityVo> cityVoList) {
+        this.cityVoList = cityVoList;
     }
 
     public void setLevel(int level) {
