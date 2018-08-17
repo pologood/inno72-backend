@@ -103,7 +103,7 @@ public class SocketIOStartHandler {
 						mongoTpl.remove(query, "MachineAppStatus");
 						mongoTpl.save(apps, "MachineAppStatus");
 					} else if (SCREENSHOT.v() == subEventType) {
-						String url = $json.getString("imgUrl");
+						String url = $json.getJSONObject("data").getString("imgUrl");
 						Inno72AppScreenShot model = new Inno72AppScreenShot();
 						model.setCreateTime(LocalDateTime.now());
 						model.setId(StringUtil.getUUID());
