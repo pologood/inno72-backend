@@ -9,9 +9,11 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="number" jdbcType="INTEGER" property="number" />
     <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
     <result column="shop_id" jdbcType="VARCHAR" property="shopId" />
     <result column="img" jdbcType="VARCHAR" property="img" />
+    <result column="banner" jdbcType="VARCHAR" property="banner" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
@@ -26,7 +28,9 @@
 		g.name,
 		g.code,
 		g.price,
+		g.number,
 		g.img,
+		g.banner,
 		g.remark,
 		g.create_id,
 		g.update_id,
