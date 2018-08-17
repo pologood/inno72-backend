@@ -33,7 +33,6 @@ import com.inno72.system.model.Inno72User;
 @Transactional
 public class ActivityServiceImpl extends AbstractService<Inno72Activity> implements ActivityService {
 	private static Logger logger = LoggerFactory.getLogger(ActivityServiceImpl.class);
-
 	@Resource
 	private IRedisUtil redisUtil;
 	@Resource

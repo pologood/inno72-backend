@@ -36,4 +36,9 @@ public class CommonConstants {
 	/**验证码key前缀*/
 	public static final String SMS_CODE_KEY = "MACHINE_APP_BACKEND_";
 
+	/**
+	 *APP下载地址前缀
+	 */
+	public static final String DOWNLOAD_APP_PREF = "http://inno72.oss.72solo.com";
+
 }

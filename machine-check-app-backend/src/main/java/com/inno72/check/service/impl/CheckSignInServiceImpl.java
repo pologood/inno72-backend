@@ -23,7 +23,10 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
         signIn.setCreateTime(LocalDateTime.now());
         signIn.setId(StringUtil.getUUID());
         signIn.setCheckUserId(UserUtil.getUser().getId());
-        checkSignInMapper.insertSelective(signIn);
+        int count = checkSignInMapper.insertSelective(signIn);
+        if(count != 1){
+            Results.failure("打卡失败");
+        }
         return ResultGenerator.genSuccessResult();
     }
 
