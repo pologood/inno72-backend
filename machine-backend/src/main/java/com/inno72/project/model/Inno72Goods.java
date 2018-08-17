@@ -42,6 +42,12 @@ public class Inno72Goods {
 	private BigDecimal price;
 
 	/**
+	 * 商品数量
+	 */
+	@Column(name = "number")
+	private Integer number;
+
+	/**
 	 * 商户ID
 	 */
 	@NotBlank(message = "请选择商户")
@@ -172,6 +178,14 @@ public class Inno72Goods {
 	 */
 	public void setPrice(BigDecimal price) {
 		this.price = price;
+	}
+
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
 	}
 
 	/**

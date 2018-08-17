@@ -43,6 +43,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 	private Inno72GoodsMapper inno72GoodsMapper;
 
 	Pattern pattern = Pattern.compile("^([+]?\\d{0,6})(\\.\\d{0,2})?");
+	Pattern patternNumbe = Pattern.compile("^[0-9]{1,8}$");
 
 	@Override
 	public Result<String> saveModel(Inno72Goods model) {
@@ -63,6 +64,12 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 				Matcher match = pattern.matcher(model.getPrice().toString());
 				if (!match.matches()) {
 					return Results.failure("商品价格最大整数6位，小数点后两位");
+				}
+			}
+			if (null != model.getNumber()) {
+				Matcher match = patternNumbe.matcher(model.getNumber().toString());
+				if (!match.matches()) {
+					return Results.failure("商品数量最大8位整数");
 				}
 			}
 
@@ -103,6 +110,12 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 				Matcher match = pattern.matcher(model.getPrice().toString());
 				if (!match.matches()) {
 					return Results.failure("商品价格最大整数6位，小数点后两位");
+				}
+			}
+			if (null != model.getNumber()) {
+				Matcher match = patternNumbe.matcher(model.getNumber().toString());
+				if (!match.matches()) {
+					return Results.failure("商品数量最大8位整数");
 				}
 			}
 
