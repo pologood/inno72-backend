@@ -26,6 +26,7 @@ public class AlarmMsgController {
     @RequestMapping(value="list",method = {RequestMethod.POST,RequestMethod.GET})
     public ModelAndView list(){
         Condition condition = new Condition(Inno72AlarmMsg.class);
+        condition.orderBy("createTime").desc();
         List<Inno72AlarmMsg> list= alarmMsgService.findByPage(condition);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
