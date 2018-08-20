@@ -59,13 +59,11 @@ public class SendMsgToClientController {
 			Query querySystemStatus = new Query();
 			querySystemStatus.addCriteria(Criteria.where("machineId").is(msg.getMachineId()));
 			List<SystemStatus> l = mongoTpl.find(querySystemStatus, SystemStatus.class, "SystemStatus");
-			logger.info(JSON.toJSONString(l));
 			if (l != null && l.size() > 0) {
 				SystemStatus status = l.get(0);
 				LocalDateTime createTime = status.getCreateTime();
 				Duration duration = Duration.between(createTime, LocalDateTime.now());
 				long between = duration.toMinutes();
-				logger.info(between + "");
 				if (between > 2) {
 					map.put(msg.getMachineId(), "发送失败");
 				} else {
@@ -75,6 +73,7 @@ public class SendMsgToClientController {
 					msg1.setMachineCode(msg.getMachineId());
 					msg1.setContent(result);
 					msg1.setStatus(0);
+					msg1.setSessionId(status.getSessionId());
 					appMsgService.save(msg1);
 					map.put(msg.getMachineId(), "发送成功");
 				}

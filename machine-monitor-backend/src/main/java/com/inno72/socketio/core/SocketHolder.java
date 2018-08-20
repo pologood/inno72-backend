@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSON;
 import com.corundumstudio.socketio.SocketIOClient;
 
 /**
@@ -53,7 +54,8 @@ public class SocketHolder {
 	}
 
 	public static boolean have(String key) {
-		// logger.info("发送数据: {} --> {}", key, data);
+		logger.info(key);
+		logger.info(JSON.toJSONString(map));
 		return map.containsKey(key);
 	}
 
