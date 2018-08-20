@@ -45,7 +45,9 @@ public class MessageBean<T> {
 		// 机器状态
 		MACHINESTATUS(1),
 		// app状态
-		APPSTATUS(2);
+		APPSTATUS(2),
+		// 截屏
+		SCREENSHOT(3);
 
 		private int v;
 

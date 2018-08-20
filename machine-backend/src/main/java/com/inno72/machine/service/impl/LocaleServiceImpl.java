@@ -29,8 +29,6 @@ import com.inno72.machine.vo.MachineLocaleInfo;
 import com.inno72.share.mapper.Inno72AdminAreaMapper;
 import com.inno72.system.model.Inno72User;
 
-import tk.mybatis.mapper.entity.Condition;
-
 /**
  * Created by CodeGenerator on 2018/06/29.
  */
@@ -174,12 +172,19 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	}
 
 	@Override
-	public List<Inno72Locale> getList(Inno72Locale locale) {
+	public List<Inno72LocaleVo> getList(String code, String keyword) {
 		logger.info("---------------------列表查询-------------------");
-		locale.setIsDelete(0);
-		Condition condition = new Condition(Inno72Locale.class);
-		condition.createCriteria().andEqualTo(locale);
-		return super.findByCondition(condition);
+		Map<String, Object> params = new HashMap<String, Object>();
+		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
+		if (StringUtil.isNotEmpty(code)) {
+			int num = StringUtil.getAreaCodeNum(code);
+			String likeCode = code.substring(0, num);
+			params.put("code", likeCode);
+			params.put("num", num);
+		}
+		params.put("keyword", keyword);
+
+		return inno72LocaleMapper.selectByList(params);
 	}
 
 }
