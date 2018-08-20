@@ -31,8 +31,6 @@ public class Inno72AppMsg {
 
 	private String content;
 
-	private String sessionId;
-
 	/**
 	 * @return id
 	 */
@@ -101,14 +99,6 @@ public class Inno72AppMsg {
 	 */
 	public void setContent(String content) {
 		this.content = content;
-	}
-
-	public String getSessionId() {
-		return sessionId;
-	}
-
-	public void setSessionId(String sessionId) {
-		this.sessionId = sessionId;
 	}
 
 }
