@@ -7,7 +7,8 @@
     -->
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-     <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="type" jdbcType="INTEGER" property="type" />
     <result column="shop_id" jdbcType="VARCHAR" property="shopId" />
     <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
     <result column="manager_id" jdbcType="VARCHAR" property="managerId" />
@@ -40,6 +41,7 @@
 			a.id,
 			a.name,
 			a.code,
+			a.type,
 			a.is_default,
 			s.id as shop_id,
 			m.id as seller_id,
@@ -89,9 +91,10 @@
 			a.id,
 			a.name,
 			a.code,
+			a.type,
 			a.is_default,
 			s.id as shop_id,
-			s.shop_name as shop_name,
+			CONCAT(m.merchant_name,'-',s.shop_name),
 			u.name as manager_id,
 			a.is_delete,
 			a.create_time,
@@ -102,6 +105,7 @@
 			LEFT JOIN inno72_user u ON u.id =a.manager_id
 			LEFT JOIN inno72_activity_shops ap on ap.activity_id = a.id
 			LEFT JOIN inno72_shops s ON s.id = ap.shops_id
+			LEFT JOIN inno72_merchant m ON m.id = s.seller_id
 			where a.is_delete = 0 and a.is_default=0
 			and a.id = #{id}
 			ORDER BY a.update_time DESC

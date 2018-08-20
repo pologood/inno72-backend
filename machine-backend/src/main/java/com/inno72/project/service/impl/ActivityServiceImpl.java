@@ -66,12 +66,16 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 			if (StringUtil.isBlank(model.getCode())) {
 				return Results.failure("请填写活动编码");
 			}
+
 			if (0 == model.getIsDefault()) {// 常规活动选择商户，店铺
 				if (StringUtil.isNotBlank(model.getCode())) {
 					int n = inno72ActivityMapper.getCountByCode(model.getCode());
 					if (n > 0) {
 						return Results.failure("活动编码已存在，请确认！");
 					}
+				}
+				if (null == model.getType()) {
+					return Results.failure("请选择活动类型");
 				}
 
 				List<Inno72Shops> shops = model.getShops();
