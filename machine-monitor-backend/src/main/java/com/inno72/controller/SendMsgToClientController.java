@@ -73,7 +73,6 @@ public class SendMsgToClientController {
 					msg1.setMachineCode(msg.getMachineId());
 					msg1.setContent(result);
 					msg1.setStatus(0);
-					msg1.setSessionId(status.getSessionId());
 					appMsgService.save(msg1);
 					map.put(msg.getMachineId(), "发送成功");
 				}

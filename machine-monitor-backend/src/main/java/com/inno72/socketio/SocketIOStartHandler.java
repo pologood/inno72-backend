@@ -125,7 +125,6 @@ public class SocketIOStartHandler {
 				String message = AesUtils.decrypt(GZIPUtil.uncompress(data));
 				SystemStatus systemStatus = JSONObject.parseObject(message, SystemStatus.class);
 				systemStatus.setCreateTime(LocalDateTime.now());
-				systemStatus.setSessionId(key);
 				Query querySystemStatus = new Query();
 				querySystemStatus.addCriteria(Criteria.where("machineId").is(machineId));
 				mongoTpl.remove(querySystemStatus, "SystemStatus");

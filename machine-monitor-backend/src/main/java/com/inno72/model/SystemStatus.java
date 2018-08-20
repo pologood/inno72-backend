@@ -31,7 +31,6 @@ public class SystemStatus {
 	private long sdFree;
 	private long sdTotle;
 	private String ping;
-	private String sessionId;
 
 	/**
 	 * 创建时间
@@ -125,14 +124,6 @@ public class SystemStatus {
 
 	public void setSdTotle(long sdTotle) {
 		this.sdTotle = sdTotle;
-	}
-
-	public String getSessionId() {
-		return sessionId;
-	}
-
-	public void setSessionId(String sessionId) {
-		this.sessionId = sessionId;
 	}
 
 }

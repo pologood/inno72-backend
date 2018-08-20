@@ -8,6 +8,5 @@
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
 		<result column="status" jdbcType="INTEGER" property="status" />
 		<result column="content" jdbcType="LONGVARCHAR" property="content" />
-		<result column="session_id" jdbcType="VARCHAR" property="sessionId" />
 	</resultMap>
 </mapper>
