@@ -42,9 +42,9 @@ public class ActivityPlanController {
 	}
 
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> delete(@RequestParam String id) {
+	public Result<String> delete(@RequestParam String id, Integer status) {
 		try {
-			return activityPlanService.delById(id);
+			return activityPlanService.delById(id, status);
 		} catch (Exception e) {
 			return ResultGenerator.genFailResult("操作失败！");
 		}
@@ -94,7 +94,5 @@ public class ActivityPlanController {
 		List<Inno72NoPlanInfoVo> list = activityPlanService.selectNoPlanMachineList(taskTime);
 		return ResultGenerator.genSuccessResult(list);
 	}
-
-
 
 }

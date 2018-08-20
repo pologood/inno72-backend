@@ -21,7 +21,7 @@ public interface ActivityPlanService extends Service<Inno72ActivityPlan> {
 
 	List<Inno72ActivityPlanVo> selectPlanList(String code, String status, String startTime, String endTime);
 
-	Result<String> delById(String id);
+	Result<String> delById(String id, Integer status);
 
 	Result<String> updateModel(Inno72ActivityPlanVo model);
 

@@ -1,6 +1,5 @@
 package com.inno72.project.service.impl;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -480,23 +479,31 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	}
 
 	@Override
-	public Result<String> delById(String id) {
+	public Result<String> delById(String id, Integer status) {
 		SessionData session = CommonConstants.SESSION_DATA;
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
 			return Results.failure("未找到用户登录信息");
 		}
-		int n = inno72ActivityPlanMapper.selectPlanIsState(id);
-		if (n > 0) {
-			return Results.failure("计划进行中不能删除");
+		if (null == status) {
+			logger.info("计划操作状态为空");
+			return Results.failure("计划操作状态为空");
 		}
+
+		if (1 == status) {// 1删除
+			int n = inno72ActivityPlanMapper.selectPlanIsState(id);
+			if (n > 0) {
+				return Results.failure("计划进行中不能删除");
+			}
+			// 删除机器关联关系
+			inno72ActivityPlanMachineMapper.deleteByPlanId(id);
+		}
+
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-		// 删除机器关联关系
-		inno72ActivityPlanMachineMapper.deleteByPlanId(id);
 		Inno72ActivityPlan model = inno72ActivityPlanMapper.selectByPrimaryKey(id);
 		model.setUpdateId(userId);
-		model.setIsDelete(1);
+		model.setIsDelete(status);
 		model.setUpdateTime(LocalDateTime.now());
 
 		super.update(model);
