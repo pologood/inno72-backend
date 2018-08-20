@@ -58,7 +58,7 @@ public class SendMsgToClientController {
 			String result = GZIPUtil.compress(AesUtils.encrypt(JSON.toJSONString(msg)));
 			Query querySystemStatus = new Query();
 			querySystemStatus.addCriteria(Criteria.where("machineId").is(msg.getMachineId()));
-			List<SystemStatus> l = mongoTpl.find(new Query(), SystemStatus.class, "SystemStatus");
+			List<SystemStatus> l = mongoTpl.find(querySystemStatus, SystemStatus.class, "SystemStatus");
 			logger.info(JSON.toJSONString(l));
 			if (l != null && l.size() > 0) {
 				SystemStatus status = l.get(0);
