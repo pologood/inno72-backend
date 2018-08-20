@@ -19,16 +19,17 @@
 
 
 	<select id="selectList" resultMap="BaseResultMap">
-		SELECT DATE_FORMAT(t1.create_time,'%Y-%m-%d') create_date,
+		SELECT date_sub(curdate(),interval 1 day) create_date,
 		t1.id activity_plan_id,
 		t1.activity_id,
-		(SELECT DISTINCT count(*) FROM inno72_game_user_life t2 WHERE t1.activity_id=t2.activity_id ) user_count,
-		(select count(*) from inno72_order t3 where t1.id=t3.inno72_activity_plan_id) order_count,
-		(select count(*) from inno72_order t4 where t1.id=t4.inno72_activity_plan_id and pay_status=1) pay_count,
-		(select count(*) from inno72_order t5 where t5.inno72_activity_plan_id=t1.id and t5.goods_type=1 and t5.goods_status=1) goods_count,
-		(select count(*) from inno72_order t6 where t6.inno72_activity_plan_id=t1.id and t6.goods_type=2 and t6.goods_status=1) coupon_count,
-        CURRENT_TIMESTAMP submit_time
-        FROM inno72_activity_plan t1 where date_sub(curdate(),interval 1 day) =DATE_FORMAT(t1.create_time,'%Y-%m-%d');
+		(SELECT COUNT(DISTINCT game_user_id) FROM inno72_game_user_life t2 WHERE t1.activity_id=t2.activity_id and date_sub(curdate(),interval 1 day) =DATE_FORMAT(t2.login_time,'%Y-%m-%d')) user_count,
+		(select count(*) from inno72_order t3 where t1.id=t3.inno72_activity_plan_id and date_sub(curdate(),interval 1 day) =DATE_FORMAT(t3.order_time,'%Y-%m-%d')) order_count,
+		(select count(*) from inno72_order t4 where t1.id=t4.inno72_activity_plan_id and pay_status=1 and date_sub(curdate(),interval 1 day) =DATE_FORMAT(t4.order_time,'%Y-%m-%d')) pay_count,
+		(select count(*) from inno72_order t5 where t1.id=t5.inno72_activity_plan_id and t5.goods_type=1 and t5.goods_status=1 and date_sub(curdate(),interval 1 day) =DATE_FORMAT(t5.order_time,'%Y-%m-%d')) goods_count,
+		(select count(*) from inno72_order t6 where t1.id=t6.inno72_activity_plan_id and t6.goods_type=2 and t6.goods_status=1 and date_sub(curdate(),interval 1 day) =DATE_FORMAT(t6.order_time,'%Y-%m-%d')) coupon_count,
+    CURRENT_TIMESTAMP submit_time
+		from inno72_activity_plan t1
+		where date_sub(curdate(),interval 1 day) BETWEEN DATE_FORMAT(t1.start_time,'%Y-%m-%d') AND DATE_FORMAT(t1.end_time,'%Y-%m-%d')
 	</select>
 
     <select id="selectByParam" resultMap="BaseResultMap">
@@ -49,7 +50,7 @@
 
     <select id="selectHistoryList" resultMap="BaseResultMap">
       SELECT DATE_FORMAT(t1.create_time,'%Y-%m-%d') create_date,t1.id activity_plan_id,t1.activity_id,
-      (SELECT DISTINCT count(*) FROM inno72_game_user_life t2 WHERE t1.activity_id=t2.activity_id ) user_count,
+      (SELECT COUNT(DISTINCT game_user_id) FROM inno72_game_user_life t2 WHERE t1.activity_id=t2.activity_id ) user_count,
       (select count(*) from inno72_order t3 where t1.id=t3.inno72_activity_plan_id) order_count,
       (select count(*) from inno72_order t4 where t1.id=t4.inno72_activity_plan_id and pay_status=1) pay_count,
       (select count(*) from inno72_order t5 where t5.inno72_activity_plan_id=t1.id and t5.goods_type=1 and t5.goods_status=1) goods_count,
