@@ -33,8 +33,10 @@ import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
+import com.inno72.machine.mapper.Inno72AppScreenShotMapper;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72App;
+import com.inno72.machine.model.Inno72AppScreenShot;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.AppService;
 import com.inno72.machine.service.MachineService;
@@ -82,6 +84,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	private MachineBackendProperties machineBackendProperties;
 	@Autowired
 	private CheckFaultService checkFaultService;
+	@Autowired
+	private Inno72AppScreenShotMapper inno72AppScreenShotMapper;
 
 	@Override
 	public Result<List<Inno72Machine>> findMachines(String machineCode, String localCode) {
@@ -239,6 +243,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (ss != null && !ss.isEmpty()) {
 			result.setSystemStatus(ss.get(0));
 		}
+		Condition condition = new Condition(Inno72AppScreenShot.class);
+		List<Inno72AppScreenShot> imgs = inno72AppScreenShotMapper.selectByCondition(condition);
+		result.setImgs(imgs);
 		return Results.success(result);
 	}
 
