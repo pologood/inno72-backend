@@ -250,7 +250,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		Condition condition = new Condition(Inno72AppScreenShot.class);
 		condition.createCriteria().andEqualTo("machineCode", machine.getMachineCode());
 		condition.orderBy("createTime").desc();
-		List<Inno72AppScreenShot> imgs = inno72AppScreenShotMapper.selectByCondition(condition);
+		List<Inno72AppScreenShot> imgs = inno72AppScreenShotMapper.selectByConditionByPage(condition);
 		result.setImgs(imgs);
 		return Results.success(result);
 	}
