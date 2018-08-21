@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.project.mapper.Inno72PaiDataCountMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.project.model.Inno72PaiDataCount">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="activity_plan_id" jdbcType="VARCHAR" property="activityPlanId" />
+    <result column="activity_name" jdbcType="VARCHAR" property="activityName" />
+    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="goods_count" jdbcType="INTEGER" property="goodsCount" />
+    <result column="total_goods_count" jdbcType="INTEGER" property="totalGoodsCount" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="submit_time" jdbcType="TIMESTAMP" property="submitTime" />
+  </resultMap>
+
+
+	<select id="selectList" resultMap="BaseResultMap">
+        select t1.id activity_plan_id,
+        t2.id activity_id,
+        t2.name activity_name,
+        t1.start_time,
+        t1.end_time,
+        t4.name goods_name,
+        (select count(*) from inno72_order o where o.inno72_activity_plan_id=t2.id and goods_status=1) goods_count,
+        t3.number total_goods_count
+        from inno72_activity_plan t1
+        left join inno72_activity t2 on t1.activity_id = t2.id
+        left join inno72_activity_plan_goods t3 on t3.activity_plan_id=t1.id
+        left join inno72_goods t4 on t3.goods_id=t4.id
+        where now() BETWEEN t1.start_time and t1.end_time
+        and t2.type=1
+	</select>
+</mapper>

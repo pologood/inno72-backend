@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.inno72.project.mapper.Inno72ActivityDataCountMapper">
-  <resultMap id="BaseResultMap" type="com.inno72.project.model.Inno72ActivityDataCount">
+<mapper namespace="com.inno72.project.mapper.Inno72PaiDataCountMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.project.model.Inno72PaiDataCount">
     <!--
       WARNING - @mbg.generated
     -->
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
     <result column="activity_plan_id" jdbcType="VARCHAR" property="activityPlanId" />
+    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
     <result column="order_count" jdbcType="INTEGER" property="orderCount" />
     <result column="user_count" jdbcType="INTEGER" property="userCount" />
     <result column="pay_count" jdbcType="INTEGER" property="payCount" />
     <result column="goods_count" jdbcType="INTEGER" property="goodsCount" />
-    <result column="coupon_count" jdbcType="INTEGER" property="couponCount" />
     <result column="create_date" jdbcType="DATE" property="createDate" />
     <result column="submit_time" jdbcType="TIMESTAMP" property="submitTime" />
   </resultMap>
@@ -20,18 +20,20 @@
 
 	<select id="selectList" resultMap="BaseResultMap">
 		SELECT date_sub(curdate(),interval 1 day) create_date,
+		goods.name goods_name,
 		t1.id activity_plan_id,
 		t1.activity_id,
 		(SELECT COUNT(DISTINCT game_user_id) FROM inno72_game_user_life t2 WHERE t1.activity_id=t2.activity_id and date_sub(curdate(),interval 1 day) =DATE_FORMAT(t2.login_time,'%Y-%m-%d')) user_count,
 		(select count(*) from inno72_order t3 where t1.id=t3.inno72_activity_plan_id and date_sub(curdate(),interval 1 day) =DATE_FORMAT(t3.order_time,'%Y-%m-%d')) order_count,
 		(select count(*) from inno72_order t4 where t1.id=t4.inno72_activity_plan_id and pay_status=1 and date_sub(curdate(),interval 1 day) =DATE_FORMAT(t4.order_time,'%Y-%m-%d')) pay_count,
 		(select count(*) from inno72_order t5 where t1.id=t5.inno72_activity_plan_id and t5.goods_type=1 and t5.goods_status=1 and date_sub(curdate(),interval 1 day) =DATE_FORMAT(t5.order_time,'%Y-%m-%d')) goods_count,
-		(select count(*) from inno72_order t6 where t1.id=t6.inno72_activity_plan_id and t6.goods_type=2 and t6.goods_status=1 and date_sub(curdate(),interval 1 day) =DATE_FORMAT(t6.order_time,'%Y-%m-%d')) coupon_count,
         CURRENT_TIMESTAMP submit_time
-		from inno72_activity_plan t1
+		from inno72_goods goods
+		left join inno72_activity_plan_goods pg on goods.id=pg.goods_id
+		left join inno72_activity_plan t1 on pg.activity_plan_id = t1.id
 		left join inno72_activity t2 on t1.activity_id=t2.id
 		where date_sub(curdate(),interval 1 day) BETWEEN DATE_FORMAT(t1.start_time,'%Y-%m-%d') AND DATE_FORMAT(t1.end_time,'%Y-%m-%d')
-		and t2.type=0
+		and t2.type=1
 	</select>
 
     <select id="selectByParam" resultMap="BaseResultMap">
@@ -47,21 +49,4 @@
         </where>
         order by create_date desc
     </select>
-
-
-
-    <select id="selectHistoryList" resultMap="BaseResultMap">
-      SELECT DATE_FORMAT(t1.create_time,'%Y-%m-%d') create_date,t1.id activity_plan_id,t1.activity_id,
-      (SELECT COUNT(DISTINCT game_user_id) FROM inno72_game_user_life t2 WHERE t1.activity_id=t2.activity_id ) user_count,
-      (select count(*) from inno72_order t3 where t1.id=t3.inno72_activity_plan_id) order_count,
-      (select count(*) from inno72_order t4 where t1.id=t4.inno72_activity_plan_id and pay_status=1) pay_count,
-      (select count(*) from inno72_order t5 where t5.inno72_activity_plan_id=t1.id and t5.goods_type=1 and t5.goods_status=1) goods_count,
-      (select count(*) from inno72_order t6 where t6.inno72_activity_plan_id=t1.id and t6.goods_type=2 and t6.goods_status=1) coupon_count,
-      CURRENT_TIMESTAMP submit_time
-      FROM inno72_activity_plan t1
-      where date_sub(curdate(),interval 1 day) <![CDATA[>]]> DATE_FORMAT(t1.create_time,'%Y-%m-%d')
-	  group by DATE_FORMAT(t1.create_time,'%Y-%m-%d'),t1.id,t1.activity_id
-      order by t1.create_time desc
-    </select>
-  
 </mapper>
