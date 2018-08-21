@@ -1,6 +1,7 @@
 package com.inno72.project.vo;
 
 import java.util.List;
+import java.util.Map;
 
 import com.inno72.project.model.Inno72Activity;
 import com.inno72.project.model.Inno72Shops;
@@ -16,6 +17,8 @@ public class Inno72ActivityVo extends Inno72Activity {
 	private String merchantName;
 
 	private List<Inno72Shops> shops;
+
+	private List<Map<String, Object>> planTime;
 
 	public String getState() {
 		return state;
@@ -55,6 +58,14 @@ public class Inno72ActivityVo extends Inno72Activity {
 
 	public void setShops(List<Inno72Shops> shops) {
 		this.shops = shops;
+	}
+
+	public List<Map<String, Object>> getPlanTime() {
+		return planTime;
+	}
+
+	public void setPlanTime(List<Map<String, Object>> planTime) {
+		this.planTime = planTime;
 	}
 
 }
