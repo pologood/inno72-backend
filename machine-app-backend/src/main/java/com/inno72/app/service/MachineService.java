@@ -27,4 +27,6 @@ public interface MachineService extends Service<Inno72Machine> {
 
 	Result<List<Inno72MachineBatch>> getMachineBatchs();
 
+	Result<String> updateMachineCode(Map<String, Object> msg);
+
 }

@@ -103,6 +103,17 @@ public class MachineController {
 	}
 
 	/**
+	 * 更新机器code
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	@RequestMapping(value = "/updateMachineCode", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> updateMachineCode(@RequestBody Map<String, Object> msg) {
+		return machineService.updateMachineCode(msg);
+	}
+
+	/**
 	 * 获取机器点位信息
 	 * 
 	 * @param msg

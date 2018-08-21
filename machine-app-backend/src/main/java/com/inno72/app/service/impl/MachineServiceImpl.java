@@ -54,7 +54,14 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<String> generateMachineId(String deviceId, String batcId) {
-		Inno72Machine initMachine = findBy("deviceId", deviceId);
+		Condition condition = new Condition(Inno72Machine.class);
+		condition.createCriteria().andEqualTo("deviceId", deviceId).andNotEqualTo("machineStatus", -1);
+		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition);
+		Inno72Machine initMachine = null;
+		if (machines != null && machines.size() > 0) {
+			initMachine = machines.get(0);
+		}
+		// Inno72Machine initMachine = findBy("deviceId", deviceId);
 		if (initMachine != null) {
 			String code = initMachine.getMachineCode();
 			String pc = code.substring(0, 2);
@@ -226,6 +233,39 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	public Result<List<Inno72MachineBatch>> getMachineBatchs() {
 		List<Inno72MachineBatch> all = inno72MachineBatchMapper.selectAll();
 		return Results.success(all);
+	}
+
+	@Override
+	public Result<String> updateMachineCode(Map<String, Object> msg) {
+		String machineCode = (String) Optional.of(msg).map(a -> a.get("machineCode")).orElse("");
+		String oldMachineCode = (String) Optional.of(msg).map(a -> a.get("oldMachineCode")).orElse("");
+		if (StringUtil.isEmpty(machineCode) || StringUtil.isEmpty(oldMachineCode)) {
+			return Results.failure("machineCode为空");
+		}
+		Condition condition = new Condition(Inno72Machine.class);
+		condition.createCriteria().andEqualTo("machineCode", machineCode);
+		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition);
+		if (machines == null || machines.size() != 1) {
+			return Results.failure("machineCode传入错误");
+		}
+		Condition condition1 = new Condition(Inno72Machine.class);
+		condition1.createCriteria().andEqualTo("machineCode", oldMachineCode);
+		List<Inno72Machine> machines1 = inno72MachineMapper.selectByCondition(condition1);
+		if (machines1 == null || machines1.size() != 1) {
+			return Results.failure("oldMachineCode传入错误");
+		}
+		Inno72Machine m1 = machines.get(0);
+		Inno72Machine m2 = machines1.get(0);
+		if (!m1.getDeviceId().equals(m2.getDeviceId())) {
+			return Results.failure("两个机器的deviceId不一致");
+		}
+		m2.setMachineStatus(-1);
+		m2.setUpdateTime(LocalDateTime.now());
+		int result = inno72MachineMapper.updateByPrimaryKeySelective(m2);
+		if (result == 1) {
+			return Results.success();
+		}
+		return Results.failure("更新失败");
 	}
 
 }
