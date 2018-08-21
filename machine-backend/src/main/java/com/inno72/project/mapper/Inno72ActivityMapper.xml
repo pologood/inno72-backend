@@ -106,8 +106,8 @@
 			a.create_time,
 			a.update_time,
 			a.remark,
-			apl.start_time,
-			apl.end_time,
+			date_format(apl.start_time,'%Y-%m-%d %H:%i:%s') AS start_time,
+			date_format(apl.end_time,'%Y-%m-%d %H:%i:%s') AS end_time,
 			CASE 
 			WHEN apl.start_time &gt; NOW() THEN '未开始'
 			WHEN apl.start_time &lt;  NOW() and apl.end_time &gt; NOW() THEN '进行中'
