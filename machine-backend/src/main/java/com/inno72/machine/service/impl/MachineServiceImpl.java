@@ -550,4 +550,40 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		}
 		return Results.success();
 	}
+
+	@Override
+	public Result<String> updateMachineCode(String machineId, String machineCode) {
+		SessionData session = CommonConstants.SESSION_DATA;
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
+		Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+		if (machine == null) {
+			return Results.failure("机器id不存在");
+		}
+		Condition condition = new Condition(Inno72Machine.class);
+		condition.createCriteria().andEqualTo("machineCode", machineCode);
+		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition);
+		if (machines == null || machines.isEmpty()) {
+			return Results.success("机器编号不存在");
+		}
+		Inno72Machine old = machines.get(0);
+		if (!machine.getLocaleId().equals(old.getLocaleId())) {
+			return Results.success("机器点位不一致不能修改编号");
+		}
+		old.setBluetoothAddress(machine.getBluetoothAddress());
+		old.setDeviceId(machine.getDeviceId());
+		old.setUpdateTime(LocalDateTime.now());
+		old.setUpdateId(mUser.getId());
+		inno72MachineMapper.updateByPrimaryKeySelective(old);
+
+		SendMessageBean msg = new SendMessageBean();
+		msg.setEventType(1);
+		msg.setSubEventType(4);
+		msg.setMachineId(machine.getMachineCode());
+		msg.setData(machineCode);
+		return sendMsg(machine.getMachineCode(), msg);
+	}
 }
