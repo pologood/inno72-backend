@@ -60,6 +60,7 @@ import com.inno72.machine.vo.UpdateMachineChannelVo;
 import com.inno72.machine.vo.UpdateMachineVo;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.system.model.Inno72User;
+import com.inno72.utils.page.Pagination;
 
 import tk.mybatis.mapper.entity.Condition;
 
@@ -250,6 +251,10 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		Condition condition = new Condition(Inno72AppScreenShot.class);
 		condition.createCriteria().andEqualTo("machineCode", machine.getMachineCode());
 		condition.orderBy("createTime").desc();
+		Pagination pagination = new Pagination();
+		pagination.setPageNo(1);
+		pagination.setPageSize(10);
+		Pagination.threadLocal.set(pagination);
 		List<Inno72AppScreenShot> imgs = inno72AppScreenShotMapper.selectByConditionByPage(condition);
 		result.setImgs(imgs);
 		return Results.success(result);
