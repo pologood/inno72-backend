@@ -244,6 +244,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			result.setSystemStatus(ss.get(0));
 		}
 		Condition condition = new Condition(Inno72AppScreenShot.class);
+		condition.createCriteria().andEqualTo("machineCode", machine.getMachineCode());
 		List<Inno72AppScreenShot> imgs = inno72AppScreenShotMapper.selectByCondition(condition);
 		result.setImgs(imgs);
 		return Results.success(result);
