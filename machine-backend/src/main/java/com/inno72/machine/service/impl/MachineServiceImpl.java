@@ -573,11 +573,11 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (!machine.getLocaleId().equals(old.getLocaleId())) {
 			return Results.success("机器点位不一致不能修改编号");
 		}
-		old.setBluetoothAddress(machine.getBluetoothAddress());
-		old.setDeviceId(machine.getDeviceId());
-		old.setUpdateTime(LocalDateTime.now());
-		old.setUpdateId(mUser.getId());
-		inno72MachineMapper.updateByPrimaryKeySelective(old);
+		machine.setBluetoothAddress(old.getBluetoothAddress());
+		machine.setDeviceId(old.getDeviceId());
+		machine.setUpdateTime(LocalDateTime.now());
+		machine.setUpdateId(mUser.getId());
+		inno72MachineMapper.updateByPrimaryKeySelective(machine);
 
 		SendMessageBean msg = new SendMessageBean();
 		msg.setEventType(1);
