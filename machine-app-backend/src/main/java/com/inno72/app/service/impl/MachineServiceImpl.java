@@ -56,6 +56,13 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	public Result<String> generateMachineId(String deviceId, String batcId) {
 		Inno72Machine initMachine = findBy("deviceId", deviceId);
 		if (initMachine != null) {
+			String code = initMachine.getMachineCode();
+			String pc = code.substring(0, 2);
+			if (!pc.equals(batcId)) {
+				String machineCode = StringUtil.getMachineCode(batcId);
+				initMachine.setMachineCode(machineCode);
+				inno72MachineMapper.updateByPrimaryKeySelective(initMachine);
+			}
 			return Results.success(initMachine.getMachineCode());
 		}
 		String machineCode = StringUtil.getMachineCode(batcId);
