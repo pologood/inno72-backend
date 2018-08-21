@@ -131,7 +131,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			}
 			return ResultGenerator.genSuccessResult();
 		} else {
-			return ResultGenerator.genFailResult("货道数据有误");
+			return ResultGenerator.genFailResult("该货道已合并");
 		}
 	}
 
