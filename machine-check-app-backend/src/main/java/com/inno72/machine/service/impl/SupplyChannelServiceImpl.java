@@ -155,7 +155,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			map.put("code", newCode.toString());
 			Inno72SupplyChannel childChannel = inno72SupplyChannelMapper.selectByParam(map);
 			if (childChannel != null) {
-				return Results.failure("货道未合并不能拆分");
+				return Results.failure("该货道已拆分");
 			}
 			supplyChannel.setGoodsCount(0);
 			supplyChannel.setUpdateTime(LocalDateTime.now());
