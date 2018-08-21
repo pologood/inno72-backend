@@ -92,9 +92,14 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		if (StringUtil.isEmpty(code) || StringUtil.isEmpty(machineId)) {
 			return ResultGenerator.genFailResult("参数有误");
 		}
+		Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+		String machineCode = machine.getMachineCode();
 		Integer codeInt = Integer.parseInt(code);
-		if (codeInt > 20) {
-			return Results.failure("货道编号小于20才能合并");
+		String subString = machineCode.substring(0,2);
+		if (subString.equals("18") && codeInt > 30) {
+			return Results.failure("当前货道不能合并");
+		}else if(subString.equals("19") && codeInt >40){
+			return Results.failure("当前货道不能合并");
 		}
 		Map<String, Object> map = new HashMap<>();
 		map.put("machineId", machineId);
