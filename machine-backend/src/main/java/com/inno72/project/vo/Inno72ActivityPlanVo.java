@@ -3,31 +3,29 @@ package com.inno72.project.vo;
 import java.util.List;
 
 import com.inno72.project.model.Inno72ActivityPlan;
-import com.inno72.project.model.Inno72ActivityPlanGameResult;
 
-public class Inno72ActivityPlanVo extends Inno72ActivityPlan{
-	
-    private List<Inno72MachineVo> machines;
-    
-    private List<Inno72ActivityPlanGameResult> goods;
-    
-    private List<Inno72CouponVo> coupons;
-    
-    private String activityName;
-    
-    private String merchantName;
-    
-    private String shopName;
-    
-    private String shopId;
-    
-    private String gameName;
-    
-    private String startTimeStr;
-    
-    private String endTimeStr;
-    
-    
+public class Inno72ActivityPlanVo extends Inno72ActivityPlan {
+
+	private List<Inno72MachineVo> machines;
+
+	private List<Inno72ActivityPlanGameResultVo> goods;
+
+	private List<Inno72CouponVo> coupons;
+
+	private String activityName;
+
+	private String merchantName;
+
+	private String shopName;
+
+	private String shopId;
+
+	private String gameName;
+
+	private String startTimeStr;
+
+	private String endTimeStr;
+
 	public List<Inno72MachineVo> getMachines() {
 		return machines;
 	}
@@ -36,15 +34,13 @@ public class Inno72ActivityPlanVo extends Inno72ActivityPlan{
 		this.machines = machines;
 	}
 
-	public List<Inno72ActivityPlanGameResult> getGoods() {
+	public List<Inno72ActivityPlanGameResultVo> getGoods() {
 		return goods;
 	}
 
-	public void setGoods(List<Inno72ActivityPlanGameResult> goods) {
+	public void setGoods(List<Inno72ActivityPlanGameResultVo> goods) {
 		this.goods = goods;
 	}
-
-	
 
 	public List<Inno72CouponVo> getCoupons() {
 		return coupons;
@@ -61,7 +57,7 @@ public class Inno72ActivityPlanVo extends Inno72ActivityPlan{
 	public void setActivityName(String activityName) {
 		this.activityName = activityName;
 	}
-	
+
 	public String getMerchantName() {
 		return merchantName;
 	}
@@ -77,8 +73,7 @@ public class Inno72ActivityPlanVo extends Inno72ActivityPlan{
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
 	}
-	
-	
+
 	public String getShopId() {
 		return shopId;
 	}
@@ -110,9 +105,5 @@ public class Inno72ActivityPlanVo extends Inno72ActivityPlan{
 	public void setEndTimeStr(String endTimeStr) {
 		this.endTimeStr = endTimeStr;
 	}
-	
 
-	
-    
-    
 }

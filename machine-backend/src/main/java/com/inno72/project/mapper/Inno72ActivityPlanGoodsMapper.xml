@@ -8,6 +8,7 @@
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="activity_plan_id" jdbcType="VARCHAR" property="activityPlanId" />
     <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
+    <result column="number" jdbcType="INTEGER" property="number" />
   </resultMap>
   
 	<delete id="deleteByPlanId" parameterType="String">
@@ -15,10 +16,10 @@
 	</delete>
 	
 	<insert id="insertActivityPlanGoodsList" parameterType="java.util.List">
-        insert into inno72_activity_plan_goods (id, activity_plan_id,goods_id)
+        insert into inno72_activity_plan_goods (id, activity_plan_id,goods_id,number)
         values
         <foreach collection="list" item="apg" index="index" separator=",">
-            (#{apg.id},#{apg.activityPlanId},#{apg.goodsId})
+            (#{apg.id},#{apg.activityPlanId},#{apg.goodsId},#{apg.number})
         </foreach>
     </insert>
   
