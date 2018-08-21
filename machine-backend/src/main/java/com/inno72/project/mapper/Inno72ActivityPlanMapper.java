@@ -26,4 +26,6 @@ public interface Inno72ActivityPlanMapper extends Mapper<Inno72ActivityPlan> {
 	int selectPlanIsState(String id);
 
 	List<Inno72NoPlanInfoVo> selectNoPlanedMachine(String taskTime);
+
+	int selectPaiYangActivityCount();
 }

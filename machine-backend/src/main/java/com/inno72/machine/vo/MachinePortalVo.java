@@ -8,6 +8,7 @@ public class MachinePortalVo {
 	private Integer waitOrder;// 待接单
 	private Integer processed;// 处理中
 	private Integer waitConfirm;// 待确认
+	private Integer paiActivityCount;//派样活动
 
 	public Integer getOnline() {
 		return online;
@@ -65,4 +66,11 @@ public class MachinePortalVo {
 		this.waitConfirm = waitConfirm;
 	}
 
+	public Integer getPaiActivityCount() {
+		return paiActivityCount;
+	}
+
+	public void setPaiActivityCount(Integer paiActivityCount) {
+		this.paiActivityCount = paiActivityCount;
+	}
 }

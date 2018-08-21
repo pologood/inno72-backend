@@ -9,6 +9,7 @@ import com.inno72.project.mapper.Inno72PaiNowDataMapper;
 import com.inno72.project.model.Inno72PaiDataCount;
 import com.inno72.project.model.Inno72PaiNowData;
 import com.inno72.project.service.PaiDataCountService;
+import com.inno72.project.vo.Inno72ActivityPaiDataVo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,7 +73,7 @@ public class PaiDataCountServiceImpl extends AbstractService<Inno72PaiDataCount>
     }
 
     @Override
-    public void addNowData() {
+    public void addTotalData() {
         Inno72PaiNowData obj = new Inno72PaiNowData();
         inno72PaiNowDataMapper.delete(obj);
         List<Inno72PaiNowData> dataList = inno72PaiNowDataMapper.selectList();
@@ -83,6 +84,12 @@ public class PaiDataCountServiceImpl extends AbstractService<Inno72PaiDataCount>
             }
         }
 
+    }
+
+    @Override
+    public Result<List<Inno72ActivityPaiDataVo>> findTotalDataList() {
+        List<Inno72ActivityPaiDataVo> list = inno72PaiNowDataMapper.selectPaiNowList();
+        return ResultGenerator.genSuccessResult(list);
     }
 
 }

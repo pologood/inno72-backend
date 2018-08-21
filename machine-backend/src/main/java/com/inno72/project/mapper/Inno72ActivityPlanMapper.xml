@@ -253,7 +253,12 @@
 		WHERE ap.is_delete =0
 			and ap.id=#{id}
   </select>
-  
+  <select id="selectPaiYangActivityCount" resultType="int">
+	  select count(*) from inno72_activity_plan plan
+	  left join inno72_activity act on plan.activity_id=act.id
+	  where
+	  act.type=2 and now() between plan.start_time and plan.end_time
+  </select>
   
   
   

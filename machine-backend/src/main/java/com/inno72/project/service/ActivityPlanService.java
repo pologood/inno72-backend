@@ -34,4 +34,6 @@ public interface ActivityPlanService extends Service<Inno72ActivityPlan> {
 
 	List<Map<String, Object>> selectPlanMachinDetailList(String planId);
 
+	int selectPaiYangActivityCount();
+
 }

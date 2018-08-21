@@ -34,4 +34,26 @@
         where now() BETWEEN t1.start_time and t1.end_time
         and t2.type=1
 	</select>
+
+    <resultMap id="paiNowList" type="com.inno72.project.vo.Inno72ActivityPaiDataVo">
+        <result column="activityName" jdbcType="VARCHAR" property="activityName"/>
+        <result column="activityId" jdbcType="VARCHAR" property="activityId"/>
+        <result column="activityPlanId" jdbcType="VARCHAR" property="activityPlanId"/>
+        <result column="startTime" jdbcType="TIMESTAMP" property="startTime" />
+        <result column="endTime" jdbcType="TIMESTAMP" property="endTime" />
+        <collection property="inno72PaiNowDataList" resultMap="BaseResultMap"/>
+    </resultMap>
+    <select id="selectPaiNowList" resultMap="paiNowList">
+        select t1.activity_plan_id activityPlanId,
+        t1.activity_id activityId,
+        t1.start_time startTime,
+        t1.end_time endTime,
+        t1.activity_name activityName,
+        t2.goods_name,
+        t2.goods_count,
+        t2.total_goods_count
+        from inno72_pai_now_data t1
+        left join inno72_pai_now_data t2 on t1.activity_id=t2.activity_id
+        group by t1.activity_id,t2.goods_name
+    </select>
 </mapper>

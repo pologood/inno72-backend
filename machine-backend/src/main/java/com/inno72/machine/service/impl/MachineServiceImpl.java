@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import javax.annotation.Resource;
 
+import com.inno72.project.service.ActivityPlanService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +83,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	private MachineBackendProperties machineBackendProperties;
 	@Autowired
 	private CheckFaultService checkFaultService;
+
+	@Autowired
+	private ActivityPlanService activityPlanService;
 
 	@Override
 	public Result<List<Inno72Machine>> findMachines(String machineCode, String localCode) {
@@ -426,6 +430,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 				break;
 			}
 		}
+		int paiActivityCount = activityPlanService.selectPaiYangActivityCount();
+		vo.setPaiActivityCount(paiActivityCount);
 		vo.setWaitConfirm(waitConfirm);
 		vo.setProcessed(processed);
 		vo.setWaitOrder(waitOrder);

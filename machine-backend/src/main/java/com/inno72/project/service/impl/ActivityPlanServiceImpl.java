@@ -327,6 +327,11 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	}
 
 	@Override
+	public int selectPaiYangActivityCount() {
+		return inno72ActivityPlanMapper.selectPaiYangActivityCount();
+	}
+
+	@Override
 	public Result<String> updateModel(Inno72ActivityPlanVo activityPlan) {
 		logger.info("更新计划参数:{}", JSON.toJSONString(activityPlan));
 		SessionData session = CommonConstants.SESSION_DATA;
