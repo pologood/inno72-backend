@@ -37,6 +37,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			return Results.failure("货道信息错误");
 		}
 		Condition condition = new Condition(Inno72SupplyChannel.class);
+		String batchId = machineCode.substring(0, 2);
 		condition.createCriteria().andEqualTo("machineId", machineCode);
 		List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectByCondition(condition);
 		if (supplyChannelList == null || supplyChannelList.isEmpty()) {
@@ -50,12 +51,22 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				channel.setCreateTime(LocalDateTime.now());
 				channel.setUpdateTime(LocalDateTime.now());
 				channel.setUpdateId("系统");
-				if (Integer.parseInt(channel.getCode()) < 20) {
-					channel.setVolumeCount(11);
-				} else if (Integer.parseInt(channel.getCode()) < 30 && Integer.parseInt(channel.getCode()) > 20) {
-					channel.setVolumeCount(5);
-				} else {
-					channel.setVolumeCount(50);
+				if ("18".equals(batchId)) {
+					if (Integer.parseInt(channel.getCode()) < 20) {
+						channel.setVolumeCount(11);
+					} else if (Integer.parseInt(channel.getCode()) < 30 && Integer.parseInt(channel.getCode()) > 20) {
+						channel.setVolumeCount(11);
+					} else {
+						channel.setVolumeCount(50);
+					}
+				} else if ("19".equals(batchId)) {
+					if (Integer.parseInt(channel.getCode()) < 20) {
+						channel.setVolumeCount(11);
+					} else if (Integer.parseInt(channel.getCode()) < 40 && Integer.parseInt(channel.getCode()) > 20) {
+						channel.setVolumeCount(5);
+					} else {
+						channel.setVolumeCount(50);
+					}
 				}
 				super.save(channel);
 			}
