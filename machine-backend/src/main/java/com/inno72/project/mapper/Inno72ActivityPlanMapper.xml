@@ -133,15 +133,15 @@
 		WHERE locale.area_code=#{code} and m.machine_status ='4'
   </select>
   <!-- 查询时间段内排期的机器-->
-  <select id="selectPlanedMachine" parameterType="java.util.Map" resultType="String">
+  <select id="selectPlanedMachine" parameterType="java.util.Map" resultType="com.inno72.project.vo.Inno72ActivityPlanVo">
   		SELECT machine_id FROM inno72_activity_plan ap
 			LEFT JOIN inno72_activity_plan_machine apm ON apm.activity_plan_id = ap.id
 		 where  is_delete =0 
-		 and ( <![CDATA[
-		 	ap.start_time BETWEEN #{startTime} AND #{endTime} or 
-		 	ap.end_time BETWEEN #{startTime} AND #{endTime}
-		 ]]>
-		 )
+		 <if test="planId !=null and planId !='' ">and ap.id = #{planId}  </if>
+		 <if test="noPlanId !=null and noPlanId !='' ">and ap.id != #{planId}  </if>
+		 <if test="startTime !=null and startTime !='' ">
+			 and ( <![CDATA[ap.start_time BETWEEN #{startTime} AND #{endTime} or ap.end_time BETWEEN #{startTime} AND #{endTime}]]>)
+		 </if>
   </select>
 
   <!-- 查询时间段内没有排期的机器-->
@@ -195,12 +195,14 @@
     <association property="machines" resultMap="machinesResult" />
   </resultMap>
   
-  <resultMap id="goodsResult" type="com.inno72.project.model.Inno72ActivityPlanGameResult">
+  <resultMap id="goodsResult" type="com.inno72.project.vo.Inno72ActivityPlanGameResultVo">
 	  <result column="goods_id" property="prizeId" />
 	  <result column="goods_result_code" property="resultCode"/>
 	  <result column="goods_result_remark" property="resultRemark"/>
 	  <result column="goods_prize_type" property="prizeType" />
 	  <result column="goods_name" property="activityPlanId" />
+	  <result column="goods_number" property="number" />
+	  <result column="shops_id" property="shopsId" />
 </resultMap>
  
  <resultMap id="couponsResult" type="com.inno72.project.vo.Inno72CouponVo">
@@ -218,7 +220,8 @@
 			rg.result_code AS goods_result_code,
 			rg.result_remark AS goods_result_remark,
 			rg.prize_type AS goods_prize_type,
-			g.name AS goods_name,
+			g.number AS goods_number,
+			g.shop_id AS shops_id,
 			rc.result_code AS coupons_result_code,
 			rc.result_remark AS coupons_result_remark,
 			rc.prize_type AS coupons_prize_type,
