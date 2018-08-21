@@ -134,8 +134,12 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (machine == null) {
 			return Results.failure("机器id传入错误");
 		}
+		if (machine.getMachineStatus() < 2) {
+			return Results.failure("机器没有初始化不能修改点位");
+		}
 		machine.setLocaleId(localeId);
 		machine.setAddress(address);
+		machine.setMachineStatus(4);
 		machine.setUpdateId(mUser.getId());
 		machine.setUpdateTime(LocalDateTime.now());
 		int result = inno72MachineMapper.updateByPrimaryKeySelective(machine);
@@ -245,6 +249,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		}
 		Condition condition = new Condition(Inno72AppScreenShot.class);
 		condition.createCriteria().andEqualTo("machineCode", machine.getMachineCode());
+		condition.orderBy("createTime").desc();
 		List<Inno72AppScreenShot> imgs = inno72AppScreenShotMapper.selectByCondition(condition);
 		result.setImgs(imgs);
 		return Results.success(result);
