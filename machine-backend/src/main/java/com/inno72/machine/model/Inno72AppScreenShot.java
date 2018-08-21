@@ -8,6 +8,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
+
 @Table(name = "inno72_app_screen_shot")
 public class Inno72AppScreenShot {
 	@Id
@@ -21,6 +24,7 @@ public class Inno72AppScreenShot {
 	private String imgUrl;
 
 	@Column(name = "create_time")
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
 	private LocalDateTime createTime;
 
 	/**
