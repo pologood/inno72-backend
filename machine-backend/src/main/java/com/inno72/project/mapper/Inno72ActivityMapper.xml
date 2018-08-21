@@ -29,6 +29,7 @@
     <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
     <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
     <association property="shops" resultMap="shopsResult" />
+    <association property="planTime" resultMap="planTimeResult" />
   </resultMap>
    <resultMap id="shopsResult" type="com.inno72.project.model.Inno72Shops">
   <result column="shop_id" property="id" />
@@ -85,6 +86,11 @@
 		SELECT count(1) FROM inno72_activity where is_delete = 0 and code=#{code}
   </select>
   
+  <resultMap id="planTimeResult" type="java.util.Map">
+		<result column="state" property="state" />
+		<result column="start_time" property="startTime" />
+		<result column="end_time" property="endTime" />
+	</resultMap>
   <select id="selectById" parameterType="String" resultMap="VoResultMap">
 		
 		 SELECT
@@ -99,13 +105,22 @@
 			a.is_delete,
 			a.create_time,
 			a.update_time,
-			a.remark
+			a.remark,
+			date_format(apl.start_time,'%Y-%m-%d %H:%i:%s') AS start_time,
+			date_format(apl.end_time,'%Y-%m-%d %H:%i:%s') AS end_time,
+			CASE 
+			WHEN apl.start_time &gt; NOW() THEN '未开始'
+			WHEN apl.start_time &lt;  NOW() and apl.end_time &gt; NOW() THEN '进行中'
+			WHEN apl.end_time &lt; NOW() THEN '已结束'
+			ELSE NULL
+			END state
 		FROM
 			inno72_activity a
 			LEFT JOIN inno72_user u ON u.id =a.manager_id
 			LEFT JOIN inno72_activity_shops ap on ap.activity_id = a.id
 			LEFT JOIN inno72_shops s ON s.id = ap.shops_id
 			LEFT JOIN inno72_merchant m ON m.id = s.seller_id
+			LEFT JOIN inno72_activity_plan apl ON ap.activity_id=a.id
 			where a.is_delete = 0 and a.is_default=0
 			and a.id = #{id}
 			ORDER BY a.update_time DESC
@@ -115,7 +130,6 @@
   <select id="selectUnPlanList" parameterType="java.util.Map" resultMap="BaseResultMap">
 		 SELECT a.id,a.name,seller_id,shop_id FROM inno72_activity a where a.is_delete = 0 
 		 and a.is_default=0 
-		 and a.id not in (SELECT activity_id from inno72_activity_plan where is_delete = 0)
   </select>
   
   <select id="selectDefaultActivity" parameterType="java.util.Map" resultMap="BaseResultMap">
