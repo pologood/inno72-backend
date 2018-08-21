@@ -6,6 +6,8 @@ import static com.inno72.model.MessageBean.SubEventType.MACHINESTATUS;
 import static com.inno72.model.MessageBean.SubEventType.SCREENSHOT;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,6 +28,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.inno72.common.CommonConstants;
+import com.inno72.common.MachineMonitorBackendProperties;
 import com.inno72.common.StringUtil;
 import com.inno72.model.AlarmMessageBean;
 import com.inno72.model.Inno72AppScreenShot;
@@ -34,6 +37,7 @@ import com.inno72.model.MachineLogInfo;
 import com.inno72.model.MachineStatus;
 import com.inno72.model.MessageBean;
 import com.inno72.model.SystemStatus;
+import com.inno72.plugin.http.HttpClient;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.service.AppScreenShotService;
 import com.inno72.socketio.core.SocketServer;
@@ -53,6 +57,9 @@ public class SocketIOStartHandler {
 
 	@Autowired
 	private AppScreenShotService appScreenShotService;
+
+	@Resource
+	private MachineMonitorBackendProperties machineMonitorBackendProperties;
 
 	private SocketServerHandler socketServerHandler() {
 
@@ -138,6 +145,29 @@ public class SocketIOStartHandler {
 				query.addCriteria(Criteria.where("machineId").is(machineId));
 				mongoTpl.remove(query, "MachineLogInfo");
 				mongoTpl.save(machineLogInfo, "MachineLogInfo");
+				try {
+					String ping = systemStatus.getPing();
+					int pingInt = Integer.parseInt(ping.replace("ms", ""));
+					Map<String, Object> map = new HashMap<>();
+					map.put("machineCode", machineId);
+					if (pingInt <= 100) {
+						map.put("netStatus", 4);
+					} else if (pingInt > 100 && pingInt <= 300) {
+						map.put("netStatus", 3);
+					} else if (pingInt > 300 && pingInt <= 500) {
+						map.put("netStatus", 2);
+					} else if (pingInt > 500 && pingInt <= 1000) {
+						map.put("netStatus", 1);
+					} else {
+						map.put("netStatus", 0);
+					}
+					List<Map<String, Object>> list = new ArrayList<>();
+					list.add(map);
+					String urlProp = machineMonitorBackendProperties.getProps().get("updateMachineListNetStatusUrl");
+					HttpClient.post(urlProp, JSON.toJSONString(list));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
 			}
 
