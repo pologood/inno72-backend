@@ -15,8 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
+import com.inno72.app.mapper.Inno72MachineBatchMapper;
 import com.inno72.app.mapper.Inno72MachineMapper;
 import com.inno72.app.model.Inno72Machine;
+import com.inno72.app.model.Inno72MachineBatch;
 import com.inno72.app.model.Inno72SupplyChannel;
 import com.inno72.app.service.MachineService;
 import com.inno72.app.service.SupplyChannelService;
@@ -44,19 +46,22 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	@Autowired
 	private SupplyChannelService supplyChannelService;
 
+	@Autowired
+	private Inno72MachineBatchMapper inno72MachineBatchMapper;
+
 	@Resource
 	private MachineAppBackendProperties machineAppBackendProperties;
 
 	@Override
-	public Result<String> generateMachineId(String deviceId) {
+	public Result<String> generateMachineId(String deviceId, String batcId) {
 		Inno72Machine initMachine = findBy("deviceId", deviceId);
 		if (initMachine != null) {
 			return Results.success(initMachine.getMachineCode());
 		}
-		String machineCode = StringUtil.getMachineCode();
+		String machineCode = StringUtil.getMachineCode(batcId);
 		Inno72Machine m = findBy("machineCode", machineCode);
 		if (m != null) {
-			machineCode = StringUtil.getMachineCode();
+			machineCode = StringUtil.getMachineCode(batcId);
 		}
 		LocalDateTime now = LocalDateTime.now();
 		Inno72Machine machine = new Inno72Machine();
@@ -208,6 +213,12 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		}
 		String locale = inno72MachineMapper.selectMachineLocale(machineCode);
 		return Results.success(locale);
+	}
+
+	@Override
+	public Result<List<Inno72MachineBatch>> getMachineBatchs() {
+		List<Inno72MachineBatch> all = inno72MachineBatchMapper.selectAll();
+		return Results.success(all);
 	}
 
 }
