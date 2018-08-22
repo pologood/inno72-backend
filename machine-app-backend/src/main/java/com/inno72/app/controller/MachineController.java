@@ -135,6 +135,17 @@ public class MachineController {
 		return machineService.getMachineChannels(msg);
 	}
 
+	/**
+	 * 同步货道
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	@RequestMapping(value = "/updateMachineChannels", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> updateMachineChannels(@RequestBody Map<String, Object> msg) {
+		return machineService.updateMachineChannels(msg);
+	}
+
 	@PostMapping("encrypt")
 	public String encrypt(HttpServletRequest request) throws IOException {
 		byte[] encryptRequestBodyBytes = StreamUtils.copyToByteArray(request.getInputStream());

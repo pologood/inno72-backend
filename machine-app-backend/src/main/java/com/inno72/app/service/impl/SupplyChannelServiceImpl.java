@@ -1,6 +1,7 @@
 package com.inno72.app.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -32,17 +33,17 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	private Inno72SupplyChannelMapper inno72SupplyChannelMapper;
 
 	@Override
-	public Result<String> initChannel(String machineCode, List<Inno72SupplyChannel> channels) {
+	public Result<String> initChannel(String machineId, String machineCode, List<Inno72SupplyChannel> channels) {
 		if (channels == null) {
 			return Results.failure("货道信息错误");
 		}
 		Condition condition = new Condition(Inno72SupplyChannel.class);
 		String batchId = machineCode.substring(0, 2);
-		condition.createCriteria().andEqualTo("machineId", machineCode);
+		condition.createCriteria().andEqualTo("machineId", machineId);
 		List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectByCondition(condition);
 		if (supplyChannelList == null || supplyChannelList.isEmpty()) {
 			for (Inno72SupplyChannel channel : channels) {
-				channel.setMachineId(machineCode);
+				channel.setMachineId(machineId);
 				channel.setId(StringUtil.getUUID());
 				channel.setName("货道" + channel.getCode());
 				channel.setGoodsCount(0);
@@ -69,6 +70,27 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 					}
 				}
 				super.save(channel);
+			}
+		}
+		return Results.success();
+	}
+
+	@Override
+	public Result<String> updateChannel(String machineId, String machineCode, List<Inno72SupplyChannel> channels) {
+		if (channels == null || channels.isEmpty()) {
+			return Results.failure("货道信息错误");
+		}
+		Condition condition = new Condition(Inno72SupplyChannel.class);
+		String batchId = machineCode.substring(0, 2);
+		condition.createCriteria().andEqualTo("machineId", machineId);
+		List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectByCondition(condition);
+		if (supplyChannelList == null || supplyChannelList.isEmpty()) {
+			initChannel(machineId, machineCode, channels);
+		} else {
+			List<String> delete = new ArrayList<>();
+			List<Inno72SupplyChannel> newChannel = new ArrayList<>();
+			for (Inno72SupplyChannel sc : channels) {
+
 			}
 		}
 		return Results.success();

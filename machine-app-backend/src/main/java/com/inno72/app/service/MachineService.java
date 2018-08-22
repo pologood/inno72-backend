@@ -31,4 +31,6 @@ public interface MachineService extends Service<Inno72Machine> {
 
 	Result<List<Map<String, Object>>> getMachineChannels(Map<String, Object> msg);
 
+	Result<String> updateMachineChannels(Map<String, Object> msg);
+
 }

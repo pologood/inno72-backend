@@ -118,7 +118,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		machine.setUpdateTime(LocalDateTime.now());
 		machine.setMachineStatus(Inno72Machine.Machine_Status.INIT.v());
 		inno72MachineMapper.updateByPrimaryKeySelective(machine);
-		Result<String> initResult = supplyChannelService.initChannel(machine.getId(), channels);
+		Result<String> initResult = supplyChannelService.initChannel(machine.getId(), machineCode, channels);
 		if (initResult.getCode() != Result.SUCCESS) {
 			return initResult;
 		}
@@ -283,6 +283,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		}
 		Condition condition1 = new Condition(Inno72SupplyChannel.class);
 		condition1.createCriteria().andEqualTo("machineId", machines.get(0).getId());
+		condition1.setOrderByClause("code*1");
 		List<Inno72SupplyChannel> supplys = supplyChannelService.findByCondition(condition1);
 		if (supplys == null) {
 			return Results.failure("货道信息为空");
@@ -295,6 +296,28 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			list.add(map);
 		}
 		return Results.success(list);
+	}
+
+	@Override
+	public Result<String> updateMachineChannels(Map<String, Object> msg) {
+		String machineCode = (String) Optional.of(msg).map(a -> a.get("machineCode")).orElse("");
+		if (StringUtil.isEmpty(machineCode)) {
+			return Results.failure("machineCode传入为空");
+		}
+		List<Inno72SupplyChannel> channels = JSON.parseArray(JSON.toJSONString(msg.get("channelJson")),
+				Inno72SupplyChannel.class);
+		if (channels == null || channels.isEmpty()) {
+			return Results.failure("货道信息传入错误");
+		}
+		Inno72Machine machine = findBy("machineCode", machineCode);
+		if (machine == null) {
+			return Results.failure("machineCode传入错误");
+		}
+		Result<String> updateResult = supplyChannelService.updateChannel(machine.getId(), machineCode, channels);
+		if (updateResult.getCode() != Result.SUCCESS) {
+			return updateResult;
+		}
+		return Results.success();
 	}
 
 }
