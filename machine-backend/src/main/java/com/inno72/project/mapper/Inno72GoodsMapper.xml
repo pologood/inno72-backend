@@ -21,6 +21,10 @@
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
+  <resultMap id="VoResultMap" type="com.inno72.project.vo.Inno72GoodsVo" extends="BaseResultMap">
+    <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
+    <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
+  </resultMap>
   
   <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
 		SELECT
@@ -48,7 +52,7 @@
 		ORDER BY g.update_time DESC
   </select>
   
-  <select id="selectById" parameterType="String" resultMap="BaseResultMap">
+  <select id="selectById" parameterType="String" resultMap="VoResultMap">
 		SELECT
 		g.id,
 		g.name,
@@ -58,12 +62,14 @@
 		g.img,
 		g.banner,
 		g.remark,
+		g.seller_id,
+		g.shop_id,
 		g.create_id,
 		g.update_id,
 		g.create_time,
 		g.update_time,
-		m.merchant_name as seller_id,
-		s.shop_name AS shop_id
+		m.merchant_name,
+		s.shop_name
 		
 		from inno72_goods g 
 		LEFT JOIN inno72_merchant m on m.id=g.seller_id
