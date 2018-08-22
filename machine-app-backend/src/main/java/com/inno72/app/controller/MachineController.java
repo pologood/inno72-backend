@@ -124,6 +124,17 @@ public class MachineController {
 		return machineService.getMachineLocale(msg);
 	}
 
+	/**
+	 * 获取所有货道
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	@RequestMapping(value = "/getMachineChannels", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Map<String, Object>>> getMachineChannels(@RequestBody Map<String, Object> msg) {
+		return machineService.getMachineChannels(msg);
+	}
+
 	@PostMapping("encrypt")
 	public String encrypt(HttpServletRequest request) throws IOException {
 		byte[] encryptRequestBodyBytes = StreamUtils.copyToByteArray(request.getInputStream());

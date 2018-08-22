@@ -1,6 +1,7 @@
 package com.inno72.app.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -266,6 +267,34 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			return Results.success();
 		}
 		return Results.failure("更新失败");
+	}
+
+	@Override
+	public Result<List<Map<String, Object>>> getMachineChannels(Map<String, Object> msg) {
+		String machineCode = (String) Optional.of(msg).map(a -> a.get("machineCode")).orElse("");
+		if (StringUtil.isEmpty(machineCode)) {
+			return Results.failure("machineCode为空");
+		}
+		Condition condition = new Condition(Inno72Machine.class);
+		condition.createCriteria().andEqualTo("machineCode", machineCode);
+		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition);
+		if (machines == null || machines.size() != 1) {
+			return Results.failure("machineCode传入错误");
+		}
+		Condition condition1 = new Condition(Inno72SupplyChannel.class);
+		condition1.createCriteria().andEqualTo("machineId", machines.get(0).getId());
+		List<Inno72SupplyChannel> supplys = supplyChannelService.findByCondition(condition1);
+		if (supplys == null) {
+			return Results.failure("货道信息为空");
+		}
+		List<Map<String, Object>> list = new ArrayList<>();
+		for (Inno72SupplyChannel channel : supplys) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("Coil_id", channel.getCode());
+			map.put("iSlot_status", channel.getWorkStatus());
+			list.add(map);
+		}
+		return Results.success(list);
 	}
 
 }
