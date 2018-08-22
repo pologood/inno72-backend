@@ -15,6 +15,8 @@ public interface Inno72ShopsMapper extends Mapper<Inno72Shops> {
 
 	List<Inno72Shops> selectActivityShops(Map<String, Object> params);
 
+	List<Inno72Shops> selectMerchantShops(Map<String, Object> params);
+
 	int selectIsUseing(String id);
 
 	int getCount(@Param("code") String code);
