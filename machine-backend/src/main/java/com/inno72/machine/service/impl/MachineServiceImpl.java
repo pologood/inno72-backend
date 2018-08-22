@@ -567,11 +567,11 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		condition.createCriteria().andEqualTo("machineCode", machineCode);
 		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition);
 		if (machines == null || machines.isEmpty()) {
-			return Results.success("机器编号不存在");
+			return Results.failure("机器编号不存在");
 		}
 		Inno72Machine old = machines.get(0);
 		if (!machine.getLocaleId().equals(old.getLocaleId())) {
-			return Results.success("机器点位不一致不能修改编号");
+			return Results.failure("机器点位不一致不能修改编号");
 		}
 		old.setBluetoothAddress(machine.getBluetoothAddress());
 		old.setDeviceId(machine.getDeviceId());
