@@ -148,10 +148,11 @@ public class ShopsServiceImpl extends AbstractService<Inno72Shops> implements Sh
 	}
 
 	@Override
-	public List<Inno72Shops> selectMerchantShops(String keyword) {
+	public List<Inno72Shops> selectMerchantShops(String sellerId, String keyword) {
 		logger.info("---------------------获取商户店铺列表-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
+		params.put("sellerId", sellerId);
 		params.put("keyword", keyword);
 		return inno72ShopsMapper.selectMerchantShops(params);
 	}

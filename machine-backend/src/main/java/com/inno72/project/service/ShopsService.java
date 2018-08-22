@@ -23,6 +23,6 @@ public interface ShopsService extends Service<Inno72Shops> {
 
 	List<Inno72Shops> selectActivityShops(String activityId, String keyword);
 
-	List<Inno72Shops> selectMerchantShops(String keyword);
+	List<Inno72Shops> selectMerchantShops(String sellerId, String keyword);
 
 }
