@@ -49,7 +49,7 @@
 			LEFT JOIN inno72_activity_shops acs ON s.id = acs.shops_id
 			LEFT JOIN inno72_merchant m ON m.id = s.seller_id 
 		WHERE s.is_delete=0
-		<if test="activityId !=null and activityId !='' ">acs.activity_id= = #{activityId}</if>
+		<if test="activityId !=null and activityId !='' ">and acs.activity_id= = #{activityId}</if>
 		<if test="keyword !=null and keyword !='' ">
 			and ( s.shop_name LIKE '%${keyword}%' 
 				or s.shop_code LIKE '%${keyword}%' 
@@ -66,7 +66,7 @@
 			inno72_shops s
 			LEFT JOIN inno72_merchant m ON m.id = s.seller_id 
 		WHERE s.is_delete=0
-		<if test="sellerId !=null and sellerId !='' ">s.seller_id= = #{sellerId}</if>
+		<if test="sellerId !=null and sellerId !='' ">and s.seller_id= = #{sellerId}</if>
 		<if test="keyword !=null and keyword !='' ">
 			and ( s.shop_name LIKE '%${keyword}%' 
 				or s.shop_code LIKE '%${keyword}%' 
