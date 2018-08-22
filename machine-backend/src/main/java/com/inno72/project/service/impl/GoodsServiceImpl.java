@@ -158,7 +158,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 
 	@Override
 	public Inno72Goods findById(String id) {
-		Inno72Goods good = super.findById(id);
+		Inno72Goods good = inno72GoodsMapper.selectById(id);
 		good.setImg(CommonConstants.ALI_OSS + good.getImg());
 		good.setBanner(CommonConstants.ALI_OSS + good.getBanner());
 		return good;
