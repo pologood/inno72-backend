@@ -29,11 +29,13 @@ import com.inno72.project.mapper.Inno72ActivityPlanGoodsMapper;
 import com.inno72.project.mapper.Inno72ActivityPlanMachineMapper;
 import com.inno72.project.mapper.Inno72ActivityPlanMapper;
 import com.inno72.project.mapper.Inno72CouponMapper;
+import com.inno72.project.mapper.Inno72GameMapper;
 import com.inno72.project.model.Inno72ActivityPlan;
 import com.inno72.project.model.Inno72ActivityPlanGameResult;
 import com.inno72.project.model.Inno72ActivityPlanGoods;
 import com.inno72.project.model.Inno72ActivityPlanMachine;
 import com.inno72.project.model.Inno72Coupon;
+import com.inno72.project.model.Inno72Game;
 import com.inno72.project.service.ActivityPlanService;
 import com.inno72.project.vo.Inno72ActivityPlanGameResultVo;
 import com.inno72.project.vo.Inno72ActivityPlanVo;
@@ -58,6 +60,8 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	private Inno72ActivityPlanMapper inno72ActivityPlanMapper;
 	@Resource
 	private Inno72ActivityMapper inno72ActivityMapper;
+	@Resource
+	private Inno72GameMapper inno72GameMapper;
 	@Resource
 	private Inno72ActivityPlanMachineMapper inno72ActivityPlanMachineMapper;
 	@Resource
@@ -169,6 +173,13 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					logger.info("派样活动无优惠券类型");
 					return Results.failure("派样活动无优惠券类型");
 				}
+
+				Inno72Game game = inno72GameMapper.selectByPrimaryKey(activityPlan.getGameId());
+				if (goods.size() > game.getMaxGoodsNum()) {
+					logger.info("商品数量超出最大值");
+					return Results.failure("商品数量超出最大值");
+				}
+
 			}
 
 			if (null != goods) {
@@ -437,6 +448,12 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				if ((null != coupons && coupons.size() > 0)) {
 					logger.info("派样活动无优惠券类型");
 					return Results.failure("派样活动无优惠券类型");
+				}
+
+				Inno72Game game = inno72GameMapper.selectByPrimaryKey(activityPlan.getGameId());
+				if (goods.size() > game.getMaxGoodsNum()) {
+					logger.info("商品数量超出最大值");
+					return Results.failure("商品数量超出最大值");
 				}
 			}
 
