@@ -133,7 +133,7 @@
 		WHERE locale.area_code=#{code} and m.machine_status ='4'
   </select>
   <!-- 查询时间段内排期的机器-->
-  <select id="selectPlanedMachine" parameterType="java.util.Map" resultType="com.inno72.project.vo.Inno72ActivityPlanVo">
+  <select id="selectPlanedMachine" parameterType="java.util.Map" resultMap="machinesResult">
   		SELECT machine_id FROM inno72_activity_plan ap
 			LEFT JOIN inno72_activity_plan_machine apm ON apm.activity_plan_id = ap.id
 		 where  is_delete =0 

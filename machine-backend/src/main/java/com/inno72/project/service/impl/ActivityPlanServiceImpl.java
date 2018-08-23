@@ -300,10 +300,11 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				logger.info("计划商品关联完成");
 			}
 			// 批量保存计划游戏结果
-			int q = inno72ActivityPlanGameResultMapper.insertActivityPlanGameResultList(insertPlanGameResultList);
-			if (q > 0) {
+			if (insertPlanGameResultList.size() > 0) {
+				inno72ActivityPlanGameResultMapper.insertActivityPlanGameResultList(insertPlanGameResultList);
 				logger.info("游戏结果规则处理完成");
 			}
+
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 			return Results.failure("操作失败！");
