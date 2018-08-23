@@ -190,12 +190,12 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 	}
 
 	@Override
-	public List<Inno72ActivityVo> findByPage(String code, String keyword) {
+	public List<Inno72ActivityVo> findByPage(String type, String keyword) {
 		logger.info("---------------------活动分页列表查询-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		params.put("keyword", keyword);
-		params.put("code", code);
+		params.put("type", type);
 
 		return inno72ActivityMapper.selectByPage(params);
 	}
