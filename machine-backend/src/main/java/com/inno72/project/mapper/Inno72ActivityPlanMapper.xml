@@ -244,8 +244,8 @@
 			LEFT JOIN inno72_coupon co ON co.id = rc.prize_id
 			LEFT JOIN inno72_activity a ON a.id = ap.activity_id 
 			LEFT JOIN inno72_goods g ON g.id = rg.prize_id
-			LEFT JOIN inno72_merchant m ON m.id=a.seller_id
-			LEFT JOIN inno72_shops s ON s.id=a.shop_id
+			LEFT JOIN inno72_shops s ON s.id=g.shop_id
+			LEFT JOIN inno72_merchant m ON m.id=g.seller_id
 			LEFT JOIN inno72_game gm ON gm.id = ap.game_id
 			LEFT JOIN inno72_activity_plan_machine apm on apm.activity_plan_id=ap.id
 			LEFT JOIN inno72_machine ma ON ma.id = apm.machine_id
