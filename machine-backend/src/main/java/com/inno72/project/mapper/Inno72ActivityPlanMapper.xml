@@ -138,7 +138,7 @@
 			LEFT JOIN inno72_activity_plan_machine apm ON apm.activity_plan_id = ap.id
 		 where  is_delete =0 
 		 <if test="planId !=null and planId !='' ">and ap.id = #{planId}  </if>
-		 <if test="noPlanId !=null and noPlanId !='' ">and ap.id != #{planId}  </if>
+		 <if test="noPlanId !=null and noPlanId !='' ">and ap.id != #{noPlanId}  </if>
 		 <if test="startTime !=null and startTime !='' ">
 			 and ( <![CDATA[ap.start_time BETWEEN #{startTime} AND #{endTime} or ap.end_time BETWEEN #{startTime} AND #{endTime}]]>)
 		 </if>

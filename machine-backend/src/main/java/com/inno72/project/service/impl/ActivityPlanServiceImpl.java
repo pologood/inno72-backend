@@ -110,18 +110,18 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			activityPlan.setIsDelete(0);
 
 			// 查询已有排期机器
-			Map<String, Object> planingsParam = new HashMap<String, Object>();
+			Map<String, Object> planedParam = new HashMap<String, Object>();
 			String startTimeStr = activityPlan.getStartTimeStr() + ":00";
 			String endTimeStr = activityPlan.getEndTimeStr() + ":59";
-			planingsParam.put("startTime", startTimeStr);
-			planingsParam.put("endTime", endTimeStr);
+			planedParam.put("startTime", startTimeStr);
+			planedParam.put("endTime", endTimeStr);
 			activityPlan.setStartTime(DateUtil.toDateTime(startTimeStr, DateUtil.DF_FULL_S1));
 			activityPlan.setEndTime(DateUtil.toDateTime(endTimeStr, DateUtil.DF_FULL_S1));
 			if (!activityPlan.getEndTime().isAfter(activityPlan.getStartTime())) {
 				return Results.failure("结束时间须小于开始时间");
 			}
 
-			List<Inno72MachineVo> planings = inno72ActivityPlanMapper.selectPlanedMachine(planingsParam);
+			List<Inno72MachineVo> planings = inno72ActivityPlanMapper.selectPlanedMachine(planedParam);
 
 			// 组合计划机器关系
 			List<Inno72MachineVo> machines = activityPlan.getMachines();
@@ -386,7 +386,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				return Results.failure("未选择机器");
 			}
 
-			Map<String, Object> planingsParam = new HashMap<String, Object>();
+			Map<String, Object> planedParam = new HashMap<String, Object>();
 			String startTimeStr = "";
 			if (n == 0) {// 未开始
 				startTimeStr = activityPlan.getStartTimeStr() + ":00";
@@ -394,25 +394,29 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				startTimeStr = DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S1);
 			}
 			String endTimeStr = activityPlan.getEndTimeStr() + ":59";
-			planingsParam.put("startTime", startTimeStr);
-			planingsParam.put("endTime", endTimeStr);
-			planingsParam.put("noPlanId", activityPlan.getId());
+			planedParam.put("startTime", startTimeStr);
+			planedParam.put("endTime", endTimeStr);
+			planedParam.put("noPlanId", activityPlan.getId());
 			// 不包含此次排期的 所有已排期的机器
-			List<Inno72MachineVo> allPlanings = inno72ActivityPlanMapper.selectPlanedMachine(planingsParam);
+			List<Inno72MachineVo> allPlanings = inno72ActivityPlanMapper.selectPlanedMachine(planedParam);
 
 			// 当前计划已排期的机器
-			planingsParam.clear();
-			planingsParam.put("planId", activityPlan.getId());
-			List<Inno72MachineVo> thisPlanings = inno72ActivityPlanMapper.selectPlanedMachine(planingsParam);
+			planedParam.clear();
+			planedParam.put("planId", activityPlan.getId());
+			List<Inno72MachineVo> thisPlanings = inno72ActivityPlanMapper.selectPlanedMachine(planedParam);
 
 			List<Inno72ActivityPlanMachine> insertPlanMachineList = new ArrayList<>();
 			// 所有已选机器删除 原先已选机器 ----新增机器
-			List<Inno72MachineVo> newAddmachines = machines;
+			List<Inno72MachineVo> newAddmachines = new ArrayList<Inno72MachineVo>();
+			newAddmachines.addAll(machines);
+
 			newAddmachines.removeAll(thisPlanings);
 			// 查询机器在该计划时间内是否有排期（计划时间段交集）
-			if (allPlanings.contains(newAddmachines)) {
-				logger.info("机器中有包含已排期机器");
-				return Results.failure("机器中有包含已排期机器");
+			for (Inno72MachineVo inno72MachineVo : newAddmachines) {
+				if (allPlanings.contains(inno72MachineVo)) {
+					logger.info("机器中有包含已排期机器");
+					return Results.failure("机器中有包含已排期机器");
+				}
 			}
 
 			for (Inno72MachineVo inno72MachineVo : machines) {
