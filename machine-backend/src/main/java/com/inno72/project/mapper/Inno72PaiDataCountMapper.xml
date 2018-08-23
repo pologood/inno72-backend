@@ -33,6 +33,7 @@
 		left join inno72_activity_plan t1 on pg.activity_plan_id = t1.id
 		left join inno72_activity t2 on t1.activity_id=t2.id
 		where date_sub(curdate(),interval 1 day) BETWEEN DATE_FORMAT(t1.start_time,'%Y-%m-%d') AND DATE_FORMAT(t1.end_time,'%Y-%m-%d')
+		and t1.is_delete=0
 		and t2.type=1
 	</select>
 
