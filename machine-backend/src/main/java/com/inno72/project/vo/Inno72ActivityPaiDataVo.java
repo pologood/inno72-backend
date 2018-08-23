@@ -36,7 +36,6 @@ public class Inno72ActivityPaiDataVo {
      */
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(name = "submit_time")
     private LocalDateTime submitTime;
 
 
