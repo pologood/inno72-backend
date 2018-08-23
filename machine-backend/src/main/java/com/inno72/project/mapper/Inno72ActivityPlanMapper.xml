@@ -178,18 +178,16 @@
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="user_max_times" jdbcType="INTEGER" property="userMaxTimes" />
     <result column="day_user_max_times" jdbcType="INTEGER" property="dayUserMaxTimes" />
-    <result column="prize_type" jdbcType="VARCHAR" property="prizeType" />
-    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="activityName" jdbcType="VARCHAR" property="activityName" />
+    <result column="activityType" jdbcType="VARCHAR" property="activityType" />
     <result column="merchantName" jdbcType="VARCHAR" property="merchantName" />
-    <result column="shop_id" jdbcType="VARCHAR" property="shopId" />
-    <result column="shopName" jdbcType="VARCHAR" property="shopName" />
     <result column="gameName" jdbcType="VARCHAR" property="gameName" />
+    <result column="max_goods_num" jdbcType="VARCHAR" property="maxGoodsNum" />
     <association property="goods" resultMap="goodsResult" />
     <association property="coupons" resultMap="couponsResult" />
     <association property="machines" resultMap="machinesResult" />
@@ -203,6 +201,7 @@
 	  <result column="goods_name" property="activityPlanId" />
 	  <result column="goods_number" property="number" />
 	  <result column="shops_id" property="shopsId" />
+	  <result column="shopName" property="shopName" />
 </resultMap>
  
  <resultMap id="couponsResult" type="com.inno72.project.vo.Inno72CouponVo">
@@ -228,10 +227,12 @@
 			co.code AS coupons_code,
 			co.name AS coupons_name,
 			a.name AS activityName,
+			a.type AS activityType,
 			m.merchant_name AS merchantName,
 			s.shop_name AS shopName,
-			a.shop_id AS shop_id,
+			s.id AS shop_id,
 			gm.name AS gameName,
+			gm.max_goods_num AS max_goods_num,
 			ma.id AS machine_id,
 			ma.machine_code,
 			area.province as machine_province
