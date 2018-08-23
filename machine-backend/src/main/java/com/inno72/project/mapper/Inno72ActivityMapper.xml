@@ -44,18 +44,7 @@
 			a.code,
 			a.type,
 			a.is_default,
-			s.id as shop_id,
-			m.id as seller_id,
-			s.shop_name as shop_name,
-			m.merchant_name as merchant_name,
-			CASE 
-			WHEN ap.start_time &gt; NOW() THEN '未开始'
-			WHEN ap.start_time &lt;  NOW() and ap.end_time &gt; NOW() THEN '进行中'
-			WHEN ap.end_time &lt; NOW() THEN '已结束'
-			ELSE '未排期'
-			END state,
 			u.name as manager_id,
-			ap.prize_type,
 			a.is_delete,
 			a.create_time,
 			a.update_time,
@@ -64,15 +53,16 @@
 			inno72_activity a
 			LEFT JOIN inno72_shops s ON s.id = a.shop_id
 			LEFT JOIN inno72_merchant m ON m.id = s.seller_id
-			LEFT JOIN inno72_activity_plan ap ON ap.activity_id = a.id and ap.is_delete = 0
 			LEFT JOIN inno72_user u ON u.id =a.manager_id
 			where a.is_delete = 0 and a.is_default=0
-			<if test="code ==1"> and NOW() &lt;  ap.start_time </if>
-			<if test="code ==2"> and (NOW() BETWEEN ap.start_time and ap.end_time ) </if>
-			<if test="code ==3"> and NOW() &gt; ap.end_time  </if>
-			<if test="code ==4"> and ap.id is null   </if>
+			<if test="type !=null and type !='' ">a.type= =#{type} </if>
 			<if test="keyword !=null and keyword !='' ">
-			and ( a.name LIKE '%${keyword}%' or m.merchant_name LIKE '%${keyword}%' OR s.shop_name LIKE '%${keyword}%')
+			and ( a.name LIKE '%${keyword}%'
+				OR a.code LIKE '%${keyword}%'
+				OR m.merchant_name LIKE '%${keyword}%'
+				OR m.merchant_code LIKE '%${keyword}%'
+				OR s.shop_name LIKE '%${keyword}%'
+				OR s.shop_code LIKE '%${keyword}%')
 			</if>
 			ORDER BY a.update_time DESC
   </select>
@@ -128,7 +118,7 @@
 
   
   <select id="selectUnPlanList" parameterType="java.util.Map" resultMap="BaseResultMap">
-		 SELECT a.id,a.name,seller_id,shop_id FROM inno72_activity a where a.is_delete = 0 
+		 SELECT a.* FROM inno72_activity a where a.is_delete = 0 
 		 and a.is_default=0 
   </select>
   

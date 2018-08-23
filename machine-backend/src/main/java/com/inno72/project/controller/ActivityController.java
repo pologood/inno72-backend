@@ -66,9 +66,9 @@ public class ActivityController {
 	}
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list(@RequestParam(required = false) String code,
+	public ModelAndView list(@RequestParam(required = false) String type,
 			@RequestParam(required = false) String keyword) {
-		List<Inno72ActivityVo> list = activityService.findByPage(code, keyword);
+		List<Inno72ActivityVo> list = activityService.findByPage(type, keyword);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 

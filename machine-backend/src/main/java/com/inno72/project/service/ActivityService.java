@@ -20,7 +20,7 @@ public interface ActivityService extends Service<Inno72Activity> {
 
 	List<Inno72Activity> getList();
 
-	List<Inno72ActivityVo> findByPage(String code, String keyword);
+	List<Inno72ActivityVo> findByPage(String type, String keyword);
 
 	Inno72ActivityVo selectById(String id);
 

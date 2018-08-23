@@ -29,11 +29,13 @@ import com.inno72.project.mapper.Inno72ActivityPlanGoodsMapper;
 import com.inno72.project.mapper.Inno72ActivityPlanMachineMapper;
 import com.inno72.project.mapper.Inno72ActivityPlanMapper;
 import com.inno72.project.mapper.Inno72CouponMapper;
+import com.inno72.project.mapper.Inno72GameMapper;
 import com.inno72.project.model.Inno72ActivityPlan;
 import com.inno72.project.model.Inno72ActivityPlanGameResult;
 import com.inno72.project.model.Inno72ActivityPlanGoods;
 import com.inno72.project.model.Inno72ActivityPlanMachine;
 import com.inno72.project.model.Inno72Coupon;
+import com.inno72.project.model.Inno72Game;
 import com.inno72.project.service.ActivityPlanService;
 import com.inno72.project.vo.Inno72ActivityPlanGameResultVo;
 import com.inno72.project.vo.Inno72ActivityPlanVo;
@@ -58,6 +60,8 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	private Inno72ActivityPlanMapper inno72ActivityPlanMapper;
 	@Resource
 	private Inno72ActivityMapper inno72ActivityMapper;
+	@Resource
+	private Inno72GameMapper inno72GameMapper;
 	@Resource
 	private Inno72ActivityPlanMachineMapper inno72ActivityPlanMachineMapper;
 	@Resource
@@ -106,18 +110,18 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			activityPlan.setIsDelete(0);
 
 			// 查询已有排期机器
-			Map<String, Object> planingsParam = new HashMap<String, Object>();
+			Map<String, Object> planedParam = new HashMap<String, Object>();
 			String startTimeStr = activityPlan.getStartTimeStr() + ":00";
 			String endTimeStr = activityPlan.getEndTimeStr() + ":59";
-			planingsParam.put("startTime", startTimeStr);
-			planingsParam.put("endTime", endTimeStr);
+			planedParam.put("startTime", startTimeStr);
+			planedParam.put("endTime", endTimeStr);
 			activityPlan.setStartTime(DateUtil.toDateTime(startTimeStr, DateUtil.DF_FULL_S1));
 			activityPlan.setEndTime(DateUtil.toDateTime(endTimeStr, DateUtil.DF_FULL_S1));
 			if (!activityPlan.getEndTime().isAfter(activityPlan.getStartTime())) {
 				return Results.failure("结束时间须小于开始时间");
 			}
 
-			List<Inno72MachineVo> planings = inno72ActivityPlanMapper.selectPlanedMachine(planingsParam);
+			List<Inno72MachineVo> planings = inno72ActivityPlanMapper.selectPlanedMachine(planedParam);
 
 			// 组合计划机器关系
 			List<Inno72MachineVo> machines = activityPlan.getMachines();
@@ -169,6 +173,13 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					logger.info("派样活动无优惠券类型");
 					return Results.failure("派样活动无优惠券类型");
 				}
+
+				Inno72Game game = inno72GameMapper.selectByPrimaryKey(activityPlan.getGameId());
+				if (null != game.getMaxGoodsNum() && goods.size() > game.getMaxGoodsNum()) {
+					logger.info("商品数量超出最大值");
+					return Results.failure("商品数量超出最大值");
+				}
+
 			}
 
 			if (null != goods) {
@@ -289,10 +300,11 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				logger.info("计划商品关联完成");
 			}
 			// 批量保存计划游戏结果
-			int q = inno72ActivityPlanGameResultMapper.insertActivityPlanGameResultList(insertPlanGameResultList);
-			if (q > 0) {
+			if (insertPlanGameResultList.size() > 0) {
+				inno72ActivityPlanGameResultMapper.insertActivityPlanGameResultList(insertPlanGameResultList);
 				logger.info("游戏结果规则处理完成");
 			}
+
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 			return Results.failure("操作失败！");
@@ -374,7 +386,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				return Results.failure("未选择机器");
 			}
 
-			Map<String, Object> planingsParam = new HashMap<String, Object>();
+			Map<String, Object> planedParam = new HashMap<String, Object>();
 			String startTimeStr = "";
 			if (n == 0) {// 未开始
 				startTimeStr = activityPlan.getStartTimeStr() + ":00";
@@ -382,25 +394,29 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				startTimeStr = DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S1);
 			}
 			String endTimeStr = activityPlan.getEndTimeStr() + ":59";
-			planingsParam.put("startTime", startTimeStr);
-			planingsParam.put("endTime", endTimeStr);
-			planingsParam.put("noPlanId", activityPlan.getId());
+			planedParam.put("startTime", startTimeStr);
+			planedParam.put("endTime", endTimeStr);
+			planedParam.put("noPlanId", activityPlan.getId());
 			// 不包含此次排期的 所有已排期的机器
-			List<Inno72MachineVo> allPlanings = inno72ActivityPlanMapper.selectPlanedMachine(planingsParam);
+			List<Inno72MachineVo> allPlanings = inno72ActivityPlanMapper.selectPlanedMachine(planedParam);
 
 			// 当前计划已排期的机器
-			planingsParam.clear();
-			planingsParam.put("planId", activityPlan.getId());
-			List<Inno72MachineVo> thisPlanings = inno72ActivityPlanMapper.selectPlanedMachine(planingsParam);
+			planedParam.clear();
+			planedParam.put("planId", activityPlan.getId());
+			List<Inno72MachineVo> thisPlanings = inno72ActivityPlanMapper.selectPlanedMachine(planedParam);
 
 			List<Inno72ActivityPlanMachine> insertPlanMachineList = new ArrayList<>();
 			// 所有已选机器删除 原先已选机器 ----新增机器
-			List<Inno72MachineVo> newAddmachines = machines;
+			List<Inno72MachineVo> newAddmachines = new ArrayList<Inno72MachineVo>();
+			newAddmachines.addAll(machines);
+
 			newAddmachines.removeAll(thisPlanings);
 			// 查询机器在该计划时间内是否有排期（计划时间段交集）
-			if (allPlanings.contains(newAddmachines)) {
-				logger.info("机器中有包含已排期机器");
-				return Results.failure("机器中有包含已排期机器");
+			for (Inno72MachineVo inno72MachineVo : newAddmachines) {
+				if (allPlanings.contains(inno72MachineVo)) {
+					logger.info("机器中有包含已排期机器");
+					return Results.failure("机器中有包含已排期机器");
+				}
 			}
 
 			for (Inno72MachineVo inno72MachineVo : machines) {
@@ -437,6 +453,12 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				if ((null != coupons && coupons.size() > 0)) {
 					logger.info("派样活动无优惠券类型");
 					return Results.failure("派样活动无优惠券类型");
+				}
+
+				Inno72Game game = inno72GameMapper.selectByPrimaryKey(activityPlan.getGameId());
+				if (null != game.getMaxGoodsNum() && goods.size() > game.getMaxGoodsNum()) {
+					logger.info("商品数量超出最大值");
+					return Results.failure("商品数量超出最大值");
 				}
 			}
 

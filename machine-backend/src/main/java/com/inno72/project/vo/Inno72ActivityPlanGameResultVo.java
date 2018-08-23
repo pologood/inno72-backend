@@ -6,6 +6,8 @@ public class Inno72ActivityPlanGameResultVo extends Inno72ActivityPlanGameResult
 
 	private String shopsId;
 
+	private String shopName;
+
 	private Integer number;
 
 	public String getShopsId() {
@@ -14,6 +16,14 @@ public class Inno72ActivityPlanGameResultVo extends Inno72ActivityPlanGameResult
 
 	public void setShopsId(String shopsId) {
 		this.shopsId = shopsId;
+	}
+
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
 	}
 
 	public Integer getNumber() {

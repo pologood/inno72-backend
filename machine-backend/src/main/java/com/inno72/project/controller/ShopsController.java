@@ -92,8 +92,9 @@ public class ShopsController {
 	}
 
 	@RequestMapping(value = "/selectMerchantShops", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72Shops>> selectMerchantShops(@RequestParam(required = false) String keyword) {
-		List<Inno72Shops> list = shopsService.selectMerchantShops(keyword);
+	public Result<List<Inno72Shops>> selectMerchantShops(@RequestParam(required = false) String sellerId,
+			@RequestParam(required = false) String keyword) {
+		List<Inno72Shops> list = shopsService.selectMerchantShops(sellerId, keyword);
 		return ResultGenerator.genSuccessResult(list);
 	}
 }

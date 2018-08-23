@@ -14,6 +14,8 @@ public class Inno72ActivityPlanVo extends Inno72ActivityPlan {
 
 	private String activityName;
 
+	private String activityType;
+
 	private String merchantName;
 
 	private String shopName;
@@ -21,6 +23,8 @@ public class Inno72ActivityPlanVo extends Inno72ActivityPlan {
 	private String shopId;
 
 	private String gameName;
+
+	private Integer maxGoodsNum;
 
 	private String startTimeStr;
 
@@ -104,6 +108,22 @@ public class Inno72ActivityPlanVo extends Inno72ActivityPlan {
 
 	public void setEndTimeStr(String endTimeStr) {
 		this.endTimeStr = endTimeStr;
+	}
+
+	public String getActivityType() {
+		return activityType;
+	}
+
+	public void setActivityType(String activityType) {
+		this.activityType = activityType;
+	}
+
+	public Integer getMaxGoodsNum() {
+		return maxGoodsNum;
+	}
+
+	public void setMaxGoodsNum(Integer maxGoodsNum) {
+		this.maxGoodsNum = maxGoodsNum;
 	}
 
 }

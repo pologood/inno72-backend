@@ -3,6 +3,8 @@ package com.inno72.project.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.inno72.common.Mapper;
 import com.inno72.project.model.Inno72ActivityPlan;
 import com.inno72.project.vo.Inno72ActivityPlanVo;
@@ -21,9 +23,9 @@ public interface Inno72ActivityPlanMapper extends Mapper<Inno72ActivityPlan> {
 
 	List<Inno72MachineVo> selectPlanedMachine(Map<String, Object> params);
 
-	Inno72ActivityPlanVo selectPlanDetail(String id);
+	Inno72ActivityPlanVo selectPlanDetail(@Param("id") String id);
 
-	int selectPlanIsState(String id);
+	int selectPlanIsState(@Param("id") String id);
 
 	List<Inno72NoPlanInfoVo> selectNoPlanedMachine(String taskTime);
 
