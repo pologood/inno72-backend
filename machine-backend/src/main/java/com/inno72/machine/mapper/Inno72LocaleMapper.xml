@@ -40,7 +40,7 @@
 	SELECT * FROM (
 		SELECT locale.*,
 		CONCAT(area.province, area.city, area.district,area.circle) AS areaName,
-		( SELECT count( 1 ) FROM inno72_machine WHERE locale_id = locale.id ) AS userNum
+		( SELECT count( 1 ) FROM inno72_machine WHERE locale_id = locale.id AND machine_status !=-1 ) AS userNum
 		FROM inno72_locale locale
 		LEFT JOIN inno72_admin_area area ON area.code =locale.area_code
 		where is_delete=0
