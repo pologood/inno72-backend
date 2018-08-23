@@ -175,7 +175,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				}
 
 				Inno72Game game = inno72GameMapper.selectByPrimaryKey(activityPlan.getGameId());
-				if (goods.size() > game.getMaxGoodsNum()) {
+				if (null != game.getMaxGoodsNum() && goods.size() > game.getMaxGoodsNum()) {
 					logger.info("商品数量超出最大值");
 					return Results.failure("商品数量超出最大值");
 				}
@@ -456,7 +456,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 				}
 
 				Inno72Game game = inno72GameMapper.selectByPrimaryKey(activityPlan.getGameId());
-				if (goods.size() > game.getMaxGoodsNum()) {
+				if (null != game.getMaxGoodsNum() && goods.size() > game.getMaxGoodsNum()) {
 					logger.info("商品数量超出最大值");
 					return Results.failure("商品数量超出最大值");
 				}
