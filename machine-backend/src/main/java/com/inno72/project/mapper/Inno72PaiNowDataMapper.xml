@@ -41,6 +41,7 @@
         <result column="activityPlanId" jdbcType="VARCHAR" property="activityPlanId"/>
         <result column="startTime" jdbcType="TIMESTAMP" property="startTime" />
         <result column="endTime" jdbcType="TIMESTAMP" property="endTime" />
+        <result column="submitTime" jdbcType="TIMESTAMP" property="submitTime"/>
         <collection property="inno72PaiNowDataList" resultMap="BaseResultMap"/>
     </resultMap>
     <select id="selectPaiNowList" resultMap="paiNowList">
@@ -49,6 +50,7 @@
         t1.start_time startTime,
         t1.end_time endTime,
         t1.activity_name activityName,
+        t1.submit_time submitTime,
         t2.goods_name,
         t2.goods_count,
         t2.total_goods_count

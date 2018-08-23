@@ -31,6 +31,14 @@ public class Inno72ActivityPaiDataVo {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endTime;
 
+    /**
+     * 生成时间
+     */
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "submit_time")
+    private LocalDateTime submitTime;
+
 
     private List<Inno72PaiNowData> inno72PaiNowDataList;
 
@@ -83,4 +91,11 @@ public class Inno72ActivityPaiDataVo {
     }
 
 
+    public LocalDateTime getSubmitTime() {
+        return submitTime;
+    }
+
+    public void setSubmitTime(LocalDateTime submitTime) {
+        this.submitTime = submitTime;
+    }
 }
