@@ -167,6 +167,8 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 			List<Inno72ActivityShops> insertActivityShopsList = new ArrayList<>();
 			for (Inno72Shops inno72Shops : shops) {
 				Inno72ActivityShops activityShops = new Inno72ActivityShops();
+				activityShops.setId(StringUtil.getUUID());
+				activityShops.setActivityId(model.getId());
 				activityShops.setShopsId(inno72Shops.getId());
 				if (insertActivityShopsList.contains(activityShops)) {
 					logger.info("选择店铺有重复");

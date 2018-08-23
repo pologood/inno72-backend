@@ -200,8 +200,8 @@
 	  <result column="goods_prize_type" property="prizeType" />
 	  <result column="goods_name" property="activityPlanId" />
 	  <result column="goods_number" property="number" />
-	  <result column="shops_id" property="shopsId" />
-	  <result column="shopName" property="shopName" />
+	  <result column="goods_shops_id" property="shopsId" />
+	  <result column="goods_shops_name" property="shopName" />
 </resultMap>
  
  <resultMap id="couponsResult" type="com.inno72.project.vo.Inno72CouponVo">
@@ -215,24 +215,25 @@
  <select id="selectPlanDetail" parameterType="String" resultMap="ResultPlanDetailMap">
   		SELECT
 			ap.*, 
+			a.name AS activityName,
+			a.type AS activityType,
+			gm.name AS gameName,
+			gm.max_goods_num AS max_goods_num,
+			
 			rg.prize_id AS goods_id,
 			rg.result_code AS goods_result_code,
 			rg.result_remark AS goods_result_remark,
 			rg.prize_type AS goods_prize_type,
 			g.number AS goods_number,
-			g.shop_id AS shops_id,
+			g.shop_id AS goods_shops_id,
+			CONCAT(IFNULL( m.merchant_name,''), '-', IFNULL( s.shop_name,'') ) AS goods_shops_name,
+			
 			rc.result_code AS coupons_result_code,
 			rc.result_remark AS coupons_result_remark,
 			rc.prize_type AS coupons_prize_type,
 			co.code AS coupons_code,
 			co.name AS coupons_name,
-			a.name AS activityName,
-			a.type AS activityType,
-			m.merchant_name AS merchantName,
-			s.shop_name AS shopName,
-			s.id AS shop_id,
-			gm.name AS gameName,
-			gm.max_goods_num AS max_goods_num,
+			
 			ma.id AS machine_id,
 			ma.machine_code,
 			area.province as machine_province

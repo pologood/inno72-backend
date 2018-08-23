@@ -213,6 +213,14 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 							return Results.failure("添加规则有重复");
 						}
 						insertPlanGameResultList.add(planGameResult);
+					} else {
+						Inno72ActivityPlanGameResult planGameResult = new Inno72ActivityPlanGameResult();
+						String planGameResultId = StringUtil.getUUID();
+						planGameResult.setId(planGameResultId);
+						planGameResult.setActivityPlanId(activityPlanId);
+						planGameResult.setPrizeId(goodsId);
+						planGameResult.setPrizeType("1");
+						insertPlanGameResultList.add(planGameResult);
 					}
 
 				}
