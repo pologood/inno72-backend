@@ -7,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,14 +30,12 @@ public class Inno72Game {
 	/**
 	 * 商品最大数量
 	 */
-	@NotNull(message = "请填写商品最大数量")
 	@Column(name = "max_goods_num")
 	private Integer maxGoodsNum;
 
 	/**
 	 * 商品最小数量
 	 */
-	@NotNull(message = "请填写商品最小数量")
 	@Column(name = "min_goods_num")
 	private Integer minGoodsNum;
 

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -39,6 +41,8 @@ public class GameServiceImpl extends AbstractService<Inno72Game> implements Game
 	@Resource
 	private Inno72GameMapper inno72GameMapper;
 
+	Pattern patternNumbe = Pattern.compile("^[0-9]{1,8}$");
+
 	@Override
 	public Result<String> saveModel(Inno72Game model) {
 		logger.info("----------------游戏添加--------------");
@@ -50,13 +54,23 @@ public class GameServiceImpl extends AbstractService<Inno72Game> implements Game
 				return Results.failure("未找到用户登录信息");
 			}
 			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-			int min = model.getMinGoodsNum();
-			int max = model.getMaxGoodsNum();
+			if (null != model.getMinGoodsNum() || null != model.getMaxGoodsNum()) {
+				Matcher match = patternNumbe.matcher(model.getMinGoodsNum().toString());
+				if (!match.matches()) {
+					return Results.failure("数量最大8位整数");
+				}
+				Matcher match1 = patternNumbe.matcher(model.getMaxGoodsNum().toString());
+				if (!match1.matches()) {
+					return Results.failure("数量最大8位整数");
+				}
+			} else {
 
-			if (min < 1) {
+			}
+
+			if (model.getMinGoodsNum() < 0) {
 				return Results.failure("最小数量应大于0");
 			}
-			if (max <= min) {
+			if (model.getMaxGoodsNum() <= model.getMinGoodsNum()) {
 				return Results.failure("最大数量应大于最小数量");
 			}
 
