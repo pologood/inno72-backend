@@ -210,6 +210,8 @@
 	  <result column="coupons_result_code" property="resultCode"/>
 	  <result column="coupons_result_remark" property="resultRemark"/>
 	  <result column="coupons_prize_type" property="prizeType" />
+	  <result column="coupons_shops_id" property="shopsId" />
+	  <result column="coupons_shops_name" property="shopName" />
  </resultMap>
  
  <select id="selectPlanDetail" parameterType="String" resultMap="ResultPlanDetailMap">
@@ -227,13 +229,15 @@
 			g.name AS goods_name,
 			g.number AS goods_number,
 			g.shop_id AS goods_shops_id,
-			CONCAT(IFNULL( m.merchant_name,''), '-', IFNULL( s.shop_name,'') ) AS goods_shops_name,
+			CONCAT(IFNULL( goodm.merchant_name,''), '-', IFNULL( goodp.shop_name,'') ) AS goods_shops_name,
 			
 			rc.result_code AS coupons_result_code,
 			rc.result_remark AS coupons_result_remark,
 			rc.prize_type AS coupons_prize_type,
 			co.code AS coupons_code,
 			co.name AS coupons_name,
+			co.shops_id AS coupons_shops_id,
+			CONCAT(IFNULL( com.merchant_name,''), '-', IFNULL( cop.shop_name,'') ) AS coupons_shops_name,
 			
 			ma.id AS machine_id,
 			ma.machine_code,
@@ -245,8 +249,12 @@
 			LEFT JOIN inno72_coupon co ON co.id = rc.prize_id
 			LEFT JOIN inno72_activity a ON a.id = ap.activity_id 
 			LEFT JOIN inno72_goods g ON g.id = rg.prize_id
-			LEFT JOIN inno72_shops s ON s.id=g.shop_id
-			LEFT JOIN inno72_merchant m ON m.id=g.seller_id
+			LEFT JOIN inno72_shops goodp ON goodp.id=g.shop_id
+			LEFT JOIN inno72_merchant goodm ON goodm.id=g.seller_id
+			
+			LEFT JOIN inno72_shops cop ON cop.id=co.shops_id
+			LEFT JOIN inno72_merchant com ON com.id=cop.seller_id
+			
 			LEFT JOIN inno72_game gm ON gm.id = ap.game_id
 			LEFT JOIN inno72_activity_plan_machine apm on apm.activity_plan_id=ap.id
 			LEFT JOIN inno72_machine ma ON ma.id = apm.machine_id

@@ -233,6 +233,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					String couponId = StringUtil.getUUID();
 					coupon.setId(couponId);
 					coupon.setCode(inno72CouponVo.getCode());
+					coupon.setShopsId(inno72CouponVo.getShopsId());
 					coupon.setName(inno72CouponVo.getName());
 					coupon.setActivityPlanId(activityPlanId);
 					coupon.setCreateId(userId);
@@ -501,6 +502,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					String couponId = StringUtil.getUUID();
 					coupon.setId(couponId);
 					coupon.setCode(inno72CouponVo.getCode());
+					coupon.setShopsId(inno72CouponVo.getShopsId());
 					coupon.setName(inno72CouponVo.getName());
 					coupon.setActivityPlanId(activityPlan.getId());
 					coupon.setCreateId(userId);

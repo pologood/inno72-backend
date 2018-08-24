@@ -8,6 +8,7 @@
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="shops_id" jdbcType="VARCHAR" property="shopsId" />
     <result column="activity_plan_id" jdbcType="VARCHAR" property="activityPlanId" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
@@ -22,10 +23,10 @@
 </delete>
 
 	<insert id="insertCouponList" parameterType="java.util.List">
-        insert into inno72_coupon (id, name,code,activity_plan_id,create_id,update_id)
+        insert into inno72_coupon (id, name,code,shops_id,activity_plan_id,create_id,update_id)
         values
         <foreach collection="list" item="coupon" index="index" separator=",">
-            (#{coupon.id}, #{coupon.name},#{coupon.code},#{coupon.activityPlanId},#{coupon.createId},#{coupon.updateId})
+            (#{coupon.id}, #{coupon.name},#{coupon.code},#{coupon.shopsId},#{coupon.activityPlanId},#{coupon.createId},#{coupon.updateId})
         </foreach>
     </insert>
   
