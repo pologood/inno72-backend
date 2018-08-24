@@ -159,8 +159,12 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 	@Override
 	public Inno72Goods findById(String id) {
 		Inno72Goods good = inno72GoodsMapper.selectById(id);
-		good.setImg(CommonConstants.ALI_OSS + good.getImg());
-		good.setBanner(CommonConstants.ALI_OSS + good.getBanner());
+		if (StringUtil.isNotBlank(good.getImg())) {
+			good.setImg(CommonConstants.ALI_OSS + good.getImg());
+		}
+		if (StringUtil.isNotBlank(good.getBanner())) {
+			good.setBanner(CommonConstants.ALI_OSS + good.getBanner());
+		}
 		return good;
 	}
 
@@ -174,8 +178,12 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 		params.put("code", code);
 		List<Inno72Goods> list = inno72GoodsMapper.selectByPage(params);
 		for (Inno72Goods inno72Goods : list) {
-			inno72Goods.setImg(CommonConstants.ALI_OSS + inno72Goods.getImg());
-			inno72Goods.setBanner(CommonConstants.ALI_OSS + inno72Goods.getBanner());
+			if (StringUtil.isNotBlank(inno72Goods.getImg())) {
+				inno72Goods.setImg(CommonConstants.ALI_OSS + inno72Goods.getImg());
+			}
+			if (StringUtil.isNotBlank(inno72Goods.getBanner())) {
+				inno72Goods.setBanner(CommonConstants.ALI_OSS + inno72Goods.getBanner());
+			}
 		}
 		return inno72GoodsMapper.selectByPage(params);
 	}
