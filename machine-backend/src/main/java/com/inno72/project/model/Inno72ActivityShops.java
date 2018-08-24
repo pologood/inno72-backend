@@ -28,6 +28,18 @@ public class Inno72ActivityShops {
 	private String shopsId;
 
 	/**
+	 * 是否入会
+	 */
+	@Column(name = "is_vip")
+	private Integer isVip;
+
+	/**
+	 * 入会key
+	 */
+	@Column(name = "session_key")
+	private String sessionKey;
+
+	/**
 	 * 获取ID
 	 *
 	 * @return id - ID
@@ -72,6 +84,22 @@ public class Inno72ActivityShops {
 	 */
 	public String getShopsId() {
 		return shopsId;
+	}
+
+	public Integer getIsVip() {
+		return isVip;
+	}
+
+	public void setIsVip(Integer isVip) {
+		this.isVip = isVip;
+	}
+
+	public String getSessionKey() {
+		return sessionKey;
+	}
+
+	public void setSessionKey(String sessionKey) {
+		this.sessionKey = sessionKey;
 	}
 
 	/**

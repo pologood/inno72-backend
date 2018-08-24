@@ -27,6 +27,7 @@ import com.inno72.project.model.Inno72ActivityShops;
 import com.inno72.project.model.Inno72Shops;
 import com.inno72.project.service.ActivityService;
 import com.inno72.project.vo.Inno72ActivityVo;
+import com.inno72.project.vo.Inno72ShopsVo;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.system.model.Inno72User;
 
@@ -78,17 +79,26 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 					return Results.failure("请选择活动类型");
 				}
 
-				List<Inno72Shops> shops = model.getShops();
+				List<Inno72ShopsVo> shops = model.getShops();
 				if (null == shops || shops.size() == 0) {
 					return Results.failure("请选择活动店铺");
 				}
 				// 处理活动店铺关系
 				List<Inno72ActivityShops> insertActivityShopsList = new ArrayList<>();
-				for (Inno72Shops inno72Shops : shops) {
+				for (Inno72ShopsVo inno72Shops : shops) {
 					Inno72ActivityShops activityShops = new Inno72ActivityShops();
 					activityShops.setId(StringUtil.getUUID());
 					activityShops.setActivityId(model.getId());
 					activityShops.setShopsId(inno72Shops.getId());
+
+					if (1 == model.getType()) {
+						if (null == inno72Shops.getIsVip() || StringUtil.isBlank(inno72Shops.getSessionKey())) {
+							logger.info("派样活动清填写入会信息");
+							return Results.failure("派样活动清填写入会信息");
+						}
+						activityShops.setIsVip(inno72Shops.getIsVip());
+						activityShops.setSessionKey(inno72Shops.getSessionKey());
+					}
 
 					if (insertActivityShopsList.contains(activityShops)) {
 						logger.info("选择店铺有重复");
@@ -158,18 +168,26 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 			model.setUpdateId(userId);
 			model.setUpdateTime(LocalDateTime.now());
 
-			List<Inno72Shops> shops = model.getShops();
+			List<Inno72ShopsVo> shops = model.getShops();
 			if (null == shops || shops.size() == 0) {
 				return Results.failure("请选择活动店铺");
 			}
 
 			// 处理活动店铺关系
 			List<Inno72ActivityShops> insertActivityShopsList = new ArrayList<>();
-			for (Inno72Shops inno72Shops : shops) {
+			for (Inno72ShopsVo inno72Shops : shops) {
 				Inno72ActivityShops activityShops = new Inno72ActivityShops();
 				activityShops.setId(StringUtil.getUUID());
 				activityShops.setActivityId(model.getId());
 				activityShops.setShopsId(inno72Shops.getId());
+				if (1 == model.getType()) {
+					if (null == inno72Shops.getIsVip() || StringUtil.isBlank(inno72Shops.getSessionKey())) {
+						logger.info("排样活动清填写入会信息");
+						return Results.failure("排样活动清填写入会信息");
+					}
+					activityShops.setIsVip(inno72Shops.getIsVip());
+					activityShops.setSessionKey(inno72Shops.getSessionKey());
+				}
 				if (insertActivityShopsList.contains(activityShops)) {
 					logger.info("选择店铺有重复");
 					return Results.failure("选择店铺有重复");
@@ -211,7 +229,7 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 	@Override
 	public Inno72ActivityVo selectById(String id) {
 		Inno72ActivityVo activity = inno72ActivityMapper.selectById(id);
-		List<Inno72Shops> shops = activity.getShops();
+		List<Inno72ShopsVo> shops = activity.getShops();
 		String shopNames = "";
 		if (null != shops && shops.size() > 0) {
 			for (Inno72Shops inno72Shops : shops) {

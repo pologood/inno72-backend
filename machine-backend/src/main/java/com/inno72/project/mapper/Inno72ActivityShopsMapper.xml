@@ -11,10 +11,10 @@
   </resultMap>
   
   <insert id="insertActivityShopsList" parameterType="java.util.List">
-        insert into inno72_activity_shops (id, activity_id,shops_id)
+        insert into inno72_activity_shops (id, activity_id,shops_id,is_vip,session_key)
         values
         <foreach collection="list" item="as" index="index" separator=",">
-            (#{as.id},#{as.activityId},#{as.shopsId})
+            (#{as.id},#{as.activityId},#{as.shopsId},#{as.isVip},#{as.sessionKey})
         </foreach>
     </insert>
     

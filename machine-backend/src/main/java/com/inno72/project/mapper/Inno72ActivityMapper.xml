@@ -31,10 +31,12 @@
     <association property="shops" resultMap="shopsResult" />
     <association property="planTime" resultMap="planTimeResult" />
   </resultMap>
-   <resultMap id="shopsResult" type="com.inno72.project.model.Inno72Shops">
-  <result column="shop_id" property="id" />
-  <result column="shop_name" property="shopName"/>
- </resultMap>
+   <resultMap id="shopsResult" type="com.inno72.project.vo.Inno72ShopsVo">
+	  <result column="shop_id" property="id" />
+	  <result column="shop_name" property="shopName"/>
+	  <result column="shop_is_vip" jdbcType="INTEGER" property="isVip"/>
+	  <result column="shop_session_key" property="sessionKey"/>
+  </resultMap>
   
   <select id="selectByPage" parameterType="java.util.Map" resultMap="VoResultMap">
 		
@@ -91,6 +93,8 @@
 			a.is_default,
 			s.id as shop_id,
 			CONCAT(IFNULL( m.merchant_name,''),'-',IFNULL( s.shop_name,'')) AS shop_name,
+			ap.is_vip as shop_is_vip,
+			ap.session_key as shop_session_key,
 			u.name as manager_id,
 			a.is_delete,
 			a.create_time,
