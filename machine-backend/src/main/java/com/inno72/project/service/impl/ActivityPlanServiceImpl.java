@@ -238,34 +238,31 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					coupon.setCreateId(userId);
 					coupon.setUpdateId(userId);
 					// 活动游戏结果数据
-					if (activityType == 0) {
-						Inno72ActivityPlanGameResult planGameResult = new Inno72ActivityPlanGameResult();
-						String planGameResultId = StringUtil.getUUID();
-						planGameResult.setId(planGameResultId);
-						planGameResult.setActivityPlanId(activityPlanId);
-						planGameResult.setPrizeId(couponId);
-						planGameResult.setPrizeType("2");
-						planGameResult.setResultCode(inno72CouponVo.getResultCode());
-						planGameResult.setResultRemark(inno72CouponVo.getResultRemark());
+					Inno72ActivityPlanGameResult planGameResult = new Inno72ActivityPlanGameResult();
+					String planGameResultId = StringUtil.getUUID();
+					planGameResult.setId(planGameResultId);
+					planGameResult.setActivityPlanId(activityPlanId);
+					planGameResult.setPrizeId(couponId);
+					planGameResult.setPrizeType("2");
+					planGameResult.setResultCode(inno72CouponVo.getResultCode());
+					planGameResult.setResultRemark(inno72CouponVo.getResultRemark());
 
-						if (!insertCouponList.contains(coupon)) {
-							insertCouponList.add(coupon);
-							if (insertPlanGameResultList.contains(planGameResult)) {
-								logger.info("添加规则有重复");
-								return Results.failure("添加规则有重复");
-							}
-							insertPlanGameResultList.add(planGameResult);
-						} else {
-							int num = insertCouponList.indexOf(coupon);
-							Inno72Coupon old = insertCouponList.get(num);
-							planGameResult.setPrizeId(old.getId());
-							if (insertPlanGameResultList.contains(planGameResult)) {
-								logger.info("添加规则有重复");
-								return Results.failure("添加规则有重复");
-							}
-							insertPlanGameResultList.add(planGameResult);
+					if (!insertCouponList.contains(coupon)) {
+						insertCouponList.add(coupon);
+						if (insertPlanGameResultList.contains(planGameResult)) {
+							logger.info("添加规则有重复");
+							return Results.failure("添加规则有重复");
 						}
-
+						insertPlanGameResultList.add(planGameResult);
+					} else {
+						int num = insertCouponList.indexOf(coupon);
+						Inno72Coupon old = insertCouponList.get(num);
+						planGameResult.setPrizeId(old.getId());
+						if (insertPlanGameResultList.contains(planGameResult)) {
+							logger.info("添加规则有重复");
+							return Results.failure("添加规则有重复");
+						}
+						insertPlanGameResultList.add(planGameResult);
 					}
 
 				}

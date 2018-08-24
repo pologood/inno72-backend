@@ -45,13 +45,6 @@ public class Inno72Activity {
 	private Integer type;
 
 	/**
-	 * 是否加入会员
-	 */
-	@NotNull(message = "请选择是否入会")
-	@Column(name = "is_vip")
-	private Integer isVip;
-
-	/**
 	 * 店铺ID
 	 */
 	@Column(name = "shop_id")
@@ -172,14 +165,6 @@ public class Inno72Activity {
 
 	public void setType(Integer type) {
 		this.type = type;
-	}
-
-	public Integer getIsVip() {
-		return isVip;
-	}
-
-	public void setIsVip(Integer isVip) {
-		this.isVip = isVip;
 	}
 
 	public String getShopId() {

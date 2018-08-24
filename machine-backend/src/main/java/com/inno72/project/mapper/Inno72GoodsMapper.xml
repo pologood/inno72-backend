@@ -16,6 +16,7 @@
     <result column="banner" jdbcType="VARCHAR" property="banner" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="spec_remark" jdbcType="VARCHAR" property="specRemark" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
@@ -36,6 +37,7 @@
 		g.img,
 		g.banner,
 		g.remark,
+		g.spec_remark,
 		g.create_id,
 		g.update_id,
 		g.create_time,
@@ -62,6 +64,7 @@
 		g.img,
 		g.banner,
 		g.remark,
+		g.spec_remark,
 		g.seller_id,
 		g.shop_id,
 		g.create_id,

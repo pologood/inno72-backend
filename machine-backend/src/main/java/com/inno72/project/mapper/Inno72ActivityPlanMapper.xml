@@ -130,7 +130,7 @@
 				OR ap.end_time < #{startTime})]]>and is_delete=0) and  
 				app.is_delete=0 and apm.machine_id is not null  and length(apm.machine_id)>0 and app.start_time is not null 
 				) aa on m.id=aa.machine_id
-		WHERE locale.area_code=#{code} and m.machine_status ='4'
+		WHERE LEFT(locale.area_code,#{num}) =#{code} and m.machine_status ='4'
   </select>
   <!-- 查询时间段内排期的机器-->
   <select id="selectPlanedMachine" parameterType="java.util.Map" resultMap="machinesResult">

@@ -82,7 +82,14 @@ public class Inno72Goods {
 	/**
 	 * 备注描述
 	 */
+	@Column(name = "remark")
 	private String remark;
+
+	/**
+	 * 规格字段描述
+	 */
+	@Column(name = "spec_remark")
+	private String specRemark;
 
 	/**
 	 * 创建人
@@ -284,6 +291,14 @@ public class Inno72Goods {
 	 */
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public String getSpecRemark() {
+		return specRemark;
+	}
+
+	public void setSpecRemark(String specRemark) {
+		this.specRemark = specRemark;
 	}
 
 	/**
