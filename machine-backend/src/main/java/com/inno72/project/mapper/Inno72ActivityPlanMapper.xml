@@ -237,7 +237,7 @@
 			co.code AS coupons_code,
 			co.name AS coupons_name,
 			co.shops_id AS coupons_shops_id,
-			CONCAT(IFNULL( com.merchant_name,''), '-', IFNULL( cop.shop_name,'') ) AS coupons_shops_name,
+			CONCAT(IFNULL( com.merchant_name,''), '-',cop.shop_name ) AS coupons_shops_name,
 			
 			ma.id AS machine_id,
 			ma.machine_code,

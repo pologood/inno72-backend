@@ -3,7 +3,7 @@ package com.inno72.project.vo;
 import com.inno72.project.model.Inno72Coupon;
 
 public class Inno72CouponVo extends Inno72Coupon {
-	private int resultCode;
+	private Integer resultCode;
 
 	private String resultRemark;
 
