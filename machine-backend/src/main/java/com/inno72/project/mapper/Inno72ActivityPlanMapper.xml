@@ -229,7 +229,7 @@
 			g.name AS goods_name,
 			g.number AS goods_number,
 			g.shop_id AS goods_shops_id,
-			CONCAT(IFNULL( goodm.merchant_name,''), '-', IFNULL( goodp.shop_name,'') ) AS goods_shops_name,
+			CONCAT(IFNULL( goodm.merchant_name,''), '-',goodp.shop_name) AS goods_shops_name,
 			
 			rc.result_code AS coupons_result_code,
 			rc.result_remark AS coupons_result_remark,
