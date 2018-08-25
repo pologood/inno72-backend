@@ -185,9 +185,13 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 				activityShops.setActivityId(model.getId());
 				activityShops.setShopsId(inno72Shops.getId());
 				if (1 == model.getType()) {
-					if (null == inno72Shops.getIsVip() || StringUtil.isBlank(inno72Shops.getSessionKey())) {
-						logger.info("排样活动清填写入会信息");
-						return Results.failure("排样活动清填写入会信息");
+					if (null == inno72Shops.getIsVip()) {
+						logger.info("派样活动清填写入会信息");
+						return Results.failure("派样活动清填是否入会");
+					}
+					if (1 == inno72Shops.getIsVip() && StringUtil.isBlank(inno72Shops.getSessionKey())) {
+						logger.info("请填写入访问码");
+						return Results.failure("请填写入访问码");
 					}
 					activityShops.setIsVip(inno72Shops.getIsVip());
 					activityShops.setSessionKey(inno72Shops.getSessionKey());

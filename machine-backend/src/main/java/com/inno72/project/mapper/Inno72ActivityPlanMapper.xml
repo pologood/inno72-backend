@@ -140,7 +140,7 @@
 		 <if test="planId !=null and planId !='' ">and ap.id = #{planId}  </if>
 		 <if test="noPlanId !=null and noPlanId !='' ">and ap.id != #{noPlanId}  </if>
 		 <if test="startTime !=null and startTime !='' ">
-			 and ( <![CDATA[ap.start_time BETWEEN #{startTime} AND #{endTime} or ap.end_time BETWEEN #{startTime} AND #{endTime}]]>)
+			 and ( <![CDATA[ap.start_time <= #{endTime} AND ap.end_time >= #{startTime} ]]>)
 		 </if>
   </select>
 
@@ -240,7 +240,7 @@
 			CONCAT(IFNULL( com.merchant_name,''), '-',cop.shop_name ) AS coupons_shops_name,
 			
 			ma.id AS machine_id,
-			ma.machine_code,
+			CONCAT(area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL(l.name,""),IFNULL( ma.address,""),'-',ma.machine_code) as machine_code,
 			area.province as machine_province
 		FROM
 			inno72_activity_plan ap
