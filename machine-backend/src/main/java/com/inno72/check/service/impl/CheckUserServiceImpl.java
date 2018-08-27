@@ -301,7 +301,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 			String r = "已选择" + machines.size() + "台机器，分别位于:" + pList.toString();
 			u.setRemark(r);
 		}
-		if (null != u.getArea()) {
+		if (null != u.getArea() && StringUtil.isNotBlank(u.getArea())) {
 			String area = u.getArea();
 			String province = StringUtil.getAreaParentCode(area, 1);
 			u.setProvince(province);

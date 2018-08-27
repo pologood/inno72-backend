@@ -11,6 +11,8 @@ import com.inno72.common.Service;
  */
 public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
-	Result<String> initChannel(String machineCode, List<Inno72SupplyChannel> channels);
+	Result<String> initChannel(String machineId, String machineCode, List<Inno72SupplyChannel> channels);
+
+	Result<String> updateChannel(String machineId, String machineCode, List<Inno72SupplyChannel> channels);
 
 }

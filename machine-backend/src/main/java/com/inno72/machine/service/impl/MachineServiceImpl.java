@@ -34,8 +34,10 @@ import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
+import com.inno72.machine.mapper.Inno72AppScreenShotMapper;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72App;
+import com.inno72.machine.model.Inno72AppScreenShot;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.AppService;
 import com.inno72.machine.service.MachineService;
@@ -59,6 +61,7 @@ import com.inno72.machine.vo.UpdateMachineChannelVo;
 import com.inno72.machine.vo.UpdateMachineVo;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.system.model.Inno72User;
+import com.inno72.utils.page.Pagination;
 
 import tk.mybatis.mapper.entity.Condition;
 
@@ -83,6 +86,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	private MachineBackendProperties machineBackendProperties;
 	@Autowired
 	private CheckFaultService checkFaultService;
+	@Autowired
+	private Inno72AppScreenShotMapper inno72AppScreenShotMapper;
 
 	@Autowired
 	private ActivityPlanService activityPlanService;
@@ -134,8 +139,12 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (machine == null) {
 			return Results.failure("机器id传入错误");
 		}
+		if (machine.getMachineStatus() < 2) {
+			return Results.failure("机器没有初始化不能修改点位");
+		}
 		machine.setLocaleId(localeId);
 		machine.setAddress(address);
+		machine.setMachineStatus(4);
 		machine.setUpdateId(mUser.getId());
 		machine.setUpdateTime(LocalDateTime.now());
 		int result = inno72MachineMapper.updateByPrimaryKeySelective(machine);
@@ -243,6 +252,15 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (ss != null && !ss.isEmpty()) {
 			result.setSystemStatus(ss.get(0));
 		}
+		Condition condition = new Condition(Inno72AppScreenShot.class);
+		condition.createCriteria().andEqualTo("machineCode", machine.getMachineCode());
+		condition.orderBy("createTime").desc();
+		Pagination pagination = new Pagination();
+		pagination.setPageNo(1);
+		pagination.setPageSize(10);
+		Pagination.threadLocal.set(pagination);
+		List<Inno72AppScreenShot> imgs = inno72AppScreenShotMapper.selectByConditionByPage(condition);
+		result.setImgs(imgs);
 		return Results.success(result);
 	}
 
@@ -537,5 +555,41 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			return Results.failure("修改点位失败");
 		}
 		return Results.success();
+	}
+
+	@Override
+	public Result<String> updateMachineCode(String machineId, String machineCode) {
+		SessionData session = CommonConstants.SESSION_DATA;
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
+		Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+		if (machine == null) {
+			return Results.failure("机器id不存在");
+		}
+		Condition condition = new Condition(Inno72Machine.class);
+		condition.createCriteria().andEqualTo("machineCode", machineCode);
+		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition);
+		if (machines == null || machines.isEmpty()) {
+			return Results.failure("机器编号不存在");
+		}
+		Inno72Machine old = machines.get(0);
+		if (!machine.getLocaleId().equals(old.getLocaleId())) {
+			return Results.failure("机器点位不一致不能修改编号");
+		}
+		old.setBluetoothAddress(machine.getBluetoothAddress());
+		old.setDeviceId(machine.getDeviceId());
+		old.setUpdateTime(LocalDateTime.now());
+		old.setUpdateId(mUser.getId());
+		inno72MachineMapper.updateByPrimaryKeySelective(old);
+
+		SendMessageBean msg = new SendMessageBean();
+		msg.setEventType(1);
+		msg.setSubEventType(4);
+		msg.setMachineId(machine.getMachineCode());
+		msg.setData(machineCode);
+		return sendMsg(machine.getMachineCode(), msg);
 	}
 }

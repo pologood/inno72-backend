@@ -49,6 +49,7 @@
 			AND ( locale.manager LIKE '%${keyword}%' 
 			or locale.mobile LIKE '%${keyword}%' 
 			or locale.mall LIKE '%${keyword}%' 
+			or locale.name LIKE '%${keyword}%' 
 			or area.province LIKE '%${keyword}%' 
 			or area.city LIKE '%${keyword}%' 
 			or area.district LIKE '%${keyword}%' 
@@ -58,6 +59,29 @@
 	) t
 	ORDER BY t.update_time DESC
   </select>
+  
+  
+  <select id="selectByList" parameterType="java.util.Map" resultMap="VoResultMap">
+		SELECT locale.*,
+		CONCAT(area.province, area.city, area.district,area.circle,IFNULL( locale.mall,""),IFNULL( locale.name,"")) AS areaName
+		FROM inno72_locale locale
+		LEFT JOIN inno72_admin_area area ON area.code =locale.area_code
+		where is_delete=0
+		<if test="code !=null and code !=''">and LEFT(locale.area_code,#{num}) = LEFT(#{code},#{num})</if>
+		<if test="keyword !=null and keyword !='' ">
+			AND ( locale.manager LIKE '%${keyword}%' 
+			or locale.mobile LIKE '%${keyword}%' 
+			or locale.mall LIKE '%${keyword}%' 
+			or locale.name LIKE '%${keyword}%' 
+			or area.province LIKE '%${keyword}%' 
+			or area.city LIKE '%${keyword}%' 
+			or area.district LIKE '%${keyword}%' 
+			or area.circle LIKE '%${keyword}%' 
+			)
+		</if>
+	ORDER BY locale.area_code
+  </select>
+  
   
   <select id="selectIsUseing" parameterType="String" resultType="int">
 		SELECT count(1) FROM inno72_machine where locale_id=#{id}
@@ -93,6 +117,5 @@
             #{item}
         </foreach>
     </select>
-
 
 </mapper>
