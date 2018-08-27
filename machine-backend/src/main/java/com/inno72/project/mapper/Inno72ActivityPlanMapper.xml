@@ -269,6 +269,7 @@
 	  left join inno72_activity act on plan.activity_id=act.id
 	  where
 	  act.type=1 and now() between plan.start_time and plan.end_time
+	  and plan.is_delete=0 and act.is_delete=0
   </select>
   
   
