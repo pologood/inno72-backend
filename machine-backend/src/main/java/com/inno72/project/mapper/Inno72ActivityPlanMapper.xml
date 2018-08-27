@@ -268,7 +268,7 @@
 	  select count(*) from inno72_activity_plan plan
 	  left join inno72_activity act on plan.activity_id=act.id
 	  where
-	  act.type=2 and now() between plan.start_time and plan.end_time
+	  act.type=1 and now() between plan.start_time and plan.end_time
   </select>
   
   
