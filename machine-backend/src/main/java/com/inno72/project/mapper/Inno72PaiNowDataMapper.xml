@@ -25,7 +25,7 @@
         t1.start_time,
         t1.end_time,
         t4.name goods_name,
-        (select count(*) from inno72_order o where o.inno72_activity_plan_id=t2.id and goods_status=1) goods_count,
+        (select count(*) from inno72_order o where o.inno72_activity_id=t2.id and goods_status=1) goods_count,
         t3.number total_goods_count
         from inno72_activity_plan t1
         left join inno72_activity t2 on t1.activity_id = t2.id
