@@ -1,6 +1,7 @@
 package com.inno72.app.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
+import com.inno72.app.mapper.Inno72MachineBatchMapper;
 import com.inno72.app.mapper.Inno72MachineMapper;
 import com.inno72.app.model.Inno72Machine;
+import com.inno72.app.model.Inno72MachineBatch;
 import com.inno72.app.model.Inno72SupplyChannel;
 import com.inno72.app.service.MachineService;
 import com.inno72.app.service.SupplyChannelService;
@@ -44,19 +47,36 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	@Autowired
 	private SupplyChannelService supplyChannelService;
 
+	@Autowired
+	private Inno72MachineBatchMapper inno72MachineBatchMapper;
+
 	@Resource
 	private MachineAppBackendProperties machineAppBackendProperties;
 
 	@Override
-	public Result<String> generateMachineId(String deviceId) {
-		Inno72Machine initMachine = findBy("deviceId", deviceId);
+	public Result<String> generateMachineId(String deviceId, String batcId) {
+		Condition condition = new Condition(Inno72Machine.class);
+		condition.createCriteria().andEqualTo("deviceId", deviceId).andNotEqualTo("machineStatus", -1);
+		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition);
+		Inno72Machine initMachine = null;
+		if (machines != null && machines.size() > 0) {
+			initMachine = machines.get(0);
+		}
+		// Inno72Machine initMachine = findBy("deviceId", deviceId);
 		if (initMachine != null) {
+			String code = initMachine.getMachineCode();
+			String pc = code.substring(0, 2);
+			if (!pc.equals(batcId) && initMachine.getMachineStatus() == 1) {
+				String machineCode = StringUtil.getMachineCode(batcId);
+				initMachine.setMachineCode(machineCode);
+				inno72MachineMapper.updateByPrimaryKeySelective(initMachine);
+			}
 			return Results.success(initMachine.getMachineCode());
 		}
-		String machineCode = StringUtil.getMachineCode();
+		String machineCode = StringUtil.getMachineCode(batcId);
 		Inno72Machine m = findBy("machineCode", machineCode);
 		if (m != null) {
-			machineCode = StringUtil.getMachineCode();
+			machineCode = StringUtil.getMachineCode(batcId);
 		}
 		LocalDateTime now = LocalDateTime.now();
 		Inno72Machine machine = new Inno72Machine();
@@ -98,7 +118,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		machine.setUpdateTime(LocalDateTime.now());
 		machine.setMachineStatus(Inno72Machine.Machine_Status.INIT.v());
 		inno72MachineMapper.updateByPrimaryKeySelective(machine);
-		Result<String> initResult = supplyChannelService.initChannel(machine.getId(), channels);
+		Result<String> initResult = supplyChannelService.initChannel(machine.getId(), machineCode, channels);
 		if (initResult.getCode() != Result.SUCCESS) {
 			return initResult;
 		}
@@ -208,6 +228,96 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		}
 		String locale = inno72MachineMapper.selectMachineLocale(machineCode);
 		return Results.success(locale);
+	}
+
+	@Override
+	public Result<List<Inno72MachineBatch>> getMachineBatchs() {
+		List<Inno72MachineBatch> all = inno72MachineBatchMapper.selectAll();
+		return Results.success(all);
+	}
+
+	@Override
+	public Result<String> updateMachineCode(Map<String, Object> msg) {
+		String machineCode = (String) Optional.of(msg).map(a -> a.get("machineCode")).orElse("");
+		String oldMachineCode = (String) Optional.of(msg).map(a -> a.get("oldMachineCode")).orElse("");
+		if (StringUtil.isEmpty(machineCode) || StringUtil.isEmpty(oldMachineCode)) {
+			return Results.failure("machineCode为空");
+		}
+		Condition condition = new Condition(Inno72Machine.class);
+		condition.createCriteria().andEqualTo("machineCode", machineCode);
+		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition);
+		if (machines == null || machines.size() != 1) {
+			return Results.failure("machineCode传入错误");
+		}
+		Condition condition1 = new Condition(Inno72Machine.class);
+		condition1.createCriteria().andEqualTo("machineCode", oldMachineCode);
+		List<Inno72Machine> machines1 = inno72MachineMapper.selectByCondition(condition1);
+		if (machines1 == null || machines1.size() != 1) {
+			return Results.failure("oldMachineCode传入错误");
+		}
+		Inno72Machine m1 = machines.get(0);
+		Inno72Machine m2 = machines1.get(0);
+		if (!m1.getDeviceId().equals(m2.getDeviceId())) {
+			return Results.failure("两个机器的deviceId不一致");
+		}
+		m2.setMachineStatus(-1);
+		m2.setUpdateTime(LocalDateTime.now());
+		int result = inno72MachineMapper.updateByPrimaryKeySelective(m2);
+		if (result == 1) {
+			return Results.success();
+		}
+		return Results.failure("更新失败");
+	}
+
+	@Override
+	public Result<List<Map<String, Object>>> getMachineChannels(Map<String, Object> msg) {
+		String machineCode = (String) Optional.of(msg).map(a -> a.get("machineCode")).orElse("");
+		if (StringUtil.isEmpty(machineCode)) {
+			return Results.failure("machineCode为空");
+		}
+		Condition condition = new Condition(Inno72Machine.class);
+		condition.createCriteria().andEqualTo("machineCode", machineCode);
+		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition);
+		if (machines == null || machines.size() != 1) {
+			return Results.failure("machineCode传入错误");
+		}
+		Condition condition1 = new Condition(Inno72SupplyChannel.class);
+		condition1.createCriteria().andEqualTo("machineId", machines.get(0).getId());
+		condition1.setOrderByClause("code*1");
+		List<Inno72SupplyChannel> supplys = supplyChannelService.findByCondition(condition1);
+		if (supplys == null) {
+			return Results.failure("货道信息为空");
+		}
+		List<Map<String, Object>> list = new ArrayList<>();
+		for (Inno72SupplyChannel channel : supplys) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("Coil_id", channel.getCode());
+			map.put("iSlot_status", channel.getWorkStatus());
+			list.add(map);
+		}
+		return Results.success(list);
+	}
+
+	@Override
+	public Result<String> updateMachineChannels(Map<String, Object> msg) {
+		String machineCode = (String) Optional.of(msg).map(a -> a.get("machineCode")).orElse("");
+		if (StringUtil.isEmpty(machineCode)) {
+			return Results.failure("machineCode传入为空");
+		}
+		List<Inno72SupplyChannel> channels = JSON.parseArray(JSON.toJSONString(msg.get("channelJson")),
+				Inno72SupplyChannel.class);
+		if (channels == null || channels.isEmpty()) {
+			return Results.failure("货道信息传入错误");
+		}
+		Inno72Machine machine = findBy("machineCode", machineCode);
+		if (machine == null) {
+			return Results.failure("machineCode传入错误");
+		}
+		Result<String> updateResult = supplyChannelService.updateChannel(machine.getId(), machineCode, channels);
+		if (updateResult.getCode() != Result.SUCCESS) {
+			return updateResult;
+		}
+		return Results.success();
 	}
 
 }

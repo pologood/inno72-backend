@@ -10,9 +10,9 @@ public class StringUtil {
 		return UUID.randomUUID().toString().replace("-", "");
 	}
 
-	public static String getMachineCode() {
+	public static String getMachineCode(String batcId) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("18");
+		sb.append(batcId);
 		String timestamp = String.valueOf(Clock.systemUTC().millis());
 		timestamp = timestamp.substring(timestamp.length() - 4, timestamp.length());
 		sb.append(timestamp);

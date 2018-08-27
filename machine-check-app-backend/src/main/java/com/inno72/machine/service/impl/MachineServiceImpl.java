@@ -109,7 +109,16 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
      */
     @Override
     public Result<List<Inno72AdminArea>> findFirstLevelArea() {
-        List<Inno72AdminArea> list = inno72AdminAreaMapper.selectFistLevelArea();
+//        String userId = UserUtil.getUser().getId();
+//        Inno72CheckUser user = inno72CheckUserMapper.selectByPrimaryKey(userId);
+//        String area = user.getArea();
+        Map<String,Object> map = new HashMap<>();
+//        if(StringUtil.isNotEmpty(area)){
+//            Inno72AdminArea adminArea = inno72AdminAreaMapper.selectByPrimaryKey(area);
+//            map.put("level",adminArea.getLevel());
+//            map.put("code",adminArea.getCode());
+//        }
+        List<Inno72AdminArea> list = inno72AdminAreaMapper.selectFistLevelArea(map);
         return ResultGenerator.genSuccessResult(list);
     }
 
@@ -117,17 +126,19 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
      * 查询单个一级地址及以下地址
      */
     @Override
-    public Result<Inno72AdminArea> cityLevelArea() {
-        String area = UserUtil.getUser().getArea();
-        if(StringUtil.isEmpty(area)){
-            Inno72CheckUser user = inno72CheckUserMapper.selectByPrimaryKey(UserUtil.getUser().getId());
-            area = user.getArea();
-            if(StringUtil.isEmpty(area)){
-                Results.failure("用户未设置区域");
-            }
-        }
-        Inno72AdminArea adminArea = inno72AdminAreaMapper.cityLevelArea(area);
-        return ResultGenerator.genSuccessResult(adminArea);
+    public Result<Inno72AdminArea> cityLevelArea(Inno72AdminArea adminArea) {
+        String area = "";
+//        if(StringUtil.isEmpty(area)){
+//            Inno72CheckUser user = inno72CheckUserMapper.selectByPrimaryKey(UserUtil.getUser().getId());
+//            area = user.getArea();
+//            if(StringUtil.isEmpty(area)){
+//                Results.failure("用户未设置区域");
+//            }
+//        }
+        Map<String,Object> map = new HashMap<>();
+        map.put("code",adminArea.getCode());
+        Inno72AdminArea inno72AdminArea = inno72AdminAreaMapper.cityLevelArea(map);
+        return ResultGenerator.genSuccessResult(inno72AdminArea);
     }
 
     @Override

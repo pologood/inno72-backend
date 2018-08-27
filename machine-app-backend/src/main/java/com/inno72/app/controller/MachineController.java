@@ -1,6 +1,7 @@
 package com.inno72.app.controller;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.inno72.app.model.Inno72MachineBatch;
 import com.inno72.app.service.MachineService;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
@@ -37,10 +39,23 @@ public class MachineController {
 	@RequestMapping(value = "/generateMachineId", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> generateMachineId(@RequestBody Map<String, Object> msg) {
 		String deviceId = (String) Optional.of(msg).map(a -> a.get("deviceId")).orElse("");
+		String batcId = (String) Optional.of(msg).map(a -> a.get("batcId")).orElse("18");
+
 		if (StringUtil.isEmpty(deviceId)) {
 			return Results.failure("deviceId传入为空");
 		}
-		return machineService.generateMachineId(deviceId);
+		return machineService.generateMachineId(deviceId, batcId);
+	}
+
+	/**
+	 * 获取机器批次
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	@RequestMapping(value = "/getMachineBatchs", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Inno72MachineBatch>> getMachineBatchs() {
+		return machineService.getMachineBatchs();
 	}
 
 	/**
@@ -88,6 +103,17 @@ public class MachineController {
 	}
 
 	/**
+	 * 更新机器code
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	@RequestMapping(value = "/updateMachineCode", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> updateMachineCode(@RequestBody Map<String, Object> msg) {
+		return machineService.updateMachineCode(msg);
+	}
+
+	/**
 	 * 获取机器点位信息
 	 * 
 	 * @param msg
@@ -96,6 +122,28 @@ public class MachineController {
 	@RequestMapping(value = "/getMachineLocale", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> getMachineLocale(@RequestBody Map<String, Object> msg) {
 		return machineService.getMachineLocale(msg);
+	}
+
+	/**
+	 * 获取所有货道
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	@RequestMapping(value = "/getMachineChannels", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Map<String, Object>>> getMachineChannels(@RequestBody Map<String, Object> msg) {
+		return machineService.getMachineChannels(msg);
+	}
+
+	/**
+	 * 同步货道
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	@RequestMapping(value = "/updateMachineChannels", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> updateMachineChannels(@RequestBody Map<String, Object> msg) {
+		return machineService.updateMachineChannels(msg);
 	}
 
 	@PostMapping("encrypt")

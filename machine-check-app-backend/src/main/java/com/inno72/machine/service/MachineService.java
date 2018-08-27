@@ -18,7 +18,7 @@ public interface MachineService extends Service<Inno72Machine> {
 
     Result<List<Inno72AdminArea>> findFirstLevelArea();
 
-    Result<Inno72AdminArea> cityLevelArea();
+    Result<Inno72AdminArea> cityLevelArea(Inno72AdminArea adminArea);
 
     Result<List<Inno72Locale>> selectLocaleByAreaCode(String areaCode);
 

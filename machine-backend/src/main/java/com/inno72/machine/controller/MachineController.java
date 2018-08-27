@@ -283,4 +283,17 @@ public class MachineController {
 	public Result<List<MachineStockOutInfo>> findMachineStockoutInfo(@RequestParam String machineId) {
 		return machineService.findMachineStockoutInfo(machineId);
 	}
+
+	/**
+	 * 修改机器编号
+	 * 
+	 * @param machineId
+	 * @param machineCode
+	 * @return
+	 */
+	@RequestMapping(value = "/updateMachineCode", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> updateMachineCode(@RequestParam String machineId, @RequestParam String machineCode) {
+		return machineService.updateMachineCode(machineId, machineCode);
+
+	}
 }

@@ -1,6 +1,5 @@
 package com.inno72.machine.service;
 
-
 import java.util.List;
 
 import com.inno72.common.Result;
@@ -14,19 +13,19 @@ import com.inno72.machine.vo.MachineLocaleInfo;
  */
 public interface LocaleService extends Service<Inno72Locale> {
 
+	@Override
 	Inno72LocaleVo findById(String id);
-	
-	List<Inno72Locale> getList(Inno72Locale locale);
+
+	List<Inno72LocaleVo> getList(String code, String keyword);
 
 	List<Inno72LocaleVo> findByPage(String code, String keyword);
 
 	Result<String> delById(String id);
 
-    List<MachineLocaleInfo> selectLocaleByMachineCode(List<MachineLocaleInfo> list);
+	List<MachineLocaleInfo> selectLocaleByMachineCode(List<MachineLocaleInfo> list);
 
 	Result<String> saveModel(Inno72Locale model);
 
 	Result<String> updateModel(Inno72Locale model);
-
 
 }

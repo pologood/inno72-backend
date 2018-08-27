@@ -3,8 +3,11 @@ package com.inno72.socketio;
 import static com.inno72.model.MessageBean.EventType.CHECKSTATUS;
 import static com.inno72.model.MessageBean.SubEventType.APPSTATUS;
 import static com.inno72.model.MessageBean.SubEventType.MACHINESTATUS;
+import static com.inno72.model.MessageBean.SubEventType.SCREENSHOT;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,13 +28,18 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.inno72.common.CommonConstants;
+import com.inno72.common.MachineMonitorBackendProperties;
+import com.inno72.common.StringUtil;
 import com.inno72.model.AlarmMessageBean;
+import com.inno72.model.Inno72AppScreenShot;
 import com.inno72.model.MachineAppStatus;
 import com.inno72.model.MachineLogInfo;
 import com.inno72.model.MachineStatus;
 import com.inno72.model.MessageBean;
 import com.inno72.model.SystemStatus;
+import com.inno72.plugin.http.HttpClient;
 import com.inno72.redis.IRedisUtil;
+import com.inno72.service.AppScreenShotService;
 import com.inno72.socketio.core.SocketServer;
 import com.inno72.socketio.core.SocketServerHandler;
 import com.inno72.util.AesUtils;
@@ -46,6 +54,12 @@ public class SocketIOStartHandler {
 
 	@Autowired
 	private MongoOperations mongoTpl;
+
+	@Autowired
+	private AppScreenShotService appScreenShotService;
+
+	@Resource
+	private MachineMonitorBackendProperties machineMonitorBackendProperties;
 
 	private SocketServerHandler socketServerHandler() {
 
@@ -95,6 +109,14 @@ public class SocketIOStartHandler {
 						query.addCriteria(Criteria.where("machineId").is(machineId));
 						mongoTpl.remove(query, "MachineAppStatus");
 						mongoTpl.save(apps, "MachineAppStatus");
+					} else if (SCREENSHOT.v() == subEventType) {
+						String url = $json.getJSONObject("data").getString("imgUrl");
+						Inno72AppScreenShot model = new Inno72AppScreenShot();
+						model.setCreateTime(LocalDateTime.now());
+						model.setId(StringUtil.getUUID());
+						model.setImgUrl(url);
+						model.setMachineCode(machineId);
+						appScreenShotService.save(model);
 					}
 
 				}
@@ -123,6 +145,29 @@ public class SocketIOStartHandler {
 				query.addCriteria(Criteria.where("machineId").is(machineId));
 				mongoTpl.remove(query, "MachineLogInfo");
 				mongoTpl.save(machineLogInfo, "MachineLogInfo");
+				try {
+					String ping = systemStatus.getPing();
+					int pingInt = Integer.parseInt(ping.replace("ms", ""));
+					Map<String, Object> map = new HashMap<>();
+					map.put("machineCode", machineId);
+					if (pingInt <= 100) {
+						map.put("netStatus", 4);
+					} else if (pingInt > 100 && pingInt <= 300) {
+						map.put("netStatus", 3);
+					} else if (pingInt > 300 && pingInt <= 500) {
+						map.put("netStatus", 2);
+					} else if (pingInt > 500 && pingInt <= 1000) {
+						map.put("netStatus", 1);
+					} else {
+						map.put("netStatus", 0);
+					}
+					List<Map<String, Object>> list = new ArrayList<>();
+					list.add(map);
+					String urlProp = machineMonitorBackendProperties.getProps().get("updateMachineListNetStatusUrl");
+					HttpClient.post(urlProp, JSON.toJSONString(list));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
 			}
 

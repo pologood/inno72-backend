@@ -54,4 +54,6 @@ public interface MachineService extends Service<Inno72Machine> {
 	Result<List<MachineStockOutInfo>> findMachineStockoutInfo(String machineId);
 
 	Result<String> updateMachine(UpdateMachineVo vo);
+
+	Result<String> updateMachineCode(String machineId, String machineCode);
 }
