@@ -57,7 +57,7 @@
 			LEFT JOIN inno72_merchant m ON m.id = s.seller_id
 			LEFT JOIN inno72_user u ON u.id =a.manager_id
 			where a.is_delete = 0 and a.is_default=0
-			<if test="type !=null and type !='' ">and a.type= =#{type} </if>
+			<if test="type !=null and type !='' ">and a.type=#{type} </if>
 			<if test="keyword !=null and keyword !='' ">
 			and ( a.name LIKE '%${keyword}%'
 				OR a.code LIKE '%${keyword}%'

@@ -48,9 +48,9 @@
 				where LEFT(locale.area_code,#{num}) = #{code}
 				GROUP BY apm.activity_plan_id
 			) m ON m.activity_plan_id = ap.id
-		WHERE 1=1 
+		WHERE  ap.is_delete = 0 
+		<if test="type !=null and type !='' "> and a.type=#{type}</if>
 		<if test="code !=null and code !='' "> and m.area_code LIKE '%${code}%'</if>
-		and ap.is_delete = 0 
 		<if test="startTime !=null and startTime !='' ">
 			<![CDATA[AND ( #{startTime} <= ap.end_time AND #{endTime} >= ap.start_time ) ]]>
 		</if>
