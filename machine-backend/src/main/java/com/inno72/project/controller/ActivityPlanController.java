@@ -73,8 +73,9 @@ public class ActivityPlanController {
 	}
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72ActivityPlanVo>> list(String code, String status, String startTime, String endTime) {
-		List<Inno72ActivityPlanVo> list = activityPlanService.selectPlanList(code, status, startTime, endTime);
+	public Result<List<Inno72ActivityPlanVo>> list(String code, String status, String type, String startTime,
+			String endTime) {
+		List<Inno72ActivityPlanVo> list = activityPlanService.selectPlanList(code, status, type, startTime, endTime);
 		return ResultGenerator.genSuccessResult(list);
 	}
 
