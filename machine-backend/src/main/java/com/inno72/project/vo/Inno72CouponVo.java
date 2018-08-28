@@ -11,11 +11,11 @@ public class Inno72CouponVo extends Inno72Coupon {
 
 	private String shopName;
 
-	public int getResultCode() {
+	public Integer getResultCode() {
 		return resultCode;
 	}
 
-	public void setResultCode(int resultCode) {
+	public void setResultCode(Integer resultCode) {
 		this.resultCode = resultCode;
 	}
 

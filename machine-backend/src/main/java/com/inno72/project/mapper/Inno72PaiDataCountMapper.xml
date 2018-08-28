@@ -39,7 +39,7 @@
 
     <select id="selectByParam" resultMap="BaseResultMap">
 
-        select * from inno72_pai_data_count
+        select * from inno72_activity_data_count
         <where>
             <if test="activityId != null">
                 and activity_id = #{activityId}
