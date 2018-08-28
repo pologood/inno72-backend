@@ -23,7 +23,7 @@ public class CheckSupplyLackGoodsTask {
 
 
     Map<String,Object> map = new HashMap<>();
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void typeOneTask(){
         String url = machineAlarmProperties.getProps().get("findAndPushByTaskParam");
         logger.info("定时获取货道商品数量小于10%的货道开始。。。。。。。");
@@ -33,7 +33,7 @@ public class CheckSupplyLackGoodsTask {
         logger.info("定时获取货道商品数量小于10%的货道结束。。。。。。。");
     }
 
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void typeTwoTask(){
         logger.info("定时获取货道商品数量小于20%的货道开始。。。。。。。");
         String url = machineAlarmProperties.getProps().get("findAndPushByTaskParam");
