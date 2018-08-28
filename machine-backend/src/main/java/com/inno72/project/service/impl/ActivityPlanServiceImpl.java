@@ -625,11 +625,13 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	}
 
 	@Override
-	public List<Inno72ActivityPlanVo> selectPlanList(String code, String status, String startTime, String endTime) {
+	public List<Inno72ActivityPlanVo> selectPlanList(String code, String status, String type, String startTime,
+			String endTime) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("startTime", startTime);
 		params.put("endTime", endTime);
 		params.put("status", status);
+		params.put("type", type);
 		if (StringUtil.isNotEmpty(code)) {
 			int num = StringUtil.getAreaCodeNum(code);
 			String likeCode = code.substring(0, num);
