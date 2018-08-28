@@ -92,7 +92,7 @@
 		LEFT JOIN inno72_activity_plan_goods pg ON pg.goods_id = g.id
 		LEFT JOIN inno72_activity_plan p ON p.id = pg.activity_plan_id 
 	WHERE
-		goods_id=#{id} <![CDATA[and NOW() <= p.end_time ]]>
+		p.is_delete=0 and goods_id=#{id} <![CDATA[and NOW() <= p.end_time ]]>
 	
   </select>
   
