@@ -26,7 +26,8 @@
         t1.end_time,
         t4.name goods_name,
         (select count(*) from inno72_order o left join inno72_order_goods g on o.order_num=g.order_num  where o.inno72_activity_id=t2.id and o.goods_status=1 and g.goods_id=t4.id ) goods_count,
-        t3.number total_goods_count
+        t3.number total_goods_count,
+		CURRENT_TIMESTAMP submit_time
         from inno72_activity_plan t1
         left join inno72_activity t2 on t1.activity_id = t2.id
         left join inno72_activity_plan_goods t3 on t3.activity_plan_id=t1.id
