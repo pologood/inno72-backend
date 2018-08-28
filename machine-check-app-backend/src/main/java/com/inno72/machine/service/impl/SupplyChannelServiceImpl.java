@@ -573,7 +573,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			for (Inno72SupplyChannel supplyChannel : list) {
 				String id = supplyChannel.getId();
 				String key = CommonConstants.SUPPLY_CHANNEL_LACK_GOODS_PREF + lackGoodsType + "_" + id;
-				String value = null;//redisUtil.get(key);
+				String value = redisUtil.get(key);
 				if (StringUtil.isEmpty(value)) {
 					ChannelGoodsAlarmBean alarmBean = new ChannelGoodsAlarmBean();
 					alarmBean.setChannelNum(supplyChannel.getCode());
