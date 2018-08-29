@@ -23,7 +23,7 @@ public class CheckSupplyLackGoodsTask {
 
 
     Map<String,Object> map = new HashMap<>();
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/20 * * * ?")
     public void typeOneTask(){
         String url = machineAlarmProperties.getProps().get("findAndPushByTaskParam");
         logger.info("定时获取货道商品缺货的机器开始。。。。。。。");
