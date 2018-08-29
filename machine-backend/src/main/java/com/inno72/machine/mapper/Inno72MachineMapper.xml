@@ -36,41 +36,13 @@
 
 	<select id="selectMachinesByPage" parameterType="java.util.Map"
 		resultMap="VoResultMap">
-		select * from (
 		select m.id,m.machine_code,m.machine_status,
 		if(aa.province=aa.city,CONCAT_WS('-',aa.province,aa.district,if(aa.circle='其他','',aa.circle),l.mall,l.name),
 		CONCAT_WS('-',aa.province,aa.city,aa.district,if(aa.circle='其他','',aa.circle),l.mall,l.name))
 		local_desc,
 		m.net_status,IFNULL(mm.name,case m.machine_status when '4'
 		then '默认活动' else '无' end )
-		activity_name,mm.activity_plan_id,
-		(
-		select
-		GROUP_CONCAT(CONCAT( sc.name, '', scs.result)) from
-		inno72_supply_channel sc left join inno72_supply_channel_status scs on
-		sc.work_status=scs.code
-		where sc.machine_id=m.id and sc.work_status!=0)
-		channel_status,
-		(
-		select GROUP_CONCAT(CONCAT( g.name, '剩余',
-		aa.goods_count)) from (
-		select
-		sum(sc.goods_count)
-		goods_count,apg.activity_plan_id,apg.goods_id,sc.machine_id from
-		inno72_activity_plan_goods apg
-		left join inno72_supply_channel_goods
-		scg on scg.goods_id=apg.goods_id
-		left join inno72_supply_channel sc on
-		sc.id=scg.supply_channel_id
-		where sc.is_delete=0
-		group by
-		apg.activity_plan_id,apg.goods_id,sc.machine_id
-		) aa left join
-		inno72_goods g on aa.goods_id=g.id
-
-		where aa.goods_count<![CDATA[<]]>10
-		and activity_plan_id=mm.activity_plan_id and machine_id=mm.machine_id
-		) goods_status
+		activity_name,mm.activity_plan_id
 
 		from inno72_machine m left join inno72_locale l on
 		m.locale_id=l.id
@@ -90,7 +62,7 @@
 		<if test="machineCode !=null and machineCode !=''">
 			AND m.machine_code=#{machineCode}
 		</if>
-		) o order by machine_code
+		order by m.update_time desc 
 
 	</select>
 
