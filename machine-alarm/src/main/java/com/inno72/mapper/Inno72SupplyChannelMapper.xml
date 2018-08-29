@@ -22,7 +22,8 @@
 
   <update id="closeSupply">
 
-    update
+    update inno72_supply_channel
+    set
     <if test="isDelete != null">
       is_delete =#{isDelete}
     </if>
