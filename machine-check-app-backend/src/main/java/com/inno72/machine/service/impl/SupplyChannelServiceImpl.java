@@ -477,6 +477,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 						}
 						supplyChannel.setGoodsId(goodsIdStr);
 						supplyChannel.setGoodsCount(afterGoodsCount);
+						supplyChannel.setIsDelete(0);
 						inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
 						Condition condition = new Condition(Inno72SupplyChannelGoods.class);
 						condition.createCriteria().andEqualTo("supplyChannelId", supplyChannel.getId());
