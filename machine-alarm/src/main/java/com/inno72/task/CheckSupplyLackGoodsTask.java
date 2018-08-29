@@ -23,21 +23,13 @@ public class CheckSupplyLackGoodsTask {
 
 
     Map<String,Object> map = new HashMap<>();
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void typeOneTask(){
-        String url = "http://localhost:8899/machine/channel/findAndPushByTaskParam";//machineAlarmProperties.getProps().get("findAndPushByTaskParam");
-        logger.info("定时获取货道商品数量小于10%的货道开始。。。。。。。");
+        String url = machineAlarmProperties.getProps().get("findAndPushByTaskParam");
+        logger.info("定时获取货道商品缺货的机器开始。。。。。。。");
         String data = JSON.toJSONString(map);
         HttpClient.post(url, data);
-        logger.info("定时获取货道商品数量小于10%的货道结束。。。。。。。");
+        logger.info("定时获取货道商品缺货的机器结束。。。。。。。");
     }
 
-    @Scheduled(cron = "0 0/1 * * * ?")
-    public void typeTwoTask(){
-        logger.info("定时获取货道商品数量小于20%的货道开始。。。。。。。");
-        String url = "http://localhost:8899/machine/channel/findAndPushByTaskParam";//machineAlarmProperties.getProps().get("findAndPushByTaskParam");
-        String data = JSON.toJSONString(map);
-        HttpClient.post(url, data);
-        logger.info("定时获取货道商品数量小于20%的货道结束。。。。。。。");
-    }
 }
