@@ -36,6 +36,7 @@
 	</select>
     <select id="findMachineByMachineCode" parameterType="String" resultType="com.inno72.model.Inno72Machine">
       SELECT
+        m.id,
 	    m.open_status AS openStatus,
 	    m.machine_status AS machineStatus
       FROM

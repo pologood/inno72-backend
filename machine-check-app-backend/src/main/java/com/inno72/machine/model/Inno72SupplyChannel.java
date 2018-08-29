@@ -122,6 +122,9 @@ public class Inno72SupplyChannel {
 	private String machineCode;
 
 	@Transient
+	private String localeStr;
+
+	@Transient
 	private List<Inno72CheckUser> checkUserList;
 
 	/**
@@ -425,6 +428,14 @@ public class Inno72SupplyChannel {
 
 	public void setMachineCode(String machineCode) {
 		this.machineCode = machineCode;
+	}
+
+	public String getLocaleStr() {
+		return localeStr;
+	}
+
+	public void setLocaleStr(String localeStr) {
+		this.localeStr = localeStr;
 	}
 
 	public List<Inno72CheckUser> getCheckUserList() {

@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.inno72.machine.vo.SupplyRequestVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
@@ -476,6 +477,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 						}
 						supplyChannel.setGoodsId(goodsIdStr);
 						supplyChannel.setGoodsCount(afterGoodsCount);
+						supplyChannel.setIsDelete(0);
 						inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
 						Condition condition = new Condition(Inno72SupplyChannelGoods.class);
 						condition.createCriteria().andEqualTo("supplyChannelId", supplyChannel.getId());
@@ -564,33 +566,51 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	}
 
 	@Override
-	public void findAndPushByTaskParam(int lackGoodsType) {
-		List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectTaskParam(lackGoodsType);
+	public void findAndPushByTaskParam() {
+		List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectTask();
 		if (list != null && list.size() > 0) {
 			AlarmMessageBean alarmMessageBean = new AlarmMessageBean();
 			alarmMessageBean.setSystem("machineLackGoods");
 			alarmMessageBean.setType("machineLackGoodsException");
 			for (Inno72SupplyChannel supplyChannel : list) {
-				String id = supplyChannel.getId();
-				String key = CommonConstants.SUPPLY_CHANNEL_LACK_GOODS_PREF + lackGoodsType + "_" + id;
-				String value = redisUtil.get(key);
-				if (StringUtil.isEmpty(value)) {
+				int totalCount = supplyChannel.getGoodsCount();
+				if(totalCount<5){
 					ChannelGoodsAlarmBean alarmBean = new ChannelGoodsAlarmBean();
-					alarmBean.setChannelNum(supplyChannel.getCode());
 					alarmBean.setGoodsName(supplyChannel.getGoodsName());
-					alarmBean.setLackGoodsType(lackGoodsType);
 					alarmBean.setMachineCode(supplyChannel.getMachineCode());
-					int volumeCount = supplyChannel.getVolumeCount();
-					int goodsCount = supplyChannel.getGoodsCount();
-					alarmBean.setSurPlusNum(goodsCount);
-					alarmBean.setLackNum(volumeCount - goodsCount);
+					alarmBean.setSurPlusNum(supplyChannel.getGoodsCount());
+					alarmBean.setLocaleStr(supplyChannel.getLocaleStr());
 					alarmMessageBean.setData(alarmBean);
 					logger.info("货道缺货发送push{}", JSONObject.toJSONString(alarmMessageBean));
 					redisUtil.publish("moniterAlarm", JSONObject.toJSONString(alarmMessageBean));
-					redisUtil.setex(key, 60 * 60 * 2, "1");
 				}
 			}
 		}
+	}
+
+	@Override
+	public void findLockGoodsPush(SupplyRequestVo vo) {
+		String goodsId = vo.getGoodsId();
+		String machineId = vo.getMachineId();
+		Map<String,Object> map = new HashMap<>();
+		map.put("goodsId",goodsId);
+		map.put("machineId",machineId);
+		Inno72SupplyChannel supplyChannel = inno72SupplyChannelMapper.selectLockGoods(map);
+		if(supplyChannel != null){
+			int totalCount = supplyChannel.getGoodsCount();
+			if(totalCount == 10 || totalCount == 5){
+				ChannelGoodsAlarmBean alarmBean = new ChannelGoodsAlarmBean();
+				alarmBean.setGoodsName(supplyChannel.getGoodsName());
+				alarmBean.setMachineCode(supplyChannel.getMachineCode());
+				alarmBean.setSurPlusNum(totalCount);
+				alarmBean.setLocaleStr(supplyChannel.getLocaleStr());
+				AlarmMessageBean alarmMessageBean = new AlarmMessageBean();
+				alarmMessageBean.setData(alarmBean);
+				logger.info("货道缺货发送push{}", JSONObject.toJSONString(alarmMessageBean));
+				redisUtil.publish("moniterAlarm", JSONObject.toJSONString(alarmMessageBean));
+			}
+		}
+
 	}
 
 	public void addSupplyChannelToMongo(Inno72SupplyChannel supplyChannel) {

@@ -46,4 +46,5 @@ public interface MachineService extends Service<Inno72Machine> {
     Result<List<MachineLogInfo>> findMachineNetStatusCloseList(List<MachineLogInfo> machineLogInfos);
 
 
+    Inno72Machine findByCode(String machineCode);
 }

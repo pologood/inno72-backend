@@ -20,7 +20,7 @@ public class ProcessDataFilter extends OncePerRequestFilter {
 	private static List<String> doNotCheckUs = Arrays
 			.asList("/check/user/upload","/check/user/encrypt","/check/user/decrypt",
 					"/check/fault/upload","/machine/channel/merge","/machine/channel/split",
-                    "/machine/channel/findAndPushByTaskParam"
+                    "/machine/channel/findAndPushByTaskParam","/machine/channel/findLockGoodsPush"
 					);
 
 	@Override

@@ -12,6 +12,7 @@ public class ChannelGoodsAlarmBean {
     private String channelNum;
     private int lackNum;//缺货多少个
     private int surPlusNum;//剩余多少个
+    private String localeStr;//点位
 
     public int getLackNum() {
         return lackNum;
@@ -53,6 +54,12 @@ public class ChannelGoodsAlarmBean {
         this.machineCode = machineCode;
     }
 
+    public String getLocaleStr() {
+        return localeStr;
+    }
 
+    public void setLocaleStr(String localeStr) {
+        this.localeStr = localeStr;
+    }
 }
 

@@ -34,7 +34,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	private static List<String> doNotCheckUs = Arrays.asList("/check/user/smsCode","/check/user/login",
 			"/check/user/h5/smsCode","/check/user/h5/login","/check/user/operation",
             "/check/user/encrypt","/machine/channel/split","/machine/channel/merge","/check/user/decrypt",
-            "/machine/channel/findAndPushByTaskParam","/app/version/find");
+            "/machine/channel/findAndPushByTaskParam","/machine/channel/findLockGoodsPush","/app/version/find");
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
