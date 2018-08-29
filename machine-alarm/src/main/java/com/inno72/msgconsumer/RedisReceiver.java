@@ -212,6 +212,7 @@ public class RedisReceiver {
                     Inno72Machine machine = machineService.findBy("machineCode",machineCode);
                     Inno72SupplyChannel supplyChannel = new Inno72SupplyChannel();
                     supplyChannel.setCode(channelNum);
+                    supplyChannel.setIsDelete(1);
                     supplyChannel.setMachineId(machine.getId());
                     supplyChannelService.closeSupply(supplyChannel);
                 }
