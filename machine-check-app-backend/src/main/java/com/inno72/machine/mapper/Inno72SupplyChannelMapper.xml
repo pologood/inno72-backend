@@ -101,7 +101,6 @@
       <if test="status != null">
         and t1.status = #{status}
       </if>
-      and t1.is_delete=0
     </where>
     order by t1.code * 1
   </select>
