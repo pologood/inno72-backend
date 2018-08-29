@@ -20,7 +20,7 @@
     <result column="is_delete" jdbcType="INTEGER" property="isDelete"/>
   </resultMap>
 
-  <update id="supplyChannel">
+  <update id="closeSupply">
 
     update
     <if test="isDelete != null">
