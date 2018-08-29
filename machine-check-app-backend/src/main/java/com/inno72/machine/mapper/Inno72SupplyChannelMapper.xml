@@ -23,6 +23,7 @@
     <result column="goodsId" jdbcType="VARCHAR" property="goodsId"/>
     <result column="goodsStatus" jdbcType="INTEGER" property="goodsStatus"/>
     <result column="machineCode" jdbcType="VARCHAR" property="machineCode"/>
+    <result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
     <association property="checkUserList" resultMap="CheckUserList"/>
   </resultMap>
 
@@ -166,26 +167,43 @@
     </foreach>
   </update>
 
-  <select id="selectTaskParam" resultMap="BaseResultMap">
-    select t1.*,
+  <select id="selectTask" resultMap="BaseResultMap">
+    select sum(t2.goods_count) goods_count,
     t3.name goodsName,
-    t5.name checkUserName,
-    t5.id checkUserId,
-    t5.phone checkUserPhone,
-    t6.machine_code machineCode
+    t4.machine_code machineCode,
+    CONCAT(
+		t6.province,
+		t6.city,
+		t6.district,
+		if(t6.circle='其他','',t6.circle),IFNULL(t5.mall,""),IFNULL( t5.name,'')
+		) AS localeStr
+    from inno72_supply_channel_goods t1
+    left join inno72_supply_channel t2 on t1.supply_channel_id=t2.id
+    left join inno72_goods t3 on t1.goods_id=t3.id
+    left join inno72_machine t4 on t2.machine_id=t4.id
+    LEFT JOIN inno72_locale t5 ON t5.id = t4.locale_id
+	LEFT JOIN inno72_admin_area t6 ON t6.CODE = t5.area_code
+    where t4.machine_status=4 and t4.open_status=0 group by t1.goods_id,t4.machine_code
+  </select>
+
+  <select id="selectLockGoods" resultMap="BaseResultMap">
+    select sum(t1.goods_count) goods_count,
+    t3.name goodsName,
+    t4.machine_code machineCode,
+    CONCAT(
+		t6.province,
+		t6.city,
+		t6.district,
+		if(t6.circle='其他','',t6.circle),IFNULL(t5.mall,""),IFNULL( t5.name,'')
+		) AS localeStr
     from inno72_supply_channel t1
     inner join inno72_supply_channel_goods t2 on t1.id=t2.supply_channel_id
     inner join inno72_goods t3 on t2.goods_id=t3.id
-    left join inno72_check_user_machine t4 on t1.machine_id=t4.machine_id
-    left join inno72_check_user t5 on t5.id=t4.check_user_id
-    left join inno72_machine t6 on t1.machine_id=t6.id
+    left join inno72_machine t4 on t1.machine_id=t4.id
+    LEFT JOIN inno72_locale t5 ON t5.id = t4.locale_id
+	LEFT JOIN inno72_admin_area t6 ON t6.CODE = t5.area_code
     where
-    t6.machine_status=4 and t6.open_status=0
-     <if test="lackGoodsType==1">
-       and (t1.goods_count/t1.volume_count) <![CDATA[ <= ]]> 0.1
-     </if>
-    <if test="lackGoodsType==2">
-      and (t1.goods_count/t1.volume_count) <![CDATA[ <= ]]> 0.2
-    </if>
+    t4.machine_status=4 and t4.open_status=0
+    and t2.goods_id=#{goodsId} and t1.machine_id=#{machineId}
   </select>
 </mapper>

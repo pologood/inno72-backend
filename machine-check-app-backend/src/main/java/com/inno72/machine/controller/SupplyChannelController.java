@@ -165,9 +165,18 @@ public class SupplyChannelController {
 	 * 查询缺货货道并发送push
 	 */
 	@RequestMapping(value = "findAndPushByTaskParam",method = {RequestMethod.POST})
-	public void findAndPushByTaskParam(@RequestBody SupplyRequestVo vo){
-		logger.info("查询缺货货道并发送push接口参数：{}",JSON.toJSON(vo));
-		supplyChannelService.findAndPushByTaskParam(vo.getLackGoodsType());
+	public void findAndPushByTaskParam(){
+		logger.info("查询缺货货道并发送push接口");
+		supplyChannelService.findAndPushByTaskParam();
+	}
+
+	/**
+	 * 查询商品缺货情况
+	 * @param vo
+	 */
+	@RequestMapping(value="findLockGoodsPush")
+	public void findLockGoodsPush(@RequestBody SupplyRequestVo vo){
+		supplyChannelService.findLockGoodsPush(vo);
 	}
 
 

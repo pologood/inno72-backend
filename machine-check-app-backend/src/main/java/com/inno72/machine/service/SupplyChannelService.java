@@ -5,6 +5,7 @@ import com.inno72.common.Service;
 import com.inno72.machine.model.Inno72Goods;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.model.Inno72SupplyChannel;
+import com.inno72.machine.vo.SupplyRequestVo;
 import com.inno72.machine.vo.WorkOrderVo;
 
 import java.util.List;
@@ -44,6 +45,7 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
     Result<WorkOrderVo> workOrderDetail(String machineId, String batchNo);
 
-    void findAndPushByTaskParam(int lackGoodsType);
+    void findAndPushByTaskParam();
 
+    void findLockGoodsPush(SupplyRequestVo vo);
 }
