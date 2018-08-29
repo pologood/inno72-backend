@@ -58,6 +58,9 @@ public class RedisReceiver {
     @Resource
     private MachineService machineService;
 
+    @Resource
+    private SupplyChannelService supplyChannelService;
+
     @Value("${inno72.dingding.groupId}")
     private String groupId;
 
@@ -206,6 +209,11 @@ public class RedisReceiver {
                         msgUtil.sendDDTextByGroup("dingding_alarm_common", params, groupId, "machineAlarm-RedisReceiver");
 
                     }
+                    Inno72Machine machine = machineService.findBy("machineCode",machineCode);
+                    Inno72SupplyChannel supplyChannel = new Inno72SupplyChannel();
+                    supplyChannel.setCode(channelNum);
+                    supplyChannel.setMachineId(machine.getId());
+                    supplyChannelService.closeSupply(supplyChannel);
                 }
             } else {
                 DropGoodsExceptionInfo dropGoodsExceptionInfo = new DropGoodsExceptionInfo();
