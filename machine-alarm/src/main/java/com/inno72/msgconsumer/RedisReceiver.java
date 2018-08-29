@@ -209,7 +209,7 @@ public class RedisReceiver {
                         msgUtil.sendDDTextByGroup("dingding_alarm_common", params, groupId, "machineAlarm-RedisReceiver");
 
                     }
-                    Inno72Machine machine = machineService.findBy("machineCode",machineCode);
+                    Inno72Machine machine = machineService.findByCode(machineCode);
                     Inno72SupplyChannel supplyChannel = new Inno72SupplyChannel();
                     supplyChannel.setCode(channelNum);
                     supplyChannel.setIsDelete(1);

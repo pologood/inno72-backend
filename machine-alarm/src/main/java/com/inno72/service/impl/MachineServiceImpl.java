@@ -85,4 +85,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
         return Results.success(machineLogInfos1);
     }
+
+    @Override
+    public Inno72Machine findByCode(String machineCode) {
+        return inno72MachineMapper.findMachineByMachineCode(machineCode);
+    }
 }
