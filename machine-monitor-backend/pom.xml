@@ -1,17 +1,18 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.inno72</groupId>
-    <artifactId>inno72-backend</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
-  <artifactId>machine-monitor-backend</artifactId>
-  <name>machine-monitor-backend</name>
-    <packaging>war</packaging>
-  <url>http://maven.apache.org</url>
-  <properties>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.inno72</groupId>
+		<artifactId>inno72-backend</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>machine-monitor-backend</artifactId>
+	<name>machine-monitor-backend</name>
+	<packaging>war</packaging>
+	<url>http://maven.apache.org</url>
+	<properties>
 		<mongo.version>0.0.1-SNAPSHOT</mongo.version>
 		<mapper.version>4.0.3</mapper.version>
 		<java.version>1.8</java.version>
@@ -29,7 +30,11 @@
 			<artifactId>pagehelper</artifactId>
 			<version>4.0.0</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.inno72</groupId>
+			<artifactId>inno72-oss</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>

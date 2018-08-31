@@ -38,6 +38,8 @@ public class SocketServer {
 		Configuration config = new Configuration();
 		config.setHostname(hostname);
 		config.setPort(port);
+		config.setMaxHttpContentLength(6553600);
+		config.setMaxFramePayloadLength(6553600);
 		// config.setPingTimeout(1000);
 		// config.setPingInterval(1100);
 		SocketConfig socketConfig = new SocketConfig();
@@ -49,6 +51,9 @@ public class SocketServer {
 		server.addDisconnectListener(listener.disconnect());
 		server.addEventListener("message", String.class, listener.message());
 		server.addEventListener("monitor", String.class, listener.monitor());
+		// server.addEventListener("taskInfo", String.class,
+		// listener.taskInfo());
+		server.addEventListener("remote", byte[].class, listener.remote());
 		// deviceId message
 		// server.addEventListener("deviceIdMsg", String.class, listener.msg());
 

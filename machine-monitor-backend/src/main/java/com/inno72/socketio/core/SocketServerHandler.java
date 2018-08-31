@@ -22,6 +22,16 @@ public abstract class SocketServerHandler {
 	public abstract String process(String key, String data, Map<String, List<String>> params);
 
 	/**
+	 * 任务详情
+	 * 
+	 * @param key
+	 * @param data
+	 * @param params
+	 * @return
+	 */
+	public abstract String taskInfo(String key, String data, Map<String, List<String>> params);
+
+	/**
 	 * 监控消息处理
 	 * 
 	 * @param key
@@ -45,5 +55,7 @@ public abstract class SocketServerHandler {
 	 * @param data
 	 */
 	public abstract void closeNotify(String key, Map<String, List<String>> data);
+
+	public abstract void remoteResponse(String string, byte[] data, Map<String, List<String>> urlParams);
 
 }

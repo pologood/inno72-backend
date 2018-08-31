@@ -31,6 +31,9 @@ public class Inno72AppMsg {
 
 	private String content;
 
+	@Column(name = "msg_type")
+	private Integer msgType;
+
 	/**
 	 * @return id
 	 */
@@ -99,6 +102,14 @@ public class Inno72AppMsg {
 	 */
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public Integer getMsgType() {
+		return msgType;
+	}
+
+	public void setMsgType(Integer msgType) {
+		this.msgType = msgType;
 	}
 
 }

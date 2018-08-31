@@ -37,6 +37,7 @@ import com.inno72.model.MachineLogInfo;
 import com.inno72.model.MachineStatus;
 import com.inno72.model.MessageBean;
 import com.inno72.model.SystemStatus;
+import com.inno72.oss.OSSUtil;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.service.AppScreenShotService;
@@ -57,6 +58,7 @@ public class SocketIOStartHandler {
 
 	@Autowired
 	private AppScreenShotService appScreenShotService;
+	private static int i = 0;
 
 	@Resource
 	private MachineMonitorBackendProperties machineMonitorBackendProperties;
@@ -128,6 +130,8 @@ public class SocketIOStartHandler {
 			public void monitorResponse(String key, String data, Map<String, List<String>> params) {
 				String machineId = Optional.ofNullable(params.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
 						.orElse("");
+				String machinKey = CommonConstants.REDIS_SESSION_PATH + machineId;
+				redisUtil.setex(machinKey, 60 * 2, key);
 				// 将机器系统监控信息存入mongo数据库中
 				String message = AesUtils.decrypt(GZIPUtil.uncompress(data));
 				SystemStatus systemStatus = JSONObject.parseObject(message, SystemStatus.class);
@@ -163,6 +167,7 @@ public class SocketIOStartHandler {
 					}
 					List<Map<String, Object>> list = new ArrayList<>();
 					list.add(map);
+					System.out.println(JSON.toJSONString(machineMonitorBackendProperties));
 					String urlProp = machineMonitorBackendProperties.getProps().get("updateMachineListNetStatusUrl");
 					HttpClient.post(urlProp, JSON.toJSONString(list));
 				} catch (Exception e) {
@@ -192,6 +197,19 @@ public class SocketIOStartHandler {
 					// redisUtil.del(machinKey);
 				}
 				log.info("socket 断开了");
+			}
+
+			@Override
+			public String taskInfo(String key, String data, Map<String, List<String>> params) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public void remoteResponse(String string, byte[] data, Map<String, List<String>> urlParams) {
+				// InputStream sbs = new ByteArrayInputStream(data);
+				OSSUtil.uploadImgByBytes(data, "remote/" + i++ + ".jpg");
+				System.out.println("=========================");
 			}
 
 		};

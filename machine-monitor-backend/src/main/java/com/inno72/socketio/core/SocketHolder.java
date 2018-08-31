@@ -52,6 +52,10 @@ public class SocketHolder {
 		return send(get(key), "message", data);
 	}
 
+	public static boolean send(String key, String msgType, String data) {
+		return send(get(key), msgType, data);
+	}
+
 	public static boolean have(String key) {
 		return map.containsKey(key);
 	}
