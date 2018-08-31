@@ -37,8 +37,7 @@
 	<select id="selectMachinesByPage" parameterType="java.util.Map"
 		resultMap="VoResultMap">
 		select m.id,m.machine_code,m.machine_status,
-		if(aa.province=aa.city,CONCAT_WS('-',aa.province,aa.district,if(aa.circle='其他','',aa.circle),l.mall,l.name),
-		CONCAT_WS('-',aa.province,aa.city,aa.district,if(aa.circle='其他','',aa.circle),l.mall,l.name))
+		CONCAT_WS('-',aa.province,aa.city,aa.district,aa.circle,l.mall,l.name)
 		local_desc,
 		m.net_status,IFNULL(mm.name,case m.machine_status when '4'
 		then '默认活动' else '无' end )
