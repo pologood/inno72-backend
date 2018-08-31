@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.machine.mapper.Inno72TaskMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.machine.model.Inno72Task">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="do_type" jdbcType="INTEGER" property="doType" />
+    <result column="do_time" jdbcType="TIMESTAMP" property="doTime" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="app" jdbcType="VARCHAR" property="app" />
+    <result column="app_url" jdbcType="VARCHAR" property="appUrl" />
+    <result column="app_version" jdbcType="VARCHAR" property="appVersion" />
+    <result column="channel_code" jdbcType="VARCHAR" property="channelCode" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  <resultMap id="VoResultMap" extends="BaseResultMap" type="com.inno72.machine.vo.Inno72TaskVo">
+  	<result column="taskAll" jdbcType="INTEGER" property="taskAll" />
+  	<result column="taskSuss" jdbcType="INTEGER" property="taskSuss" />
+  	<result column="creater" jdbcType="VARCHAR" property="creater" />
+  
+  </resultMap>
+  
+  <select id="selectByPage" parameterType="java.util.Map" resultMap="VoResultMap">
+	SELECT * FROM (
+		SELECT
+			t.*,
+			mall.taskAll,
+			msu.taskSuss,
+			u.name AS creater
+		FROM
+			inno72_task t
+			LEFT JOIN ( SELECT tm.task_id, count( 1 ) AS taskAll FROM inno72_task_machine tm GROUP BY tm.task_id ) mall ON mall.task_id = t.id
+			LEFT JOIN ( SELECT tm.task_id, count( 1 ) AS taskSuss FROM inno72_task_machine tm WHERE tm.do_status = 1 GROUP BY tm.task_id ) msu ON msu.task_id = t.id
+			LEFT JOIN inno72_user u ON u.id = t.create_id
+		where t.status != 9
+		<if test="type !=null and type !=''">and t.type = #{type}</if>
+		<if test="status !=null and status !='' ">and t.status = #{status}</if>
+	) t
+	ORDER BY t.update_time DESC
+  </select>
+  
+  <resultMap id="ResultTaskDetailMap" extends="BaseResultMap" type="com.inno72.machine.vo.Inno72TaskVo">
+  		<result column="appName" property="appName"/>
+	   <association property="machineList" resultMap="machinesList" />
+  </resultMap>
+		<resultMap id="machinesList" type="com.inno72.machine.vo.Inno72TaskMachineVo">
+	 	<result column="machine_id" property="machineId" />
+		<result column="machine_code" property="machineCode"/>
+	  	<result column="name" property="name"/>
+	  	<result column="machine_province" property="province"/>
+	  	
+	  	<result column="machine_task_status" property="taskStatus"/>
+	  	<result column="machine_do_status" property="doStatus"/>
+	  	<result column="machine_do_type" property="doType"/>
+	  	<result column="machine_do_msg" property="doMsg"/>
+	  	<result column="machine_do_time" property="doTime"/>
+	  	<result column="machine_planed" property="planed"/>
+	  	
+	</resultMap>
+  <select id="selectTaskDetail" parameterType="String" resultMap="ResultTaskDetailMap">
+		SELECT
+			t.*,
+			app.app_name AS appName,
+			m.id AS machine_id,
+			m.machine_code AS machine_code,
+			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL( l.name,"")) as name,
+			area.province as machine_province,
+			tm.task_status AS machine_task_status,
+			tm.do_status AS machine_do_status,
+			tm.do_type AS machine_do_type,
+			tm.do_msg AS machine_do_msg,
+			ms.network_intensity as machine_planed,
+			date_format(tm.do_time,'%Y-%m-%d %H:%i:%s') AS machine_do_time
+		from inno72_task t
+		LEFT JOIN inno72_task_machine tm ON tm.task_id = t.id
+		LEFT JOIN inno72_machine m ON m.id = tm.machine_id
+		LEFT JOIN inno72_machine_status ms ON ms.machine_id=m.id
+		LEFT JOIN inno72_locale l ON l.id = m.locale_id
+		LEFT JOIN inno72_admin_area area ON area.code = l.area_code
+		LEFT JOIN inno72_app app ON app.id = t.app_id
+		WHERE t.id = #{id}
+  </select>
+  
+  <!-- 联动区域机器列表-->
+  <resultMap id="ResultAreaMachineMap" type="com.inno72.project.vo.Inno72AdminAreaVo">
+    <id column="code" jdbcType="VARCHAR" property="code" />
+    <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="district" jdbcType="VARCHAR" property="district" />
+    <result column="circle" jdbcType="VARCHAR" property="circle" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="planed" jdbcType="INTEGER" property="planed" />
+    <association property="machines" resultMap="machinesResult" />
+  </resultMap>
+  
+ <resultMap id="machinesResult" type="com.inno72.project.vo.Inno72MachineVo">
+  <result column="machine_id" property="machineId" />
+  <result column="machine_code" property="machineCode"/>
+  <result column="state" property="state"/>
+  <result column="machine_province" property="province"/>
+ </resultMap>
+  <select id="selectAreaMachineList" parameterType="java.util.Map" resultMap="ResultAreaMachineMap">
+  		SELECT
+			a.*,
+			m.id AS machine_id,
+			m.machine_code AS machine_code
+		FROM
+			inno72_admin_area a
+			LEFT JOIN (
+				SELECT m.machine_code,	m.id, locale.area_code FROM inno72_machine m
+				LEFT JOIN inno72_locale locale ON locale.id = m.locale_id WHERE m.machine_status ='4'
+			) m ON LEFT ( m.area_code,#{num}) = LEFT ( a.CODE,#{num})
+		WHERE 1=1
+		<if test="code !=null and code !='' ">and a.parent_code = #{code}  </if>
+		<if test="level !=null and level !='' ">and a.LEVEL = #{level}  </if>
+		<if test="machineCode !=null and machineCode !='' ">and m.machine_code = #{machineCode}  </if>
+  </select>
+  <select id="selectMachineList" parameterType="java.util.Map" resultMap="ResultAreaMachineMap">
+  		SELECT
+			m.id AS code,
+			m.machine_code AS parent_code,
+			CONCAT(  area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( locale.mall,""),IFNULL( locale.name,""), '—', m.machine_code ) AS name,
+			area.province,
+			area.city,
+			area.district,
+			area.circle,
+			'5' AS LEVEL,
+			ms.network_intensity as planed
+		FROM
+			inno72_machine m
+			LEFT JOIN inno72_machine_status ms ON ms.machine_id=m.id
+			LEFT JOIN inno72_locale locale ON m.locale_id = locale.id
+			LEFT JOIN inno72_admin_area area ON area.CODE = locale.area_code
+		WHERE m.machine_status ='4'
+		<if test="machineCode !=null and machineCode !='' ">and m.machine_code = #{machineCode}  </if>
+		and LEFT(locale.area_code,#{num}) =#{code}
+  </select>
+  
+  <select id="selectAppList" parameterType="java.util.Map" resultType="java.util.Map">
+  	SELECT
+	  	id AS id,
+	  	app_package_name AS appPackageName,
+	  	app_type AS appType,
+	  	app_name AS appName
+  	FROM inno72_app  a 
+  </select>
+</mapper>

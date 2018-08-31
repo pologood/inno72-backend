@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.machine.mapper.Inno72TaskMachineMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.machine.model.Inno72TaskMachine">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="task_id" jdbcType="VARCHAR" property="taskId" />
+    <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+    <result column="task_status" jdbcType="INTEGER" property="taskStatus" />
+    <result column="do_type" jdbcType="INTEGER" property="doType" />
+    <result column="do_status" jdbcType="INTEGER" property="doStatus" />
+    <result column="do_msg" jdbcType="VARCHAR" property="doMsg" />
+    <result column="do_time" jdbcType="TIMESTAMP" property="doTime" />
+  </resultMap>
+  
+  <delete id="deleteByTaskId" parameterType="String">
+		DELETE FROM inno72_task_machine WHERE task_id=#{taskId}
+	</delete>
+	
+	<insert id="insertTaskMachineList" parameterType="java.util.List">
+        insert into inno72_task_machine (id, task_id,machine_id,machine_code,task_status,do_status)
+        values
+        <foreach collection="list" item="t" index="index" separator=",">
+            (#{t.id},#{t.taskId},#{t.machineId},#{t.machineCode},0,0)
+        </foreach>
+    </insert>
+  
+</mapper>
