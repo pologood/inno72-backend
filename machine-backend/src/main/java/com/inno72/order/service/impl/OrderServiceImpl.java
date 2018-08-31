@@ -32,16 +32,6 @@ public class OrderServiceImpl extends AbstractService<Inno72Order> implements Or
 			order.setKeyword(null);
 		}
 		List<Inno72Order> orderList = inno72OrderMapper.seleByParamForPage(order);
-		if (orderList != null && orderList.size() > 0) {
-			for (Inno72Order inno72Order : orderList) {
-				Inno72OrderGoods inno72OrderGoods = new Inno72OrderGoods();
-				inno72OrderGoods.setOrderId(inno72Order.getId());
-				List<Inno72OrderGoods> orderGoodsList = inno72OrderGoodsMapper.seleByParam(inno72OrderGoods);
-				if (orderGoodsList != null && orderGoodsList.size() > 0) {
-					inno72Order.setOrderGoodsList(orderGoodsList);
-				}
-			}
-		}
 		return orderList;
 	}
 }
