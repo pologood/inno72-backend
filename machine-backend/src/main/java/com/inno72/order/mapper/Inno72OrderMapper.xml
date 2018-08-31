@@ -30,7 +30,19 @@
     <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
     <result column="mer_point_address" jdbcType="VARCHAR" property="merPointAddress"/>
     <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
+    <collection property="orderGoodsList" resultMap="orderGoodsList"/>
+  </resultMap>
 
+  <resultMap id="orderGoodsList" type="com.inno72.order.model.Inno72OrderGoods">
+    <id column="orderGoodsId" jdbcType="VARCHAR" property="id" />
+    <result column="orderId" jdbcType="VARCHAR" property="orderId"/>
+    <result column="orderNum" jdbcType="VARCHAR" property="orderNum" />
+    <result column="goodsType" jdbcType="INTEGER" property="goodsType" />
+    <result column="goodsId" jdbcType="VARCHAR" property="goodsId" />
+    <result column="goodsName" jdbcType="VARCHAR" property="goodsName" />
+    <result column="goodsCode" jdbcType="VARCHAR" property="goodsCode" />
+    <result column="goodsPrice" jdbcType="VARCHAR" property="goodsPrice" />
+    <result column="orderGoodsStatus" jdbcType="INTEGER" property="status" />
   </resultMap>
 
   <sql id="Column_List">
@@ -44,11 +56,18 @@
     t1.shops_id,t1.shops_name,t1.goods_status,
     t2.game_user_id,t2.nick_name,t2.mer_point_address,t2.machine_code,
     t2.activity_name,
-    t4.name gameName
+    t4.name gameName,
+    t5.goods_type goodsType,
+    t5.goods_id goodsId,
+    t5.goods_name goodsName,
+    t5.goods_code goodsCode,
+    t5.goods_price goodsPrice,
+    t5.status orderGoodsStatus
     from inno72_order t1
     left join inno72_game_user_life t2 on t1.id=t2.order_id
     left join inno72_activity_plan t3 on t1.inno72_activity_plan_id=t3.id
     left join inno72_game t4 on t3.game_id= t4.id
+    left join inno72_order_goods t5 on t5.order_num=t1.order_num
     <where>
       <if test="machineId != null">
         and t1.machine_id = #{machineId}
