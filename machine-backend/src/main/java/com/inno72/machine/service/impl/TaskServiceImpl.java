@@ -174,12 +174,8 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 			Inno72Task model = inno72TaskMapper.selectByPrimaryKey(task.getId());
 			// 判断是否可以编辑
 			if (2 == model.getStatus() || 3 == model.getStatus()) {
-				logger.info("该任务记录不能删除");
-				return Results.failure("该任务记录不能删除");
-			}
-			if (2 == model.getStatus() || 3 == model.getStatus()) {
-				logger.info("该任务记录不能删除");
-				return Results.failure("该任务记录不能删除");
+				logger.info("该任务记录不能修改");
+				return Results.failure("该任务记录不能修改");
 			}
 			// 1 app升级,2 app卸载，3合并货道 4 拆分货道
 			int type = task.getType();
