@@ -37,7 +37,6 @@ import com.inno72.model.MachineLogInfo;
 import com.inno72.model.MachineStatus;
 import com.inno72.model.MessageBean;
 import com.inno72.model.SystemStatus;
-import com.inno72.oss.OSSUtil;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.service.AppScreenShotService;
@@ -58,7 +57,6 @@ public class SocketIOStartHandler {
 
 	@Autowired
 	private AppScreenShotService appScreenShotService;
-	private static int i = 0;
 
 	@Resource
 	private MachineMonitorBackendProperties machineMonitorBackendProperties;
@@ -167,7 +165,6 @@ public class SocketIOStartHandler {
 					}
 					List<Map<String, Object>> list = new ArrayList<>();
 					list.add(map);
-					System.out.println(JSON.toJSONString(machineMonitorBackendProperties));
 					String urlProp = machineMonitorBackendProperties.getProps().get("updateMachineListNetStatusUrl");
 					HttpClient.post(urlProp, JSON.toJSONString(list));
 				} catch (Exception e) {
@@ -181,35 +178,23 @@ public class SocketIOStartHandler {
 				String machineId = Optional.ofNullable(data.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
 						.orElse("");
 				log.info("socket连接到服务器，机器machineId:{}", machineId);
-				if (!StringUtils.isEmpty(machineId)) {
-					String machinKey = CommonConstants.REDIS_BASE_PATH + machineId;
-					redisUtil.set(machinKey, sessionId);
-				}
 			}
 
 			@Override
 			public void closeNotify(String key, Map<String, List<String>> data) {
 				String machineId = Optional.ofNullable(data.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
 						.orElse("");
-				if (!StringUtils.isEmpty(machineId)) {
-					log.info("断开连接，机器machineId:{}", machineId);
-					// 暂时不删除
-					// redisUtil.del(machinKey);
-				}
-				log.info("socket 断开了");
+				log.info("断开连接，机器machineId:{}", machineId);
 			}
 
 			@Override
 			public String taskInfo(String key, String data, Map<String, List<String>> params) {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
 			public void remoteResponse(String string, byte[] data, Map<String, List<String>> urlParams) {
-				// InputStream sbs = new ByteArrayInputStream(data);
-				OSSUtil.uploadImgByBytes(data, "remote/" + i++ + ".jpg");
-				System.out.println("=========================");
+				// OSSUtil.uploadImgByBytes(data, "remote/" + i++ + ".jpg");
 			}
 
 		};

@@ -26,11 +26,6 @@ import com.inno72.service.AppMsgService;
 import com.inno72.util.AesUtils;
 import com.inno72.util.GZIPUtil;
 
-/**
- * @Auther: wxt
- * @Date: 2018/7/5 19:02
- * @Description:发送消息到客户端
- */
 @RestController
 @RequestMapping("/sendMsgToClient")
 public class SendMsgToClientController {
