@@ -35,7 +35,7 @@ public class CheckAlarmMachineTask {
     @Autowired
     private MongoOperations mongoTpl;
 
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void checkAllMachine(){
         log.info("获取全部需要发送报警的机器开始");
         List<Inno72Machine> list = machineService.findAlarmAllMachine();
@@ -48,7 +48,7 @@ public class CheckAlarmMachineTask {
         log.info("获取全部需要发送报警的机器结束");
     }
 
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void checkExceptionMachine(){
         log.info("获取异常的的需要发送报警机器开始");
         alarmDetailService.addToExceptionMachineBean();
