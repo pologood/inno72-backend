@@ -85,6 +85,19 @@ public class FunctionServiceImpl extends AbstractService<Inno72Function> impleme
 				v1.setId(fun1.getId());
 				v1.setTitle(fun1.getFunctionDepict());
 				secondVo.add(v1);
+
+				condition = new Condition(Inno72Function.class);
+				condition.createCriteria().andEqualTo("functionLevel", 3).andEqualTo("parentId", fun1.getId());
+				List<Inno72Function> third = findByCondition(condition);
+				List<FunctionTreeVo> thirdVo = new ArrayList<>();
+
+				for (Inno72Function fun2 : third) {
+					FunctionTreeVo v2 = new FunctionTreeVo();
+					v2.setId(fun2.getId());
+					v2.setTitle(fun2.getFunctionDepict());
+					thirdVo.add(v2);
+				}
+				v1.setChildren(thirdVo);
 			}
 			v.setChildren(secondVo);
 		}

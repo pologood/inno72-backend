@@ -1,241 +1,193 @@
 package com.inno72.system.model;
 
-import java.util.Date;
-import javax.persistence.*;
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters.LocalDateTimeConverter;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.CustomLocalDateTimeSerializer;
 
 @Table(name = "inno72_user_function_area")
 public class Inno72UserFunctionArea {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private String id;
 
-    /**
-     * 用户ID
-     */
-    @Column(name = "user_id")
-    private String userId;
+	/**
+	 * 用户ID
+	 */
+	@Column(name = "user_id")
+	private String userId;
 
-    /**
-     * 区域code
-     */
-    @Column(name = "area_code")
-    private String areaCode;
+	/**
+	 * 区域code
+	 */
+	@Column(name = "area_code")
+	private String areaCode;
 
-    /**
-     * 区域名称
-     */
-    @Column(name = "area_name")
-    private String areaName;
+	/**
+	 * 区域名称
+	 */
+	@Column(name = "area_name")
+	private String areaName;
 
-    /**
-     * 省code
-     */
-    @Column(name = "province_code")
-    private String provinceCode;
+	/**
+	 * 省名称
+	 */
+	@Column(name = "province")
+	private String province;
 
-    /**
-     * 省名称
-     */
-    @Column(name = "province_name")
-    private String provinceName;
+	/**
+	 * 市名称
+	 */
+	@Column(name = "city")
+	private String city;
 
-    /**
-     * 市code
-     */
-    @Column(name = "city_code")
-    private String cityCode;
+	/**
+	 * 创建人
+	 */
+	@Column(name = "create_id")
+	private String createId;
 
-    /**
-     * 市名称
-     */
-    @Column(name = "city_name")
-    private String cityName;
+	/**
+	 * 创建时间
+	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Convert(converter = LocalDateTimeConverter.class)
+	@Column(name = "create_time")
+	private LocalDateTime createTime;
 
-    /**
-     * 创建人
-     */
-    @Column(name = "create_id")
-    private String createId;
+	/**
+	 * @return id
+	 */
+	public String getId() {
+		return id;
+	}
 
-    /**
-     * 创建时间
-     */
-    @Column(name = "create_time")
-    private Date createTime;
+	/**
+	 * @param id
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    /**
-     * @return id
-     */
-    public String getId() {
-        return id;
-    }
+	/**
+	 * 获取用户ID
+	 *
+	 * @return user_id - 用户ID
+	 */
+	public String getUserId() {
+		return userId;
+	}
 
-    /**
-     * @param id
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
+	/**
+	 * 设置用户ID
+	 *
+	 * @param userId
+	 *            用户ID
+	 */
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
-    /**
-     * 获取用户ID
-     *
-     * @return user_id - 用户ID
-     */
-    public String getUserId() {
-        return userId;
-    }
+	/**
+	 * 获取区域code
+	 *
+	 * @return area_code - 区域code
+	 */
+	public String getAreaCode() {
+		return areaCode;
+	}
 
-    /**
-     * 设置用户ID
-     *
-     * @param userId 用户ID
-     */
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+	/**
+	 * 设置区域code
+	 *
+	 * @param areaCode
+	 *            区域code
+	 */
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
+	}
 
-    /**
-     * 获取区域code
-     *
-     * @return area_code - 区域code
-     */
-    public String getAreaCode() {
-        return areaCode;
-    }
+	/**
+	 * 获取区域名称
+	 *
+	 * @return area_name - 区域名称
+	 */
+	public String getAreaName() {
+		return areaName;
+	}
 
-    /**
-     * 设置区域code
-     *
-     * @param areaCode 区域code
-     */
-    public void setAreaCode(String areaCode) {
-        this.areaCode = areaCode;
-    }
+	/**
+	 * 设置区域名称
+	 *
+	 * @param areaName
+	 *            区域名称
+	 */
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
+	}
 
-    /**
-     * 获取区域名称
-     *
-     * @return area_name - 区域名称
-     */
-    public String getAreaName() {
-        return areaName;
-    }
+	public String getProvince() {
+		return province;
+	}
 
-    /**
-     * 设置区域名称
-     *
-     * @param areaName 区域名称
-     */
-    public void setAreaName(String areaName) {
-        this.areaName = areaName;
-    }
+	public void setProvince(String province) {
+		this.province = province;
+	}
 
-    /**
-     * 获取省code
-     *
-     * @return province_code - 省code
-     */
-    public String getProvinceCode() {
-        return provinceCode;
-    }
+	public String getCity() {
+		return city;
+	}
 
-    /**
-     * 设置省code
-     *
-     * @param provinceCode 省code
-     */
-    public void setProvinceCode(String provinceCode) {
-        this.provinceCode = provinceCode;
-    }
+	public void setCity(String city) {
+		this.city = city;
+	}
 
-    /**
-     * 获取省名称
-     *
-     * @return province_name - 省名称
-     */
-    public String getProvinceName() {
-        return provinceName;
-    }
+	/**
+	 * 获取创建人
+	 *
+	 * @return create_id - 创建人
+	 */
+	public String getCreateId() {
+		return createId;
+	}
 
-    /**
-     * 设置省名称
-     *
-     * @param provinceName 省名称
-     */
-    public void setProvinceName(String provinceName) {
-        this.provinceName = provinceName;
-    }
+	/**
+	 * 设置创建人
+	 *
+	 * @param createId
+	 *            创建人
+	 */
+	public void setCreateId(String createId) {
+		this.createId = createId;
+	}
 
-    /**
-     * 获取市code
-     *
-     * @return city_code - 市code
-     */
-    public String getCityCode() {
-        return cityCode;
-    }
+	/**
+	 * 获取创建时间
+	 *
+	 * @return create_time - 创建时间
+	 */
+	public LocalDateTime getCreateTime() {
+		return createTime;
+	}
 
-    /**
-     * 设置市code
-     *
-     * @param cityCode 市code
-     */
-    public void setCityCode(String cityCode) {
-        this.cityCode = cityCode;
-    }
-
-    /**
-     * 获取市名称
-     *
-     * @return city_name - 市名称
-     */
-    public String getCityName() {
-        return cityName;
-    }
-
-    /**
-     * 设置市名称
-     *
-     * @param cityName 市名称
-     */
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
-    }
-
-    /**
-     * 获取创建人
-     *
-     * @return create_id - 创建人
-     */
-    public String getCreateId() {
-        return createId;
-    }
-
-    /**
-     * 设置创建人
-     *
-     * @param createId 创建人
-     */
-    public void setCreateId(String createId) {
-        this.createId = createId;
-    }
-
-    /**
-     * 获取创建时间
-     *
-     * @return create_time - 创建时间
-     */
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    /**
-     * 设置创建时间
-     *
-     * @param createTime 创建时间
-     */
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
+	/**
+	 * 设置创建时间
+	 *
+	 * @param createTime
+	 *            创建时间
+	 */
+	public void setCreateTime(LocalDateTime createTime) {
+		this.createTime = createTime;
+	}
 }

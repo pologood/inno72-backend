@@ -8,6 +8,10 @@ public class AreaTreeVo {
 
 	private String code;
 
+	private String province;
+
+	private String city;
+
 	private List<AreaTreeVo> children;
 
 	public String getName() {
@@ -24,6 +28,22 @@ public class AreaTreeVo {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	public String getCityName() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
 	}
 
 	public List<AreaTreeVo> getChildren() {

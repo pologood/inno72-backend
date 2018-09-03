@@ -9,11 +9,18 @@
     <result column="user_id" jdbcType="VARCHAR" property="userId" />
     <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
     <result column="area_name" jdbcType="VARCHAR" property="areaName" />
-    <result column="province_code" jdbcType="VARCHAR" property="provinceCode" />
-    <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
-    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
-    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="province" jdbcType="VARCHAR" property="provinceCode" />
+    <result column="city" jdbcType="VARCHAR" property="cityCode" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
+  
+  
+  <insert id="insertUserFunctionAreaList" parameterType="java.util.List">
+        insert into inno72_user_function_area (id, user_id,area_code,area_name,province,city)
+        values
+        <foreach collection="list" item="m" index="index" separator=",">
+            (#{m.id},#{m.userId},#{m.areaCode},#{m.areaName},#{m.province},#{m.city})
+        </foreach>
+    </insert>
 </mapper>
