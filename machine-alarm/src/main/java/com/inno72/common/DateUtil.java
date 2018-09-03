@@ -21,6 +21,7 @@ public class DateUtil {
 	public static final DateTimeFormatter DF_ONLY_YMD_S2 = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
 	public static final DateTimeFormatter DF_FULL_S1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	public static final DateTimeFormatter DF_FULL_S2 = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+    public static final SimpleDateFormat DF_ONLY_YMDHM = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public static LocalDate toDate(String str, DateTimeFormatter dateTimeFormatter) {
 		try {
