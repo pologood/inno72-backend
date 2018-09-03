@@ -47,4 +47,7 @@ public interface MachineService extends Service<Inno72Machine> {
 
 
     Inno72Machine findByCode(String machineCode);
+
+
+    List<Inno72Machine> findAlarmAllMachine();
 }

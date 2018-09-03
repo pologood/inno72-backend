@@ -56,7 +56,7 @@ public class CheckActivityIsExistTask {
     private ActivityPlanService activityPlanService;
 
 //    @Scheduled(cron = "0 0 10 * * ?")
-    @Scheduled(cron = "0/5 * * * * ?")
+//    @Scheduled(cron = "0/5 * * * * ?")
     public void checkActivityIsExist() {
 
         log.info("检查机器上是否有活动排期的定时任务，开始执行");
