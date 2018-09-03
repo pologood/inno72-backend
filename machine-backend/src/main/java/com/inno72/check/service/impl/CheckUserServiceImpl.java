@@ -220,6 +220,8 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 			model.setUpdateId(mUserId);
 			model.setUpdateTime(LocalDateTime.now());
 
+			// 先删除关联关系
+			inno72CheckUserMachineMapper.deleteByUserId(model.getId());
 			List<Inno72MachineVo> machines = model.getMachines();
 			if (null != machines && machines.size() > 0) {
 				List<Inno72CheckUserMachine> insertUserMachineList = new ArrayList<>();
@@ -231,9 +233,6 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 					userMachine.setMachineId(inno72MachineVo.getMachineId());
 					insertUserMachineList.add(userMachine);
 				}
-				// 先删除关联关系
-				inno72CheckUserMachineMapper.deleteByUserId(model.getId());
-
 				inno72CheckUserMachineMapper.insertUserMachineList(insertUserMachineList);
 			}
 
