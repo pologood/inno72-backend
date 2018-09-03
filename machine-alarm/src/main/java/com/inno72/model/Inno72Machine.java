@@ -80,7 +80,17 @@ public class Inno72Machine {
     @Column(name = "bluetooth_address")
     private String bluetoothAddress;
 
+    /**
+     * 报警开启状态
+     */
+    @Column(name="open_status")
     private int openStatus;
+
+    @Column(name="monitor_start")
+    private String monitorStart;
+
+    @Column(name="monitor_end")
+    private String monitorEnd;
 
     public int getOpenStatus() {
         return openStatus;
@@ -333,6 +343,29 @@ public class Inno72Machine {
         this.address = address;
     }
 
+    public String getBluetoothAddress() {
+        return bluetoothAddress;
+    }
+
+    public void setBluetoothAddress(String bluetoothAddress) {
+        this.bluetoothAddress = bluetoothAddress;
+    }
+
+    public String getMonitorStart() {
+        return monitorStart;
+    }
+
+    public void setMonitorStart(String monitorStart) {
+        this.monitorStart = monitorStart;
+    }
+
+    public String getMonitorEnd() {
+        return monitorEnd;
+    }
+
+    public void setMonitorEnd(String monitorEnd) {
+        this.monitorEnd = monitorEnd;
+    }
     /**
      * 重写equls方法
      *

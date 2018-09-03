@@ -35,5 +35,7 @@ public interface Inno72MachineMapper extends Mapper<Inno72Machine> {
      */
     List<Inno72Machine> findMachineNetStatusOpenList(List<String> machineList);
 
+    List<Inno72Machine> findAlarmAllMachine();
+
 
 }
