@@ -99,14 +99,13 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 			if (null == task.getDoType()) {
 				return Results.failure("请选择执行方式");
 			}
-			if (StringUtil.isBlank(task.getDoTimeStr())) {
-				return Results.failure("请选择执行时间");
+			if (StringUtil.isNotBlank(task.getDoTimeStr())) {
+				boolean b1 = Pattern.matches(timeRegex, task.getDoTimeStr());
+				if (!b1) {
+					return Results.failure("执行时间应格式化到分");
+				}
+				task.setDoTime(DateUtil.toDateTime(task.getDoTimeStr() + ":00", DateUtil.DF_FULL_S1));
 			}
-			boolean b1 = Pattern.matches(timeRegex, task.getDoTimeStr());
-			if (!b1) {
-				return Results.failure("执行时间应格式化到分");
-			}
-			task.setDoTime(DateUtil.toDateTime(task.getDoTimeStr() + ":00", DateUtil.DF_FULL_S1));
 
 			List<Inno72TaskMachineVo> machineList = task.getMachineList();
 			if (null == machineList || machineList.size() < 0) {
@@ -121,7 +120,7 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 			}
 
 			task.setStatus(0);
-			task.setId(StringUtil.getUUID());
+			task.setId("T" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S2));
 			List<Inno72TaskMachineVo> insertTaskMachinList = new ArrayList<>();
 			for (Inno72TaskMachineVo taskMachine : machineList) {
 				if (insertTaskMachinList.contains(taskMachine)) {
@@ -208,14 +207,15 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 				return Results.failure("请选择执行方式");
 			}
 
-			if (StringUtil.isBlank(task.getDoTimeStr())) {
-				return Results.failure("请选择执行时间");
+			if (StringUtil.isNotBlank(task.getDoTimeStr())) {
+				boolean b1 = Pattern.matches(timeRegex, task.getDoTimeStr());
+				if (!b1) {
+					return Results.failure("执行时间应格式化到分");
+				}
+				task.setDoTime((DateUtil.toDateTime(task.getDoTimeStr() + ":00", DateUtil.DF_FULL_S1)));
+			} else {
+				task.setDoTime(null);
 			}
-			boolean b1 = Pattern.matches(timeRegex, task.getDoTimeStr());
-			if (!b1) {
-				return Results.failure("执行时间应格式化到分");
-			}
-			task.setDoTime((DateUtil.toDateTime(task.getDoTimeStr() + ":00", DateUtil.DF_FULL_S1)));
 
 			List<Inno72TaskMachineVo> machineList = task.getMachineList();
 			if (null == machineList || machineList.size() < 0) {
@@ -293,8 +293,8 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 		}
 		if (3 == status) {
 			if (2 != model.getStatus()) {
-				logger.info("该任务未执行，不能继续执行");
-				return Results.failure("该任务未执行，不能继续执行");
+				logger.info("该任务，不能继续执行");
+				return Results.failure("该任务，不能继续执行");
 			}
 		}
 
@@ -319,7 +319,7 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		Inno72Task model = inno72TaskMapper.selectByPrimaryKey(id);
 		// 判断是否可以删除
-		if (1 == model.getStatus() || 2 == model.getStatus() || 3 == model.getStatus()) {
+		if (2 == model.getStatus() || 3 == model.getStatus()) {
 			logger.info("该任务记录不能删除");
 			return Results.failure("该任务记录不能删除");
 		}
