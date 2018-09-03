@@ -8,16 +8,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.inno72.project.service.ActivityPlanService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -60,6 +61,7 @@ import com.inno72.machine.vo.SystemStatus;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
 import com.inno72.machine.vo.UpdateMachineVo;
 import com.inno72.plugin.http.HttpClient;
+import com.inno72.project.service.ActivityPlanService;
 import com.inno72.system.model.Inno72User;
 import com.inno72.utils.page.Pagination;
 
@@ -88,9 +90,10 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	private CheckFaultService checkFaultService;
 	@Autowired
 	private Inno72AppScreenShotMapper inno72AppScreenShotMapper;
-
 	@Autowired
 	private ActivityPlanService activityPlanService;
+	@Autowired
+	private StringRedisTemplate stringRedisTemplate;
 
 	@Override
 	public Result<List<Inno72Machine>> findMachines(String machineCode, String localCode) {
@@ -397,16 +400,13 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	@Override
 	public Result<MachinePortalVo> findMachinePortalData() {
 		MachinePortalVo vo = new MachinePortalVo();
-		List<Inno72Machine> machines = inno72MachineMapper.selectAll();
-		List<MachineLogInfo> netList = mongoTpl.find(new Query(), MachineLogInfo.class, "MachineLogInfo");
+		Condition condition1 = new Condition(Inno72Machine.class);
+		condition1.createCriteria().andNotEqualTo("machineStatus", -1);
+		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition1);
 		int online = 0;
-		for (MachineLogInfo machineLogInfo : netList) {
-			LocalDateTime createTime = machineLogInfo.getCreateTime();
-			Duration duration = Duration.between(createTime, LocalDateTime.now());
-			long between = duration.toMinutes();
-			if (between <= 2) {
-				online += 1;
-			}
+		Set<String> keys = stringRedisTemplate.keys("monitor:session:*");
+		if (keys != null) {
+			online = keys.size();
 		}
 		int exception = 0;
 		List<MachineStatus> statusList = mongoTpl.find(new Query(), MachineStatus.class, "MachineStatus");
