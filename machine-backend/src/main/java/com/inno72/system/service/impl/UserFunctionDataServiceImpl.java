@@ -12,9 +12,11 @@ import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.utils.StringUtil;
+import com.inno72.system.mapper.Inno72FunctionDataMapper;
 import com.inno72.system.mapper.Inno72FunctionMapper;
 import com.inno72.system.mapper.Inno72UserFunctionDataMapper;
 import com.inno72.system.model.Inno72Function;
+import com.inno72.system.model.Inno72FunctionData;
 import com.inno72.system.model.Inno72RoleFunction;
 import com.inno72.system.model.Inno72UserFunctionData;
 import com.inno72.system.service.UserFunctionDataService;
@@ -34,6 +36,8 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 	private Inno72UserFunctionDataMapper inno72UserFunctionDataMapper;
 	@Resource
 	private Inno72FunctionMapper inno72FunctionMapper;
+	@Resource
+	private Inno72FunctionDataMapper inno72FunctionDataMapper;
 
 	@Override
 	public Result<FunctionTreeResultVo> findAllTree(String userId) {
@@ -69,19 +73,21 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 				funSecondVo.setId(funSecond.getId());
 				funSecondVo.setTitle(funSecond.getFunctionDepict());
 				secondVoList.add(funSecondVo);
+				// 获取页面列表列字段
+				if (StringUtil.isNotBlank(funSecond.getId())) {
+					List<Inno72FunctionData> third = inno72FunctionDataMapper
+							.findFunctionDataByParentId(funSecond.getId());
 
-				condition = new Condition(Inno72Function.class);
-				condition.createCriteria().andEqualTo("functionLevel", 3).andEqualTo("parentId", funSecond.getId());
-				List<Inno72Function> third = inno72FunctionMapper.selectByCondition(condition);
-				List<FunctionTreeVo> thirdVoList = new ArrayList<>();
-
-				for (Inno72Function funThird : third) {
-					FunctionTreeVo funThirdVo = new FunctionTreeVo();
-					funThirdVo.setId(funThird.getId());
-					funThirdVo.setTitle(funThird.getFunctionDepict());
-					thirdVoList.add(funThirdVo);
+					List<FunctionTreeVo> thirdVoList = new ArrayList<>();
+					for (Inno72FunctionData funThird : third) {
+						FunctionTreeVo funThirdVo = new FunctionTreeVo();
+						funThirdVo.setId(funThird.getId());
+						funThirdVo.setTitle(funThird.getFunctionDepict());
+						thirdVoList.add(funThirdVo);
+					}
+					funSecondVo.setChildren(thirdVoList);
 				}
-				funSecondVo.setChildren(thirdVoList);
+
 			}
 			funFirstVo.setChildren(secondVoList);
 		}
