@@ -17,12 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.inno72.common.AbstractService;
-import com.inno72.common.CommonConstants;
 import com.inno72.common.DateUtil;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
+import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.machine.mapper.Inno72AppMapper;
 import com.inno72.machine.mapper.Inno72MachineMapper;
@@ -62,7 +62,7 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 	@Override
 	public Result<String> saveTsak(Inno72TaskVo task) {
 		logger.info("新建任务参数:{}", JSON.toJSONString(task));
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -163,7 +163,7 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 	@Override
 	public Result<String> updateTsak(Inno72TaskVo task) {
 		logger.info("更新任务参数:{}", JSON.toJSONString(task));
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -273,7 +273,7 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 	public Result<String> updateStatus(String id, Integer status, Integer doType) {
 
 		logger.info("---------------------点位任务-------------------");
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -311,7 +311,7 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 	public Result<String> delById(String id) {
 
 		logger.info("---------------------点位任务-------------------");
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");

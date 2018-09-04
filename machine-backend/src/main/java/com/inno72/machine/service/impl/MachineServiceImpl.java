@@ -26,12 +26,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.inno72.check.model.Inno72CheckFault;
 import com.inno72.check.service.CheckFaultService;
 import com.inno72.common.AbstractService;
-import com.inno72.common.CommonConstants;
 import com.inno72.common.DateUtil;
 import com.inno72.common.MachineBackendProperties;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
+import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.machine.mapper.Inno72AppScreenShotMapper;
 import com.inno72.machine.mapper.Inno72MachineMapper;
@@ -130,7 +130,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<String> updateLocale(String id, String localeId, String address) {
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -168,7 +168,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	@Override
 	public Result<String> deleteChannel(List<UpdateMachineChannelVo> channels) {
 		logger.info("停用渠道传入json{}", JSON.toJSONString(channels));
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -192,7 +192,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	@Override
 	public Result<String> updateGoodsCount(List<UpdateMachineChannelVo> channels) {
 		logger.info("更新商品个数传入json{}", JSON.toJSONString(channels));
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -532,7 +532,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<String> updateMachine(UpdateMachineVo vo) {
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -560,7 +560,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<String> updateMachineCode(String machineId, String machineCode) {
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");

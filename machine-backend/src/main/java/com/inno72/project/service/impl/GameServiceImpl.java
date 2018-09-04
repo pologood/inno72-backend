@@ -16,11 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.common.AbstractService;
-import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
+import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72GameMapper;
 import com.inno72.project.model.Inno72Game;
@@ -47,7 +47,7 @@ public class GameServiceImpl extends AbstractService<Inno72Game> implements Game
 	public Result<String> saveModel(Inno72Game model) {
 		logger.info("----------------游戏添加--------------");
 		try {
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");
@@ -91,7 +91,7 @@ public class GameServiceImpl extends AbstractService<Inno72Game> implements Game
 	public Result<String> delById(String id) {
 		logger.info("----------------游戏删除--------------");
 		try {
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");
@@ -119,7 +119,7 @@ public class GameServiceImpl extends AbstractService<Inno72Game> implements Game
 	public Result<String> updateModel(Inno72Game model) {
 		logger.info("----------------游戏更新--------------");
 		try {
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");

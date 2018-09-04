@@ -31,6 +31,7 @@ import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
+import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.config.client.QyhProperties;
 import com.inno72.plugin.http.HttpClient;
@@ -65,7 +66,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 		try {
 			logger.info("----------------巡检人员添加--------------");
 			logger.info("参数:{}", JSON.toJSONString(model));
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");
@@ -165,7 +166,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	public Result<String> delById(String id) {
 		try {
 			logger.info("----------------巡检人员删除--------------");
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");
@@ -197,7 +198,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 		try {
 			logger.info("----------------巡检人员更新--------------");
 			logger.info("参数:{}", JSON.toJSONString(model));
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");
@@ -251,7 +252,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	public Result<String> updateStatus(String id, int status) {
 		try {
 			logger.info("----------------巡检人员	状态操作--------------");
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");
