@@ -1,16 +1,22 @@
 package com.inno72.common.interceptor;
 
-import com.alibaba.fastjson.JSON;
-import com.inno72.redis.IRedisUtil;
-import com.inno72.utils.page.Pagination;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import com.alibaba.fastjson.JSON;
+import com.inno72.redis.IRedisUtil;
+import com.inno72.utils.page.Pagination;
 
 /**
  * 项目拦截器

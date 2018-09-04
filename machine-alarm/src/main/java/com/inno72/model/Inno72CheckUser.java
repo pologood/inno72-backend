@@ -1,12 +1,18 @@
 package com.inno72.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
 @Table(name = "inno72_check_user")
 public class Inno72CheckUser {

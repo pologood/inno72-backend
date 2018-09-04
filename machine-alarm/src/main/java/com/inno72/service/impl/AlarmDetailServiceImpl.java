@@ -1,11 +1,14 @@
 package com.inno72.service.impl;
 
-import com.inno72.common.*;
-import com.inno72.model.*;
-import com.inno72.msg.MsgUtil;
-import com.inno72.redis.IRedisUtil;
-import com.inno72.service.AlarmDetailService;
-import com.inno72.service.CheckUserService;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +20,20 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.util.*;
+import com.inno72.common.CommonConstants;
+import com.inno72.common.DateUtil;
+import com.inno72.common.Result;
+import com.inno72.common.ResultGenerator;
+import com.inno72.common.StringUtil;
+import com.inno72.model.AlarmDetailBean;
+import com.inno72.model.AlarmExceptionMachineBean;
+import com.inno72.model.AlarmMachineBean;
+import com.inno72.model.Inno72CheckUserPhone;
+import com.inno72.model.Inno72Machine;
+import com.inno72.msg.MsgUtil;
+import com.inno72.redis.IRedisUtil;
+import com.inno72.service.AlarmDetailService;
+import com.inno72.service.CheckUserService;
 
 @Service
 @Transactional
@@ -87,6 +102,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
         for(Inno72Machine machine:list){
             String machineId = machine.getId();
             set.add(machineId);
+            String localeStr = machine.getLocaleStr();
             if(!beanSet.contains(machineId)){
                 AlarmMachineBean bean = new AlarmMachineBean();
                 Date now = new Date();
@@ -94,24 +110,32 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                 bean.setMachineCode(machine.getMachineCode());
                 bean.setMonitorStart(machine.getMonitorStart());
                 bean.setMonitorEnd(machine.getMonitorEnd());
-                bean.setLocaleStr(machine.getLocaleStr());
+                bean.setLocaleStr(localeStr);
                 bean.setHeartTime(now);
                 bean.setConnectTime(now);
                 bean.setCreateTime(now);
                 bean.setUpdateTime(now);
                 mongoTpl.save(bean,"AlarmMachineBean");
                 logger.info("获取全部需要发送报警的机器，向MongoDB中放入机器，机器编号为"+machine.getMachineCode());
+            }else if(StringUtil.isNotEmpty(localeStr)){
+                Update update = new Update();
+                update.set("localeStr",localeStr);
+                Query upQuery = new Query();
+                upQuery.addCriteria(Criteria.where("machineId").is(machineId));
+                mongoTpl.updateFirst(upQuery,update,"AlarmMachineBean");
             }
         }
-        for(AlarmMachineBean alarmMachineBean:alarmMachineBeanList){
-            String machineId = alarmMachineBean.getMachineId();
-            if(!set.contains(machineId)){
-                Query delQuery = new Query();
-                delQuery.addCriteria(Criteria.where("machineId").is(machineId));
-                mongoTpl.remove(delQuery,"AlarmMachineBean");
-                logger.info("获取全部需要发送报警的机器，从MongoDB中删除无需发送报警的机器");
-            }
+        if(alarmMachineBeanList != null && alarmMachineBeanList.size()>0){
+            for(AlarmMachineBean alarmMachineBean:alarmMachineBeanList){
+                String machineId = alarmMachineBean.getMachineId();
+                if(!set.contains(machineId)){
+                    Query delQuery = new Query();
+                    delQuery.addCriteria(Criteria.where("machineId").is(machineId));
+                    mongoTpl.remove(delQuery,"AlarmMachineBean");
+                    logger.info("获取全部需要发送报警的机器，从MongoDB中删除无需发送报警的机器");
+                }
 
+            }
         }
     }
 
@@ -167,21 +191,22 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                 if(detailBean != null){
                     pageInfo = detailBean.getPageInfo();
                     if(StringUtil.isNotEmpty(pageInfo)){
-                        pageInfo = "页面停留在"+pageInfo;
+                        pageInfo = "，页面停留在"+pageInfo;
                     }
                 }
                 if(type == 1){
                     if(level == 1){
-                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现网络异常，已经持续1分钟，"+pageInfo+"，请及时联系巡检人员。";
+                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现网络异常，已经持续1分钟"+pageInfo+"，请及时联系巡检人员。";
                     }else if(level == 2){
-                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现网络异常，已经持续5分钟，"+pageInfo+"，请及时联系巡检人员。";
+                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现网络异常，已经持续5分钟"+pageInfo+"，请及时联系巡检人员。";
                     }else if(level == 3){
-                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现网络异常，已经持续10分钟，"+pageInfo+"，请及时联系巡检人员。";
+                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现网络异常，已经持续10分钟"+pageInfo+"，请及时联系巡检人员。";
                     }else if(level == 4){
-                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现网络异常，已经持续30分钟，"+pageInfo+"，请及时联系巡检人员。";
+                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现网络异常，已经持续30分钟"+pageInfo+"，请及时联系巡检人员。";
                     }
                     param.put("text",text);
                     msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-AlarmDetailService");
+                    logger.info("心跳异常发送钉钉消息："+groupId);
                 }else if(type == 2){
                     if(level == 1){
                         String active = System.getenv("spring_profiles_active");
@@ -201,7 +226,11 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                     }
                     param.put("text",text);
                     msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-AlarmDetailService");
+                    logger.info("网络连接异常发送钉钉消息："+groupId);
                 }
+                Query removeQuery = new Query();
+                removeQuery.addCriteria(Criteria.where("_id").is(bean.getId()));
+                mongoTpl.remove(removeQuery,"AlarmExceptionMachineBean");
             }
         }
     }

@@ -1,9 +1,9 @@
 package com.inno72.model;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
-
-import java.time.LocalDateTime;
 
 /**
  * @Auther: wxt

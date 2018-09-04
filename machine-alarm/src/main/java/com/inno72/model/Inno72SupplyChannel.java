@@ -1,13 +1,19 @@
 package com.inno72.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.List;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
 @Table(name = "inno72_supply_channel")
 public class Inno72SupplyChannel {

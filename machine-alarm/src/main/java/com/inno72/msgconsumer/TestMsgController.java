@@ -1,15 +1,16 @@
 package com.inno72.msgconsumer;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.inno72.model.AlarmMessageBean;
 import com.inno72.model.GoodsChannelBean;
 import com.inno72.model.MachineStatus;
 import com.inno72.redis.IRedisUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @describtion:测试专用

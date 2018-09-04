@@ -1,10 +1,10 @@
 package com.inno72.service;
 
+import java.util.List;
+
 import com.inno72.common.Service;
 import com.inno72.model.Inno72CheckUser;
 import com.inno72.model.Inno72CheckUserPhone;
-
-import java.util.List;
 
 
 /**

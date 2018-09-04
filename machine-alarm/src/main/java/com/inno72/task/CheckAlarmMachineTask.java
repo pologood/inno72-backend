@@ -1,24 +1,20 @@
 package com.inno72.task;
 
-import com.inno72.model.AlarmMachineBean;
-import com.inno72.model.Inno72Machine;
-import com.inno72.service.AlarmDetailService;
-import com.inno72.service.MachineService;
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.inno72.model.Inno72Machine;
+import com.inno72.service.AlarmDetailService;
+import com.inno72.service.MachineService;
 
 @Configuration
 @EnableScheduling
@@ -35,7 +31,7 @@ public class CheckAlarmMachineTask {
     @Autowired
     private MongoOperations mongoTpl;
 
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void checkAllMachine(){
         log.info("获取全部需要发送报警的机器开始");
         List<Inno72Machine> list = machineService.findAlarmAllMachine();
@@ -48,7 +44,7 @@ public class CheckAlarmMachineTask {
         log.info("获取全部需要发送报警的机器结束");
     }
 
-//    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void checkExceptionMachine(){
         log.info("获取异常的的需要发送报警机器开始");
         alarmDetailService.addToExceptionMachineBean();
@@ -56,7 +52,7 @@ public class CheckAlarmMachineTask {
     }
 
 
-//    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(cron = "0/5 * * * * ?")
     public void sendExceptionMachineAlarm(){
         log.info("发送机器监控异常发送开始");
         alarmDetailService.sendExceptionMachineAlarm();
