@@ -21,6 +21,9 @@ public class Inno72Task {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private String id;
 
+	@Column(name = "code")
+	private String code;
+
 	/**
 	 * 任务类型：1升级 2卸载 3 合并 4 拆分
 	 */
@@ -117,6 +120,14 @@ public class Inno72Task {
 	 */
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	/**

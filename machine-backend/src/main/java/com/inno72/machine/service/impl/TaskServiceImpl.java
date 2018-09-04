@@ -120,7 +120,8 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 			}
 
 			task.setStatus(0);
-			task.setId("T" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S2));
+			task.setId(StringUtil.getUUID());
+			task.setCode("T" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S2));
 			List<Inno72TaskMachineVo> insertTaskMachinList = new ArrayList<>();
 			for (Inno72TaskMachineVo taskMachine : machineList) {
 				if (insertTaskMachinList.contains(taskMachine)) {

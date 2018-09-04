@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import javax.annotation.Resource;
 
-import com.inno72.project.service.ActivityPlanService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +59,7 @@ import com.inno72.machine.vo.SystemStatus;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
 import com.inno72.machine.vo.UpdateMachineVo;
 import com.inno72.plugin.http.HttpClient;
+import com.inno72.project.service.ActivityPlanService;
 import com.inno72.system.model.Inno72User;
 import com.inno72.utils.page.Pagination;
 
@@ -101,6 +101,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			param.put("code", likeCode);
 			param.put("num", num);
 		}
+		machineCode = Optional.ofNullable(machineCode).map(a -> a.replace("'", "")).orElse(machineCode);
 		param.put("machineCode", machineCode);
 
 		List<Inno72Machine> machines = inno72MachineMapper.selectMachinesByPage(param);

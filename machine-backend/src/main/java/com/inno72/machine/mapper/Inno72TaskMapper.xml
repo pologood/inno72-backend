@@ -78,7 +78,7 @@
 			tm.do_type AS machine_do_type,
 			tm.do_msg AS machine_do_msg,
 			ms.network_intensity as machine_planed,
-			date_format(tm.do_time,'%Y-%m-%d %H:%i:%s') AS machine_do_time
+			tm.do_time AS machine_do_time
 		from inno72_task t
 		LEFT JOIN inno72_task_machine tm ON tm.task_id = t.id
 		LEFT JOIN inno72_machine m ON m.id = tm.machine_id
