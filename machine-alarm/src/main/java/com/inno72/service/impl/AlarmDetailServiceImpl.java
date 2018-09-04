@@ -270,7 +270,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                 exceptionBean.setLevel(4);
                 mongoTpl.save(exceptionBean,"AlarmExceptionMachineBean");
                 logger.info("超过30分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
-                redisUtil.setex(heartTimeKey,60*60*30,"1");//有效时间半个小时
+                redisUtil.setex(heartTimeKey,60*30,"1");//有效时间半个小时
             }
         }
     }
@@ -300,7 +300,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                 exceptionBean.setLevel(2);
                 mongoTpl.save(exceptionBean,"AlarmExceptionMachineBean");
                 logger.info("超过30分钟未发送连接的机器，编号为：{}",bean.getMachineCode());
-                redisUtil.setex(connectTimeKey,60*60*30,"1");//有效时间半个小时
+                redisUtil.setex(connectTimeKey,60*30,"1");//有效时间半个小时
             }
         }
     }
