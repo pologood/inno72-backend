@@ -5,8 +5,8 @@ public class CommonConstants {
     //掉货异常
     public final static String MACHINE_DROPGOODS_EXCEPTION = "machineDropGoodsException";
 
-    //机器货道异常
-    public final static String MACHINE_CHANNEL_EXCEPTION = "machineChannelException";
+    //机器网络异常
+    public final static String MACHINE_NET_EXCEPTION = "machineCloseNetException";
 
     //机器缺货提示
     public final static String MACHINE_LACKGOODS_EXCEPTION = "machineLackGoodsException";
@@ -19,6 +19,9 @@ public class CommonConstants {
 
     //机器缺货
     public final static String SYS_MACHINE_LACKGOODS = "machineLackGoods";
+
+    //网络
+    public final static String SYS_MACHINE_NET = "machineCloseNet";
 
     //商品缺货类型
     public final static int LACKGOODS_TWENTYPERCENT = 2;

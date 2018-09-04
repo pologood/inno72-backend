@@ -1,5 +1,6 @@
 package com.inno72.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,11 +29,13 @@ import com.inno72.common.StringUtil;
 import com.inno72.model.AlarmDetailBean;
 import com.inno72.model.AlarmExceptionMachineBean;
 import com.inno72.model.AlarmMachineBean;
+import com.inno72.model.Inno72AlarmMsg;
 import com.inno72.model.Inno72CheckUserPhone;
 import com.inno72.model.Inno72Machine;
 import com.inno72.msg.MsgUtil;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.service.AlarmDetailService;
+import com.inno72.service.AlarmMsgService;
 import com.inno72.service.CheckUserService;
 
 @Service
@@ -52,6 +55,9 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 
     @Resource
     private CheckUserService checkUserService;
+
+    @Resource
+    private AlarmMsgService alarmMsgService;
 
     @Value("${inno72.dingding.groupId}")
     private String groupId;
@@ -220,6 +226,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                                 for (Inno72CheckUserPhone userPhone:phones){
                                     msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-AlarmDetailService");
                                 }
+								alarmMsgService.saveAlarmMsg(CommonConstants.MACHINE_NET_EXCEPTION,CommonConstants.SYS_MACHINE_NET,machineCode,0,localeStr);
                             }
                         }
                         text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时联系巡检人员。";
@@ -312,4 +319,6 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
         inno72CheckUserPhone.setMachineCode(machineCode);
         return checkUserService.selectPhoneByMachineCode(inno72CheckUserPhone);
     }
+
+
 }

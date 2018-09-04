@@ -9,5 +9,5 @@ import com.inno72.model.Inno72AlarmMsg;
  */
 public interface AlarmMsgService extends Service<Inno72AlarmMsg> {
 
-
+	public void saveAlarmMsg(String type, String system, String machineCode, int lackNum, String localStr);
 }

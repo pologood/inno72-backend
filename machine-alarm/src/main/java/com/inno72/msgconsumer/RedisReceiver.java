@@ -169,7 +169,7 @@ public class RedisReceiver {
 
                         //保存接口
                         int lackNum = 0;
-                        saveAlarmMsg(type, system, machineCode, lackNum, localStr);
+						alarmMsgService.saveAlarmMsg(type, system, machineCode, lackNum, localStr);
 
                     } else if (updateNum == 5) {
                         //巡检app接口
@@ -200,7 +200,7 @@ public class RedisReceiver {
                         }
                         //保存接口
                         int lackNum = 0;
-                        saveAlarmMsg(type, system, machineCode, lackNum, localStr);
+						alarmMsgService.saveAlarmMsg(type, system, machineCode, lackNum, localStr);
 
                         //钉钉报警
                         Map<String, String> param = new HashMap<>();
@@ -234,30 +234,6 @@ public class RedisReceiver {
                 mongoTpl.save(dropGoodsExceptionInfo, "DropGoodsExceptionInfo");
             }
         }
-    }
-
-    /**
-     * save alarm msg
-     *
-     * @param
-     * @return
-     */
-    private void saveAlarmMsg(String type, String system, String machineCode, int lackNum, String localStr) {
-        Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
-        if ((CommonConstants.MACHINE_DROPGOODS_EXCEPTION).equals(type)) {
-            inno72AlarmMsg.setTitle("您负责的机器出现掉货异常");
-            inno72AlarmMsg.setType(2);
-            inno72AlarmMsg.setDetail(localStr + "," + machineCode + "," + "出现掉货异常，请及时处理");
-        } else if (CommonConstants.MACHINE_LACKGOODS_EXCEPTION.equals(type)) {
-            inno72AlarmMsg.setTitle("您负责的机器需要补货");
-            inno72AlarmMsg.setType(3);
-            inno72AlarmMsg.setDetail(localStr + "," + machineCode + "," + "缺货" + lackNum + "个，请及时处理");
-        }
-        inno72AlarmMsg.setCreateTime(LocalDateTime.now());
-        inno72AlarmMsg.setSystem(system);
-        inno72AlarmMsg.setMachineCode(machineCode);
-        inno72AlarmMsg.setId(StringUtil.getUUID());
-        alarmMsgService.save(inno72AlarmMsg);
     }
 
     /**
