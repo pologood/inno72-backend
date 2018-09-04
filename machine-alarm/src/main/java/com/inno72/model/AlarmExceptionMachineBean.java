@@ -18,6 +18,8 @@ public class AlarmExceptionMachineBean {
 
     private Date createTime;
 
+    private String localeStr;
+
 
     public String getId() {
         return id;
@@ -73,5 +75,13 @@ public class AlarmExceptionMachineBean {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getLocaleStr() {
+        return localeStr;
+    }
+
+    public void setLocaleStr(String localeStr) {
+        this.localeStr = localeStr;
     }
 }

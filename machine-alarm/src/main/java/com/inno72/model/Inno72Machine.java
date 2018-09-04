@@ -92,6 +92,8 @@ public class Inno72Machine {
     @Column(name="monitor_end")
     private String monitorEnd;
 
+    private String localeStr;
+
     public int getOpenStatus() {
         return openStatus;
     }
@@ -108,7 +110,7 @@ public class Inno72Machine {
         this.localeStr = localeStr;
     }
 
-    private String localeStr;
+
 
 
     public enum Machine_Status {

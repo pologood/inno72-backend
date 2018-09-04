@@ -4,15 +4,15 @@ import com.inno72.common.DateUtil;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.StringUtil;
-import com.inno72.model.AlarmDetailBean;
-import com.inno72.model.AlarmExceptionMachineBean;
-import com.inno72.model.AlarmMachineBean;
-import com.inno72.model.Inno72Machine;
+import com.inno72.model.*;
+import com.inno72.msg.MsgUtil;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.service.AlarmDetailService;
+import com.inno72.service.CheckUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -21,10 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Transactional
@@ -37,6 +34,15 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 
     @Resource
     private IRedisUtil redisUtil;
+
+    @Autowired
+    private MsgUtil msgUtil;
+
+    @Resource
+    private CheckUserService checkUserService;
+
+    @Value("${inno72.dingding.groupId}")
+    private String groupId;
     @Override
     public Result<String> add(AlarmDetailBean bean) {
         Date now = new Date();
@@ -91,6 +97,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                 bean.setMachineCode(machine.getMachineCode());
                 bean.setMonitorStart(machine.getMonitorStart());
                 bean.setMonitorEnd(machine.getMonitorEnd());
+                bean.setLocaleStr(machine.getLocaleStr());
                 bean.setHeartTime(now);
                 bean.setConnectTime(now);
                 bean.setCreateTime(now);
@@ -143,6 +150,62 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
         }
     }
 
+    @Override
+    public void sendExceptionMachineAlarm() {
+        List<AlarmExceptionMachineBean> list = mongoTpl.find(new Query(),AlarmExceptionMachineBean.class,"AlarmExceptionMachineBean");
+        if(list != null && list.size()>0){
+            for(AlarmExceptionMachineBean bean:list){
+                int type = bean.getType();
+                int level = bean.getLevel();
+                Map<String,String> param = new HashMap<>();
+                String localeStr = bean.getLocaleStr();
+                String machineCode = bean.getMachineCode();
+                param.put("machineCode", machineCode);
+                param.put("localStr", localeStr);
+                String text = "";
+                Query query = new Query();
+                query.addCriteria(Criteria.where("id").is(bean.getDetailId()));
+                AlarmDetailBean detailBean = mongoTpl.findOne(query,AlarmDetailBean.class,"AlarmDetailBean");
+                String pageInfo = "";
+                if(detailBean != null){
+                    pageInfo = detailBean.getPageInfo();
+                    if(StringUtil.isNotEmpty(pageInfo)){
+                        pageInfo = "页面停留在"+pageInfo;
+                    }
+                }
+                if(type == 1){
+                    if(level == 1){
+                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现网络异常，已经持续1分钟，"+pageInfo+"，请及时联系巡检人员。";
+                    }else if(level == 2){
+                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现网络异常，已经持续5分钟，"+pageInfo+"，请及时联系巡检人员。";
+                    }else if(level == 3){
+                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现网络异常，已经持续10分钟，"+pageInfo+"，请及时联系巡检人员。";
+                    }else if(level == 4){
+                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现网络异常，已经持续30分钟，"+pageInfo+"，请及时联系巡检人员。";
+                    }
+                    param.put("text",text);
+                    msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-AlarmDetailService");
+                }else if(type == 2){
+                    if(level == 1){
+                        List<Inno72CheckUserPhone> phones = getInno72CheckUserPhones(machineCode);
+                        if(phones != null && phones.size()>0){
+                            text = "【互动管家】您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时处理";
+                            param.put("text",text);
+                            for (Inno72CheckUserPhone userPhone:phones){
+                                msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-AlarmDetailService");
+                            }
+                        }
+                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时联系巡检人员。";
+                    }else if(level == 2){
+                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续30分钟未连接成功，请及时联系巡检人员。";
+                    }
+                    param.put("text",text);
+                    msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-AlarmDetailService");
+                }
+            }
+        }
+    }
+
     public void addHeartExceptionMachine(AlarmMachineBean bean,Date now){
         String key = "ALARM_HEART_"+bean.getMachineId();
         String value = redisUtil.get(key);
@@ -155,6 +218,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
         exceptionBean.setMachineId(bean.getMachineId());
         exceptionBean.setMachineCode(bean.getMachineCode());
         exceptionBean.setCreateTime(now);
+        exceptionBean.setLocaleStr(bean.getLocaleStr());
         if(StringUtil.isEmpty(value) && sub>1) {//间隔时间大于1分钟
             exceptionBean.setLevel(1);
             mongoTpl.save(exceptionBean,"AlarmExceptionMachineBean");
@@ -193,6 +257,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
         exceptionBean.setType(2);
         exceptionBean.setMachineId(bean.getMachineId());
         exceptionBean.setMachineCode(bean.getMachineCode());
+        exceptionBean.setLocaleStr(bean.getLocaleStr());
         exceptionBean.setCreateTime(now);
         if(StringUtil.isEmpty(value) && sub>10){//间隔时间大于10分钟
             exceptionBean.setLevel(1);
@@ -209,5 +274,11 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                 redisUtil.setex(connectTimeKey,60*60*30,"1");//有效时间半个小时
             }
         }
+    }
+
+    private List<Inno72CheckUserPhone> getInno72CheckUserPhones(String machineCode) {
+        Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
+        inno72CheckUserPhone.setMachineCode(machineCode);
+        return checkUserService.selectPhoneByMachineCode(inno72CheckUserPhone);
     }
 }

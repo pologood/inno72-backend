@@ -43,15 +43,21 @@ public class CheckAlarmMachineTask {
             log.info("获取全部需要发送报警的机器，共找到"+list.size()+"台机器");
             alarmDetailService.addToMachineBean(list);
         }else {
-            log.info("无机器报警状态变更");
+            log.info("无新增机器到报警系统");
         }
         log.info("获取全部需要发送报警的机器结束");
     }
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void checkExceptionMachine(){
         log.info("获取异常的的需要发送报警机器开始");
         alarmDetailService.addToExceptionMachineBean();
         log.info("获取异常的的需要发送报警机器结束");
+    }
+
+
+    @Scheduled(cron = "0/5 * * * * ?")
+    public void sendExceptionMachineAlarm(){
+        alarmDetailService.sendExceptionMachineAlarm();
     }
 }

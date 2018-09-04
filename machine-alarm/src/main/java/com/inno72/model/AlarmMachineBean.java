@@ -26,6 +26,8 @@ public class AlarmMachineBean {
 
     private Date updateTime;
 
+    private String localeStr;
+
     public String getId() {
         return id;
     }
@@ -112,5 +114,13 @@ public class AlarmMachineBean {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getLocaleStr() {
+        return localeStr;
+    }
+
+    public void setLocaleStr(String localeStr) {
+        this.localeStr = localeStr;
     }
 }
