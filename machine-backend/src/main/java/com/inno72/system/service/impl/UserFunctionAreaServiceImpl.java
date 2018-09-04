@@ -27,6 +27,7 @@ import com.inno72.system.model.Inno72UserFunctionArea;
 import com.inno72.system.service.UserFunctionAreaService;
 import com.inno72.system.vo.AreaTreeResultVo;
 import com.inno72.system.vo.AreaTreeVo;
+import com.inno72.system.vo.UserAreaDataVo;
 
 import tk.mybatis.mapper.entity.Condition;
 
@@ -44,7 +45,7 @@ public class UserFunctionAreaServiceImpl extends AbstractService<Inno72UserFunct
 	private Inno72AdminAreaMapper inno72AdminAreaMapper;
 
 	@Override
-	public Result<String> updateFunctionArea(String userId, List<Inno72AdminArea> areas) {
+	public Result<String> updateFunctionArea(UserAreaDataVo userArea) {
 
 		try {
 			SessionData session = CommonConstants.SESSION_DATA;
@@ -55,9 +56,17 @@ public class UserFunctionAreaServiceImpl extends AbstractService<Inno72UserFunct
 			}
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 
+			String userId = userArea.getUserId();
+			if (StringUtil.isBlank(userId)) {
+				logger.info("请选择人员");
+				return Results.failure("请选择人员");
+			}
+
 			Condition condition = new Condition(Inno72RoleFunction.class);
 			condition.createCriteria().andEqualTo("userId", userId);
 			inno72UserFunctionAreaMapper.deleteByCondition(condition);
+
+			List<Inno72AdminArea> areas = userArea.getAreaList();
 			if (null != areas && areas.size() > 0) {
 				List<Inno72UserFunctionArea> insertList = new ArrayList<>();
 				areas.forEach(area -> {
@@ -68,6 +77,7 @@ public class UserFunctionAreaServiceImpl extends AbstractService<Inno72UserFunct
 					fa.setAreaName(area.getName());
 					fa.setProvince(area.getProvince());
 					fa.setCity(area.getCity());
+					fa.setLevel(area.getLevel());
 					fa.setCreateTime(LocalDateTime.now());
 					fa.setUserId(mUserId);
 					insertList.add(fa);

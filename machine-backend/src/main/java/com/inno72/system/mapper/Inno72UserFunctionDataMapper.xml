@@ -7,12 +7,18 @@
     -->
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="user_id" jdbcType="VARCHAR" property="userId" />
-    <result column="first_name" jdbcType="VARCHAR" property="firstName" />
-    <result column="second_name" jdbcType="VARCHAR" property="secondName" />
-    <result column="third_name" jdbcType="VARCHAR" property="thirdName" />
     <result column="vo_name" jdbcType="VARCHAR" property="voName" />
     <result column="vo_column" jdbcType="VARCHAR" property="voColumn" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
+  
+  
+  <insert id="insertUserFunctionDataList" parameterType="java.util.List">
+        insert into inno72_user_function_data (id, user_id,vo_name,vo_column,create_id,create_time)
+        values
+        <foreach collection="list" item="m" index="index" separator=",">
+            (#{m.id},#{m.userId},#{m.voName},#{m.voColumn},#{m.createId},#{m.createTime})
+        </foreach>
+    </insert>
 </mapper>

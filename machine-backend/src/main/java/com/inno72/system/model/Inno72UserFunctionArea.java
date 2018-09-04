@@ -52,6 +52,12 @@ public class Inno72UserFunctionArea {
 	private String city;
 
 	/**
+	 * 市名称
+	 */
+	@Column(name = "level")
+	private Integer level;
+
+	/**
 	 * 创建人
 	 */
 	@Column(name = "create_id")
@@ -151,6 +157,14 @@ public class Inno72UserFunctionArea {
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+
+	public Integer getLevel() {
+		return level;
+	}
+
+	public void setLevel(Integer level) {
+		this.level = level;
 	}
 
 	/**

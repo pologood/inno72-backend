@@ -1,16 +1,22 @@
 package com.inno72.system.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.common.AbstractService;
+import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
+import com.inno72.common.SessionData;
 import com.inno72.common.utils.StringUtil;
 import com.inno72.system.mapper.Inno72FunctionDataMapper;
 import com.inno72.system.mapper.Inno72FunctionMapper;
@@ -18,10 +24,12 @@ import com.inno72.system.mapper.Inno72UserFunctionDataMapper;
 import com.inno72.system.model.Inno72Function;
 import com.inno72.system.model.Inno72FunctionData;
 import com.inno72.system.model.Inno72RoleFunction;
+import com.inno72.system.model.Inno72User;
 import com.inno72.system.model.Inno72UserFunctionData;
 import com.inno72.system.service.UserFunctionDataService;
 import com.inno72.system.vo.FunctionTreeResultVo;
 import com.inno72.system.vo.FunctionTreeResultVo.FunctionTreeVo;
+import com.inno72.system.vo.UserAreaDataVo;
 
 import tk.mybatis.mapper.entity.Condition;
 
@@ -32,12 +40,57 @@ import tk.mybatis.mapper.entity.Condition;
 @Transactional
 public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunctionData>
 		implements UserFunctionDataService {
+
+	private static Logger logger = LoggerFactory.getLogger(UserFunctionDataServiceImpl.class);
 	@Resource
 	private Inno72UserFunctionDataMapper inno72UserFunctionDataMapper;
 	@Resource
 	private Inno72FunctionMapper inno72FunctionMapper;
 	@Resource
 	private Inno72FunctionDataMapper inno72FunctionDataMapper;
+
+	@Override
+	public Result<String> updateFunctionData(UserAreaDataVo userData) {
+
+		try {
+			SessionData session = CommonConstants.SESSION_DATA;
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+
+			String userId = userData.getUserId();
+			if (StringUtil.isBlank(userId)) {
+				logger.info("请选择人员");
+				return Results.failure("请选择人员");
+			}
+
+			Condition condition = new Condition(Inno72RoleFunction.class);
+			condition.createCriteria().andEqualTo("userId", userId);
+			inno72UserFunctionDataMapper.deleteByCondition(condition);
+
+			List<Inno72UserFunctionData> functionDataList = userData.getColumnList();
+			if (null != functionDataList && functionDataList.size() > 0) {
+				List<Inno72UserFunctionData> insertList = new ArrayList<>();
+				functionDataList.forEach(functionData -> {
+					functionData.setId(com.inno72.common.StringUtil.getUUID());
+					functionData.setUserId(userId);
+					functionData.setCreateId(mUserId);
+					functionData.setCreateTime(LocalDateTime.now());
+					insertList.add(functionData);
+				});
+				inno72UserFunctionDataMapper.insertUserFunctionDataList(insertList);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+		return Results.success();
+	}
 
 	@Override
 	public Result<FunctionTreeResultVo> findAllTree(String userId) {
@@ -83,6 +136,8 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 						FunctionTreeVo funThirdVo = new FunctionTreeVo();
 						funThirdVo.setId(funThird.getId());
 						funThirdVo.setTitle(funThird.getFunctionDepict());
+						funThirdVo.setVoName(funThird.getVoName());
+						funThirdVo.setColumn(funThird.getColumn());
 						thirdVoList.add(funThirdVo);
 					}
 					funSecondVo.setChildren(thirdVoList);
