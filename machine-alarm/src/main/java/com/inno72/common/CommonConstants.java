@@ -45,6 +45,18 @@ public class CommonConstants {
 
     public final static Integer MACHINE_DOOR_OPEN = 1;
 
+    /**心跳Redis前缀*/
+    public final static String MACHINE_ALARM_HEART_BEF = "machine-alarm:heart:";
+
+    /**心跳时间Redis前缀*/
+    public final static String MACHINE_ALARM_HEART_TIME_BEF = "machine-alarm:heart-time:";
+
+    /**网络连接Redis前缀*/
+    public final static String MACHINE_ALARM_CONNECT_BEF = "machine-alarm:connect:";
+
+    /**网络连接时间Redis前缀*/
+    public final static String MACHINE_ALARM_CONNECT_TIME_BEF = "machine-alarm:connect-time:";
+
 
 
 }

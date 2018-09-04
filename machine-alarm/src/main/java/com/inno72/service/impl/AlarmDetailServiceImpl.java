@@ -1,9 +1,6 @@
 package com.inno72.service.impl;
 
-import com.inno72.common.DateUtil;
-import com.inno72.common.Result;
-import com.inno72.common.ResultGenerator;
-import com.inno72.common.StringUtil;
+import com.inno72.common.*;
 import com.inno72.model.*;
 import com.inno72.msg.MsgUtil;
 import com.inno72.redis.IRedisUtil;
@@ -61,13 +58,13 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
         if(type == 1){//心跳
             update.set("heartId",beanId);
             update.set("heartTime",now);
-            key = "ALARM_HEART_"+bean.getMachineId();
-            timeKey = "ALARM_HEART_TIME_"+bean.getMachineId();
+            key = CommonConstants.MACHINE_ALARM_HEART_BEF +bean.getMachineId();
+            timeKey = CommonConstants.MACHINE_ALARM_HEART_TIME_BEF+bean.getMachineId();
         }else if(type == 2){//网络
             update.set("connectId",beanId);
             update.set("connectTime",now);
-            key = "ALARM_CONNECT_"+bean.getMachineId();
-            timeKey = "ALARM_CONNECT_TIME_"+bean.getMachineId();
+            key = CommonConstants.MACHINE_ALARM_CONNECT_BEF+bean.getMachineId();
+            timeKey = CommonConstants.MACHINE_ALARM_CONNECT_TIME_BEF+bean.getMachineId();
         }
         update.set("updateTime",now);
         mongoTpl.updateFirst(query,update,"AlarmMachineBean");
@@ -187,12 +184,15 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                     msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-AlarmDetailService");
                 }else if(type == 2){
                     if(level == 1){
-                        List<Inno72CheckUserPhone> phones = getInno72CheckUserPhones(machineCode);
-                        if(phones != null && phones.size()>0){
-                            text = "【互动管家】您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时处理";
-                            param.put("text",text);
-                            for (Inno72CheckUserPhone userPhone:phones){
-                                msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-AlarmDetailService");
+                        String active = System.getenv("spring_profiles_active");
+                        if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
+                            List<Inno72CheckUserPhone> phones = getInno72CheckUserPhones(machineCode);
+                            if(phones != null && phones.size()>0){
+                                text = "【互动管家】您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时处理";
+                                param.put("text",text);
+                                for (Inno72CheckUserPhone userPhone:phones){
+                                    msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-AlarmDetailService");
+                                }
                             }
                         }
                         text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时联系巡检人员。";
@@ -207,7 +207,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
     }
 
     public void addHeartExceptionMachine(AlarmMachineBean bean,Date now){
-        String key = "ALARM_HEART_"+bean.getMachineId();
+        String key = CommonConstants.MACHINE_ALARM_HEART_BEF+bean.getMachineId();
         String value = redisUtil.get(key);
         Date heartTime = bean.getHeartTime();
         long sub = DateUtil.subTime(now,heartTime,2);
@@ -235,7 +235,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
             logger.info("超过10分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
             redisUtil.set(key,"4");
         }else if("4".equals(value) && sub>30){//间隔大于30分钟
-            String heartTimeKey = "ALARM_HEART_TIME_"+bean.getMachineId();
+            String heartTimeKey = CommonConstants.MACHINE_ALARM_HEART_TIME_BEF+bean.getMachineId();
             String heartTimeValue = redisUtil.get(heartTimeKey);
             if(StringUtil.isEmpty(heartTimeValue)){//redis为空时发送
                 exceptionBean.setLevel(4);
@@ -249,7 +249,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
     public void addConnectExceptionMachine(AlarmMachineBean bean,Date now){
         Date connectTime = bean.getConnectTime();
         long sub = DateUtil.subTime(now,connectTime,2);
-        String key = "ALARM_CONNECT_"+bean.getMachineId();
+        String key = CommonConstants.MACHINE_ALARM_CONNECT_BEF+bean.getMachineId();
         String value = redisUtil.get(key);
         AlarmExceptionMachineBean exceptionBean = new AlarmExceptionMachineBean();
         exceptionBean.setId(StringUtil.getUUID());
@@ -265,7 +265,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
             logger.info("超过10分钟未发送连接的机器，编号为：{}",bean.getMachineCode());
             redisUtil.set(key,"2");
         }else if("2".equals(value) && sub>30){
-            String connectTimeKey = "ALARM_CONNECT_TIME_"+bean.getMachineId();
+            String connectTimeKey = CommonConstants.MACHINE_ALARM_CONNECT_TIME_BEF+bean.getMachineId();
             String connectTimeValue = redisUtil.get(connectTimeKey);
             if(StringUtil.isEmpty(connectTimeValue)){//redis为空时发送
                 exceptionBean.setLevel(2);
