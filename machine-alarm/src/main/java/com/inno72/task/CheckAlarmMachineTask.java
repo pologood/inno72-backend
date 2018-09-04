@@ -26,7 +26,7 @@ public class CheckAlarmMachineTask {
 	@Resource
 	private AlarmDetailService alarmDetailService;
 
-	@Scheduled(cron = "0 0 0/2 * * ?")
+	@Scheduled(fixedRate = 1000*60*60*2)
 	public void checkAllMachine() {
 		log.info("获取全部需要发送报警的机器开始");
 		List<Inno72Machine> list = machineService.findAlarmAllMachine();
