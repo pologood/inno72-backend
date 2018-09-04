@@ -2,8 +2,11 @@ package com.inno72.system.service.impl;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +28,7 @@ import com.inno72.plugin.http.HttpClient;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.system.encrypt.DingTalkEncryptException;
 import com.inno72.system.encrypt.DingTalkEncryptor;
+import com.inno72.system.mapper.Inno72FunctionMapper;
 import com.inno72.system.model.Inno72Dept;
 import com.inno72.system.model.Inno72Function;
 import com.inno72.system.model.Inno72User;
@@ -53,6 +57,9 @@ public class DDServiceImpl implements DDService {
 	private IRedisUtil redisUtil;
 	@Autowired
 	private MachineBackendProperties machineBackendProperties;
+
+	@Resource
+	private Inno72FunctionMapper inno72FunctionMapper;
 	// 需要写在配置中心
 	// String appid = "dingoa25um8bzdtan7hjgw";
 	// String appsecret =
@@ -215,6 +222,37 @@ public class DDServiceImpl implements DDService {
 			}
 			// List<Inno72Function> functions = functionService.findAll();
 			List<Inno72Function> functions = functionService.findFunctionsByUserId(user.getId());
+			// 处理半选
+			List<Inno72Function> functionParent = new ArrayList<Inno72Function>();
+
+			Inno72Function temp = new Inno72Function();
+			for (Inno72Function inno72Function : functions) {
+				if (3 == inno72Function.getFunctionLevel()) {
+					String parentId = inno72Function.getParentId();
+					// 判断父级ID是否存在(二级)
+					temp.setId(parentId);
+					if (!functions.contains(temp) && !functionParent.contains(temp)) {
+						Inno72Function f2 = inno72FunctionMapper.selectByPrimaryKey(parentId);
+						functionParent.add(f2);
+						temp.setId(f2.getParentId());
+						if (!functions.contains(temp) && !functionParent.contains(temp)) {
+							Inno72Function f1 = inno72FunctionMapper.selectByPrimaryKey(f2.getParentId());
+							functionParent.add(f1);
+						}
+					}
+				}
+				if (2 == inno72Function.getFunctionLevel()) {
+					String parentId = inno72Function.getParentId();
+					// 判断父级ID是否存在(二级)
+					temp.setId(parentId);
+					if (!functions.contains(temp) && !functionParent.contains(temp)) {
+						Inno72Function f1 = inno72FunctionMapper.selectByPrimaryKey(parentId);
+						functionParent.add(f1);
+					}
+				}
+			}
+			functions.addAll(functionParent);
+
 			String token = StringUtil.getUUID();
 			SessionData sessionData = new SessionData(token, user, functions);
 			// 获取用户token使用
@@ -464,9 +502,39 @@ public class DDServiceImpl implements DDService {
 			return Results.failure("登录失败");
 		}
 		Inno72User user = users.get(0);
-		List<Inno72Function> functions = functionService.findAll();
-		// List<Inno72Function> functions =
-		// functionService.findFunctionsByUserId(user.getId());
+		// List<Inno72Function> functions = functionService.findAll();
+		List<Inno72Function> functions = functionService.findFunctionsByUserId(user.getId());
+		// 处理半选
+		List<Inno72Function> functionParent = new ArrayList<Inno72Function>();
+
+		Inno72Function temp = new Inno72Function();
+		for (Inno72Function inno72Function : functions) {
+			if (3 == inno72Function.getFunctionLevel()) {
+				String parentId = inno72Function.getParentId();
+				// 判断父级ID是否存在(二级)
+				temp.setId(parentId);
+				if (!functions.contains(temp) && !functionParent.contains(temp)) {
+					Inno72Function f2 = inno72FunctionMapper.selectByPrimaryKey(parentId);
+					functionParent.add(f2);
+					temp.setId(f2.getParentId());
+					if (!functions.contains(temp) && !functionParent.contains(temp)) {
+						Inno72Function f1 = inno72FunctionMapper.selectByPrimaryKey(f2.getParentId());
+						functionParent.add(f1);
+					}
+				}
+			}
+			if (2 == inno72Function.getFunctionLevel()) {
+				String parentId = inno72Function.getParentId();
+				// 判断父级ID是否存在(二级)
+				temp.setId(parentId);
+				if (!functions.contains(temp) && !functionParent.contains(temp)) {
+					Inno72Function f1 = inno72FunctionMapper.selectByPrimaryKey(parentId);
+					functionParent.add(f1);
+				}
+			}
+		}
+		functions.addAll(functionParent);
+
 		String token = StringUtil.getUUID();
 		SessionData sessionData = new SessionData(token, user, functions);
 		// 获取用户token使用

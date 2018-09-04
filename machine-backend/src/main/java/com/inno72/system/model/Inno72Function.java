@@ -139,4 +139,16 @@ public class Inno72Function {
 		this.parentName = parentName;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+
+		if (obj instanceof Inno72Function) {
+			Inno72Function result = (Inno72Function) obj;
+			if (null != result && result.getId().equals(this.getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
