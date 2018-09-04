@@ -21,7 +21,6 @@ import com.inno72.common.utils.StringUtil;
 import com.inno72.share.mapper.Inno72AdminAreaMapper;
 import com.inno72.share.model.Inno72AdminArea;
 import com.inno72.system.mapper.Inno72UserFunctionAreaMapper;
-import com.inno72.system.model.Inno72RoleFunction;
 import com.inno72.system.model.Inno72User;
 import com.inno72.system.model.Inno72UserFunctionArea;
 import com.inno72.system.service.UserFunctionAreaService;
@@ -62,7 +61,7 @@ public class UserFunctionAreaServiceImpl extends AbstractService<Inno72UserFunct
 				return Results.failure("请选择人员");
 			}
 
-			Condition condition = new Condition(Inno72RoleFunction.class);
+			Condition condition = new Condition(Inno72UserFunctionArea.class);
 			condition.createCriteria().andEqualTo("userId", userId);
 			inno72UserFunctionAreaMapper.deleteByCondition(condition);
 
@@ -79,7 +78,7 @@ public class UserFunctionAreaServiceImpl extends AbstractService<Inno72UserFunct
 					fa.setCity(area.getCity());
 					fa.setLevel(area.getLevel());
 					fa.setCreateTime(LocalDateTime.now());
-					fa.setUserId(mUserId);
+					fa.setCreateId(mUserId);
 					insertList.add(fa);
 				});
 				inno72UserFunctionAreaMapper.insertUserFunctionAreaList(insertList);

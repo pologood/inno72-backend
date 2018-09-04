@@ -67,7 +67,7 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 				return Results.failure("请选择人员");
 			}
 
-			Condition condition = new Condition(Inno72RoleFunction.class);
+			Condition condition = new Condition(Inno72UserFunctionData.class);
 			condition.createCriteria().andEqualTo("userId", userId);
 			inno72UserFunctionDataMapper.deleteByCondition(condition);
 

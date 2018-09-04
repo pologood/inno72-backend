@@ -28,6 +28,12 @@ public class Inno72UserFunctionData {
 	private String userId;
 
 	/**
+	 * 权限ID
+	 */
+	@Column(name = "function_id")
+	private String functionId;
+
+	/**
 	 * 对象包名
 	 */
 	@Column(name = "vo_name")
@@ -85,6 +91,14 @@ public class Inno72UserFunctionData {
 	 */
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public String getFunctionId() {
+		return functionId;
+	}
+
+	public void setFunctionId(String functionId) {
+		this.functionId = functionId;
 	}
 
 	/**

@@ -7,6 +7,7 @@
     -->
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="function_id" jdbcType="VARCHAR" property="functionId" />
     <result column="vo_name" jdbcType="VARCHAR" property="voName" />
     <result column="vo_column" jdbcType="VARCHAR" property="voColumn" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
@@ -15,10 +16,10 @@
   
   
   <insert id="insertUserFunctionDataList" parameterType="java.util.List">
-        insert into inno72_user_function_data (id, user_id,vo_name,vo_column,create_id,create_time)
+        insert into inno72_user_function_data (id, user_id,function_id,vo_name,vo_column,create_id,create_time)
         values
         <foreach collection="list" item="m" index="index" separator=",">
-            (#{m.id},#{m.userId},#{m.voName},#{m.voColumn},#{m.createId},#{m.createTime})
+            (#{m.id},#{m.userId},#{m.functionId},#{m.voName},#{m.voColumn},#{m.createId},#{m.createTime})
         </foreach>
     </insert>
 </mapper>
