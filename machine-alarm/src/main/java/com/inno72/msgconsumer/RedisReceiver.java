@@ -80,7 +80,8 @@ public class RedisReceiver {
         String type = jsonObject.getString("type");
         String system = jsonObject.getString("system");
         log.info("receive msg:{}", message);
-
+		String text = "";
+		String active = System.getenv("spring_profiles_active");
 
 
         if ((CommonConstants.SYS_MACHINE_LACKGOODS).equals(system)) {
@@ -97,8 +98,7 @@ public class RedisReceiver {
             String goodsName = channelGoodsAlarmBean.getGoodsName();
             param.put("machineCode", channelGoodsAlarmBean.getMachineCode());
             param.put("localStr", localStr);
-            String text = "";
-            String active = System.getenv("spring_profiles_active");
+
             if(lackNum == 10){
                 if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
                     text = "您好，【互动管家】您负责的机器，"+localStr+"，机器编号："+machineCode+"，"+goodsName+"数量已少于10个，请及时补货";
@@ -109,7 +109,7 @@ public class RedisReceiver {
                 }
 
                 text = "您好，"+localStr+"，机器编号："+machineCode+"，"+goodsName+"数量已少于10个，请及时补货";
-                param.put("text",text);
+                param.put("text",StringUtil.setText(text,active));
                 msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-RedisReceiver");
             }else if(lackNum == 5){
                 if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
@@ -120,11 +120,11 @@ public class RedisReceiver {
                     }
                 }
                 text = "您好，"+localStr+"，机器编号："+machineCode+"，"+goodsName+"数量已少于5个，请及时补货";
-                param.put("text",text);
+				param.put("text",StringUtil.setText(text,active));
                 msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-RedisReceiver");
             }else if(lackNum<5){
                 text = "您好，"+localStr+"，机器编号："+machineCode+"，"+goodsName+"数量已少于5个，请及时补货";
-                param.put("text",text);
+				param.put("text",StringUtil.setText(text,active));
                 msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-RedisReceiver");
             }
         }else if ((CommonConstants.SYS_MACHINE_DROPGOODS).equals(system)) {
@@ -206,7 +206,8 @@ public class RedisReceiver {
                         Map<String, String> param = new HashMap<>();
                         param.put("machineCode", machineCode);
                         param.put("localStr", localStr);
-                        param.put("text", channelNum + "," + "出现掉货异常，请及时处理。");
+                        text = channelNum + "," + "出现掉货异常，请及时处理。";
+						param.put("text",StringUtil.setText(text,active));
                         msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-RedisReceiver");
 
                     } else if (updateNum > 5 && (updateNum - 5) % 2 == 0) {
@@ -214,7 +215,8 @@ public class RedisReceiver {
                         Map<String, String> params = new HashMap<>();
                         params.put("machineCode", machineCode);
                         params.put("localStr", localStr);
-                        params.put("text", channelNum + "," + "出现掉货异常，请及时处理。");
+                        text = channelNum + "," + "出现掉货异常，请及时处理。";
+						params.put("text",StringUtil.setText(text,active));
                         msgUtil.sendDDTextByGroup("dingding_alarm_common", params, groupId, "machineAlarm-RedisReceiver");
 
                     }

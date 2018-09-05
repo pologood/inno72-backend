@@ -154,6 +154,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
     @Override
     public void sendExceptionMachineAlarm() {
         List<AlarmExceptionMachineBean> list = mongoTpl.find(new Query(),AlarmExceptionMachineBean.class,"AlarmExceptionMachineBean");
+		String active = System.getenv("spring_profiles_active");
         if(list != null && list.size()>0){
             for(AlarmExceptionMachineBean bean:list){
                 int type = bean.getType();
@@ -184,12 +185,11 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                     }else if(level == 4){
                         text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现网络异常，已经持续30分钟"+pageInfo+"，请及时联系巡检人员。";
                     }
-                    param.put("text",text);
+                    param.put("text",StringUtil.setText(text,active));
                     msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-AlarmDetailService");
                     logger.info("心跳异常发送钉钉消息："+groupId);
                 }else if(type == 2){
                     if(level == 1){
-                        String active = System.getenv("spring_profiles_active");
                         if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
                             List<Inno72CheckUserPhone> phones = getInno72CheckUserPhones(machineCode);
                             if(phones != null && phones.size()>0){
@@ -205,7 +205,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                     }else if(level == 2){
                         text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续30分钟未连接成功，请及时联系巡检人员。";
                     }
-                    param.put("text",text);
+					param.put("text",StringUtil.setText(text,active));
                     msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-AlarmDetailService");
                     logger.info("网络连接异常发送钉钉消息："+groupId);
                 }
@@ -291,6 +291,8 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
         inno72CheckUserPhone.setMachineCode(machineCode);
         return checkUserService.selectPhoneByMachineCode(inno72CheckUserPhone);
     }
+
+
 
 
 }
