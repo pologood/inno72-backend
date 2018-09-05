@@ -1,9 +1,6 @@
 package com.inno72.machine.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -15,11 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alibaba.fastjson.JSON;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
-import com.inno72.common.Results;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.vo.ChannelListVo;
@@ -79,32 +74,6 @@ public class MachineController {
 			@RequestParam(required = false) String localCode) {
 		Result<List<Inno72Machine>> list = machineService.findMachines(machineCode, localCode);
 		return ResultPages.page(list);
-	}
-
-	public static void main(String[] args) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("id", "abcde");
-		map.put("machineCode", "1234");
-		map.put("local", "北京市朝阳区大悦城一层");
-		map.put("offline_time", "2018.08.03 12:02:30");
-		List<Map<String, Object>> list = new ArrayList<>();
-		Map<String, Object> mm = new HashMap<>();
-		mm.put("goodName", "娃哈哈");
-		mm.put("goodCount", 10);
-		Map<String, Object> mm1 = new HashMap<>();
-		mm1.put("goodName", "娃哇哇");
-		mm1.put("goodCount", 5);
-		list.add(mm);
-		list.add(mm1);
-		map.put("stockoutInfo", list);
-		map.put("machineDoorStatus", 1);
-		map.put("dropGoodsSwitch", 1);
-		map.put("temperature", 36);
-		map.put("screenIntensity", 10);
-		map.put("goodsChannelStatus", "");
-		map.put("voice", 10);
-		map.put("update_time", "2018.08.03 12:02:30");
-		System.out.println(JSON.toJSONString(Results.success(map)));
 	}
 
 	/**
