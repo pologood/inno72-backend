@@ -253,6 +253,7 @@ public class DDServiceImpl implements DDService {
 				}
 			}
 			functions.addAll(functionParent);
+			Collections.sort(functions);
 
 			String token = StringUtil.getUUID();
 			SessionData sessionData = new SessionData(token, user, functions);
