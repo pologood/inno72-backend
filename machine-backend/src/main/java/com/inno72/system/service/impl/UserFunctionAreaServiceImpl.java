@@ -130,7 +130,7 @@ public class UserFunctionAreaServiceImpl extends AbstractService<Inno72UserFunct
 			System.out.println(sonArea);
 			if (sonArea.size() > 0) {
 				areas.removeAll(sonArea);
-				return Results.warn("操作失败", 3, areas);
+				return Results.warn("有重复区域", 0, areas);
 			}
 
 			if (null != areas && areas.size() > 0) {
