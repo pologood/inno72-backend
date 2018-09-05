@@ -3,6 +3,7 @@ package com.inno72.system.service.impl;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -534,6 +535,7 @@ public class DDServiceImpl implements DDService {
 			}
 		}
 		functions.addAll(functionParent);
+		Collections.sort(functions);
 
 		String token = StringUtil.getUUID();
 		SessionData sessionData = new SessionData(token, user, functions);

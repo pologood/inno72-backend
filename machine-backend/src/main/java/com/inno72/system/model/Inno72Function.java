@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Table(name = "inno72_function")
-public class Inno72Function {
+public class Inno72Function implements Comparable<Inno72Function> {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private String id;
@@ -29,6 +29,8 @@ public class Inno72Function {
 	private String functionIcon;
 
 	private String color;
+
+	private Integer seq;
 
 	@Transient
 	private String parentName;
@@ -124,6 +126,14 @@ public class Inno72Function {
 		return color;
 	}
 
+	public Integer getSeq() {
+		return seq;
+	}
+
+	public void setSeq(Integer seq) {
+		this.seq = seq;
+	}
+
 	/**
 	 * @param color
 	 */
@@ -149,6 +159,16 @@ public class Inno72Function {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public int compareTo(Inno72Function o) {
+		// 先按照levle 排序
+		int i = this.getFunctionLevel() - o.getFunctionLevel();
+		if (i == 0) {// 级别相等按顺序
+			return this.getSeq() - o.getSeq();
+		}
+		return i;
 	}
 
 }
