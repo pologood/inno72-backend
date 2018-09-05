@@ -18,10 +18,9 @@
   
   
   <insert id="insertUserFunctionAreaList" parameterType="java.util.List">
-        insert into inno72_user_function_area (id, user_id,area_code,area_name,province,city,level,create_id,create_time)
-        values
-        <foreach collection="list" item="m" index="index" separator=",">
+       insert into inno72_user_function_area (id, user_id,area_code,area_name,province,city,level,create_id,create_time) values
+       <foreach collection="list" item="m" index="index" separator=",">
             (#{m.id},#{m.userId},#{m.areaCode},#{m.areaName},#{m.province},#{m.city},#{m.level},#{m.createId},#{m.createTime})
-        </foreach>
-    </insert>
+       </foreach>
+  </insert>
 </mapper>

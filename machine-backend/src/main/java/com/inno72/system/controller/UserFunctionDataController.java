@@ -1,7 +1,10 @@
 package com.inno72.system.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
+import com.inno72.system.model.Inno72FunctionData;
 import com.inno72.system.service.UserFunctionDataService;
 import com.inno72.system.vo.FunctionTreeResultVo;
 import com.inno72.system.vo.UserAreaDataVo;
@@ -19,9 +23,16 @@ import com.inno72.system.vo.UserAreaDataVo;
  */
 @RestController
 @RequestMapping("/user/function/data")
+@CrossOrigin
 public class UserFunctionDataController {
 	@Resource
 	private UserFunctionDataService userFunctionDataService;
+
+	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Inno72FunctionData>> detail(@RequestParam String userId) {
+		List<Inno72FunctionData> userFunctionData = userFunctionDataService.list(userId);
+		return ResultGenerator.genSuccessResult(userFunctionData);
+	}
 
 	@RequestMapping(value = "/updateFunctionData", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> update(@RequestBody UserAreaDataVo userData) {

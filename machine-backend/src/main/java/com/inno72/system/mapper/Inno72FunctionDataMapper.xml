@@ -10,12 +10,26 @@
     <result column="function_path" jdbcType="VARCHAR" property="functionPath" />
     <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
     <result column="vo_name" jdbcType="VARCHAR" property="voName" />
-    <result column="column" jdbcType="VARCHAR" property="column" />
+    <result column="vo_column" jdbcType="VARCHAR" property="voColumn" />
     <result column="seq" jdbcType="INTEGER" property="seq" />
   </resultMap>
   
   <select id="findFunctionDataByParentId" parameterType="String" resultMap="BaseResultMap">
 		SELECT * FROM inno72_function_data fa WHERE fa.parent_id =#{parentId}
+  </select>
+  
+  <select id="selectUserFunctionDataList" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			fd.id,
+			fd.vo_name,
+			fd.vo_column,
+			CONCAT(f1.function_depict,'-',f2.function_depict,'-',fd.function_depict ) AS function_depict
+		FROM
+			inno72_user_function_data ufd
+			LEFT JOIN inno72_function_data fd ON fd.id = ufd.function_id
+			LEFT JOIN inno72_function f2 ON f2.id = fd.parent_id
+			LEFT JOIN inno72_function f1 ON f1.id = f2.parent_id
+			where ufd.user_id =#{userId}
   </select>
   
   

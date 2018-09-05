@@ -50,6 +50,14 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 	private Inno72FunctionDataMapper inno72FunctionDataMapper;
 
 	@Override
+	public List<Inno72FunctionData> list(String userId) {
+
+		List<Inno72FunctionData> userFunctionData = inno72FunctionDataMapper.selectUserFunctionDataList(userId);
+
+		return userFunctionData;
+	}
+
+	@Override
 	public Result<String> updateFunctionData(UserAreaDataVo userData) {
 
 		try {
@@ -137,7 +145,7 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 						funThirdVo.setId(funThird.getId());
 						funThirdVo.setTitle(funThird.getFunctionDepict());
 						funThirdVo.setVoName(funThird.getVoName());
-						funThirdVo.setColumn(funThird.getColumn());
+						funThirdVo.setColumn(funThird.getVoColumn());
 						thirdVoList.add(funThirdVo);
 					}
 					funSecondVo.setChildren(thirdVoList);

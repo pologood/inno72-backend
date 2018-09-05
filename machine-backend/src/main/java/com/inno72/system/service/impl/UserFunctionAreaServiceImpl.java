@@ -44,6 +44,15 @@ public class UserFunctionAreaServiceImpl extends AbstractService<Inno72UserFunct
 	private Inno72AdminAreaMapper inno72AdminAreaMapper;
 
 	@Override
+	public List<Inno72UserFunctionArea> list(String userId) {
+		Condition condition = new Condition(Inno72UserFunctionArea.class);
+		condition.createCriteria().andEqualTo("userId", userId);
+		List<Inno72UserFunctionArea> userFunctionArea = inno72UserFunctionAreaMapper.selectByCondition(condition);
+
+		return userFunctionArea;
+	}
+
+	@Override
 	public Result<String> updateFunctionArea(UserAreaDataVo userArea) {
 
 		try {
