@@ -37,6 +37,7 @@ import com.inno72.redis.IRedisUtil;
 import com.inno72.service.AlarmDetailService;
 import com.inno72.service.AlarmMsgService;
 import com.inno72.service.CheckUserService;
+import com.inno72.util.AlarmUtil;
 
 @Service
 @Transactional
@@ -59,40 +60,11 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
     @Resource
     private AlarmMsgService alarmMsgService;
 
+    @Resource
+    private AlarmUtil alarmUtil;
+
     @Value("${inno72.dingding.groupId}")
     private String groupId;
-    @Override
-    public Result<String> add(AlarmDetailBean bean) {
-        Date now = new Date();
-        bean.setCreateTime(now);
-        String beanId = StringUtil.getUUID();
-        bean.setId(beanId);
-        mongoTpl.save(bean,"AlarmDetailBean");
-        Query query = new Query();
-        query.addCriteria(Criteria.where("machineId").is(bean.getMachineId()));
-        Update update = new Update();
-        int type = bean.getType();
-        AlarmMachineBean machineBean = new AlarmMachineBean();
-        machineBean.setUpdateTime(now);
-        String key = "";
-        String timeKey = "";
-        if(type == 1){//心跳
-            update.set("heartId",beanId);
-            update.set("heartTime",now);
-            key = CommonConstants.MACHINE_ALARM_HEART_BEF +bean.getMachineId();
-            timeKey = CommonConstants.MACHINE_ALARM_HEART_TIME_BEF+bean.getMachineId();
-        }else if(type == 2){//网络
-            update.set("connectId",beanId);
-            update.set("connectTime",now);
-            key = CommonConstants.MACHINE_ALARM_CONNECT_BEF+bean.getMachineId();
-            timeKey = CommonConstants.MACHINE_ALARM_CONNECT_TIME_BEF+bean.getMachineId();
-        }
-        update.set("updateTime",now);
-        mongoTpl.updateFirst(query,update,"AlarmMachineBean");
-        redisUtil.del(key);
-        redisUtil.del(timeKey);
-        return ResultGenerator.genSuccessResult();
-    }
 
     @Override
     public void addToMachineBean(List<Inno72Machine> list) {

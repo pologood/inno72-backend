@@ -8,8 +8,6 @@ import com.inno72.model.Inno72Machine;
 
 public interface AlarmDetailService{
 
-    public Result<String> add(AlarmDetailBean bean);
-
     public void addToMachineBean(List<Inno72Machine> list);
 
     public void addToExceptionMachineBean();
