@@ -72,7 +72,7 @@ public class MachineController {
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView list(@RequestParam(required = false) String machineCode,
 			@RequestParam(required = false) String localCode) {
-		Result<List<Inno72Machine>> list = machineService.findMachines(machineCode, localCode);
+		Result<List<MachineListVo>> list = machineService.findMachines(machineCode, localCode);
 		return ResultPages.page(list);
 	}
 
@@ -114,6 +114,18 @@ public class MachineController {
 	@RequestMapping(value = "/updateMachine", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> updateMachine(UpdateMachineVo vo) {
 		return machineService.updateMachine(vo);
+
+	}
+
+	/**
+	 * 查询机器信息
+	 * 
+	 * @param machineId
+	 * @return
+	 */
+	@RequestMapping(value = "/findMachineInfoById", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<Inno72Machine> findMachineInfoById(@RequestParam String machineId) {
+		return machineService.findMachineInfoById(machineId);
 
 	}
 

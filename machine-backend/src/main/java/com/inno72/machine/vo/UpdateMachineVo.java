@@ -3,6 +3,7 @@ package com.inno72.machine.vo;
 public class UpdateMachineVo {
 	private String machineId;
 	private String localeId;
+	private Integer openStatus = 0;
 	private String monitorStart;
 	private String monitorEnd;
 
@@ -36,6 +37,14 @@ public class UpdateMachineVo {
 
 	public void setMonitorEnd(String monitorEnd) {
 		this.monitorEnd = monitorEnd;
+	}
+
+	public Integer getOpenStatus() {
+		return openStatus;
+	}
+
+	public void setOpenStatus(Integer openStatus) {
+		this.openStatus = openStatus;
 	}
 
 }

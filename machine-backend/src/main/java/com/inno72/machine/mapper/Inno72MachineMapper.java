@@ -12,7 +12,7 @@ import com.inno72.machine.vo.MachineStockOutInfo;
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72MachineMapper extends Mapper<Inno72Machine> {
 
-	List<Inno72Machine> selectMachinesByPage(Map<String, Object> param);
+	List<MachineListVo> selectMachinesByPage(Map<String, Object> param);
 
 	List<MachineListVo> findMachinePlan(Map<String, Object> param);
 
@@ -23,5 +23,7 @@ public interface Inno72MachineMapper extends Mapper<Inno72Machine> {
 	List<MachineExceptionVo> findMachines();
 
 	List<MachineStockOutInfo> findMachineStockoutInfo(String machineId);
+
+	Inno72Machine findMachineInfoById(String machineId);
 
 }
