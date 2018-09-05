@@ -82,17 +82,16 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 			if (!match1.matches()) {
 				return Results.failure("手机号格式有误");
 			}
-			Matcher match2 = cardNo.matcher(model.getCardNo());
-			if (!match2.matches()) {
-				return Results.failure("身份证号格式有误");
+			if (StringUtil.isNotBlank(model.getCardNo())) {
+				Matcher match2 = cardNo.matcher(model.getCardNo());
+				if (!match2.matches()) {
+					return Results.failure("身份证号格式有误");
+				}
 			}
+
 			int m = inno72CheckUserMapper.checkPhoneIsExist(model.getPhone());
 			if (m > 0) {
 				return Results.failure("手机号已存在");
-			}
-			int n = inno72CheckUserMapper.checkCardNoIsExist(model.getCardNo());
-			if (n > 0) {
-				return Results.failure("身份证号已存在");
 			}
 
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
@@ -212,9 +211,9 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 				}
 			}
 			if (StringUtil.isNotBlank(model.getCardNo())) {
-				int n = inno72CheckUserMapper.checkCardNoIsExist(model.getCardNo());
-				if (n > 0 && !model.getCardNo().equals(old.getCardNo())) {
-					return Results.failure("更新身份证号已存在");
+				Matcher match2 = cardNo.matcher(model.getCardNo());
+				if (!match2.matches()) {
+					return Results.failure("身份证号格式有误");
 				}
 			}
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
