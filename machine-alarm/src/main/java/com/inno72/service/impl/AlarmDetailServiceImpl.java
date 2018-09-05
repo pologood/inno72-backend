@@ -177,13 +177,13 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                 }
                 if(type == 1){
                     if(level == 1){
-                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现网络异常，已经持续1分钟"+pageInfo+"，请及时联系巡检人员。";
+                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续1分钟"+pageInfo+"，请及时联系巡检人员。";
                     }else if(level == 2){
-                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现网络异常，已经持续5分钟"+pageInfo+"，请及时联系巡检人员。";
+                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续5分钟"+pageInfo+"，请及时联系巡检人员。";
                     }else if(level == 3){
-                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现网络异常，已经持续10分钟"+pageInfo+"，请及时联系巡检人员。";
+                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续10分钟"+pageInfo+"，请及时联系巡检人员。";
                     }else if(level == 4){
-                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现网络异常，已经持续30分钟"+pageInfo+"，请及时联系巡检人员。";
+                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续30分钟"+pageInfo+"，请及时联系巡检人员。";
                     }
                     param.put("text",StringUtil.setText(text,active));
                     msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-AlarmDetailService");
