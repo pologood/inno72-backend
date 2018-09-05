@@ -53,7 +53,7 @@ public class UserFunctionAreaServiceImpl extends AbstractService<Inno72UserFunct
 	}
 
 	@Override
-	public Result<String> updateFunctionArea(UserAreaDataVo userArea) {
+	public Result<Object> updateFunctionArea(UserAreaDataVo userArea) {
 
 		try {
 			SessionData session = CommonConstants.SESSION_DATA;
@@ -75,6 +75,64 @@ public class UserFunctionAreaServiceImpl extends AbstractService<Inno72UserFunct
 			inno72UserFunctionAreaMapper.deleteByCondition(condition);
 
 			List<Inno72AdminArea> areas = userArea.getAreaList();
+			// 去除子节点
+			List<Inno72AdminArea> sonArea = new ArrayList<Inno72AdminArea>();
+			if (null != areas && areas.size() > 1) {
+				List<Inno72AdminArea> level1 = new ArrayList<Inno72AdminArea>();
+				List<Inno72AdminArea> level2 = new ArrayList<Inno72AdminArea>();
+				List<Inno72AdminArea> level3 = new ArrayList<Inno72AdminArea>();
+
+				for (Inno72AdminArea inno72AdminArea : areas) {
+					if (inno72AdminArea.getLevel() == 1) {
+						level1.add(inno72AdminArea);
+					} else if (inno72AdminArea.getLevel() == 2) {
+						level2.add(inno72AdminArea);
+					} else if (inno72AdminArea.getLevel() == 3) {
+						level3.add(inno72AdminArea);
+					}
+				}
+
+				if (level1.size() > 0) {
+					for (Inno72AdminArea inno72AdminArea : level1) {
+						String areaCode = inno72AdminArea.getCode().substring(0, 2);
+						if (level2.size() > 0) {
+							for (Inno72AdminArea inno72AdminArea2 : level2) {
+								String areaCode2 = inno72AdminArea2.getCode().substring(0, 2);
+								if (areaCode.equals(areaCode2)) {
+									sonArea.add(inno72AdminArea2);
+								}
+							}
+						}
+						if (level3.size() > 0) {
+							for (Inno72AdminArea inno72AdminArea3 : level3) {
+								String areaCode3 = inno72AdminArea3.getCode().substring(0, 2);
+								if (areaCode.equals(areaCode3)) {
+									sonArea.add(inno72AdminArea3);
+								}
+							}
+						}
+					}
+				}
+
+				if (level2.size() > 0) {
+					for (Inno72AdminArea inno72AdminArea2 : level2) {
+						String areaCode2 = inno72AdminArea2.getCode().substring(0, 4);
+						for (Inno72AdminArea inno72AdminArea3 : level3) {
+							String areaCode3 = inno72AdminArea3.getCode().substring(0, 4);
+							if (areaCode2.equals(areaCode3) && !sonArea.contains(inno72AdminArea3)) {
+								sonArea.add(inno72AdminArea3);
+							}
+						}
+					}
+				}
+
+			}
+			System.out.println(sonArea);
+			if (sonArea.size() > 0) {
+				areas.removeAll(sonArea);
+				return Results.warn("操作失败", 3, areas);
+			}
+
 			if (null != areas && areas.size() > 0) {
 				List<Inno72UserFunctionArea> insertList = new ArrayList<>();
 				areas.forEach(area -> {

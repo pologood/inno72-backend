@@ -15,7 +15,7 @@ public interface UserFunctionAreaService extends Service<Inno72UserFunctionArea>
 
 	Result<AreaTreeResultVo> findAllAreaTree(String userId);
 
-	Result<String> updateFunctionArea(UserAreaDataVo userArea);
+	Result<Object> updateFunctionArea(UserAreaDataVo userArea);
 
 	List<Inno72UserFunctionArea> list(String userId);
 

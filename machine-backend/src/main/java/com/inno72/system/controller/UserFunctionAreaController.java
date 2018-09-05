@@ -34,11 +34,9 @@ public class UserFunctionAreaController {
 		return ResultGenerator.genSuccessResult(userFunctionArea);
 	}
 
-	
 	@RequestMapping(value = "/updateFunctionArea", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> updateFunctionArea(@RequestBody UserAreaDataVo userArea) {
-		userFunctionAreaService.updateFunctionArea(userArea);
-		return ResultGenerator.genSuccessResult();
+	public Result<Object> updateFunctionArea(@RequestBody UserAreaDataVo userArea) {
+		return userFunctionAreaService.updateFunctionArea(userArea);
 	}
 
 	@RequestMapping(value = "/all", method = { RequestMethod.POST, RequestMethod.GET })
