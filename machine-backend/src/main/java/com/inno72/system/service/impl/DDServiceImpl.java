@@ -30,10 +30,12 @@ import com.inno72.redis.IRedisUtil;
 import com.inno72.system.encrypt.DingTalkEncryptException;
 import com.inno72.system.encrypt.DingTalkEncryptor;
 import com.inno72.system.mapper.Inno72FunctionMapper;
+import com.inno72.system.mapper.Inno72UserFunctionAreaMapper;
 import com.inno72.system.model.Inno72Dept;
 import com.inno72.system.model.Inno72Function;
 import com.inno72.system.model.Inno72User;
 import com.inno72.system.model.Inno72UserDept;
+import com.inno72.system.model.Inno72UserFunctionArea;
 import com.inno72.system.service.DDService;
 import com.inno72.system.service.DeptService;
 import com.inno72.system.service.FunctionService;
@@ -61,6 +63,8 @@ public class DDServiceImpl implements DDService {
 
 	@Resource
 	private Inno72FunctionMapper inno72FunctionMapper;
+	@Resource
+	private Inno72UserFunctionAreaMapper inno72UserFunctionAreaMapper;
 	// 需要写在配置中心
 	// String appid = "dingoa25um8bzdtan7hjgw";
 	// String appsecret =
@@ -254,9 +258,13 @@ public class DDServiceImpl implements DDService {
 			}
 			functions.addAll(functionParent);
 			Collections.sort(functions);
+			// 获取地区权限
+			Condition condition = new Condition(Inno72UserFunctionArea.class);
+			condition.createCriteria().andEqualTo("userId", user.getId());
+			List<Inno72UserFunctionArea> userFunctionArea = inno72UserFunctionAreaMapper.selectByCondition(condition);
 
 			String token = StringUtil.getUUID();
-			SessionData sessionData = new SessionData(token, user, functions);
+			SessionData sessionData = new SessionData(token, user, functions, userFunctionArea);
 			// 获取用户token使用
 			String userTokenKey = CommonConstants.USER_LOGIN_TOKEN_CACHE_KEY_PREF + user.getId();
 			// 获取用户之前登录的token
@@ -537,9 +545,17 @@ public class DDServiceImpl implements DDService {
 		}
 		functions.addAll(functionParent);
 		Collections.sort(functions);
+		// 获取地区权限
+		Condition condition1 = new Condition(Inno72UserFunctionArea.class);
+		condition1.createCriteria().andEqualTo("userId", user.getId());
+		List<Inno72UserFunctionArea> userFunctionArea = inno72UserFunctionAreaMapper.selectByCondition(condition1);
+		for (Inno72UserFunctionArea inno72UserFunctionArea : userFunctionArea) {
+			int num = StringUtil.getAreaCodeNum(inno72UserFunctionArea.getAreaCode());
+			inno72UserFunctionArea.setLevel(num);
+		}
 
 		String token = StringUtil.getUUID();
-		SessionData sessionData = new SessionData(token, user, functions);
+		SessionData sessionData = new SessionData(token, user, functions, userFunctionArea);
 		// 获取用户token使用
 		String userTokenKey = CommonConstants.USER_LOGIN_TOKEN_CACHE_KEY_PREF + user.getId();
 		// 获取用户之前登录的token
