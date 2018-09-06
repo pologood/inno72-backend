@@ -35,10 +35,10 @@ public class MybatisConfig {
 		PagePlugin pagePlugin = new PagePlugin();
 		pagePlugin.setProperties(props);
 
-		// Properties props1 = new Properties();
-		// props1.setProperty("authSqlId", "withAuth");
+		Properties props1 = new Properties();
+		props1.setProperty("authSqlId", "withAuth");
 		AuthPlugin authPlugin = new AuthPlugin();
-		// authPlugin.setProperties(props1);
+		authPlugin.setProperties(props1);
 
 		DataAutherInterceptor dataAutherInterceptor = new DataAutherInterceptor();
 

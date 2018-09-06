@@ -36,7 +36,7 @@
 		SELECT * FROM inno72_locale where id=#{id}
   </select>
 
-	<select id="selectByPage" parameterType="java.util.Map" resultMap="VoResultMap">
+	<select id="selectwithAuthByPage" parameterType="java.util.Map" resultMap="VoResultMap">
 	SELECT * FROM (
 		SELECT locale.*,
   CONCAT(area.province, area.city, area.district,area.circle) AS areaName,m.*
@@ -59,12 +59,7 @@
 			or area.circle LIKE '%${keyword}%' 
 			)
 		</if>
-		<if test="functionArea !=null ">
-		and (<foreach collection="functionArea" item="area" separator="or"
-                open="(" close=")">
-                 LEFT(locale.area_code,#{area.level}) = LEFT(#{area.areaCode},#{area.level})
-            </foreach>)
-		</if>
+		and 2=2
 	) t
 	ORDER BY t.update_time DESC
   </select>

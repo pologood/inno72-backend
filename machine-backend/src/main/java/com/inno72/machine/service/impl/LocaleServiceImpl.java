@@ -174,7 +174,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 			params.put("functionArea", functionArea);
 		}
 
-		List<Inno72LocaleVo> list = inno72LocaleMapper.selectByPage(params);
+		List<Inno72LocaleVo> list = inno72LocaleMapper.selectwithAuthByPage(params);
 
 		return list;
 	}

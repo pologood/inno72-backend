@@ -17,7 +17,7 @@ public interface Inno72LocaleMapper extends Mapper<Inno72Locale> {
 
 	int selectIsUseingPlan(String id);
 
-	List<Inno72LocaleVo> selectByPage(Map<String, Object> params);
+	List<Inno72LocaleVo> selectwithAuthByPage(Map<String, Object> params);
 
 	/**
 	 * @param :machineCodeStr
