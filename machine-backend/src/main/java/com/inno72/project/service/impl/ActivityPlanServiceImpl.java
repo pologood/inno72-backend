@@ -45,7 +45,6 @@ import com.inno72.project.vo.Inno72MachineVo;
 import com.inno72.project.vo.Inno72NoPlanInfoVo;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.system.model.Inno72User;
-import com.inno72.system.model.Inno72UserFunctionArea;
 
 /**
  * Created by CodeGenerator on 2018/07/11.
@@ -640,12 +639,6 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			params.put("num", num);
 		}
 
-		SessionData session = CommonConstants.SESSION_DATA;
-		List<Inno72UserFunctionArea> functionArea = Optional.ofNullable(session).map(SessionData::getFunctionArea)
-				.orElse(null);
-		if (functionArea != null) {
-			params.put("functionArea", functionArea);
-		}
 		return inno72ActivityPlanMapper.selectPlanList(params);
 	}
 
@@ -682,12 +675,6 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			String likeCode = code.substring(0, num);
 			params.put("code", likeCode);
 			params.put("num", num);
-		}
-		SessionData session = CommonConstants.SESSION_DATA;
-		List<Inno72UserFunctionArea> functionArea = Optional.ofNullable(session).map(SessionData::getFunctionArea)
-				.orElse(null);
-		if (functionArea != null) {
-			params.put("functionArea", functionArea);
 		}
 
 		List<Inno72AdminAreaVo> list = new ArrayList<>();

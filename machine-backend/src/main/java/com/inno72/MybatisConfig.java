@@ -36,7 +36,7 @@ public class MybatisConfig {
 		pagePlugin.setProperties(props);
 
 		Properties props1 = new Properties();
-		props1.setProperty("authSqlId", "withAuth");
+		props1.setProperty("authSqlId", "WithAuth");
 		AuthPlugin authPlugin = new AuthPlugin();
 		authPlugin.setProperties(props1);
 

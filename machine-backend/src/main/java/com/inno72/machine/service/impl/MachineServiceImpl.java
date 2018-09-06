@@ -61,7 +61,6 @@ import com.inno72.machine.vo.UpdateMachineVo;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.project.service.ActivityPlanService;
 import com.inno72.system.model.Inno72User;
-import com.inno72.system.model.Inno72UserFunctionArea;
 import com.inno72.utils.page.Pagination;
 
 import tk.mybatis.mapper.entity.Condition;
@@ -103,12 +102,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			param.put("num", num);
 		}
 		param.put("machineCode", machineCode);
-		SessionData session = CommonConstants.SESSION_DATA;
-		List<Inno72UserFunctionArea> functionArea = Optional.ofNullable(session).map(SessionData::getFunctionArea)
-				.orElse(null);
-		if (functionArea != null) {
-			param.put("functionArea", functionArea);
-		}
 
 		List<Inno72Machine> machines = inno72MachineMapper.selectMachinesByPage(param);
 		return Results.success(machines);

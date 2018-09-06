@@ -1,8 +1,13 @@
 package com.inno72.common;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+
+import javax.sql.DataSource;
 
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
@@ -18,6 +23,8 @@ import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.miemiedev.mybatis.paginator.OffsetLimitInterceptor.BoundSqlSqlSource;
 import com.inno72.system.model.Inno72UserFunctionArea;
@@ -30,6 +37,7 @@ import com.inno72.utils.page.ReflectHelper;
 				RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class }), })
 
 public class AuthPlugin implements Interceptor {
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@SuppressWarnings("unused")
 	@Override
@@ -50,7 +58,7 @@ public class AuthPlugin implements Interceptor {
 			boundSql = (BoundSql) args[5];
 		}
 		String id = stm.getId();
-		boolean matches = id.contains("withAuth");
+		boolean matches = id.contains("WithAuth");
 		if (matches) { // 拦截需要分页的SQL
 			Object parameterObject = boundSql.getParameterObject();// 分页SQL<select>中parameterType属性对应的实体参数，即Mapper接口中执行分页方法的参数,该参数不得为空
 			if (parameterObject == null) {
@@ -58,14 +66,75 @@ public class AuthPlugin implements Interceptor {
 			}
 
 			String sql = boundSql.getSql();
-			SessionData session = CommonConstants.SESSION_DATA;
-			List<Inno72UserFunctionArea> functionArea = Optional.ofNullable(session).map(SessionData::getFunctionArea)
-					.orElse(null);
+
 			System.out.println(sql);
 
-			if (sql.contains("2=2")) {
+			if (sql.contains("9=9")) {
 
-				sql = sql.replace("2=2", "3=3");
+				SessionData session = CommonConstants.SESSION_DATA;
+				List<Inno72UserFunctionArea> functionArea = Optional.ofNullable(session)
+						.map(SessionData::getFunctionArea).orElse(null);
+				if (null != functionArea && functionArea.size() > 0) {
+
+					DataSource ds = stm.getConfiguration().getEnvironment().getDataSource();
+					Connection conn = null;
+					PreparedStatement statement = null;
+					ResultSet rs = null;
+					String columnName = "";
+					try {
+						conn = ds.getConnection();
+
+						statement = conn
+								.prepareStatement("select column_name from inno72_auth_sql where sql_id=? and type=1 ");
+						System.out.println(id.substring(id.lastIndexOf(".") + 1, id.length()));
+						statement.setString(1, id.substring(id.lastIndexOf(".") + 1, id.length()));
+						System.out.println();
+
+						rs = statement.executeQuery();
+						while (rs.next()) {
+							columnName = rs.getString(1);
+						}
+
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+					} finally {
+						if (rs != null) {
+							rs.close();
+						}
+						if (statement != null) {
+							statement.close();
+						}
+						if (conn != null) {
+							conn.close();
+						}
+					}
+
+					if (StringUtil.isNotBlank(columnName)) {
+						StringBuilder areaSql = new StringBuilder();
+						areaSql.append("(");
+
+						for (int i = 0; i < functionArea.size(); i++) {
+							areaSql.append("LEFT (");
+							areaSql.append(columnName);
+							areaSql.append(",");
+							areaSql.append(functionArea.get(i).getLevel());
+							areaSql.append(")");
+
+							areaSql.append("=");
+
+							areaSql.append("LEFT (");
+							areaSql.append(functionArea.get(i).getAreaCode());
+							areaSql.append(",");
+							areaSql.append(functionArea.get(i).getLevel());
+							areaSql.append(")");
+							if (i != functionArea.size() - 1) {
+								areaSql.append(" OR ");
+							}
+						}
+						areaSql.append(")");
+						sql = sql.replace("9=9", areaSql.toString());
+					}
+				}
 			}
 
 			ReflectHelper.setValueByFieldName(boundSql, "sql", sql);

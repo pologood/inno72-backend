@@ -28,7 +28,6 @@ import com.inno72.machine.vo.Inno72LocaleVo;
 import com.inno72.machine.vo.MachineLocaleInfo;
 import com.inno72.share.mapper.Inno72AdminAreaMapper;
 import com.inno72.system.model.Inno72User;
-import com.inno72.system.model.Inno72UserFunctionArea;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
@@ -167,14 +166,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		}
 		params.put("keyword", keyword);
 
-		SessionData session = CommonConstants.SESSION_DATA;
-		List<Inno72UserFunctionArea> functionArea = Optional.ofNullable(session).map(SessionData::getFunctionArea)
-				.orElse(null);
-		if (functionArea != null) {
-			params.put("functionArea", functionArea);
-		}
-
-		List<Inno72LocaleVo> list = inno72LocaleMapper.selectwithAuthByPage(params);
+		List<Inno72LocaleVo> list = inno72LocaleMapper.selectWithAuthByPage(params);
 
 		return list;
 	}
@@ -191,14 +183,8 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 			params.put("num", num);
 		}
 		params.put("keyword", keyword);
-		SessionData session = CommonConstants.SESSION_DATA;
-		List<Inno72UserFunctionArea> functionArea = Optional.ofNullable(session).map(SessionData::getFunctionArea)
-				.orElse(null);
-		if (functionArea != null) {
-			params.put("functionArea", functionArea);
-		}
 
-		return inno72LocaleMapper.selectByList(params);
+		return inno72LocaleMapper.selectWithAuthByList(params);
 	}
 
 }
