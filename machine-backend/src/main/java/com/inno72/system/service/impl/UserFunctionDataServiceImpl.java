@@ -13,10 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.common.AbstractService;
-import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
+import com.inno72.common.SessionUtil;
 import com.inno72.common.utils.StringUtil;
 import com.inno72.system.mapper.Inno72FunctionDataMapper;
 import com.inno72.system.mapper.Inno72FunctionMapper;
@@ -61,7 +61,7 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 	public Result<String> updateFunctionData(UserAreaDataVo userData) {
 
 		try {
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");

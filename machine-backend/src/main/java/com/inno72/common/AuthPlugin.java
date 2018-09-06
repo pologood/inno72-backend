@@ -71,7 +71,7 @@ public class AuthPlugin implements Interceptor {
 
 			if (sql.contains("9=9")) {
 
-				SessionData session = CommonConstants.SESSION_DATA;
+				SessionData session = SessionUtil.sessionData.get();
 				List<Inno72UserFunctionArea> functionArea = Optional.ofNullable(session)
 						.map(SessionData::getFunctionArea).orElse(null);
 				if (null != functionArea && functionArea.size() > 0) {
