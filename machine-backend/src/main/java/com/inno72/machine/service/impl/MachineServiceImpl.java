@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -26,12 +28,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.inno72.check.model.Inno72CheckFault;
 import com.inno72.check.service.CheckFaultService;
 import com.inno72.common.AbstractService;
-import com.inno72.common.CommonConstants;
 import com.inno72.common.DateUtil;
 import com.inno72.common.MachineBackendProperties;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
+import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.machine.mapper.Inno72AppScreenShotMapper;
 import com.inno72.machine.mapper.Inno72MachineMapper;
@@ -88,9 +90,10 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	private CheckFaultService checkFaultService;
 	@Autowired
 	private Inno72AppScreenShotMapper inno72AppScreenShotMapper;
-
 	@Autowired
 	private ActivityPlanService activityPlanService;
+	@Autowired
+	private StringRedisTemplate stringRedisTemplate;
 
 	@Override
 	public Result<List<Inno72Machine>> findMachines(String machineCode, String localCode) {
@@ -101,6 +104,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			param.put("code", likeCode);
 			param.put("num", num);
 		}
+		machineCode = Optional.ofNullable(machineCode).map(a -> a.replace("'", "")).orElse(machineCode);
 		param.put("machineCode", machineCode);
 
 		List<Inno72Machine> machines = inno72MachineMapper.selectMachinesByPage(param);
@@ -129,7 +133,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<String> updateLocale(String id, String localeId, String address) {
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -167,7 +171,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	@Override
 	public Result<String> deleteChannel(List<UpdateMachineChannelVo> channels) {
 		logger.info("停用渠道传入json{}", JSON.toJSONString(channels));
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -191,7 +195,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	@Override
 	public Result<String> updateGoodsCount(List<UpdateMachineChannelVo> channels) {
 		logger.info("更新商品个数传入json{}", JSON.toJSONString(channels));
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -397,16 +401,13 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	@Override
 	public Result<MachinePortalVo> findMachinePortalData() {
 		MachinePortalVo vo = new MachinePortalVo();
-		List<Inno72Machine> machines = inno72MachineMapper.selectAll();
-		List<MachineLogInfo> netList = mongoTpl.find(new Query(), MachineLogInfo.class, "MachineLogInfo");
+		Condition condition1 = new Condition(Inno72Machine.class);
+		condition1.createCriteria().andNotEqualTo("machineStatus", -1);
+		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition1);
 		int online = 0;
-		for (MachineLogInfo machineLogInfo : netList) {
-			LocalDateTime createTime = machineLogInfo.getCreateTime();
-			Duration duration = Duration.between(createTime, LocalDateTime.now());
-			long between = duration.toMinutes();
-			if (between <= 2) {
-				online += 1;
-			}
+		Set<String> keys = stringRedisTemplate.keys("monitor:session:*");
+		if (keys != null) {
+			online = keys.size();
 		}
 		int exception = 0;
 		List<MachineStatus> statusList = mongoTpl.find(new Query(), MachineStatus.class, "MachineStatus");
@@ -531,7 +532,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<String> updateMachine(UpdateMachineVo vo) {
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -559,7 +560,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<String> updateMachineCode(String machineId, String machineCode) {
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -591,5 +592,55 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		msg.setMachineId(machine.getMachineCode());
 		msg.setData(machineCode);
 		return sendMsg(machine.getMachineCode(), msg);
+	}
+
+	@Override
+	public Result<String> cutDesktop(String machineId, Integer status) {
+		Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+		if (machine == null) {
+			return Results.failure("机器id不存在");
+		}
+		if (status == 1) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("machineCode", machine.getMachineCode());
+			Map<String, Object> pmap = new HashMap<>();
+			pmap.put("type", 1);
+			pmap.put("data", "am stopservice -n com.inno72.monitorapp/.services.DetectionService");
+			map.put("msg", pmap);
+			sendMsgStr(machine.getMachineCode(), JSON.toJSONString(map));
+			pmap.put("data", "input keyevent 3");
+			map.put("msg", pmap);
+			return sendMsgStr(machine.getMachineCode(), JSON.toJSONString(map));
+		} else {
+			Map<String, Object> map = new HashMap<>();
+			map.put("machineCode", machine.getMachineCode());
+			Map<String, Object> pmap = new HashMap<>();
+			pmap.put("type", 1);
+			pmap.put("data", "am startservice -n com.inno72.monitorapp/.services.DetectionService");
+			map.put("msg", pmap);
+			return sendMsgStr(machine.getMachineCode(), JSON.toJSONString(map));
+		}
+	}
+
+	private Result<String> sendMsgStr(String machineCode, String json) {
+		String url = machineBackendProperties.get("sendAppMsgStrUrl");
+		try {
+			String result = HttpClient.post(url, json);
+			if (!StringUtil.isEmpty(result)) {
+				JSONObject $_result = JSON.parseObject(result);
+				if ($_result.getInteger("code") == 0) {
+					String r = $_result.getJSONObject("data").getString(machineCode);
+					if (!"发送成功".equals(r)) {
+						return Results.failure(r);
+					}
+				} else {
+					return Results.failure($_result.getString("msg"));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Results.failure("发送失败");
+		}
+		return Results.success();
 	}
 }

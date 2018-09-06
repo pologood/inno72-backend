@@ -27,6 +27,7 @@
     <result column="circle" jdbcType="VARCHAR" property="circle" />
     <result column="userNum" jdbcType="INTEGER" property="userNum" />
     <result column="areaName" jdbcType="INTEGER" property="areaName" />
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
     
     
     

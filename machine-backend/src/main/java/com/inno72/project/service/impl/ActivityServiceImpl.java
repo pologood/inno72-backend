@@ -19,6 +19,7 @@ import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
+import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72ActivityMapper;
 import com.inno72.project.mapper.Inno72ActivityShopsMapper;
@@ -49,7 +50,7 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 	public Result<String> saveModel(Inno72ActivityVo model) {
 		logger.info("--------------------活动新增-------------------");
 		try {
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");
@@ -132,7 +133,7 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 	@Override
 	public Result<String> delById(String id) {
 		logger.info("--------------------活动删除-------------------");
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -156,7 +157,7 @@ public class ActivityServiceImpl extends AbstractService<Inno72Activity> impleme
 	public Result<String> updateModel(Inno72ActivityVo model) {
 		logger.info("--------------------活动更新-------------------");
 		try {
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");

@@ -6,6 +6,7 @@
       WARNING - @mbg.generated
     -->
     <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="type" jdbcType="INTEGER" property="type" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="do_type" jdbcType="INTEGER" property="doType" />
@@ -42,7 +43,8 @@
 			LEFT JOIN inno72_user u ON u.id = t.create_id
 		where t.status != 9
 		<if test="type !=null and type !=''">and t.type = #{type}</if>
-		<if test="status !=null and status !='' ">and t.status = #{status}</if>
+		<if test="status !=null and status !='' and status !=1">and t.status = #{status}</if>
+		<if test="status ==1 ">and t.status in (1,3)</if>
 	) t
 	ORDER BY t.update_time DESC
   </select>
@@ -71,18 +73,17 @@
 			app.app_name AS appName,
 			m.id AS machine_id,
 			m.machine_code AS machine_code,
+			m.net_status as machine_planed,
 			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL( l.name,"")) as name,
 			area.province as machine_province,
 			tm.task_status AS machine_task_status,
 			tm.do_status AS machine_do_status,
 			tm.do_type AS machine_do_type,
 			tm.do_msg AS machine_do_msg,
-			ms.network_intensity as machine_planed,
-			date_format(tm.do_time,'%Y-%m-%d %H:%i:%s') AS machine_do_time
+			tm.do_time AS machine_do_time
 		from inno72_task t
 		LEFT JOIN inno72_task_machine tm ON tm.task_id = t.id
 		LEFT JOIN inno72_machine m ON m.id = tm.machine_id
-		LEFT JOIN inno72_machine_status ms ON ms.machine_id=m.id
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
 		LEFT JOIN inno72_admin_area area ON area.code = l.area_code
 		LEFT JOIN inno72_app app ON app.id = t.app_id
@@ -129,16 +130,15 @@
   		SELECT
 			m.id AS code,
 			m.machine_code AS parent_code,
+			m.net_status as planed,
 			CONCAT(  area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( locale.mall,""),IFNULL( locale.name,""), '—', m.machine_code ) AS name,
 			area.province,
 			area.city,
 			area.district,
 			area.circle,
-			'5' AS LEVEL,
-			ms.network_intensity as planed
+			'5' AS LEVEL
 		FROM
 			inno72_machine m
-			LEFT JOIN inno72_machine_status ms ON ms.machine_id=m.id
 			LEFT JOIN inno72_locale locale ON m.locale_id = locale.id
 			LEFT JOIN inno72_admin_area area ON area.CODE = locale.area_code
 		WHERE m.machine_status ='4'

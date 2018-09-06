@@ -17,12 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.inno72.common.AbstractService;
-import com.inno72.common.CommonConstants;
 import com.inno72.common.DateUtil;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
+import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.machine.mapper.Inno72AppMapper;
 import com.inno72.machine.mapper.Inno72MachineMapper;
@@ -62,7 +62,7 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 	@Override
 	public Result<String> saveTsak(Inno72TaskVo task) {
 		logger.info("新建任务参数:{}", JSON.toJSONString(task));
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -99,14 +99,13 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 			if (null == task.getDoType()) {
 				return Results.failure("请选择执行方式");
 			}
-			if (StringUtil.isBlank(task.getDoTimeStr())) {
-				return Results.failure("请选择执行时间");
+			if (StringUtil.isNotBlank(task.getDoTimeStr())) {
+				boolean b1 = Pattern.matches(timeRegex, task.getDoTimeStr());
+				if (!b1) {
+					return Results.failure("执行时间应格式化到分");
+				}
+				task.setDoTime(DateUtil.toDateTime(task.getDoTimeStr() + ":00", DateUtil.DF_FULL_S1));
 			}
-			boolean b1 = Pattern.matches(timeRegex, task.getDoTimeStr());
-			if (!b1) {
-				return Results.failure("执行时间应格式化到分");
-			}
-			task.setDoTime(DateUtil.toDateTime(task.getDoTimeStr() + ":00", DateUtil.DF_FULL_S1));
 
 			List<Inno72TaskMachineVo> machineList = task.getMachineList();
 			if (null == machineList || machineList.size() < 0) {
@@ -122,6 +121,7 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 
 			task.setStatus(0);
 			task.setId(StringUtil.getUUID());
+			task.setCode("T" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S2));
 			List<Inno72TaskMachineVo> insertTaskMachinList = new ArrayList<>();
 			for (Inno72TaskMachineVo taskMachine : machineList) {
 				if (insertTaskMachinList.contains(taskMachine)) {
@@ -163,7 +163,7 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 	@Override
 	public Result<String> updateTsak(Inno72TaskVo task) {
 		logger.info("更新任务参数:{}", JSON.toJSONString(task));
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -174,12 +174,8 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 			Inno72Task model = inno72TaskMapper.selectByPrimaryKey(task.getId());
 			// 判断是否可以编辑
 			if (2 == model.getStatus() || 3 == model.getStatus()) {
-				logger.info("该任务记录不能删除");
-				return Results.failure("该任务记录不能删除");
-			}
-			if (2 == model.getStatus() || 3 == model.getStatus()) {
-				logger.info("该任务记录不能删除");
-				return Results.failure("该任务记录不能删除");
+				logger.info("该任务记录不能修改");
+				return Results.failure("该任务记录不能修改");
 			}
 			// 1 app升级,2 app卸载，3合并货道 4 拆分货道
 			int type = task.getType();
@@ -212,14 +208,15 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 				return Results.failure("请选择执行方式");
 			}
 
-			if (StringUtil.isBlank(task.getDoTimeStr())) {
-				return Results.failure("请选择执行时间");
+			if (StringUtil.isNotBlank(task.getDoTimeStr())) {
+				boolean b1 = Pattern.matches(timeRegex, task.getDoTimeStr());
+				if (!b1) {
+					return Results.failure("执行时间应格式化到分");
+				}
+				task.setDoTime((DateUtil.toDateTime(task.getDoTimeStr() + ":00", DateUtil.DF_FULL_S1)));
+			} else {
+				task.setDoTime(null);
 			}
-			boolean b1 = Pattern.matches(timeRegex, task.getDoTimeStr());
-			if (!b1) {
-				return Results.failure("执行时间应格式化到分");
-			}
-			task.setDoTime((DateUtil.toDateTime(task.getDoTimeStr() + ":00", DateUtil.DF_FULL_S1)));
 
 			List<Inno72TaskMachineVo> machineList = task.getMachineList();
 			if (null == machineList || machineList.size() < 0) {
@@ -276,7 +273,7 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 	public Result<String> updateStatus(String id, Integer status, Integer doType) {
 
 		logger.info("---------------------点位任务-------------------");
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -297,8 +294,8 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 		}
 		if (3 == status) {
 			if (2 != model.getStatus()) {
-				logger.info("该任务未执行，不能继续执行");
-				return Results.failure("该任务未执行，不能继续执行");
+				logger.info("该任务，不能继续执行");
+				return Results.failure("该任务，不能继续执行");
 			}
 		}
 
@@ -314,7 +311,7 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 	public Result<String> delById(String id) {
 
 		logger.info("---------------------点位任务-------------------");
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -323,7 +320,7 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		Inno72Task model = inno72TaskMapper.selectByPrimaryKey(id);
 		// 判断是否可以删除
-		if (1 == model.getStatus() || 2 == model.getStatus() || 3 == model.getStatus()) {
+		if (2 == model.getStatus() || 3 == model.getStatus()) {
 			logger.info("该任务记录不能删除");
 			return Results.failure("该任务记录不能删除");
 		}

@@ -51,16 +51,16 @@
 				
 				GROUP BY apm.activity_plan_id
 			) m ON m.activity_plan_id = ap.id
-		WHERE  ap.is_delete = 0 
+		WHERE   1=1
 		<if test="type !=null and type !='' "> and a.type=#{type}</if>
 		<if test="code !=null and code !='' "> and m.area_code LIKE '%${code}%'</if>
 		<if test="startTime !=null and startTime !='' ">
 			<![CDATA[AND ( #{startTime} <= ap.end_time AND #{endTime} >= ap.start_time ) ]]>
 		</if>
-		<if test="status ==null or status =='' ">and NOW() &lt; ap.end_time</if>
-		<if test="status ==1"> and NOW() &lt;  ap.start_time </if>
-		<if test="status ==2"> and (NOW() BETWEEN ap.start_time and ap.end_time ) </if>
-		<if test="status ==3"> and NOW() &gt; ap.end_time  </if>
+		<if test="status ==null or status =='' ">and ap.is_delete = 0 and NOW() &lt; ap.end_time</if>
+		<if test="status ==1">and ap.is_delete = 0 and NOW() &lt;  ap.start_time </if>
+		<if test="status ==2">and ap.is_delete = 0 and (NOW() BETWEEN ap.start_time and ap.end_time ) </if>
+		<if test="status ==3"> and ap.is_delete != 1 and (NOW() &gt; ap.end_time or ap.is_delete = 2)  </if>
 		ORDER BY ap.start_time
   </select>
   <!-- 联动区域机器列表-->
@@ -264,8 +264,7 @@
 			LEFT JOIN inno72_locale l ON l.id = ma.locale_id
 			LEFT JOIN inno72_admin_area area ON area.code = l.area_code
 			
-		WHERE ap.is_delete =0
-			and ap.id=#{id}
+		WHERE  ap.id=#{id}
   </select>
   <select id="selectPaiYangActivityCount" resultType="int">
 	  select count(*) from inno72_activity_plan plan

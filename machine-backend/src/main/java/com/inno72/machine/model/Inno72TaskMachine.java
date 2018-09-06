@@ -1,12 +1,19 @@
 package com.inno72.machine.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters.LocalDateTimeConverter;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
 @Table(name = "inno72_task_machine")
 public class Inno72TaskMachine {
@@ -59,8 +66,11 @@ public class Inno72TaskMachine {
 	/**
 	 * 执行时间
 	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Convert(converter = LocalDateTimeConverter.class)
 	@Column(name = "do_time")
-	private Date doTime;
+	private LocalDateTime doTime;
 
 	/**
 	 * @return id
@@ -214,7 +224,7 @@ public class Inno72TaskMachine {
 	 *
 	 * @return do_time - 执行时间
 	 */
-	public Date getDoTime() {
+	public LocalDateTime getDoTime() {
 		return doTime;
 	}
 
@@ -224,7 +234,7 @@ public class Inno72TaskMachine {
 	 * @param doTime
 	 *            执行时间
 	 */
-	public void setDoTime(Date doTime) {
+	public void setDoTime(LocalDateTime doTime) {
 		this.doTime = doTime;
 	}
 

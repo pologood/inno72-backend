@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.common.AbstractService;
-import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
+import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72ShopsMapper;
 import com.inno72.project.model.Inno72Shops;
@@ -41,7 +41,7 @@ public class ShopsServiceImpl extends AbstractService<Inno72Shops> implements Sh
 	public Result<String> saveModel(Inno72Shops model) {
 		logger.info("--------------------活动新增-------------------");
 		try {
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");
@@ -68,7 +68,7 @@ public class ShopsServiceImpl extends AbstractService<Inno72Shops> implements Sh
 	@Override
 	public Result<String> delById(String id) {
 		logger.info("--------------------店铺删除-------------------");
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -93,7 +93,7 @@ public class ShopsServiceImpl extends AbstractService<Inno72Shops> implements Sh
 	public Result<String> updateModel(Inno72Shops model) {
 		logger.info("--------------------店铺更新-------------------");
 		try {
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");

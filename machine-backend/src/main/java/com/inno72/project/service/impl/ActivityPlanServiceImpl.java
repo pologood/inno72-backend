@@ -22,6 +22,7 @@ import com.inno72.common.DateUtil;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
+import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72ActivityMapper;
 import com.inno72.project.mapper.Inno72ActivityPlanGameResultMapper;
@@ -77,7 +78,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	@Override
 	public Result<String> saveActPlan(Inno72ActivityPlanVo activityPlan) {
 		logger.info("新建计划参数:{}", JSON.toJSONString(activityPlan));
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -345,7 +346,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	@Override
 	public Result<String> updateModel(Inno72ActivityPlanVo activityPlan) {
 		logger.info("更新计划参数:{}", JSON.toJSONString(activityPlan));
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -354,6 +355,12 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		try {
+
+			Inno72ActivityPlan p = inno72ActivityPlanMapper.selectByPrimaryKey(activityPlan.getId());
+			if (0 != p.getIsDelete()) {
+				return Results.failure("排期已删除/结束，不能修改");
+			}
+
 			activityPlan.setUpdateId(userId);
 			activityPlan.setUpdateTime(LocalDateTime.now());
 			// 是否开始 大于0 已开始
@@ -594,7 +601,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 
 	@Override
 	public Result<String> delById(String id, Integer status) {
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
