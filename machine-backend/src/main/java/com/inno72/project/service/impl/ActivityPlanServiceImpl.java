@@ -355,6 +355,12 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 
 		String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 		try {
+
+			Inno72ActivityPlan p = inno72ActivityPlanMapper.selectByPrimaryKey(activityPlan.getId());
+			if (0 != p.getIsDelete()) {
+				return Results.failure("排期已删除/结束，不能修改");
+			}
+
 			activityPlan.setUpdateId(userId);
 			activityPlan.setUpdateTime(LocalDateTime.now());
 			// 是否开始 大于0 已开始
