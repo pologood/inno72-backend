@@ -556,7 +556,7 @@ public class DDServiceImpl implements DDService {
 		condition1.createCriteria().andEqualTo("userId", user.getId());
 		List<Inno72UserFunctionArea> userFunctionArea = inno72UserFunctionAreaMapper.selectByCondition(condition1);
 		for (Inno72UserFunctionArea inno72UserFunctionArea : userFunctionArea) {
-			int num = StringUtil.getAreaCodeNum(inno72UserFunctionArea.getAreaCode());
+			int num = StringUtil.getAreaCodeNum(inno72UserFunctionArea.getCode());
 			inno72UserFunctionArea.setLevel(num);
 		}
 

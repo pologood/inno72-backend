@@ -139,10 +139,11 @@ public class UserFunctionAreaServiceImpl extends AbstractService<Inno72UserFunct
 					Inno72UserFunctionArea fa = new Inno72UserFunctionArea();
 					fa.setId(com.inno72.common.StringUtil.getUUID());
 					fa.setUserId(userId);
-					fa.setAreaCode(area.getCode());
-					fa.setAreaName(area.getName());
+					fa.setCode(area.getCode());
+					fa.setName(area.getName());
 					fa.setProvince(area.getProvince());
 					fa.setCity(area.getCity());
+					fa.setDistrict(area.getDistrict());
 					fa.setLevel(area.getLevel());
 					fa.setCreateTime(LocalDateTime.now());
 					fa.setCreateId(mUserId);
@@ -168,7 +169,7 @@ public class UserFunctionAreaServiceImpl extends AbstractService<Inno72UserFunct
 			List<Inno72UserFunctionArea> userFunctionArea = inno72UserFunctionAreaMapper.selectByCondition(condition1);
 			List<String> areaCodes = new ArrayList<>();
 			for (Inno72UserFunctionArea area : userFunctionArea) {
-				areaCodes.add(area.getAreaCode());
+				areaCodes.add(area.getCode());
 			}
 			areaResult.setAreaCodes(areaCodes);
 		}

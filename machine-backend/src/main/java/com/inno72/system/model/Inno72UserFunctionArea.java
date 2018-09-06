@@ -30,14 +30,14 @@ public class Inno72UserFunctionArea {
 	/**
 	 * 区域code
 	 */
-	@Column(name = "area_code")
-	private String areaCode;
+	@Column(name = "code")
+	private String code;
 
 	/**
 	 * 区域名称
 	 */
-	@Column(name = "area_name")
-	private String areaName;
+	@Column(name = "name")
+	private String name;
 
 	/**
 	 * 省名称
@@ -50,6 +50,12 @@ public class Inno72UserFunctionArea {
 	 */
 	@Column(name = "city")
 	private String city;
+
+	/**
+	 * 区名称
+	 */
+	@Column(name = "district")
+	private String district;
 
 	/**
 	 * 市名称
@@ -110,8 +116,8 @@ public class Inno72UserFunctionArea {
 	 *
 	 * @return area_code - 区域code
 	 */
-	public String getAreaCode() {
-		return areaCode;
+	public String getCode() {
+		return code;
 	}
 
 	/**
@@ -120,27 +126,8 @@ public class Inno72UserFunctionArea {
 	 * @param areaCode
 	 *            区域code
 	 */
-	public void setAreaCode(String areaCode) {
-		this.areaCode = areaCode;
-	}
-
-	/**
-	 * 获取区域名称
-	 *
-	 * @return area_name - 区域名称
-	 */
-	public String getAreaName() {
-		return areaName;
-	}
-
-	/**
-	 * 设置区域名称
-	 *
-	 * @param areaName
-	 *            区域名称
-	 */
-	public void setAreaName(String areaName) {
-		this.areaName = areaName;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public String getProvince() {
@@ -157,6 +144,22 @@ public class Inno72UserFunctionArea {
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(String district) {
+		this.district = district;
 	}
 
 	public Integer getLevel() {
