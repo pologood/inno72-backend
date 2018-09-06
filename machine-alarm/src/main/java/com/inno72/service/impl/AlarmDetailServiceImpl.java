@@ -90,7 +90,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
             }else if(StringUtil.isNotEmpty(localeStr)){
                 Update update = new Update();
                 update.set("localeStr",localeStr);
-                update.set("monitorStart","05:00:00");
+                update.set("monitorStart",machine.getMonitorStart());
                 update.set("monitorEnd",machine.getMonitorEnd());
                 Query upQuery = new Query();
                 upQuery.addCriteria(Criteria.where("machineId").is(machineId));
