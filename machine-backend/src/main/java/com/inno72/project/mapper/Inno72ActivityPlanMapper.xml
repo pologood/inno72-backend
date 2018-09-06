@@ -46,6 +46,14 @@
 				LEFT JOIN  inno72_machine m ON m.id = apm.machine_id
 				LEFT JOIN inno72_locale locale ON locale.id = m.locale_id
 				where LEFT(locale.area_code,#{num}) = #{code}
+				
+				<if test="functionArea !=null ">
+				and (<foreach collection="functionArea" item="area" separator="or"
+		                open="(" close=")">
+		                 LEFT(locale.area_code,#{area.level}) = LEFT(#{area.areaCode},#{area.level})
+		            </foreach>)
+				</if>
+				
 				GROUP BY apm.activity_plan_id
 			) m ON m.activity_plan_id = ap.id
 		WHERE  ap.is_delete = 0 

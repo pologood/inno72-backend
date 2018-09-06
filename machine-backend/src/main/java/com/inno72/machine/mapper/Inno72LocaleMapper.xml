@@ -59,6 +59,12 @@
 			or area.circle LIKE '%${keyword}%' 
 			)
 		</if>
+		<if test="functionArea !=null ">
+		and (<foreach collection="functionArea" item="area" separator="or"
+                open="(" close=")">
+                 LEFT(locale.area_code,#{area.level}) = LEFT(#{area.areaCode},#{area.level})
+            </foreach>)
+		</if>
 	) t
 	ORDER BY t.update_time DESC
   </select>
@@ -81,6 +87,12 @@
 			or area.district LIKE '%${keyword}%' 
 			or area.circle LIKE '%${keyword}%' 
 			)
+		</if>
+		<if test="functionArea !=null ">
+		and (<foreach collection="functionArea" item="area" separator="or"
+                open="(" close=")">
+                 LEFT(locale.area_code,#{area.level}) = LEFT(#{area.areaCode},#{area.level})
+            </foreach>)
 		</if>
 	ORDER BY locale.area_code
   </select>

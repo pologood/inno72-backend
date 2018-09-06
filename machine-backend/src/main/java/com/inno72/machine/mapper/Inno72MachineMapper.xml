@@ -61,6 +61,12 @@
 		<if test="machineCode !=null and machineCode !=''">
 			AND m.machine_code=#{machineCode}
 		</if>
+		<if test="functionArea !=null ">
+		and (<foreach collection="functionArea" item="area" separator="or"
+                open="(" close=")">
+                 LEFT(l.area_code,#{area.level}) = LEFT(#{area.areaCode},#{area.level})
+            </foreach>)
+		</if>
 		order by m.update_time desc 
 
 	</select>
