@@ -261,8 +261,7 @@
 			LEFT JOIN inno72_locale l ON l.id = ma.locale_id
 			LEFT JOIN inno72_admin_area area ON area.code = l.area_code
 			
-		WHERE ap.is_delete =0
-			and ap.id=#{id}
+		WHERE  ap.id=#{id}
   </select>
   <select id="selectPaiYangActivityCount" resultType="int">
 	  select count(*) from inno72_activity_plan plan
