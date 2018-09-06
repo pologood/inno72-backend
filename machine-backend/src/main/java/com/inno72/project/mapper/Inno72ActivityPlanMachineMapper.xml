@@ -26,6 +26,7 @@
 			LEFT JOIN inno72_locale l ON l.id = m.locale_id
 			LEFT JOIN inno72_admin_area area ON area.code = l.area_code
 			WHERE apm.activity_plan_id = #{planId}
+			and 9=9
   	</select>
   	
   	<delete id="deleteByPlanId" parameterType="String">

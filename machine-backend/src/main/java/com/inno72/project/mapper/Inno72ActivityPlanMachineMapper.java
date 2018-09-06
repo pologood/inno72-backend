@@ -10,11 +10,10 @@ import com.inno72.project.model.Inno72ActivityPlanMachine;
 
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72ActivityPlanMachineMapper extends Mapper<Inno72ActivityPlanMachine> {
-	
+
 	int insertActivityPlanMachineList(@Param("list") List<Inno72ActivityPlanMachine> list);
-	
-	
+
 	List<Map<String, Object>> selectPlanMachinDetailList(@Param("planId") String planId);
-	
-	int deleteByPlanId(@Param("planId")String planId);
+
+	int deleteByPlanId(@Param("planId") String planId);
 }

@@ -165,7 +165,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			params.put("endTime", endTime + " 23:59:59");
 		}
 
-		return inno72CheckFaultMapper.selectByPage(params);
+		return inno72CheckFaultMapper.selectCheckFaultByPage(params);
 	}
 
 	@Override
