@@ -29,7 +29,7 @@ public class FunctionTreeResultVo {
 
 		private String voName;
 
-		private String column;
+		private String voColumn;
 		private List<FunctionTreeVo> children;
 
 		public String getTitle() {
@@ -64,12 +64,12 @@ public class FunctionTreeResultVo {
 			this.voName = voName;
 		}
 
-		public String getColumn() {
-			return column;
+		public String getVoColumn() {
+			return voColumn;
 		}
 
-		public void setColumn(String column) {
-			this.column = column;
+		public void setVoColumn(String voColumn) {
+			this.voColumn = voColumn;
 		}
 
 	}

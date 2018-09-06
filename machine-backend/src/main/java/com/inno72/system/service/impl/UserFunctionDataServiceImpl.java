@@ -145,7 +145,7 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 						funThirdVo.setId(funThird.getId());
 						funThirdVo.setTitle(funThird.getFunctionDepict());
 						funThirdVo.setVoName(funThird.getVoName());
-						funThirdVo.setColumn(funThird.getVoColumn());
+						funThirdVo.setVoColumn(funThird.getVoColumn());
 						thirdVoList.add(funThirdVo);
 					}
 					funSecondVo.setChildren(thirdVoList);

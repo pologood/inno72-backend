@@ -31,6 +31,7 @@ import com.inno72.system.encrypt.DingTalkEncryptException;
 import com.inno72.system.encrypt.DingTalkEncryptor;
 import com.inno72.system.mapper.Inno72FunctionMapper;
 import com.inno72.system.mapper.Inno72UserFunctionAreaMapper;
+import com.inno72.system.mapper.Inno72UserMapper;
 import com.inno72.system.model.Inno72Dept;
 import com.inno72.system.model.Inno72Function;
 import com.inno72.system.model.Inno72User;
@@ -63,6 +64,8 @@ public class DDServiceImpl implements DDService {
 
 	@Resource
 	private Inno72FunctionMapper inno72FunctionMapper;
+	@Resource
+	private Inno72UserMapper inno72UserMapper;
 	@Resource
 	private Inno72UserFunctionAreaMapper inno72UserFunctionAreaMapper;
 	// 需要写在配置中心
@@ -224,6 +227,9 @@ public class DDServiceImpl implements DDService {
 			Inno72User user = userService.findBy("dingId", dingIdResult.getData());
 			if (user == null) {
 				return Results.failure("未找到用户");
+			}
+			if (user.getIsDelete() == 1) {
+				return Results.failure("用户已停用");
 			}
 			// List<Inno72Function> functions = functionService.findAll();
 			List<Inno72Function> functions = functionService.findFunctionsByUserId(user.getId());
