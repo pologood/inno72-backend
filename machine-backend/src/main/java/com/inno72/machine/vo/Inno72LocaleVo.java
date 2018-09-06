@@ -2,34 +2,33 @@ package com.inno72.machine.vo;
 
 import com.inno72.machine.model.Inno72Locale;
 
-public class Inno72LocaleVo extends Inno72Locale{
-	
-	 /**
-     * 省ID
-     */
-    private String province;
+public class Inno72LocaleVo extends Inno72Locale {
 
-    /**
-     * 市ID
-     */
-    private String city;
+	/**
+	 * 省ID
+	 */
+	private String province;
 
-    /**
-     * 区/县ID
-     */
-    private String district;
+	/**
+	 * 市ID
+	 */
+	private String city;
 
-    /**
-     * 商圈ID
-     */
-    private String circle;
-    
-    private String areaName;
-    
-    private int userNum;
-    
-    
-    
+	/**
+	 * 区/县ID
+	 */
+	private String district;
+
+	/**
+	 * 商圈ID
+	 */
+	private String circle;
+
+	private String areaName;
+
+	private int userNum;
+
+	private String machineCode;
 
 	public String getProvince() {
 		return province;
@@ -79,7 +78,12 @@ public class Inno72LocaleVo extends Inno72Locale{
 		this.userNum = userNum;
 	}
 
-	
-	
-   
+	public String getMachineCode() {
+		return machineCode;
+	}
+
+	public void setMachineCode(String machineCode) {
+		this.machineCode = machineCode;
+	}
+
 }

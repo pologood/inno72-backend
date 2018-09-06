@@ -15,11 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.common.AbstractService;
-import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
+import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.machine.mapper.Inno72LocaleMapper;
 import com.inno72.machine.model.Inno72Locale;
@@ -46,7 +46,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	public Result<String> saveModel(Inno72Locale model) {
 		logger.info("---------------------点位新增-------------------");
 		try {
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");
@@ -70,7 +70,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	@Override
 	public Result<String> delById(String id) {
 		logger.info("---------------------点位删除-------------------");
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -112,7 +112,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	public Result<String> updateModel(Inno72Locale model) {
 		logger.info("---------------------点位更新-------------------");
 		try {
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");

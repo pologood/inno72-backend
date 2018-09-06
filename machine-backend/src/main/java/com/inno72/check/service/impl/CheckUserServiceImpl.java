@@ -31,6 +31,7 @@ import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
+import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.config.client.QyhProperties;
 import com.inno72.plugin.http.HttpClient;
@@ -65,7 +66,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 		try {
 			logger.info("----------------巡检人员添加--------------");
 			logger.info("参数:{}", JSON.toJSONString(model));
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");
@@ -81,17 +82,16 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 			if (!match1.matches()) {
 				return Results.failure("手机号格式有误");
 			}
-			Matcher match2 = cardNo.matcher(model.getCardNo());
-			if (!match2.matches()) {
-				return Results.failure("身份证号格式有误");
+			if (StringUtil.isNotBlank(model.getCardNo())) {
+				Matcher match2 = cardNo.matcher(model.getCardNo());
+				if (!match2.matches()) {
+					return Results.failure("身份证号格式有误");
+				}
 			}
+
 			int m = inno72CheckUserMapper.checkPhoneIsExist(model.getPhone());
 			if (m > 0) {
 				return Results.failure("手机号已存在");
-			}
-			int n = inno72CheckUserMapper.checkCardNoIsExist(model.getCardNo());
-			if (n > 0) {
-				return Results.failure("身份证号已存在");
 			}
 
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
@@ -165,7 +165,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	public Result<String> delById(String id) {
 		try {
 			logger.info("----------------巡检人员删除--------------");
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");
@@ -197,7 +197,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 		try {
 			logger.info("----------------巡检人员更新--------------");
 			logger.info("参数:{}", JSON.toJSONString(model));
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");
@@ -211,15 +211,17 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 				}
 			}
 			if (StringUtil.isNotBlank(model.getCardNo())) {
-				int n = inno72CheckUserMapper.checkCardNoIsExist(model.getCardNo());
-				if (n > 0 && !model.getCardNo().equals(old.getCardNo())) {
-					return Results.failure("更新身份证号已存在");
+				Matcher match2 = cardNo.matcher(model.getCardNo());
+				if (!match2.matches()) {
+					return Results.failure("身份证号格式有误");
 				}
 			}
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			model.setUpdateId(mUserId);
 			model.setUpdateTime(LocalDateTime.now());
 
+			// 先删除关联关系
+			inno72CheckUserMachineMapper.deleteByUserId(model.getId());
 			List<Inno72MachineVo> machines = model.getMachines();
 			if (null != machines && machines.size() > 0) {
 				List<Inno72CheckUserMachine> insertUserMachineList = new ArrayList<>();
@@ -231,9 +233,6 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 					userMachine.setMachineId(inno72MachineVo.getMachineId());
 					insertUserMachineList.add(userMachine);
 				}
-				// 先删除关联关系
-				inno72CheckUserMachineMapper.deleteByUserId(model.getId());
-
 				inno72CheckUserMachineMapper.insertUserMachineList(insertUserMachineList);
 			}
 
@@ -251,7 +250,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	public Result<String> updateStatus(String id, int status) {
 		try {
 			logger.info("----------------巡检人员	状态操作--------------");
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");
@@ -300,6 +299,8 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 			});
 			String r = "已选择" + machines.size() + "台机器，分别位于:" + pList.toString();
 			u.setRemark(r);
+		} else {
+			u.setRemark("");
 		}
 		if (null != u.getArea() && StringUtil.isNotBlank(u.getArea())) {
 			String area = u.getArea();

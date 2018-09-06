@@ -277,4 +277,18 @@ public class MachineController {
 		return machineService.updateMachineCode(machineId, machineCode);
 
 	}
+
+	/**
+	 * 切换桌面
+	 * 
+	 * @param machineId
+	 * @param status
+	 * @return
+	 */
+	@RequestMapping(value = "/cutDesktop", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> cutDesktop(@RequestParam String machineId, @RequestParam Integer status) {
+		return machineService.cutDesktop(machineId, status);
+
+	}
+
 }

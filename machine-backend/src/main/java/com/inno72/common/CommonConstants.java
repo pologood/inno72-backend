@@ -22,7 +22,7 @@ public class CommonConstants {
 	public static final int SESSION_DATA_EXP = 3600 * 24;
 
 	/** 用户登录对象 **/
-	public static SessionData SESSION_DATA = new SessionData();
+	// public static SessionData SESSION_DATA = new SessionData();
 
 	/** OSS基础路径 **/
 	public static final String OSS_PATH = "backend";

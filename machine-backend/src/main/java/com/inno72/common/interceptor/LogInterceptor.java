@@ -21,6 +21,7 @@ import com.alibaba.fastjson.JSON;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.SessionData;
+import com.inno72.common.SessionUtil;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.utils.page.Pagination;
 
@@ -38,12 +39,12 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	private static List<String> doNotCheckUs = Arrays.asList(new String[] { "/dd/login", "/dd", "/dd/reg_call_back",
 			"/dd/update_call_back", "/dd/initDData", "/dd/token", "/dd/testLogin", "/machine/channel/out/subCount",
 			"/machine/channel/out/get", "/machine/machine/initMachine", "/machine/machine/updateNetStatus",
-            "/machine/machine/updateMachineListNetStatus", "/testMsg", "/machine/machine/findMachineByMachineStatus",
+			"/machine/machine/updateMachineListNetStatus", "/testMsg", "/machine/machine/findMachineByMachineStatus",
 			"/project/activityPlan/selectNoPlanMachines", "/machine/locale/selectLocaleByMachineCode",
 			"/supply/channel/status/getChannelErrorDetail", "/check/signIn/userExcel",
 			"/machine/locale/selectLocaleByMachineCode", "/supply/channel/status/getChannelErrorDetail",
-			"/check/user/selectAreaMachines", "/check/user/selectPhoneByMachineCode","/activity/data/count/add",
-            "/activity/data/count/history","/pai/data/count/add","/pai/data/count/addTotalData"});
+			"/check/user/selectAreaMachines", "/check/user/selectPhoneByMachineCode", "/activity/data/count/add",
+			"/activity/data/count/history", "/pai/data/count/add", "/pai/data/count/addTotalData" });
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -182,7 +183,9 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 					return false;
 				} else {
 					String _info = info.toString();
-					CommonConstants.SESSION_DATA = JSON.parseObject(_info, SessionData.class);
+					SessionData session = JSON.parseObject(_info, SessionData.class);
+					SessionUtil.sessionData.set(session);
+
 				}
 			}
 		}

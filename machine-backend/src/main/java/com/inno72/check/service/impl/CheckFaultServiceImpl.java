@@ -30,6 +30,7 @@ import com.inno72.common.DateUtil;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
+import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72Machine;
@@ -59,7 +60,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 
 		logger.info("----------------工单添加--------------");
 		logger.info("参数:{}", JSON.toJSONString(model));
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -118,7 +119,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 	public Result<String> updateStatus(String id, int status) {
 
 		logger.info("----------------工单状态操作--------------");
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -172,7 +173,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 	public Result<String> faultAnswer(String id, String remark, String toUserId) {
 
 		try {
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");

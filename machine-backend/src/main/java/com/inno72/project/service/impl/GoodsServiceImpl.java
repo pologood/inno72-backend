@@ -22,6 +22,7 @@ import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
+import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.common.UploadUtil;
 import com.inno72.project.mapper.Inno72GoodsMapper;
@@ -49,7 +50,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 	public Result<String> saveModel(Inno72Goods model) {
 		logger.info("----------------商品添加--------------");
 		try {
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");
@@ -92,7 +93,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 	public Result<String> updateModel(Inno72Goods model) {
 		logger.info("----------------商品修改--------------");
 		try {
-			SessionData session = CommonConstants.SESSION_DATA;
+			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 			if (mUser == null) {
 				logger.info("登陆用户为空");
@@ -136,7 +137,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 	@Override
 	public Result<String> delById(String id) {
 		logger.info("----------------商品删除--------------");
-		SessionData session = CommonConstants.SESSION_DATA;
+		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
 			logger.info("登陆用户为空");
