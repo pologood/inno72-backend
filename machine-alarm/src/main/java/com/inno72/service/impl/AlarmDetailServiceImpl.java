@@ -1,6 +1,5 @@
 package com.inno72.service.impl;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,30 +22,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.common.CommonConstants;
 import com.inno72.common.DateUtil;
-import com.inno72.common.Result;
-import com.inno72.common.ResultGenerator;
 import com.inno72.common.StringUtil;
 import com.inno72.model.AlarmDetailBean;
 import com.inno72.model.AlarmExceptionMachineBean;
 import com.inno72.model.AlarmMachineBean;
-import com.inno72.model.Inno72AlarmMsg;
 import com.inno72.model.Inno72CheckUserPhone;
 import com.inno72.model.Inno72Machine;
+import com.inno72.mongo.MongoUtil;
 import com.inno72.msg.MsgUtil;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.service.AlarmDetailService;
 import com.inno72.service.AlarmMsgService;
 import com.inno72.service.CheckUserService;
-import com.inno72.util.AlarmUtil;
 
 @Service
 @Transactional
 public class AlarmDetailServiceImpl implements AlarmDetailService {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    @Autowired
-    private MongoOperations mongoTpl;
 
     @Resource
     private IRedisUtil redisUtil;
@@ -61,7 +54,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
     private AlarmMsgService alarmMsgService;
 
     @Resource
-    private AlarmUtil alarmUtil;
+    private MongoUtil mongoUtil;
 
     @Value("${inno72.dingding.groupId}")
     private String groupId;
@@ -69,7 +62,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
     @Override
     public void addToMachineBean(List<Inno72Machine> list) {
         Query query = new Query();
-        List<AlarmMachineBean> alarmMachineBeanList = mongoTpl.find(query,AlarmMachineBean.class,"AlarmMachineBean");
+        List<AlarmMachineBean> alarmMachineBeanList = mongoUtil.find(query,AlarmMachineBean.class,"AlarmMachineBean");
         Set<String> beanSet = new HashSet<>();
         if(alarmMachineBeanList != null && alarmMachineBeanList.size()>0){
             for(AlarmMachineBean alarmMachineBean:alarmMachineBeanList){
@@ -93,16 +86,16 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                 bean.setConnectTime(now);
                 bean.setCreateTime(now);
                 bean.setUpdateTime(now);
-                mongoTpl.save(bean,"AlarmMachineBean");
+                mongoUtil.save(bean,"AlarmMachineBean");
                 logger.info("获取全部需要发送报警的机器，向MongoDB中放入机器，机器编号为"+machine.getMachineCode());
             }else if(StringUtil.isNotEmpty(localeStr)){
                 Update update = new Update();
                 update.set("localeStr",localeStr);
-                update.set("monitorStart",machine.getMonitorStart());
+                update.set("monitorStart","05:00:00");
                 update.set("monitorEnd",machine.getMonitorEnd());
                 Query upQuery = new Query();
                 upQuery.addCriteria(Criteria.where("machineId").is(machineId));
-                mongoTpl.updateFirst(upQuery,update,"AlarmMachineBean");
+				mongoUtil.updateFirst(upQuery,update,"AlarmMachineBean");
             }
         }
         if(alarmMachineBeanList != null && alarmMachineBeanList.size()>0){
@@ -111,8 +104,16 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                 if(!set.contains(machineId)){
                     Query delQuery = new Query();
                     delQuery.addCriteria(Criteria.where("machineId").is(machineId));
-                    mongoTpl.remove(delQuery,"AlarmMachineBean");
+					mongoUtil.remove(delQuery,"AlarmMachineBean");
                     logger.info("获取全部需要发送报警的机器，从MongoDB中删除无需发送报警的机器");
+					String heartKey = CommonConstants.MACHINE_ALARM_HEART_BEF+machineId;
+                    redisUtil.del(heartKey);
+					String heartTimeKey = CommonConstants.MACHINE_ALARM_HEART_TIME_BEF+machineId;
+					redisUtil.del(heartTimeKey);
+					String connectKey = CommonConstants.MACHINE_ALARM_CONNECT_BEF+machineId;
+					redisUtil.del(connectKey);
+					String connectTimeKey = CommonConstants.MACHINE_ALARM_CONNECT_TIME_BEF+machineId;
+					redisUtil.del(connectTimeKey);
                 }
 
             }
@@ -121,7 +122,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 
     @Override
     public void addToExceptionMachineBean() {
-        List<AlarmMachineBean> list = mongoTpl.find(new Query(),AlarmMachineBean.class,"AlarmMachineBean");
+        List<AlarmMachineBean> list = mongoUtil.find(new Query(),AlarmMachineBean.class,"AlarmMachineBean");
         if(list != null && list.size()>0){
             Date now = new Date();
             for(AlarmMachineBean bean:list){
@@ -153,7 +154,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 
     @Override
     public void sendExceptionMachineAlarm() {
-        List<AlarmExceptionMachineBean> list = mongoTpl.find(new Query(),AlarmExceptionMachineBean.class,"AlarmExceptionMachineBean");
+        List<AlarmExceptionMachineBean> list = mongoUtil.find(new Query(),AlarmExceptionMachineBean.class,"AlarmExceptionMachineBean");
 		String active = System.getenv("spring_profiles_active");
         if(list != null && list.size()>0){
             for(AlarmExceptionMachineBean bean:list){
@@ -167,7 +168,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                 String text = "";
                 Query query = new Query();
                 query.addCriteria(Criteria.where("id").is(bean.getDetailId()));
-                AlarmDetailBean detailBean = mongoTpl.findOne(query,AlarmDetailBean.class,"AlarmDetailBean");
+                AlarmDetailBean detailBean = mongoUtil.findOne(query,AlarmDetailBean.class,"AlarmDetailBean");
                 String pageInfo = "";
                 if(detailBean != null){
                     pageInfo = detailBean.getPageInfo();
@@ -211,7 +212,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                 }
                 Query removeQuery = new Query();
                 removeQuery.addCriteria(Criteria.where("_id").is(bean.getId()));
-                mongoTpl.remove(removeQuery,"AlarmExceptionMachineBean");
+				mongoUtil.remove(removeQuery,"AlarmExceptionMachineBean");
             }
         }
     }
@@ -231,17 +232,17 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
         exceptionBean.setLocaleStr(bean.getLocaleStr());
         if(StringUtil.isEmpty(value) && sub>1) {//间隔时间大于1分钟
             exceptionBean.setLevel(1);
-            mongoTpl.save(exceptionBean,"AlarmExceptionMachineBean");
+			mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
             logger.info("超过1分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
             redisUtil.set(key,"2");
         }else if("2".equals(value) && sub>5){//间隔时间大于5分钟
             exceptionBean.setLevel(2);
-            mongoTpl.save(exceptionBean,"AlarmExceptionMachineBean");
+			mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
             logger.info("超过5分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
             redisUtil.set(key,"3");
         }else if("3".equals(value) && sub>10){//间隔大于10分钟
             exceptionBean.setLevel(3);
-            mongoTpl.save(exceptionBean,"AlarmExceptionMachineBean");
+			mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
             logger.info("超过10分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
             redisUtil.set(key,"4");
         }else if("4".equals(value) && sub>30){//间隔大于30分钟
@@ -249,7 +250,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
             String heartTimeValue = redisUtil.get(heartTimeKey);
             if(StringUtil.isEmpty(heartTimeValue)){//redis为空时发送
                 exceptionBean.setLevel(4);
-                mongoTpl.save(exceptionBean,"AlarmExceptionMachineBean");
+				mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
                 logger.info("超过30分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
                 redisUtil.setex(heartTimeKey,60*30,"1");//有效时间半个小时
             }
@@ -271,7 +272,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
         exceptionBean.setCreateTime(now);
         if(StringUtil.isEmpty(value) && sub>10){//间隔时间大于10分钟
             exceptionBean.setLevel(1);
-            mongoTpl.save(exceptionBean,"AlarmExceptionMachineBean");
+			mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
             logger.info("超过10分钟未发送连接的机器，编号为：{}",bean.getMachineCode());
             redisUtil.set(key,"2");
         }else if("2".equals(value) && sub>30){
@@ -279,7 +280,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
             String connectTimeValue = redisUtil.get(connectTimeKey);
             if(StringUtil.isEmpty(connectTimeValue)){//redis为空时发送
                 exceptionBean.setLevel(2);
-                mongoTpl.save(exceptionBean,"AlarmExceptionMachineBean");
+				mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
                 logger.info("超过30分钟未发送连接的机器，编号为：{}",bean.getMachineCode());
                 redisUtil.setex(connectTimeKey,60*30,"1");//有效时间半个小时
             }
