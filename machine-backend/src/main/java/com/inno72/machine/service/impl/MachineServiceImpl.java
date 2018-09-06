@@ -593,4 +593,54 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		msg.setData(machineCode);
 		return sendMsg(machine.getMachineCode(), msg);
 	}
+
+	@Override
+	public Result<String> cutDesktop(String machineId, Integer status) {
+		Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+		if (machine == null) {
+			return Results.failure("机器id不存在");
+		}
+		if (status == 1) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("machineCode", machine.getMachineCode());
+			Map<String, Object> pmap = new HashMap<>();
+			pmap.put("type", 1);
+			pmap.put("data", "am stopservice -n com.inno72.monitorapp/.services.DetectionService");
+			map.put("msg", pmap);
+			sendMsgStr(machine.getMachineCode(), JSON.toJSONString(map));
+			pmap.put("data", "input keyevent 3");
+			map.put("msg", pmap);
+			return sendMsgStr(machine.getMachineCode(), JSON.toJSONString(map));
+		} else {
+			Map<String, Object> map = new HashMap<>();
+			map.put("machineCode", machine.getMachineCode());
+			Map<String, Object> pmap = new HashMap<>();
+			pmap.put("type", 1);
+			pmap.put("data", "am startservice -n com.inno72.monitorapp/.services.DetectionService");
+			map.put("msg", pmap);
+			return sendMsgStr(machine.getMachineCode(), JSON.toJSONString(map));
+		}
+	}
+
+	private Result<String> sendMsgStr(String machineCode, String json) {
+		String url = machineBackendProperties.get("sendAppMsgStrUrl");
+		try {
+			String result = HttpClient.post(url, json);
+			if (!StringUtil.isEmpty(result)) {
+				JSONObject $_result = JSON.parseObject(result);
+				if ($_result.getInteger("code") == 0) {
+					String r = $_result.getJSONObject("data").getString(machineCode);
+					if (!"发送成功".equals(r)) {
+						return Results.failure(r);
+					}
+				} else {
+					return Results.failure($_result.getString("msg"));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Results.failure("发送失败");
+		}
+		return Results.success();
+	}
 }

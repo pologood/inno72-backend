@@ -56,4 +56,6 @@ public interface MachineService extends Service<Inno72Machine> {
 	Result<String> updateMachine(UpdateMachineVo vo);
 
 	Result<String> updateMachineCode(String machineId, String machineCode);
+
+	Result<String> cutDesktop(String machineId, Integer status);
 }
