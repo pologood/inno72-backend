@@ -277,10 +277,12 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			MachineAppStatus machineAppStatus = ms.get(0);
 			for (AppStatus status : machineAppStatus.getStatus()) {
 				Inno72App app = appService.findBy("appPackageName", status.getAppPackageName());
-				status.setAppType(app.getAppType());
-				if (status.getVersionCode() == -1) {
-					if (app != null) {
-						status.setAppName(app.getAppName());
+				if (app != null) {
+					status.setAppType(app.getAppType());
+					if (status.getVersionCode() == -1) {
+						if (app != null) {
+							status.setAppName(app.getAppName());
+						}
 					}
 				}
 			}
