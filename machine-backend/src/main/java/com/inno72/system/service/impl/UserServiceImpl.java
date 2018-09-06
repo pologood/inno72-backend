@@ -3,6 +3,7 @@ package com.inno72.system.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -12,9 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.inno72.common.AbstractService;
+import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
+import com.inno72.common.SessionData;
 import com.inno72.common.StringUtil;
 import com.inno72.system.mapper.Inno72UserMapper;
 import com.inno72.system.mapper.Inno72UserRoleMapper;
@@ -86,6 +89,24 @@ public class UserServiceImpl extends AbstractService<Inno72User> implements User
 		condition.createCriteria().andEqualTo("userId", userId);
 		List<Inno72UserRole> urs = inno72UserRoleMapper.selectByCondition(condition);
 		return Results.success(urs);
+	}
+
+	@Override
+	public Result<String> delById(String id) {
+		try {
+			SessionData session = CommonConstants.SESSION_DATA;
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				return Results.failure("未找到用户登录信息");
+			}
+			Inno72User model = inno72UserMapper.selectByPrimaryKey(id);
+
+			model.setIsDelete(1);
+			super.update(model);
+		} catch (Exception e) {
+			return Results.failure("操作失败");
+		}
+		return Results.success();
 	}
 
 }

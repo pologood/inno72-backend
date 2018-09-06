@@ -20,4 +20,6 @@ public interface UserService extends Service<Inno72User> {
 
 	Result<List<Inno72UserRole>> queryUserRoles(String userId);
 
+	Result<String> delById(String id);
+
 }
