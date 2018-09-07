@@ -61,6 +61,16 @@ public class Inno72UserFunctionData {
 	private LocalDateTime createTime;
 
 	/**
+	 * 权限描述
+	 */
+	private String functionDepict;
+
+	/**
+	 * 权限描述
+	 */
+	private Integer functionLevel;
+
+	/**
 	 * @return id
 	 */
 	public String getId() {
@@ -176,4 +186,21 @@ public class Inno72UserFunctionData {
 	public void setCreateTime(LocalDateTime createTime) {
 		this.createTime = createTime;
 	}
+
+	public String getFunctionDepict() {
+		return functionDepict;
+	}
+
+	public void setFunctionDepict(String functionDepict) {
+		this.functionDepict = functionDepict;
+	}
+
+	public Integer getFunctionLevel() {
+		return functionLevel;
+	}
+
+	public void setFunctionLevel(Integer functionLevel) {
+		this.functionLevel = functionLevel;
+	}
+
 }

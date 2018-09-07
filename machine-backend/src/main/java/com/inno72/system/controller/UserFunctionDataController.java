@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
-import com.inno72.system.model.Inno72FunctionData;
+import com.inno72.system.model.Inno72UserFunctionData;
 import com.inno72.system.service.UserFunctionDataService;
 import com.inno72.system.vo.FunctionTreeResultVo;
 import com.inno72.system.vo.UserAreaDataVo;
@@ -29,8 +29,8 @@ public class UserFunctionDataController {
 	private UserFunctionDataService userFunctionDataService;
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72FunctionData>> detail(@RequestParam String userId) {
-		List<Inno72FunctionData> userFunctionData = userFunctionDataService.list(userId);
+	public Result<List<Inno72UserFunctionData>> detail(@RequestParam String userId) {
+		List<Inno72UserFunctionData> userFunctionData = userFunctionDataService.list(userId);
 		return ResultGenerator.genSuccessResult(userFunctionData);
 	}
 

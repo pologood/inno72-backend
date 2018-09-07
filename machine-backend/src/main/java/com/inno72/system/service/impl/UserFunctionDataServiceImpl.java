@@ -50,9 +50,12 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 	private Inno72FunctionDataMapper inno72FunctionDataMapper;
 
 	@Override
-	public List<Inno72FunctionData> list(String userId) {
+	public List<Inno72UserFunctionData> list(String userId) {
 
-		List<Inno72FunctionData> userFunctionData = inno72FunctionDataMapper.selectUserFunctionDataList(userId);
+		List<Inno72UserFunctionData> userFunctionData = inno72UserFunctionDataMapper.selectUserFunctionDataList(userId);
+		for (Inno72UserFunctionData inno72UserFunctionData : userFunctionData) {
+			inno72UserFunctionData.setFunctionLevel(3);
+		}
 
 		return userFunctionData;
 	}
@@ -80,6 +83,12 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 			inno72UserFunctionDataMapper.deleteByCondition(condition);
 
 			List<Inno72UserFunctionData> functionDataList = userData.getColumnList();
+			// 一级处理级别处理
+
+			// 二级处理级别处理
+
+			// 三级处理级别处理
+
 			if (null != functionDataList && functionDataList.size() > 0) {
 				List<Inno72UserFunctionData> insertList = new ArrayList<>();
 				functionDataList.forEach(functionData -> {
@@ -124,6 +133,7 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 			FunctionTreeVo funFirstVo = new FunctionTreeVo();
 			funFirstVo.setId(funFirst.getId());
 			funFirstVo.setTitle(funFirst.getFunctionDepict());
+			funFirstVo.setLevel(1);
 			firstVoList.add(funFirstVo);
 			condition = new Condition(Inno72Function.class);
 			condition.createCriteria().andEqualTo("functionLevel", 2).andEqualTo("parentId", funFirst.getId());
@@ -133,6 +143,7 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 				FunctionTreeVo funSecondVo = new FunctionTreeVo();
 				funSecondVo.setId(funSecond.getId());
 				funSecondVo.setTitle(funSecond.getFunctionDepict());
+				funSecondVo.setLevel(2);
 				secondVoList.add(funSecondVo);
 				// 获取页面列表列字段
 				if (StringUtil.isNotBlank(funSecond.getId())) {
@@ -144,6 +155,7 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 						FunctionTreeVo funThirdVo = new FunctionTreeVo();
 						funThirdVo.setId(funThird.getId());
 						funThirdVo.setTitle(funThird.getFunctionDepict());
+						funThirdVo.setLevel(3);
 						funThirdVo.setVoName(funThird.getVoName());
 						funThirdVo.setVoColumn(funThird.getVoColumn());
 						thirdVoList.add(funThirdVo);

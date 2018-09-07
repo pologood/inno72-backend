@@ -27,6 +27,8 @@ public class FunctionTreeResultVo {
 
 		private String id;
 
+		private Integer level;
+
 		private String voName;
 
 		private String voColumn;
@@ -70,6 +72,14 @@ public class FunctionTreeResultVo {
 
 		public void setVoColumn(String voColumn) {
 			this.voColumn = voColumn;
+		}
+
+		public Integer getLevel() {
+			return level;
+		}
+
+		public void setLevel(Integer level) {
+			this.level = level;
 		}
 
 	}

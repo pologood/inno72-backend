@@ -12,5 +12,4 @@ public interface Inno72FunctionDataMapper extends Mapper<Inno72FunctionData> {
 
 	List<Inno72FunctionData> findFunctionDataByParentId(@Param("parentId") String parentId);
 
-	List<Inno72FunctionData> selectUserFunctionDataList(@Param("userId") String userId);
 }

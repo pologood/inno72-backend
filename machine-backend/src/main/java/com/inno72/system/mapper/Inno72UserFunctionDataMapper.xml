@@ -12,6 +12,8 @@
     <result column="vo_column" jdbcType="VARCHAR" property="voColumn" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    
+    <result column="function_depict" jdbcType="VARCHAR" property="functionDepict" />
   </resultMap>
   
   
@@ -22,4 +24,20 @@
             (#{m.id},#{m.userId},#{m.functionId},#{m.voName},#{m.voColumn},#{m.createId},#{m.createTime})
         </foreach>
     </insert>
+    <select id="selectUserFunctionDataList" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			ufd.id,
+			ufd.function_id,
+			ufd.vo_name,
+			ufd.vo_column,
+			CONCAT(f1.function_depict,'-',f2.function_depict,'-',fd.function_depict ) AS function_depict
+		FROM
+			inno72_user_function_data ufd
+			LEFT JOIN inno72_function_data fd ON fd.id = ufd.function_id
+			LEFT JOIN inno72_function f2 ON f2.id = fd.parent_id
+			LEFT JOIN inno72_function f1 ON f1.id = f2.parent_id
+			where ufd.user_id =#{userId}
+ 	 </select>
+     
+    
 </mapper>

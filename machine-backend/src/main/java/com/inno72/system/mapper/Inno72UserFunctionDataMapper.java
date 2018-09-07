@@ -11,4 +11,6 @@ import com.inno72.system.model.Inno72UserFunctionData;
 public interface Inno72UserFunctionDataMapper extends Mapper<Inno72UserFunctionData> {
 
 	int insertUserFunctionDataList(@Param("list") List<Inno72UserFunctionData> list);
+
+	List<Inno72UserFunctionData> selectUserFunctionDataList(@Param("userId") String userId);
 }
