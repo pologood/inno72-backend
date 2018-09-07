@@ -50,6 +50,9 @@ public class SendMsgJob {
 				}
 				if (msg.getMsgType() == 3) {
 					result = SocketHolder.send(sessionId, "commandInfo", msg.getContent());
+				}
+				if (msg.getMsgType() == 9) {
+					result = SocketHolder.send(sessionId, "remote", msg.getContent());
 				} else {
 					result = SocketHolder.send(sessionId, msg.getContent());
 				}
