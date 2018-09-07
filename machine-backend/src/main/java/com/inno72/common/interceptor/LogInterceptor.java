@@ -19,6 +19,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.alibaba.fastjson.JSON;
 import com.inno72.common.CommonConstants;
+import com.inno72.common.DataAutherInterceptor;
 import com.inno72.common.Result;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
@@ -104,6 +105,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 
 		if (modelAndView != null) {
 			Map<String, Object> model = modelAndView.getModel();
+			model.put("unColumn", DataAutherInterceptor.forbiddenColumn());
 			Map<String, Object> newModel = new HashMap<String, Object>();
 			for (Map.Entry<String, Object> item : model.entrySet()) {
 				Object attr = item.getValue();
@@ -185,7 +187,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 					String _info = info.toString();
 					SessionData session = JSON.parseObject(_info, SessionData.class);
 					SessionUtil.sessionData.set(session);
-
+					DataAutherInterceptor.setUserId(session.getUser().getId());
 				}
 			}
 		}
