@@ -25,6 +25,8 @@ public class FunctionTreeResultVo {
 	public static class FunctionTreeVo {
 		private String title;
 
+		private String selectName;
+
 		private String id;
 
 		private Integer level;
@@ -80,6 +82,14 @@ public class FunctionTreeResultVo {
 
 		public void setLevel(Integer level) {
 			this.level = level;
+		}
+
+		public String getSelectName() {
+			return selectName;
+		}
+
+		public void setSelectName(String selectName) {
+			this.selectName = selectName;
 		}
 
 	}

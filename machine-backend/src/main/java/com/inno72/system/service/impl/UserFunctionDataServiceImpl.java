@@ -134,6 +134,8 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 			funFirstVo.setId(funFirst.getId());
 			funFirstVo.setTitle(funFirst.getFunctionDepict());
 			funFirstVo.setLevel(1);
+
+			funFirstVo.setSelectName(funFirst.getFunctionDepict());
 			firstVoList.add(funFirstVo);
 			condition = new Condition(Inno72Function.class);
 			condition.createCriteria().andEqualTo("functionLevel", 2).andEqualTo("parentId", funFirst.getId());
@@ -144,6 +146,8 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 				funSecondVo.setId(funSecond.getId());
 				funSecondVo.setTitle(funSecond.getFunctionDepict());
 				funSecondVo.setLevel(2);
+
+				funSecondVo.setSelectName(funFirst.getFunctionDepict() + "-" + funSecond.getFunctionDepict());
 				secondVoList.add(funSecondVo);
 				// 获取页面列表列字段
 				if (StringUtil.isNotBlank(funSecond.getId())) {
@@ -156,6 +160,9 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 						funThirdVo.setId(funThird.getId());
 						funThirdVo.setTitle(funThird.getFunctionDepict());
 						funThirdVo.setLevel(3);
+
+						funThirdVo.setSelectName(funFirst.getFunctionDepict() + "-" + funSecond.getFunctionDepict()
+								+ "-" + funThird.getFunctionDepict());
 						funThirdVo.setVoName(funThird.getVoName());
 						funThirdVo.setVoColumn(funThird.getVoColumn());
 						thirdVoList.add(funThirdVo);
