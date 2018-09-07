@@ -19,9 +19,13 @@ import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.system.mapper.Inno72UserFunctionAreaMapper;
+import com.inno72.system.mapper.Inno72UserFunctionDataMapper;
 import com.inno72.system.mapper.Inno72UserMapper;
 import com.inno72.system.mapper.Inno72UserRoleMapper;
 import com.inno72.system.model.Inno72User;
+import com.inno72.system.model.Inno72UserFunctionArea;
+import com.inno72.system.model.Inno72UserFunctionData;
 import com.inno72.system.model.Inno72UserRole;
 import com.inno72.system.service.UserService;
 
@@ -37,6 +41,11 @@ public class UserServiceImpl extends AbstractService<Inno72User> implements User
 	private Inno72UserMapper inno72UserMapper;
 	@Resource
 	private Inno72UserRoleMapper inno72UserRoleMapper;
+	@Resource
+	private Inno72UserFunctionDataMapper inno72UserFunctionDataMapper;
+
+	@Resource
+	private Inno72UserFunctionAreaMapper inno72UserFunctionAreaMapper;
 
 	@Override
 	public Result<Inno72User> getUserByUserId(String userId) {
@@ -107,6 +116,22 @@ public class UserServiceImpl extends AbstractService<Inno72User> implements User
 			return Results.failure("操作失败");
 		}
 		return Results.success();
+	}
+
+	@Override
+	public Map<String, Object> queryUserAuth(String userId) {
+		Map<String, Object> data = new HashMap<>();
+
+		Condition condition = new Condition(Inno72UserFunctionArea.class);
+		condition.createCriteria().andEqualTo("userId", userId);
+		List<Inno72UserFunctionArea> userFunctionArea = inno72UserFunctionAreaMapper.selectByCondition(condition);
+
+		data.put("functionArea", userFunctionArea);
+		List<Inno72UserFunctionData> userFunctionData = inno72UserFunctionDataMapper.selectUserFunctionDataList(userId);
+
+		data.put("functionData", userFunctionData);
+
+		return data;
 	}
 
 }

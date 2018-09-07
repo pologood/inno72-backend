@@ -1,6 +1,7 @@
 package com.inno72.system.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -51,6 +52,14 @@ public class UserController {
 		} catch (Exception e) {
 			return Results.failure("操作失败");
 		}
+	}
+
+	@RequestMapping(value = "/queryUserAuth", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<Map<String, Object>> queryUserAuth(@RequestParam() String userId) {
+
+		Map<String, Object> map = userService.queryUserAuth(userId);
+
+		return Results.success(map);
 	}
 
 }
