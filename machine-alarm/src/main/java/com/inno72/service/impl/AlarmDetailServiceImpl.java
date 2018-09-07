@@ -105,14 +105,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                     delQuery.addCriteria(Criteria.where("machineId").is(machineId));
 					mongoUtil.remove(delQuery,"AlarmMachineBean");
                     logger.info("获取全部需要发送报警的机器，从MongoDB中删除无需发送报警的机器");
-					String heartKey = CommonConstants.MACHINE_ALARM_HEART_BEF+machineId;
-                    redisUtil.del(heartKey);
-					String heartTimeKey = CommonConstants.MACHINE_ALARM_HEART_TIME_BEF+machineId;
-					redisUtil.del(heartTimeKey);
-					String connectKey = CommonConstants.MACHINE_ALARM_CONNECT_BEF+machineId;
-					redisUtil.del(connectKey);
-					String connectTimeKey = CommonConstants.MACHINE_ALARM_CONNECT_TIME_BEF+machineId;
-					redisUtil.del(connectTimeKey);
+					delRedis(machineId);
                 }
 
             }
@@ -216,7 +209,34 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
         }
     }
 
-    public void addHeartExceptionMachine(AlarmMachineBean bean,Date now){
+	@Override
+	public void updateMachineStart() {
+		List<AlarmMachineBean> list = mongoUtil.find(new Query(),AlarmMachineBean.class,"AlarmMachineBean");
+		if(list != null && list.size()>0) {
+			Date now = new Date();
+			for (AlarmMachineBean bean : list) {
+				String monitorStart = bean.getMonitorStart();
+				Date startDate = null;
+				String nowTime = DateUtil.toStrOld(now, DateUtil.DF_ONLY_YMD_S1_OLD);
+				if (StringUtil.isNotEmpty(monitorStart)) {
+					String startTime = nowTime + " " + monitorStart;
+					startDate = DateUtil.toDateOld(startTime, DateUtil.DF_ONLY_YMDHM);
+					if(DateUtil.subTime(startDate,now,2)<=120 && DateUtil.subTime(startDate,now,2)>=0){
+						String machineId = bean.getMachineId();
+						Query query = new Query();
+						query.addCriteria(Criteria.where("machineId").is(machineId));
+						Update update = new Update();
+						update.set("heartTime",startDate);
+						update.set("connectTime",startDate);
+						mongoUtil.updateFirst(query,update,"AlarmMachineBean");
+						delRedis(machineId);
+					}
+				}
+			}
+		}
+	}
+
+	public void addHeartExceptionMachine(AlarmMachineBean bean,Date now){
         String key = CommonConstants.MACHINE_ALARM_HEART_BEF+bean.getMachineId();
         String value = redisUtil.get(key);
         Date heartTime = bean.getHeartTime();
@@ -291,6 +311,17 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
         inno72CheckUserPhone.setMachineCode(machineCode);
         return checkUserService.selectPhoneByMachineCode(inno72CheckUserPhone);
     }
+
+    public void delRedis(String machineId){
+		String heartKey = CommonConstants.MACHINE_ALARM_HEART_BEF+machineId;
+		redisUtil.del(heartKey);
+		String heartTimeKey = CommonConstants.MACHINE_ALARM_HEART_TIME_BEF+machineId;
+		redisUtil.del(heartTimeKey);
+		String connectKey = CommonConstants.MACHINE_ALARM_CONNECT_BEF+machineId;
+		redisUtil.del(connectKey);
+		String connectTimeKey = CommonConstants.MACHINE_ALARM_CONNECT_TIME_BEF+machineId;
+		redisUtil.del(connectTimeKey);
+	}
 
 
 

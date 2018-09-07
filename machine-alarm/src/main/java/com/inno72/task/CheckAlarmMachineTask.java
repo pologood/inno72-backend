@@ -52,4 +52,11 @@ public class CheckAlarmMachineTask {
 		alarmDetailService.sendExceptionMachineAlarm();
 		log.info("发送机器监控异常发送结束");
 	}
+
+	@Scheduled(fixedRate = 1000*60*60)
+	public void updateLastUpdate(){
+		log.info("修改最后监控时间开始");
+		alarmDetailService.updateMachineStart();
+		log.info("修改最后监控时间结束");
+	}
 }

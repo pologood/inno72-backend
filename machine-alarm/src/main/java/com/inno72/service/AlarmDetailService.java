@@ -13,4 +13,6 @@ public interface AlarmDetailService{
     public void addToExceptionMachineBean();
 
     public void sendExceptionMachineAlarm();
+
+	public void updateMachineStart();
 }
