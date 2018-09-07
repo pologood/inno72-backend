@@ -183,16 +183,24 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                     logger.info("心跳异常发送钉钉消息："+groupId);
                 }else if(type == 2){
                     if(level == 1){
-                        if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
-                            List<Inno72CheckUserPhone> phones = getInno72CheckUserPhones(machineCode);
-                            if(phones != null && phones.size()>0){
-                                text = "【互动管家】您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时处理";
-                                param.put("text",text);
-                                for (Inno72CheckUserPhone userPhone:phones){
-                                    msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-AlarmDetailService");
-                                }
-                            }
-                        }
+//                        if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
+//                            List<Inno72CheckUserPhone> phones = getInno72CheckUserPhones(machineCode);
+//                            if(phones != null && phones.size()>0){
+//                                text = "【互动管家】您好，"+localeStr+"，"+machineCode+"，网络已经连续10分钟未连接成功，请及时处理";
+//                                param.put("text",text);
+//                                for (Inno72CheckUserPhone userPhone:phones){
+//                                    msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-AlarmDetailService");
+//                                }
+//                            }
+//                        }
+						List<Inno72CheckUserPhone> phones = getInno72CheckUserPhones(machineCode);
+						if(phones != null && phones.size()>0){
+							text = "【互动管家】您负责的机器，"+localeStr+"，"+machineCode+"，网络已经连续10分钟未连接成功，请及时处理";
+							param.put("text",text);
+							for (Inno72CheckUserPhone userPhone:phones){
+								msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-AlarmDetailService");
+							}
+						}
 						alarmMsgService.saveAlarmMsg(CommonConstants.MACHINE_NET_EXCEPTION,CommonConstants.SYS_MACHINE_NET,machineCode,0,localeStr);
                         text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时联系巡检人员。";
                     }else if(level == 2){
