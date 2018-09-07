@@ -143,6 +143,8 @@ public class RedisReceiver {
                     });
             MachineDropGoodsBean machineDropGoods = alarmMessageBean.getData();
             String machineCode = machineDropGoods.getMachineCode();
+			List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
+
             String channelNum = machineDropGoods.getChannelNum();
             log.info("machineDropGoods send msg ，machineCode：{}，channelNum：{}，describtion：{}", machineCode, channelNum, machineDropGoods.getDescribtion());
             //保存消息次数等信息
@@ -170,7 +172,7 @@ public class RedisReceiver {
                         params.put("text", "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。");
                         log.info("machineDropGoods send msg ，params：{}", params.toString());
                         //查询巡检人员手机号
-                        List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
+
                         for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
                             String phone = inno72CheckUserPhone1.getPhone();
                             msgUtil.sendPush("push_alarm_common", params, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
@@ -187,9 +189,6 @@ public class RedisReceiver {
                         params.put("localStr", localStr);
                         params.put("text", "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。");
                         log.info("machineDropGoods send msg ，params：{}", params.toString());
-                        //查询巡检人员手机号
-                        List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
-
                         //企业微信提醒
                         List<String> userIdList = new ArrayList<>();
                         for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
@@ -235,6 +234,14 @@ public class RedisReceiver {
                     supplyChannel.setIsDelete(1);
                     supplyChannel.setMachineId(machine.getId());
                     supplyChannelService.closeSupply(supplyChannel);
+					Map<String, String> params = new HashMap<>();
+					params.put("machineCode", machineCode);
+					params.put("localStr", localStr);
+					text = "掉货异常，货道已经被锁定，请及时处理。";
+					params.put("text",  text);
+					for(Inno72CheckUserPhone userPhone :inno72CheckUserPhones){
+						msgUtil.sendSMS("sms_alarm_common", params, userPhone.getPhone(), "machineAlarm-RedisReceiver");
+					}
                 }
             } else {
                 DropGoodsExceptionInfo dropGoodsExceptionInfo = new DropGoodsExceptionInfo();
