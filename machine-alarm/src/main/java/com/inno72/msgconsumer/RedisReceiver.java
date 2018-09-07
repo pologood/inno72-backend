@@ -100,34 +100,25 @@ public class RedisReceiver {
             param.put("localStr", localStr);
 
             if(surPlusNum == 10){
-//                if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
-//                    text = "您好，【互动管家】您负责的机器，"+localStr+"，机器编号："+machineCode+"，"+goodsName+"数量已少于10个，请及时补货";
-//                    param.put("text",  text);
-//                    for(Inno72CheckUserPhone userPhone :inno72CheckUserPhones){
-//                        msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-RedisReceiver");
-//                    }
-//                }
-				text = goodsName + "数量已少于10个，请及时处理。";
-				param.put("text",  text);
-				for(Inno72CheckUserPhone userPhone :inno72CheckUserPhones){
-					msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-RedisReceiver");
-				}
+                if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
+					text = goodsName + "数量已少于10个，请及时处理。";
+					param.put("text",  text);
+					for(Inno72CheckUserPhone userPhone :inno72CheckUserPhones){
+						msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-RedisReceiver");
+					}
+                }
+
                 text = "您好，"+localStr+"，机器编号："+machineCode+"，"+goodsName+"数量已少于10个，请及时补货";
                 param.put("text",StringUtil.setText(text,active));
                 msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-RedisReceiver");
             }else if(surPlusNum == 5){
-//                if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
-//                    text = "您好，【互动管家】您负责的机器，" + localStr + "，机器编号：" + machineCode + "，" + goodsName + "数量已少于5个，请及时补货";
-//                    param.put("text", text);
-//                    for (Inno72CheckUserPhone userPhone : inno72CheckUserPhones) {
-//                        msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-RedisReceiver");
-//                    }
-//                }
-				text = goodsName + "数量已少于5个，请及时处理。";
-				param.put("text", text);
-				for (Inno72CheckUserPhone userPhone : inno72CheckUserPhones) {
-					msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-RedisReceiver");
-				}
+                if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
+					text = goodsName + "数量已少于5个，请及时处理。";
+					param.put("text", text);
+					for (Inno72CheckUserPhone userPhone : inno72CheckUserPhones) {
+						msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-RedisReceiver");
+					}
+                }
                 text = "您好，"+localStr+"，机器编号："+machineCode+"，"+goodsName+"数量已少于5个，请及时补货";
 				param.put("text",StringUtil.setText(text,active));
                 msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-RedisReceiver");
