@@ -15,7 +15,7 @@ public interface UserFunctionDataService extends Service<Inno72UserFunctionData>
 
 	Result<FunctionTreeResultVo> findAllTree(String userId);
 
-	Result<String> updateFunctionData(UserAreaDataVo userData);
+	Result<Object> updateFunctionData(UserAreaDataVo userData);
 
 	List<Inno72UserFunctionData> list(String userId);
 

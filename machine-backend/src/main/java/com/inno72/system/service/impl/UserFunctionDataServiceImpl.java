@@ -53,15 +53,16 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 	public List<Inno72UserFunctionData> list(String userId) {
 
 		List<Inno72UserFunctionData> userFunctionData = inno72UserFunctionDataMapper.selectUserFunctionDataList(userId);
-		for (Inno72UserFunctionData inno72UserFunctionData : userFunctionData) {
-			inno72UserFunctionData.setFunctionLevel(3);
-		}
+		/*
+		 * for (Inno72UserFunctionData inno72UserFunctionData :
+		 * userFunctionData) { inno72UserFunctionData.setFunctionLevel(3); }
+		 */
 
 		return userFunctionData;
 	}
 
 	@Override
-	public Result<String> updateFunctionData(UserAreaDataVo userData) {
+	public Result<Object> updateFunctionData(UserAreaDataVo userData) {
 
 		try {
 			SessionData session = SessionUtil.sessionData.get();
@@ -83,15 +84,59 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 			inno72UserFunctionDataMapper.deleteByCondition(condition);
 
 			List<Inno72UserFunctionData> functionDataList = userData.getColumnList();
-			// 一级处理级别处理
+			// 去除子节点
+			List<Inno72UserFunctionData> sonData = new ArrayList<Inno72UserFunctionData>();
+			if (null != functionDataList && functionDataList.size() > 1) {
+				List<Inno72UserFunctionData> level1 = new ArrayList<Inno72UserFunctionData>();
+				List<Inno72UserFunctionData> level2 = new ArrayList<Inno72UserFunctionData>();
+				List<Inno72UserFunctionData> level3 = new ArrayList<Inno72UserFunctionData>();
 
-			// 二级处理级别处理
+				for (Inno72UserFunctionData functionData : functionDataList) {
+					if (functionData.getFunctionLevel() == 1) {
+						level1.add(functionData);
+					} else if (functionData.getFunctionLevel() == 2) {
+						level2.add(functionData);
+					} else if (functionData.getFunctionLevel() == 3) {
+						level3.add(functionData);
+					}
+				}
+				if (level1.size() > 0) {
+					for (Inno72UserFunctionData functionData : level1) {
+						String level1FunctionId = functionData.getFunctionId();
+						List<Inno72Function> level2All = inno72FunctionMapper
+								.selectFunctionByParentId(level1FunctionId);
+						for (Inno72Function functionData2 : level2All) {
+							List<Inno72UserFunctionData> level3All = inno72UserFunctionDataMapper
+									.selectFunctionDataByParentId(functionData2.getId());
+							sonData.addAll(level3All);
+						}
+					}
+				}
+				if (level2.size() > 0) {
+					for (Inno72UserFunctionData functionData2 : level2) {
+						String level2FunctionId = functionData2.getFunctionId();
+						List<Inno72UserFunctionData> level3All = inno72UserFunctionDataMapper
+								.selectFunctionDataByParentId(level2FunctionId);
+						sonData.addAll(level3All);
+					}
+				}
+				if (level3.size() > 0) {
+					for (Inno72UserFunctionData functionData3 : level3) {
+						if (!sonData.contains(functionData3)) {
+							sonData.add(functionData3);
+						}
+					}
+				}
 
-			// 三级处理级别处理
+				if (level1.size() > 0 || level2.size() > 0) {
+					return Results.warn("选择有父级节点，子节点将全部添加", 0, sonData);
+				}
 
-			if (null != functionDataList && functionDataList.size() > 0) {
+			}
+
+			if (null != sonData && sonData.size() > 0) {
 				List<Inno72UserFunctionData> insertList = new ArrayList<>();
-				functionDataList.forEach(functionData -> {
+				sonData.forEach(functionData -> {
 					functionData.setId(com.inno72.common.StringUtil.getUUID());
 					functionData.setUserId(userId);
 					functionData.setCreateId(mUserId);

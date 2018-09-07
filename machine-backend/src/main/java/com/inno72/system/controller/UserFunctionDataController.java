@@ -35,9 +35,8 @@ public class UserFunctionDataController {
 	}
 
 	@RequestMapping(value = "/updateFunctionData", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> update(@RequestBody UserAreaDataVo userData) {
-		userFunctionDataService.updateFunctionData(userData);
-		return ResultGenerator.genSuccessResult();
+	public Result<Object> update(@RequestBody UserAreaDataVo userData) {
+		return userFunctionDataService.updateFunctionData(userData);
 	}
 
 	@RequestMapping(value = "/all", method = { RequestMethod.POST, RequestMethod.GET })

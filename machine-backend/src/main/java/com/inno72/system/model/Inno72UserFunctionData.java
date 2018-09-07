@@ -203,4 +203,16 @@ public class Inno72UserFunctionData {
 		this.functionLevel = functionLevel;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+
+		if (obj instanceof Inno72UserFunctionData) {
+			Inno72UserFunctionData result = (Inno72UserFunctionData) obj;
+			if (null != result && result.getFunctionId().equals(this.getFunctionId())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
