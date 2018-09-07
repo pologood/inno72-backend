@@ -228,8 +228,8 @@ public class DDServiceImpl implements DDService {
 			if (user == null) {
 				return Results.failure("未找到用户");
 			}
-			if (user.getIsDelete() == 1) {
-				return Results.failure("用户已停用");
+			if (user.getIsDelete() != 0) {
+				return Results.failure("用户已停用或删除");
 			}
 			// List<Inno72Function> functions = functionService.findAll();
 			List<Inno72Function> functions = functionService.findFunctionsByUserId(user.getId());

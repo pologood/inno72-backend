@@ -92,7 +92,7 @@ public class UserServiceImpl extends AbstractService<Inno72User> implements User
 	}
 
 	@Override
-	public Result<String> delById(String id) {
+	public Result<String> updateStatus(String id, Integer status) {
 		try {
 			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
@@ -101,7 +101,7 @@ public class UserServiceImpl extends AbstractService<Inno72User> implements User
 			}
 			Inno72User model = inno72UserMapper.selectByPrimaryKey(id);
 
-			model.setIsDelete(1);
+			model.setIsDelete(status);
 			super.update(model);
 		} catch (Exception e) {
 			return Results.failure("操作失败");

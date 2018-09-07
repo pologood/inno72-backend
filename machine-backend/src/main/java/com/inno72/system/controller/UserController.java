@@ -44,10 +44,10 @@ public class UserController {
 		return userService.queryUserRoles(userId);
 	}
 
-	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> delete(@RequestParam String id) {
+	@RequestMapping(value = "/updateStatus", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> updateStatus(@RequestParam String id, Integer status) {
 		try {
-			return userService.delById(id);
+			return userService.updateStatus(id, status);
 		} catch (Exception e) {
 			return Results.failure("操作失败");
 		}
