@@ -598,6 +598,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		Inno72SupplyChannel supplyChannel = inno72SupplyChannelMapper.selectLockGoods(map);
 		if(supplyChannel != null){
 			int totalCount = supplyChannel.getGoodsCount();
+			logger.info("查询出商品货道信息{}",JSON.toJSON(supplyChannel));
 			if(totalCount == 10 || totalCount == 5){
 				ChannelGoodsAlarmBean alarmBean = new ChannelGoodsAlarmBean();
 				alarmBean.setGoodsName(supplyChannel.getGoodsName());

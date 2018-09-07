@@ -176,6 +176,7 @@ public class SupplyChannelController {
 	 */
 	@RequestMapping(value="findLockGoodsPush")
 	public void findLockGoodsPush(@RequestBody SupplyRequestVo vo){
+		logger.info("查询缺货货道并实时发送push接口:{}",JSON.toJSON(vo));
 		supplyChannelService.findLockGoodsPush(vo);
 	}
 
