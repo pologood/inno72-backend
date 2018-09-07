@@ -606,6 +606,8 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				alarmBean.setSurPlusNum(totalCount);
 				alarmBean.setLocaleStr(supplyChannel.getLocaleStr());
 				AlarmMessageBean alarmMessageBean = new AlarmMessageBean();
+				alarmMessageBean.setSystem("machineLackGoods");
+				alarmMessageBean.setType("machineLackGoodsException");
 				alarmMessageBean.setData(alarmBean);
 				logger.info("货道缺货发送push{}", JSONObject.toJSONString(alarmMessageBean));
 				redisUtil.publish("moniterAlarm", JSONObject.toJSONString(alarmMessageBean));
