@@ -131,6 +131,8 @@ public class UserServiceImpl extends AbstractService<Inno72User> implements User
 
 		data.put("functionData", userFunctionData);
 
+		List<String> function = inno72UserMapper.selectUserFunction(userId);
+		data.put("function", function);
 		return data;
 	}
 

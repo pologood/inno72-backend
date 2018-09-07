@@ -284,10 +284,17 @@ public class DataAutherInterceptor implements Interceptor {
 				return field;
 			} catch (NoSuchFieldException e) {
 				tempClass = tempClass.getSuperclass();
+				if (tempClass != null && "java.lang.Object".equals(tempClass.getName())) {
+					tempClass = null;
+				}
 			} catch (SecurityException e) {
 				tempClass = tempClass.getSuperclass();
+				if (tempClass != null && "java.lang.Object".equals(tempClass.getName())) {
+					tempClass = null;
+				}
 			}
 		}
 		return null;
 	}
+
 }
