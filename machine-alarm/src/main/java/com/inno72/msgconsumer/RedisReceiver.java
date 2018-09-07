@@ -107,7 +107,7 @@ public class RedisReceiver {
 //                        msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-RedisReceiver");
 //                    }
 //                }
-				text = "您好，【互动管家】您负责的机器，"+localStr+"，机器编号："+machineCode+"，"+goodsName+"数量已少于10个，请及时补货";
+				text = goodsName+"数量已少于10个，请及时补货";
 				param.put("text",  text);
 				for(Inno72CheckUserPhone userPhone :inno72CheckUserPhones){
 					msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-RedisReceiver");
@@ -123,7 +123,7 @@ public class RedisReceiver {
 //                        msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-RedisReceiver");
 //                    }
 //                }
-				text = "您好，【互动管家】您负责的机器，" + localStr + "，机器编号：" + machineCode + "，" + goodsName + "数量已少于5个，请及时补货";
+				text = goodsName + "数量已少于5个，请及时补货";
 				param.put("text", text);
 				for (Inno72CheckUserPhone userPhone : inno72CheckUserPhones) {
 					msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-RedisReceiver");
