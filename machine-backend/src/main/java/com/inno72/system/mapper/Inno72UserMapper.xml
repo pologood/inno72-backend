@@ -34,7 +34,7 @@
 	</select>
 	
 	<select id="selectUserFunction" parameterType="java.util.Map"
-		resultType="String">
+		resultType="java.util.Map">
 		SELECT
 			CONCAT(IFNULL(r.`name`,""),'-',IFNULL(fpp.function_depict,""),'-',IFNULL(fp.function_depict,""),'-',IFNULL(f.function_depict,"")) AS name 
 		FROM

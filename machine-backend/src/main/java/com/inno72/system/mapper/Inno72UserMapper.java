@@ -13,5 +13,5 @@ public interface Inno72UserMapper extends Mapper<Inno72User> {
 
 	List<Inno72User> selectUsersByPage(Map<String, Object> param);
 
-	List<String> selectUserFunction(@Param("userId") String userId);
+	List<Map<String, Object>> selectUserFunction(@Param("userId") String userId);
 }
