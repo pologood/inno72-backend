@@ -167,7 +167,7 @@ public class RedisReceiver {
                         Map<String, String> params = new HashMap<>();
                         params.put("machineCode", machineCode);
                         params.put("localStr", localStr);
-                        params.put("text", "出现掉货异常，请及时处理");
+                        params.put("text", "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。");
                         log.info("machineDropGoods send msg ，params：{}", params.toString());
                         //查询巡检人员手机号
                         List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
@@ -185,7 +185,7 @@ public class RedisReceiver {
                         Map<String, String> params = new HashMap<>();
                         params.put("machineCode", machineCode);
                         params.put("localStr", localStr);
-                        params.put("text", "出现掉货异常，请及时处理");
+                        params.put("text", "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。");
                         log.info("machineDropGoods send msg ，params：{}", params.toString());
                         //查询巡检人员手机号
                         List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
@@ -215,7 +215,7 @@ public class RedisReceiver {
                         Map<String, String> param = new HashMap<>();
                         param.put("machineCode", machineCode);
                         param.put("localStr", localStr);
-                        text = channelNum + "," + "出现掉货异常，请及时处理。";
+                        text = "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。";
 						param.put("text",StringUtil.setText(text,active));
                         msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-RedisReceiver");
 
@@ -224,7 +224,7 @@ public class RedisReceiver {
                         Map<String, String> params = new HashMap<>();
                         params.put("machineCode", machineCode);
                         params.put("localStr", localStr);
-                        text = channelNum + "," + "出现掉货异常，请及时处理。";
+                        text = "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。";
 						params.put("text",StringUtil.setText(text,active));
                         msgUtil.sendDDTextByGroup("dingding_alarm_common", params, groupId, "machineAlarm-RedisReceiver");
 
