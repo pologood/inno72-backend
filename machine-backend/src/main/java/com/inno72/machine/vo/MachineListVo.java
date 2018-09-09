@@ -12,6 +12,7 @@ public class MachineListVo {
 	private String channelStatus;
 	private String goodsStatus;
 	private String machineStatus;
+	private String detail;
 
 	private List<Map<String, Object>> planTime;
 
@@ -85,6 +86,14 @@ public class MachineListVo {
 
 	public void setPlanTime(List<Map<String, Object>> planTime) {
 		this.planTime = planTime;
+	}
+
+	public String getDetail() {
+		return detail;
+	}
+
+	public void setDetail(String detail) {
+		this.detail = detail;
 	}
 
 }
