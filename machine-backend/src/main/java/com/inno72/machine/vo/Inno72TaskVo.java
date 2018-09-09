@@ -20,6 +20,8 @@ public class Inno72TaskVo extends Inno72Task {
 
 	private String remark;
 
+	private String result;
+
 	private List<Inno72TaskMachineVo> machineList;
 
 	public int getTaskAll() {
@@ -84,6 +86,14 @@ public class Inno72TaskVo extends Inno72Task {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public String getResult() {
+		return result;
+	}
+
+	public void setResult(String result) {
+		this.result = result;
 	}
 
 }
