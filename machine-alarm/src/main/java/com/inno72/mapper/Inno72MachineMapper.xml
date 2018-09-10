@@ -37,7 +37,7 @@
 		WHERE
 			m.machine_status  = #{machineStatus} and m.open_status = 0
 	</select>
-    <select id="findMachineByMachineCode" parameterType="String" resultType="com.inno72.model.Inno72Machine">
+    <select id="findMachineByMachineCode" parameterType="String" resultType="BaseResultMap">
       SELECT
         m.*
       FROM
