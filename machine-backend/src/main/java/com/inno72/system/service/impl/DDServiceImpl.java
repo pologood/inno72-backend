@@ -268,6 +268,10 @@ public class DDServiceImpl implements DDService {
 			Condition condition = new Condition(Inno72UserFunctionArea.class);
 			condition.createCriteria().andEqualTo("userId", user.getId());
 			List<Inno72UserFunctionArea> userFunctionArea = inno72UserFunctionAreaMapper.selectByCondition(condition);
+			for (Inno72UserFunctionArea inno72UserFunctionArea : userFunctionArea) {
+				int num = StringUtil.getAreaCodeNum(inno72UserFunctionArea.getCode());
+				inno72UserFunctionArea.setLevel(num);
+			}
 
 			String token = StringUtil.getUUID();
 			SessionData sessionData = new SessionData(token, user, functions, userFunctionArea);
