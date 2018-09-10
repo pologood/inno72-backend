@@ -25,6 +25,7 @@ import com.inno72.common.StringUtil;
 import com.inno72.model.AlarmDetailBean;
 import com.inno72.model.AlarmExceptionMachineBean;
 import com.inno72.model.AlarmMachineBean;
+import com.inno72.model.AlarmSendBean;
 import com.inno72.model.Inno72CheckUserPhone;
 import com.inno72.model.Inno72Machine;
 import com.inno72.mongo.MongoUtil;
@@ -181,6 +182,18 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                     param.put("text",StringUtil.setText(text,active));
                     msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-AlarmDetailService");
                     logger.info("心跳异常发送钉钉消息："+groupId);
+					AlarmSendBean alarmSendBean = new AlarmSendBean();
+					alarmSendBean.setId(StringUtil.getUUID());
+					alarmSendBean.setInfo(text);
+					alarmSendBean.setLevel(level);
+					alarmSendBean.setMachineId(bean.getMachineId());
+					alarmSendBean.setMachineCode(machineCode);
+					alarmSendBean.setType(type);
+					alarmSendBean.setRemark(detailBean.getRemark());
+					alarmSendBean.setPageInfo(detailBean.getPageInfo());
+					alarmSendBean.setLocaleStr(localeStr);
+					alarmSendBean.setCreateTime(new Date());
+					mongoUtil.save(alarmSendBean,"AlarmSendBean");
                 }else if(type == 2){
                     if(level == 1){
                         if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
@@ -201,6 +214,18 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 					param.put("text",StringUtil.setText(text,active));
                     msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-AlarmDetailService");
                     logger.info("网络连接异常发送钉钉消息："+groupId);
+					AlarmSendBean alarmSendBean = new AlarmSendBean();
+					alarmSendBean.setId(StringUtil.getUUID());
+					alarmSendBean.setInfo(text);
+					alarmSendBean.setLevel(level);
+					alarmSendBean.setMachineId(bean.getMachineId());
+					alarmSendBean.setMachineCode(machineCode);
+					alarmSendBean.setType(type);
+					alarmSendBean.setRemark(detailBean.getRemark());
+					alarmSendBean.setPageInfo(detailBean.getPageInfo());
+					alarmSendBean.setLocaleStr(localeStr);
+					alarmSendBean.setCreateTime(new Date());
+					mongoUtil.save(alarmSendBean,"AlarmSendBean");
                 }
                 Query removeQuery = new Query();
                 removeQuery.addCriteria(Criteria.where("_id").is(bean.getId()));
