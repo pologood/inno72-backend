@@ -92,8 +92,6 @@ public class Inno72Game {
 	@Column(name = "update_time")
 	private LocalDateTime updateTime;
 
-	private Integer number;
-
 	/**
 	 * @return id
 	 */
@@ -271,14 +269,6 @@ public class Inno72Game {
 	 */
 	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
-	}
-
-	public Integer getNumber() {
-		return number;
-	}
-
-	public void setNumber(Integer number) {
-		this.number = number;
 	}
 
 }
