@@ -189,8 +189,10 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 					alarmSendBean.setMachineId(bean.getMachineId());
 					alarmSendBean.setMachineCode(machineCode);
 					alarmSendBean.setType(type);
-					alarmSendBean.setRemark(detailBean.getRemark());
-					alarmSendBean.setPageInfo(detailBean.getPageInfo());
+					if(detailBean != null) {
+						alarmSendBean.setRemark(detailBean.getRemark());
+						alarmSendBean.setPageInfo(detailBean.getPageInfo());
+					}
 					alarmSendBean.setLocaleStr(localeStr);
 					alarmSendBean.setCreateTime(new Date());
 					mongoUtil.save(alarmSendBean,"AlarmSendBean");
