@@ -86,4 +86,16 @@ public class StringUtil {
         return !isBlank(str);
     }
 
+
+    public static String setText(String text,String active){
+		if(StringUtil.isEmpty(active) || "dev".equals(active)){
+			text = "开发："+text;
+		}else if("test".equals(active)){
+			text = "测试："+text;
+		}else if("stage".equals(active)){
+			text = "预发"+text;
+		}
+		return text;
+	}
+
 }

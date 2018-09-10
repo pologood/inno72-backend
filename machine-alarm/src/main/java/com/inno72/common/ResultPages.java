@@ -1,6 +1,5 @@
 package com.inno72.common;
 
-import com.inno72.common.Result;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;

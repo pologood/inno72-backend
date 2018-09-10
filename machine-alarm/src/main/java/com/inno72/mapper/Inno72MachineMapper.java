@@ -1,9 +1,9 @@
 package com.inno72.mapper;
 
+import java.util.List;
+
 import com.inno72.common.Mapper;
 import com.inno72.model.Inno72Machine;
-
-import java.util.List;
 
 /**
  * @author
@@ -34,6 +34,8 @@ public interface Inno72MachineMapper extends Mapper<Inno72Machine> {
      * @return :List<Inno72Machine>
      */
     List<Inno72Machine> findMachineNetStatusOpenList(List<String> machineList);
+
+    List<Inno72Machine> findAlarmAllMachine();
 
 
 }

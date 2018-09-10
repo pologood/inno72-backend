@@ -598,6 +598,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		Inno72SupplyChannel supplyChannel = inno72SupplyChannelMapper.selectLockGoods(map);
 		if(supplyChannel != null){
 			int totalCount = supplyChannel.getGoodsCount();
+			logger.info("查询出商品货道信息{}",JSON.toJSON(supplyChannel));
 			if(totalCount == 10 || totalCount == 5){
 				ChannelGoodsAlarmBean alarmBean = new ChannelGoodsAlarmBean();
 				alarmBean.setGoodsName(supplyChannel.getGoodsName());
@@ -605,6 +606,8 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				alarmBean.setSurPlusNum(totalCount);
 				alarmBean.setLocaleStr(supplyChannel.getLocaleStr());
 				AlarmMessageBean alarmMessageBean = new AlarmMessageBean();
+				alarmMessageBean.setSystem("machineLackGoods");
+				alarmMessageBean.setType("machineLackGoodsException");
 				alarmMessageBean.setData(alarmBean);
 				logger.info("货道缺货发送push{}", JSONObject.toJSONString(alarmMessageBean));
 				redisUtil.publish("moniterAlarm", JSONObject.toJSONString(alarmMessageBean));

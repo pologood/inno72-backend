@@ -1,15 +1,17 @@
 package com.inno72.service.impl;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.inno72.common.AbstractService;
 import com.inno72.mapper.Inno72CheckUserMapper;
 import com.inno72.model.Inno72CheckUser;
 import com.inno72.model.Inno72CheckUserPhone;
 import com.inno72.service.CheckUserService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 
 /**

@@ -26,7 +26,7 @@
      <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
   
-  <select id="selectByPage" parameterType="String" resultMap="BaseResultMap">
+  <select id="selectCheckUserByPage" parameterType="String" resultMap="BaseResultMap">
 		SELECT
 			u.id,
 			u.name,

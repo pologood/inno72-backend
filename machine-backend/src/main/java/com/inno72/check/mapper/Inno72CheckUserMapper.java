@@ -14,7 +14,7 @@ import com.inno72.project.vo.Inno72AdminAreaVo;
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72CheckUserMapper extends Mapper<Inno72CheckUser> {
 
-	List<Inno72CheckUser> selectByPage(@Param("keyword") String keyword);
+	List<Inno72CheckUser> selectCheckUserByPage(@Param("keyword") String keyword);
 
 	int checkCardNoIsExist(@Param("cardNo") String cardNo);
 

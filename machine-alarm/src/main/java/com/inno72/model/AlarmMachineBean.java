@@ -1,0 +1,133 @@
+package com.inno72.model;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.Id;
+
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document
+public class AlarmMachineBean implements Serializable {
+
+	@Id
+    private String id;
+
+    private String machineId;
+
+    private String machineCode;
+
+    private String monitorStart;
+
+    private String monitorEnd;
+
+    private String connectId;
+
+    private Date connectTime;
+
+    private String heartId;
+
+    private Date heartTime;
+
+    private Date createTime;
+
+    private Date updateTime;
+
+    private String localeStr;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getMachineId() {
+        return machineId;
+    }
+
+    public void setMachineId(String machineId) {
+        this.machineId = machineId;
+    }
+
+    public String getMachineCode() {
+        return machineCode;
+    }
+
+    public void setMachineCode(String machineCode) {
+        this.machineCode = machineCode;
+    }
+
+    public String getMonitorStart() {
+        return monitorStart;
+    }
+
+    public void setMonitorStart(String monitorStart) {
+        this.monitorStart = monitorStart;
+    }
+
+    public String getMonitorEnd() {
+        return monitorEnd;
+    }
+
+    public void setMonitorEnd(String monitorEnd) {
+        this.monitorEnd = monitorEnd;
+    }
+
+    public String getConnectId() {
+        return connectId;
+    }
+
+    public void setConnectId(String connectId) {
+        this.connectId = connectId;
+    }
+
+    public Date getConnectTime() {
+        return connectTime;
+    }
+
+    public void setConnectTime(Date connectTime) {
+        this.connectTime = connectTime;
+    }
+
+    public String getHeartId() {
+        return heartId;
+    }
+
+    public void setHeartId(String heartId) {
+        this.heartId = heartId;
+    }
+
+    public Date getHeartTime() {
+        return heartTime;
+    }
+
+    public void setHeartTime(Date heartTime) {
+        this.heartTime = heartTime;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getLocaleStr() {
+        return localeStr;
+    }
+
+    public void setLocaleStr(String localeStr) {
+        this.localeStr = localeStr;
+    }
+}

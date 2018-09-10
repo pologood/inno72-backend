@@ -17,6 +17,9 @@
         <result column="device_id" jdbcType="VARCHAR" property="deviceId"/>
         <result column="address" jdbcType="VARCHAR" property="address"/>
         <result column="bluetooth_address" jdbcType="VARCHAR" property="bluetoothAddress"/>
+        <result column="open_status" jdbcType="INTEGER" property="openStatus"/>
+        <result column="monitor_start" jdbcType="VARCHAR" property="monitorStart"/>
+        <result column="monitor_end" jdbcType="VARCHAR" property="monitorEnd"/>
 
     </resultMap>
 
@@ -59,4 +62,18 @@
         </foreach>
     </select>
 
+    <select id="findAlarmAllMachine" resultMap="BaseResultMap">
+        select m.*,
+        CONCAT(
+			area.province,
+			area.city,
+			area.district,
+		IF ( area.circle = '其他', '', area.circle ),IFNULL( l.mall, "" ),IFNULL( l.NAME, "" ) ) AS localeStr
+		from inno72_machine m
+		LEFT JOIN inno72_locale l ON l.id = m.locale_id
+		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
+		where machine_status=4
+        and open_status=0
+
+    </select>
 </mapper>
