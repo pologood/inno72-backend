@@ -86,7 +86,7 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 			List<Inno72UserFunctionData> functionDataList = userData.getColumnList();
 			// 去除子节点
 			List<Inno72UserFunctionData> sonData = new ArrayList<Inno72UserFunctionData>();
-			if (null != functionDataList && functionDataList.size() > 1) {
+			if (null != functionDataList && functionDataList.size() > 0) {
 				List<Inno72UserFunctionData> level1 = new ArrayList<Inno72UserFunctionData>();
 				List<Inno72UserFunctionData> level2 = new ArrayList<Inno72UserFunctionData>();
 				List<Inno72UserFunctionData> level3 = new ArrayList<Inno72UserFunctionData>();
