@@ -182,7 +182,7 @@
     left join inno72_machine t4 on t2.machine_id=t4.id
     LEFT JOIN inno72_locale t5 ON t5.id = t4.locale_id
 	LEFT JOIN inno72_admin_area t6 ON t6.CODE = t5.area_code
-    where t4.machine_status=4 and t4.open_status=0 group by t1.goods_id,t4.machine_code
+    where t4.machine_status=4 group by t1.goods_id,t4.machine_code
   </select>
 
   <select id="selectLockGoods" resultMap="BaseResultMap">
@@ -202,7 +202,7 @@
     LEFT JOIN inno72_locale t5 ON t5.id = t4.locale_id
 	LEFT JOIN inno72_admin_area t6 ON t6.CODE = t5.area_code
     where
-    t4.machine_status=4 and t4.open_status=0
+    t4.machine_status=4
     and t2.goods_id=#{goodsId} and t1.machine_id=#{machineId}
   </select>
 </mapper>
