@@ -3,6 +3,7 @@ package com.inno72.msgconsumer;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.inno72.common.CommonConstants;
+import com.inno72.common.DateUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.model.AlarmMessageBean;
 import com.inno72.model.ChannelGoodsAlarmBean;
@@ -93,7 +95,7 @@ public class RedisReceiver {
             if(channelGoodsAlarmBean != null){
 				String machineCode = channelGoodsAlarmBean.getMachineCode();
 				Inno72Machine machine = machineService.findByCode(machineCode);
-				if(machine == null || machine.getOpenStatus() != 0){
+				if(!setAlarmFlag(machine)){
 					return;
 				}
 				int surPlusNum = channelGoodsAlarmBean.getSurPlusNum();
@@ -141,7 +143,7 @@ public class RedisReceiver {
             MachineDropGoodsBean machineDropGoods = alarmMessageBean.getData();
             String machineCode = machineDropGoods.getMachineCode();
 			Inno72Machine machine = machineService.findByCode(machineCode);
-			if(machine == null || machine.getOpenStatus() != 0){
+			if(!setAlarmFlag(machine)){
 				return;
 			}
 			List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
@@ -286,4 +288,33 @@ public class RedisReceiver {
         }
         return localStr;
     }
+
+    public Boolean setAlarmFlag(Inno72Machine machine){
+    	boolean alarmFlag = false;
+		if(machine != null && machine.getOpenStatus() == 0){
+			String monitorStart = machine.getMonitorStart();
+			String monitorEnd = machine.getMonitorEnd();
+			if(StringUtil.isNotEmpty(monitorStart) && StringUtil.isNotEmpty(monitorEnd)){
+				Date now = new Date();
+				Date startDate = null;
+				String nowTime = DateUtil.toStrOld(now,DateUtil.DF_ONLY_YMD_S1_OLD);
+				if(StringUtil.isNotEmpty(monitorStart)){
+					String startTime = nowTime + " " +monitorStart;
+					startDate = DateUtil.toDateOld(startTime,DateUtil.DF_ONLY_YMDHM);
+				}
+				Date endDate = null;
+				if(StringUtil.isNotEmpty(monitorEnd)){
+					String endTime = nowTime + " " +monitorEnd;
+					endDate = DateUtil.toDateOld(endTime,DateUtil.DF_ONLY_YMDHM);
+				}
+				if((startDate != null && now.after(startDate) && (endDate != null && now.before(endDate)))){
+					alarmFlag = true;//发送报警
+				}
+			}else{
+				alarmFlag = true;
+			}
+		}
+		return alarmFlag;
+
+	}
 }
