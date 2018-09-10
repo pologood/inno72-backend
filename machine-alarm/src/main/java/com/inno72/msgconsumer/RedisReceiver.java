@@ -96,11 +96,10 @@ public class RedisReceiver {
             if(channelGoodsAlarmBean != null){
 				String machineCode = channelGoodsAlarmBean.getMachineCode();
 				Inno72Machine machine = machineService.findByCode(machineCode);
-				log.info("机器信息：{}",JSON.toJSON(machine));
+
 				if(!setAlarmFlag(machine)){
 					return;
 				}
-				log.info("继续执行掉货异常报警。。。。");
 				int surPlusNum = channelGoodsAlarmBean.getSurPlusNum();
 				List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
 				Map<String, String> param = new HashMap<>();
@@ -149,6 +148,7 @@ public class RedisReceiver {
 			if(!setAlarmFlag(machine)){
 				return;
 			}
+			log.info("继续执行掉货异常报警。。。。");
 			List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
 
             String channelNum = machineDropGoods.getChannelNum();
@@ -293,6 +293,7 @@ public class RedisReceiver {
     }
 
     public Boolean setAlarmFlag(Inno72Machine machine){
+		log.info("机器信息：{}",JSON.toJSON(machine));
     	boolean alarmFlag = false;
 		if(machine != null && machine.getOpenStatus() == 0){
 			String monitorStart = machine.getMonitorStart();
