@@ -20,4 +20,6 @@ public class CommonConstants {
 
 	public final static String REDIS_REMOTE_RBIND_PATH = "remote:rbind:";
 
+	public final static String REDIS_SESSION_PATH = "monitor:session:";
+
 }

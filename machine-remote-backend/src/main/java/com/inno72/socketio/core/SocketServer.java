@@ -52,6 +52,8 @@ public class SocketServer {
 		server.addEventListener("message", String.class, listener.message());
 		server.addEventListener("monitor", String.class, listener.monitor());
 		server.addEventListener("remote", byte[].class, listener.remote());
+		server.addEventListener("motionEvent", String.class, listener.monitorEvent());
+		server.addEventListener("keyEvent", String.class, listener.keyEvent());
 
 		server.start();
 		Thread shutdownHookOne = new Thread() {

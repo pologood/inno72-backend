@@ -47,6 +47,7 @@ public class SocketIOStartHandler {
 			public void monitorResponse(String key, String data, Map<String, List<String>> params) {
 				String deviceId = Optional.ofNullable(params.get(CommonConstants.DEVICE_ID)).map(a -> a.get(0))
 						.orElse("");
+				log.info("客户端发送心跳deviceId:{}", deviceId);
 				String deviceIdKey = CommonConstants.REDIS_REMOTE_CLIENT_SESSION_PATH + deviceId;
 				redisUtil.setex(deviceIdKey, 60, key);
 			}
@@ -60,7 +61,7 @@ public class SocketIOStartHandler {
 				if (CommonConstants.CONNECT_TYPE_CLIENT.equals(connectType)) {
 					String deviceId = Optional.ofNullable(data.get(CommonConstants.DEVICE_ID)).map(a -> a.get(0))
 							.orElse("");
-					log.info("socket连接到服务器，deviceId:{}------->机器machineId:{}", deviceId, machineId);
+					log.info("socket客户端连接到服务器，deviceId:{}------->机器machineId:{}", deviceId, machineId);
 					String bindKey = CommonConstants.REDIS_REMOTE_BIND_PATH + deviceId;
 					String rbindKey = CommonConstants.REDIS_REMOTE_RBIND_PATH + machineId;
 
@@ -80,6 +81,7 @@ public class SocketIOStartHandler {
 					msg1.setMsgType(9);
 					inno72AppMsgMapper.insert(msg1);
 				} else {
+					log.info("socket机器端连接到服务器，机器machineId:{}", machineId);
 					String machinKey = CommonConstants.REDIS_REMOTE_MACHINE_SESSION_PATH + machineId;
 					redisUtil.setex(machinKey, 60 * 60, sessionId);
 				}
@@ -99,14 +101,64 @@ public class SocketIOStartHandler {
 				String rbindKey = CommonConstants.REDIS_REMOTE_RBIND_PATH + machineId;
 				Set<Object> clients = redisUtil.smembers(rbindKey);
 				if (clients != null) {
-					clients.forEach(client -> {
+					boolean r = false;
+					for (Object client : clients) {
 						if (client != null && !StringUtil.isEmpty(client.toString())) {
 							String deviceIdKey = CommonConstants.REDIS_REMOTE_CLIENT_SESSION_PATH + client.toString();
 							String clientSessionId = redisUtil.get(deviceIdKey);
-							SocketHolder.send(clientSessionId, "sendImg", data);
+							try {
+								boolean result = SocketHolder.send(clientSessionId, "sendImg", data);
+								if (result) {
+									r = true;
+								} else {
+									redisUtil.srem(rbindKey, client.toString());
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+								redisUtil.srem(rbindKey, client.toString());
+							}
 							log.info("发送来自机器{}的远程图片给客户端{}", machineId, client);
 						}
-					});
+					}
+					if (!r) {
+						SocketHolder.close(key);
+					}
+				} else {
+					SocketHolder.close(key);
+				}
+			}
+
+			@Override
+			public void monitorEvent(String key, String data, Map<String, List<String>> urlParams) {
+				String machineId = Optional.ofNullable(urlParams.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
+						.orElse("");
+				String connectType = Optional.ofNullable(urlParams.get(CommonConstants.CONNECT_TYPE)).map(a -> a.get(0))
+						.orElse("");
+				String deviceId = Optional.ofNullable(urlParams.get(CommonConstants.DEVICE_ID)).map(a -> a.get(0))
+						.orElse("");
+				if (CommonConstants.CONNECT_TYPE_CLIENT.equals(connectType)) {
+					log.info("monitorEvent转发客户端deviceId:{}发送的指令:{}--->机器id:{}", deviceId, data, machineId);
+					String machinKey = CommonConstants.REDIS_REMOTE_MACHINE_SESSION_PATH + machineId;
+					String sessionId = redisUtil.get(machinKey);
+					String result = GZIPUtil.compress(AesUtils.encrypt(data));
+					SocketHolder.send(sessionId, "motionEvent", result);
+				}
+			}
+
+			@Override
+			public void keyEvent(String key, String data, Map<String, List<String>> urlParams) {
+				String machineId = Optional.ofNullable(urlParams.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
+						.orElse("");
+				String connectType = Optional.ofNullable(urlParams.get(CommonConstants.CONNECT_TYPE)).map(a -> a.get(0))
+						.orElse("");
+				String deviceId = Optional.ofNullable(urlParams.get(CommonConstants.DEVICE_ID)).map(a -> a.get(0))
+						.orElse("");
+				if (CommonConstants.CONNECT_TYPE_CLIENT.equals(connectType)) {
+					log.info("keyEvent转发客户端deviceId:{}发送的指令:{}--->机器id:{}", deviceId, data, machineId);
+					String machinKey = CommonConstants.REDIS_REMOTE_MACHINE_SESSION_PATH + machineId;
+					String sessionId = redisUtil.get(machinKey);
+					String result = GZIPUtil.compress(AesUtils.encrypt(data));
+					SocketHolder.send(sessionId, "keyEvent", result);
 				}
 			}
 

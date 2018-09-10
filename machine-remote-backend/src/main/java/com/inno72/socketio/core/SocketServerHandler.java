@@ -55,4 +55,20 @@ public abstract class SocketServerHandler {
 	 */
 	public abstract void remoteResponse(String string, byte[] data, Map<String, List<String>> urlParams);
 
+	/**
+	 * monitor
+	 * 
+	 * @param key
+	 * @param data
+	 */
+	public abstract void monitorEvent(String key, String data, Map<String, List<String>> urlParams);
+
+	/**
+	 * key
+	 * 
+	 * @param key
+	 * @param data
+	 */
+	public abstract void keyEvent(String key, String data, Map<String, List<String>> urlParams);
+
 }

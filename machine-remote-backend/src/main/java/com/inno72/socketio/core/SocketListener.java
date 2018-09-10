@@ -145,6 +145,24 @@ public class SocketListener {
 		};
 	}
 
+	DataListener<String> monitorEvent() {
+		return new DataListener<String>() {
+			@Override
+			public void onData(SocketIOClient client, String data, AckRequest arg2) throws Exception {
+				handler.monitorEvent(client.getSessionId().toString(), data, client.getHandshakeData().getUrlParams());
+			}
+		};
+	}
+
+	DataListener<String> keyEvent() {
+		return new DataListener<String>() {
+			@Override
+			public void onData(SocketIOClient client, String data, AckRequest arg2) throws Exception {
+				handler.keyEvent(client.getSessionId().toString(), data, client.getHandshakeData().getUrlParams());
+			}
+		};
+	}
+
 	String handlerClassName() {
 		return this.handler.getClass().getName();
 	}
