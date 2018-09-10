@@ -178,6 +178,13 @@ public class RedisReceiver {
 								String phone = inno72CheckUserPhone1.getPhone();
 								msgUtil.sendPush("push_alarm_common", params, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
 							}
+							//钉钉报警
+							Map<String, String> param = new HashMap<>();
+							param.put("machineCode", machineCode);
+							param.put("localStr", localStr);
+							text = "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。";
+							param.put("text",StringUtil.setText(text,active));
+							msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-RedisReceiver");
 						}
                         //保存接口
                         int lackNum = 0;
