@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,9 +96,11 @@ public class RedisReceiver {
             if(channelGoodsAlarmBean != null){
 				String machineCode = channelGoodsAlarmBean.getMachineCode();
 				Inno72Machine machine = machineService.findByCode(machineCode);
+				log.info("机器信息：{}",JSON.toJSON(machine));
 				if(!setAlarmFlag(machine)){
 					return;
 				}
+				log.info("继续执行掉货异常报警。。。。");
 				int surPlusNum = channelGoodsAlarmBean.getSurPlusNum();
 				List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
 				Map<String, String> param = new HashMap<>();
@@ -314,6 +317,7 @@ public class RedisReceiver {
 				alarmFlag = true;
 			}
 		}
+		log.info("返回报警标记"+alarmFlag);
 		return alarmFlag;
 
 	}
