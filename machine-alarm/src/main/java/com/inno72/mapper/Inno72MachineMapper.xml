@@ -41,7 +41,9 @@
       SELECT
         m.id,
 	    m.open_status AS openStatus,
-	    m.machine_status AS machineStatus
+	    m.machine_status AS machineStatus,
+	    m.monitor_start AS monitorStart,
+	    m.monitor_end AS monitorEnd
       FROM
 	    inno72_machine m
       WHERE

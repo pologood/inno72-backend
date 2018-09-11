@@ -25,6 +25,7 @@ import com.inno72.common.StringUtil;
 import com.inno72.model.AlarmDetailBean;
 import com.inno72.model.AlarmExceptionMachineBean;
 import com.inno72.model.AlarmMachineBean;
+import com.inno72.model.AlarmSendBean;
 import com.inno72.model.Inno72CheckUserPhone;
 import com.inno72.model.Inno72Machine;
 import com.inno72.mongo.MongoUtil;
@@ -181,12 +182,26 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                     param.put("text",StringUtil.setText(text,active));
                     msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-AlarmDetailService");
                     logger.info("心跳异常发送钉钉消息："+groupId);
+					AlarmSendBean alarmSendBean = new AlarmSendBean();
+					alarmSendBean.setId(StringUtil.getUUID());
+					alarmSendBean.setInfo(text);
+					alarmSendBean.setLevel(level);
+					alarmSendBean.setMachineId(bean.getMachineId());
+					alarmSendBean.setMachineCode(machineCode);
+					alarmSendBean.setType(type);
+					if(detailBean != null) {
+						alarmSendBean.setRemark(detailBean.getRemark());
+						alarmSendBean.setPageInfo(detailBean.getPageInfo());
+					}
+					alarmSendBean.setLocaleStr(localeStr);
+					alarmSendBean.setCreateTime(new Date());
+					mongoUtil.save(alarmSendBean,"AlarmSendBean");
                 }else if(type == 2){
                     if(level == 1){
                         if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
                             List<Inno72CheckUserPhone> phones = getInno72CheckUserPhones(machineCode);
                             if(phones != null && phones.size()>0){
-                                text = "【互动管家】您好，"+localeStr+"，"+machineCode+"，网络已经连续10分钟未连接成功，请及时处理";
+                                text = "网络已经连续10分钟未连接成功，请及时处理";
                                 param.put("text",text);
                                 for (Inno72CheckUserPhone userPhone:phones){
                                     msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-AlarmDetailService");
@@ -201,6 +216,20 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 					param.put("text",StringUtil.setText(text,active));
                     msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-AlarmDetailService");
                     logger.info("网络连接异常发送钉钉消息："+groupId);
+					AlarmSendBean alarmSendBean = new AlarmSendBean();
+					alarmSendBean.setId(StringUtil.getUUID());
+					alarmSendBean.setInfo(text);
+					alarmSendBean.setLevel(level);
+					alarmSendBean.setMachineId(bean.getMachineId());
+					alarmSendBean.setMachineCode(machineCode);
+					alarmSendBean.setType(type);
+					if(detailBean != null){
+						alarmSendBean.setRemark(detailBean.getRemark());
+						alarmSendBean.setPageInfo(detailBean.getPageInfo());
+					}
+					alarmSendBean.setLocaleStr(localeStr);
+					alarmSendBean.setCreateTime(new Date());
+					mongoUtil.save(alarmSendBean,"AlarmSendBean");
                 }
                 Query removeQuery = new Query();
                 removeQuery.addCriteria(Criteria.where("_id").is(bean.getId()));
