@@ -17,10 +17,12 @@
 		<result column="device_id" jdbcType="VARCHAR" property="deviceId" />
 		<result column="address" jdbcType="VARCHAR" property="address" />
 		<result column="bluetooth_address" jdbcType="VARCHAR" property="bluetoothAddress" />
+		<result column="open_status" jdbcType="INTEGER" property="openStatus" />
 		<result column="monitor_start" jdbcType="VARCHAR" property="monitorStart" />
 		<result column="monitor_end" jdbcType="VARCHAR" property="monitorEnd" />
-
+		<result column="local_str" jdbcType="VARCHAR" property="localStr" />
 	</resultMap>
+	
 
 	<resultMap id="VoResultMap" type="com.inno72.machine.vo.MachineListVo">
 		<result column="id" jdbcType="VARCHAR" property="id" />
@@ -63,6 +65,17 @@
 		</if>
 		and 9=9
 		order by m.update_time desc 
+
+	</select>
+<select id="findMachineInfoById" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select m.*,
+		CONCAT_WS('-',aa.province,aa.city,aa.district,aa.circle,l.mall,l.name)
+		local_str
+		from inno72_machine m left join inno72_locale l on
+		m.locale_id=l.id
+		left join inno72_admin_area aa on l.area_code=aa.code
+		where m.id=#{machineId}
 
 	</select>
 
