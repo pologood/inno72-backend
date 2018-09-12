@@ -40,6 +40,9 @@ public class Inno72SupplyChannelHistory {
     @Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
     @Column(name = "create_time")
     private LocalDateTime createTime;
+
+    @Column(name = "goods_id")
+    private String goodsId;
     @Transient
     private String machineCode;
 
@@ -120,7 +123,15 @@ public class Inno72SupplyChannelHistory {
         return createTime;
     }
 
-    public void setCreateTime(LocalDateTime createTime) {
+	public String getGoodsId() {
+		return goodsId;
+	}
+
+	public void setGoodsId(String goodsId) {
+		this.goodsId = goodsId;
+	}
+
+	public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 

@@ -421,6 +421,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 					history.setMachineId(supplyChannel.getMachineId());
 					history.setUserId("");
 					history.setCreateTime(now);
+					history.setGoodsId(goodsId);
 					historyList.add(history);
 					supplyChannel.setGoodsCount(supplyChannel.getVolumeCount());
 					supplyChannel.setUpdateTime(LocalDateTime.now());
@@ -498,6 +499,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 						history.setMachineId(supplyChannel.getMachineId());
 						history.setUserId(UserUtil.getUser().getId());
 						history.setCreateTime(now);
+						history.setGoodsId(goodsIdStr);
 						inno72SupplyChannelHistoryMapper.insertSelective(history);
 					}
 				});
