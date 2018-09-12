@@ -135,8 +135,6 @@ public class Inno72CheckUser {
 	@Column(name = "remark")
 	private String remark;
 
-	private String detail;
-
 	/**
 	 * 获取主键
 	 *
@@ -397,14 +395,6 @@ public class Inno72CheckUser {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
-	}
-
-	public String getDetail() {
-		return detail;
-	}
-
-	public void setDetail(String detail) {
-		this.detail = detail;
 	}
 
 }

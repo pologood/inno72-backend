@@ -7,6 +7,8 @@ import com.inno72.project.vo.Inno72MachineVo;
 
 public class Inno72CheckUserVo extends Inno72CheckUser {
 
+	private String detail;
+
 	private String localeName;
 
 	private String machineCode;
@@ -45,6 +47,14 @@ public class Inno72CheckUserVo extends Inno72CheckUser {
 
 	public void setProvince(String province) {
 		this.province = province;
+	}
+
+	public String getDetail() {
+		return detail;
+	}
+
+	public void setDetail(String detail) {
+		this.detail = detail;
 	}
 
 }

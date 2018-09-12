@@ -23,9 +23,11 @@
 		<result column="is_delete" jdbcType="INTEGER" property="isDelete" />
 		<result column="remark" jdbcType="VARCHAR" property="remark" />
 	</resultMap>
+	<resultMap id="BaseVoResultMap" type="com.inno72.check.vo.Inno72CheckUserVo" extends="BaseResultMap">
+	</resultMap>
 
 	<select id="selectCheckUserByPage" parameterType="String"
-		resultMap="BaseResultMap">
+		resultMap="BaseVoResultMap">
 		SELECT
 		u.id,
 		u.name,
