@@ -107,7 +107,7 @@ public class RedisReceiver {
 				param.put("localStr", localStr);
 				if(alarmFlag){
 					if(surPlusNum == 10){
-						if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
+						if (StringUtil.senSmsActive(active)) {
 							text = goodsName + "数量已少于10个，请及时处理。";
 							param.put("text",  text);
 							for(Inno72CheckUserPhone userPhone :inno72CheckUserPhones){
@@ -118,7 +118,7 @@ public class RedisReceiver {
 						param.put("text",StringUtil.setText(text,active));
 						msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-RedisReceiver");
 					}else if(surPlusNum == 5){
-						if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
+						if (StringUtil.senSmsActive(active)) {
 							text = goodsName + "数量已少于5个，请及时处理。";
 							param.put("text", text);
 							for (Inno72CheckUserPhone userPhone : inno72CheckUserPhones) {
@@ -190,73 +190,23 @@ public class RedisReceiver {
                         int lackNum = 0;
 						alarmMsgService.saveAlarmMsg(type, system, machineCode, lackNum, localStr);
 
-                    } else if (updateNum == 5) {
-                        //巡检app接口
-                        Map<String, String> params = new HashMap<>();
-                        params.put("machineCode", machineCode);
-                        params.put("localStr", localStr);
-                        params.put("text", "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。");
-                        log.info("machineDropGoods send msg ，params：{}", params.toString());
-                        //企业微信提醒
-                        List<String> userIdList = new ArrayList<>();
-                        for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-                            userIdList.add(inno72CheckUserPhone1.getUserId());
-                        }
-                        String userIdString = StringUtils.join(userIdList.toArray(), "|");
-                        log.info("userIdString:{}", userIdString);
-                        Map<String, String> m = new HashMap<>();
-                        if(alarmFlag){
-							m.put("touser", userIdString);
-							m.put("agentid", "1000002");
-							msgUtil.sendQyWechatMsg("qywechat_msg", params, m, userIdString, "machineAlarm-RedisReceiver");
-							//巡检提醒
-							for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-								String phone = inno72CheckUserPhone1.getPhone();
-								msgUtil.sendPush("push_alarm_common", params, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
-							}
-						}
-                        //保存接口
-                        int lackNum = 0;
-						alarmMsgService.saveAlarmMsg(type, system, machineCode, lackNum, localStr);
-						if(alarmFlag){
-							//钉钉报警
-							Map<String, String> param = new HashMap<>();
-							param.put("machineCode", machineCode);
-							param.put("localStr", localStr);
-							text = "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。";
-							param.put("text",StringUtil.setText(text,active));
-							msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-RedisReceiver");
-						}
-                    } else if (updateNum > 5 && (updateNum - 5) % 2 == 0) {
-                    	if(alarmFlag){
-							//钉钉报警接口
-							Map<String, String> params = new HashMap<>();
-							params.put("machineCode", machineCode);
-							params.put("localStr", localStr);
-							text = "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。";
-							params.put("text",StringUtil.setText(text,active));
-							msgUtil.sendDDTextByGroup("dingding_alarm_common", params, groupId, "machineAlarm-RedisReceiver");
-						}
-
                     }
                     Inno72SupplyChannel supplyChannel = new Inno72SupplyChannel();
                     supplyChannel.setCode(channelNum);
                     supplyChannel.setIsDelete(1);
                     supplyChannel.setMachineId(machine.getId());
                     supplyChannelService.closeSupply(supplyChannel);
-					if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
-						if(alarmFlag){
-							Map<String, String> params = new HashMap<>();
-							params.put("machineCode", machineCode);
-							params.put("localStr", localStr);
-							text = "掉货异常，货道已经被锁定，请及时处理。";
-							params.put("text",  text);
-							for(Inno72CheckUserPhone userPhone :inno72CheckUserPhones){
-								msgUtil.sendSMS("sms_alarm_common", params, userPhone.getPhone(), "machineAlarm-RedisReceiver");
-							}
+					if(alarmFlag && StringUtil.senSmsActive(active)){
+						Map<String, String> params = new HashMap<>();
+						params.put("machineCode", machineCode);
+						params.put("localStr", localStr);
+						text = "掉货异常，货道已经被锁定，请及时处理。";
+						params.put("text",  text);
+						for(Inno72CheckUserPhone userPhone :inno72CheckUserPhones){
+							msgUtil.sendSMS("sms_alarm_common", params, userPhone.getPhone(), "machineAlarm-RedisReceiver");
 						}
-
 					}
+
                 }
             } else {
                 DropGoodsExceptionInfo dropGoodsExceptionInfo = new DropGoodsExceptionInfo();
