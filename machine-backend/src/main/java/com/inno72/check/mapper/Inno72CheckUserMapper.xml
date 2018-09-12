@@ -1,154 +1,178 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.inno72.check.mapper.Inno72CheckUserMapper">
-  <resultMap id="BaseResultMap" type="com.inno72.check.model.Inno72CheckUser">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="phone" jdbcType="VARCHAR" property="phone" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
-    <result column="enterprise" jdbcType="VARCHAR" property="enterprise" />
-    <result column="sex" jdbcType="INTEGER" property="sex" />
-    <result column="email" jdbcType="VARCHAR" property="email" />
-    <result column="area" jdbcType="VARCHAR" property="area" />
-    <result column="head_image" jdbcType="VARCHAR" property="headImage" />
-    <result column="wechat_user_id" jdbcType="VARCHAR" property="wechatUserId" />
-    <result column="open_id" jdbcType="VARCHAR" property="openId" />
-    <result column="status" jdbcType="INTEGER" property="status" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="create_id" jdbcType="VARCHAR" property="createId" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="update_time" />
-    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
-    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
-     <result column="remark" jdbcType="VARCHAR" property="remark" />
-  </resultMap>
-  
-  <select id="selectCheckUserByPage" parameterType="String" resultMap="BaseResultMap">
+	<resultMap id="BaseResultMap" type="com.inno72.check.model.Inno72CheckUser">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="phone" jdbcType="VARCHAR" property="phone" />
+		<result column="password" jdbcType="VARCHAR" property="password" />
+		<result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+		<result column="enterprise" jdbcType="VARCHAR" property="enterprise" />
+		<result column="sex" jdbcType="INTEGER" property="sex" />
+		<result column="email" jdbcType="VARCHAR" property="email" />
+		<result column="area" jdbcType="VARCHAR" property="area" />
+		<result column="head_image" jdbcType="VARCHAR" property="headImage" />
+		<result column="wechat_user_id" jdbcType="VARCHAR" property="wechatUserId" />
+		<result column="open_id" jdbcType="VARCHAR" property="openId" />
+		<result column="status" jdbcType="INTEGER" property="status" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="create_id" jdbcType="VARCHAR" property="createId" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="update_time" />
+		<result column="update_id" jdbcType="VARCHAR" property="updateId" />
+		<result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+	</resultMap>
+
+	<select id="selectCheckUserByPage" parameterType="String"
+		resultMap="BaseResultMap">
 		SELECT
-			u.id,
-			u.name,
-			u.phone,
-			u.card_no,
-			u.enterprise,
-			u.sex,
-			u.head_image,
-			u.status,
-			a.city as area,
-			u.is_delete
-		from inno72_check_user  u
+		u.id,
+		u.name,
+		u.phone,
+		u.card_no,
+		u.enterprise,
+		u.sex,
+		u.head_image,
+		u.status,
+		a.city as area,
+		u.is_delete
+		from inno72_check_user u
 		LEFT JOIN inno72_admin_area a ON a.code = u.area
-		LEFT JOIN inno72_check_user_machine um on  um.check_user_id = u.id
+		LEFT JOIN inno72_check_user_machine um on um.check_user_id = u.id
 		LEFT JOIN inno72_machine m on m.id=um.machine_id
 		LEFT JOIN inno72_locale l ON l.id=m.locale_id
 		WHERE u.is_delete=0 and 9=9
-		<if test="keyword !=null and keyword !=''">and ( u.name LIKE '%${keyword}%' or u.phone LIKE '%${keyword}%' or u.enterprise LIKE '%${keyword}%' )</if>
+		<if test="keyword !=null and keyword !=''">
+			and ( u.name LIKE '%${keyword}%'
+			or u.phone LIKE '%${keyword}%'
+			or u.enterprise LIKE '%${keyword}%' )
+		</if>
+		GROUP BY u.id
 		ORDER BY u.update_time DESC
-  </select>
-  
-  <select id="checkCardNoIsExist" parameterType="String" resultType="int">
-		SELECT count(1) from inno72_check_user  u WHERE u.is_delete=0 and u.card_no=#{cardNo}
-  </select>
-   <select id="checkPhoneIsExist" parameterType="String" resultType="int">
-		SELECT count(1) from inno72_check_user  u WHERE u.is_delete=0 and u.phone=#{phone}
-  </select>
-  
-  <!-- 人员详情-->
-	  <resultMap id="ResultUserDetailMap" extends="BaseResultMap" type="com.inno72.check.vo.Inno72CheckUserVo">
-	    <association property="machines" resultMap="machinesResult" />
-	  </resultMap>
-	<select id="selectUserDetail" parameterType="String" resultMap="ResultUserDetailMap">
+	</select>
+
+	<select id="checkCardNoIsExist" parameterType="String"
+		resultType="int">
+		SELECT count(1) from inno72_check_user u WHERE
+		u.is_delete=0 and u.card_no=#{cardNo}
+	</select>
+	<select id="checkPhoneIsExist" parameterType="String"
+		resultType="int">
+		SELECT count(1) from inno72_check_user u WHERE
+		u.is_delete=0 and u.phone=#{phone}
+	</select>
+
+	<!-- 人员详情 -->
+	<resultMap id="ResultUserDetailMap" extends="BaseResultMap"
+		type="com.inno72.check.vo.Inno72CheckUserVo">
+		<association property="machines" resultMap="machinesResult" />
+	</resultMap>
+	<select id="selectUserDetail" parameterType="String"
+		resultMap="ResultUserDetailMap">
 		SELECT
-			u.id,
-			u.name,
-			u.phone,
-			u.card_no,
-			u.enterprise,
-			u.area,
-			u.sex,
-			u.head_image,
-			u.is_delete,
-			u.remark,
-			m.id AS machine_id,
-			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL( l.name,""), '—', m.machine_code ) AS machine_code,
-			area.province as machine_province
-		from inno72_check_user  u
-		LEFT JOIN inno72_check_user_machine um ON um.check_user_id = u.id
-		LEFT JOIN inno72_machine m ON m.id = um.machine_id
-		LEFT JOIN inno72_locale l ON l.id = m.locale_id
-		LEFT JOIN inno72_admin_area area ON area.code = l.area_code
-		WHERE u.is_delete=0 
+		u.id,
+		u.name,
+		u.phone,
+		u.card_no,
+		u.enterprise,
+		u.area,
+		u.sex,
+		u.head_image,
+		u.is_delete,
+		u.remark,
+		m.id AS machine_id,
+		CONCAT( area.province, area.city, area.district,
+		if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL(
+		l.name,""), '—', m.machine_code ) AS machine_code,
+		area.province as machine_province
+		from inno72_check_user u
+		LEFT JOIN
+		inno72_check_user_machine um ON um.check_user_id = u.id
+		LEFT JOIN
+		inno72_machine m ON m.id = um.machine_id
+		LEFT JOIN inno72_locale l ON
+		l.id = m.locale_id
+		LEFT JOIN inno72_admin_area area ON area.code =
+		l.area_code
+		WHERE u.is_delete=0
 		AND u.id = #{id}
-  </select>
-  
-  <!-- 联动区域机器列表-->
-  <resultMap id="ResultAreaMachineMap" type="com.inno72.project.vo.Inno72AdminAreaVo">
-    <id column="code" jdbcType="VARCHAR" property="code" />
-    <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="province" jdbcType="VARCHAR" property="province" />
-    <result column="city" jdbcType="VARCHAR" property="city" />
-    <result column="district" jdbcType="VARCHAR" property="district" />
-    <result column="circle" jdbcType="VARCHAR" property="circle" />
-    <result column="level" jdbcType="INTEGER" property="level" />
-    <result column="planed" jdbcType="INTEGER" property="planed" />
-    <association property="machines" resultMap="machinesResult" />
-  </resultMap>
-  
- <resultMap id="machinesResult" type="com.inno72.project.vo.Inno72MachineVo">
-  <result column="machine_id" property="machineId" />
-  <result column="machine_code" property="machineCode"/>
-  <result column="state" property="state"/>
-  <result column="machine_province" property="province"/>
- </resultMap>
-  
-  <select id="selectAreaMachineList" parameterType="java.util.Map" resultMap="ResultAreaMachineMap">
-  		SELECT
-			a.*,
-			m.id AS machine_id,
-			m.machine_code AS machine_code
+	</select>
+
+	<!-- 联动区域机器列表 -->
+	<resultMap id="ResultAreaMachineMap" type="com.inno72.project.vo.Inno72AdminAreaVo">
+		<id column="code" jdbcType="VARCHAR" property="code" />
+		<result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="province" jdbcType="VARCHAR" property="province" />
+		<result column="city" jdbcType="VARCHAR" property="city" />
+		<result column="district" jdbcType="VARCHAR" property="district" />
+		<result column="circle" jdbcType="VARCHAR" property="circle" />
+		<result column="level" jdbcType="INTEGER" property="level" />
+		<result column="planed" jdbcType="INTEGER" property="planed" />
+		<association property="machines" resultMap="machinesResult" />
+	</resultMap>
+
+	<resultMap id="machinesResult" type="com.inno72.project.vo.Inno72MachineVo">
+		<result column="machine_id" property="machineId" />
+		<result column="machine_code" property="machineCode" />
+		<result column="state" property="state" />
+		<result column="machine_province" property="province" />
+	</resultMap>
+
+	<select id="selectAreaMachineList" parameterType="java.util.Map"
+		resultMap="ResultAreaMachineMap">
+		SELECT
+		a.*,
+		m.id AS machine_id,
+		m.machine_code AS machine_code
 		FROM
-			inno72_admin_area a
-			LEFT JOIN (
-				SELECT m.machine_code,	m.id, locale.area_code FROM inno72_machine m
-				LEFT JOIN inno72_locale locale ON locale.id = m.locale_id WHERE m.machine_status ='4'
-			) m ON LEFT ( m.area_code,#{num}) = LEFT ( a.CODE,#{num})
+		inno72_admin_area a
+		LEFT JOIN (
+		SELECT m.machine_code, m.id, locale.area_code FROM inno72_machine m
+		LEFT JOIN inno72_locale locale ON locale.id = m.locale_id WHERE
+		m.machine_status ='4'
+		) m ON LEFT ( m.area_code,#{num}) = LEFT ( a.CODE,#{num})
 		WHERE 1=1
 		<if test="code !=null and code !='' ">and a.parent_code = #{code}  </if>
 		<if test="level !=null and level !='' ">and a.LEVEL = #{level}  </if>
-  </select>
-  <select id="selectMachineList" parameterType="java.util.Map" resultMap="ResultAreaMachineMap">
-  		SELECT
-			m.id AS CODE,
-			'' AS parent_code,
-			CONCAT(  area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( locale.mall,""),IFNULL( locale.name,""), '—', m.machine_code ) AS NAME,
-			area.province,
-			area.city,
-			area.district,
-			area.circle,
-			'5' AS LEVEL
+	</select>
+	<select id="selectMachineList" parameterType="java.util.Map"
+		resultMap="ResultAreaMachineMap">
+		SELECT
+		m.id AS CODE,
+		'' AS parent_code,
+		CONCAT( area.province, area.city, area.district,
+		if(area.circle='其他','',area.circle),IFNULL( locale.mall,""),IFNULL(
+		locale.name,""), '—', m.machine_code ) AS NAME,
+		area.province,
+		area.city,
+		area.district,
+		area.circle,
+		'5' AS LEVEL
 		FROM
-			inno72_machine m
-			LEFT JOIN inno72_locale locale ON m.locale_id = locale.id
-			LEFT JOIN inno72_admin_area area ON area.CODE = locale.area_code
-		WHERE m.machine_status ='4'
+		inno72_machine m
+		LEFT JOIN inno72_locale locale ON m.locale_id = locale.id
+		LEFT JOIN inno72_admin_area area ON area.CODE = locale.area_code
+		WHERE
+		m.machine_status ='4'
 		and LEFT(locale.area_code,#{num}) =#{code}
-  </select>
+	</select>
 
 	<select id="selectPhoneByMachineCode" parameterType="String"
-			resultType="com.inno72.check.model.Inno72CheckUserPhone">
+		resultType="com.inno72.check.model.Inno72CheckUserPhone">
 		SELECT
-		 icu.phone,
-		 im.machine_code as machineCode
+		icu.phone,
+		im.machine_code as machineCode
 		FROM
 		inno72_machine im
-		LEFT JOIN inno72_check_user_machine cum ON im.id = cum.machine_id
-		LEFT JOIN inno72_check_user icu ON cum.check_user_id = icu.id
-	WHERE
+		LEFT JOIN
+		inno72_check_user_machine cum ON im.id = cum.machine_id
+		LEFT JOIN
+		inno72_check_user icu ON cum.check_user_id = icu.id
+		WHERE
 		im.machine_code = #{machineCode}
-  </select>
+	</select>
 
 
 </mapper>
