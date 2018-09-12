@@ -1,6 +1,7 @@
 package com.inno72.system.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.inno72.common.Result;
 import com.inno72.common.ResultPages;
+import com.inno72.common.Results;
 import com.inno72.system.model.Inno72User;
 import com.inno72.system.model.Inno72UserRole;
 import com.inno72.system.service.UserService;
@@ -42,4 +44,22 @@ public class UserController {
 	public Result<List<Inno72UserRole>> queryUserRoles(@RequestParam() String userId) {
 		return userService.queryUserRoles(userId);
 	}
+
+	@RequestMapping(value = "/updateStatus", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> updateStatus(@RequestParam String id, Integer status) {
+		try {
+			return userService.updateStatus(id, status);
+		} catch (Exception e) {
+			return Results.failure("操作失败");
+		}
+	}
+
+	@RequestMapping(value = "/queryUserAuth", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<Map<String, Object>> queryUserAuth(@RequestParam() String userId) {
+
+		Map<String, Object> map = userService.queryUserAuth(userId);
+
+		return Results.success(map);
+	}
+
 }

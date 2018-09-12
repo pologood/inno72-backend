@@ -11,7 +11,7 @@ import com.inno72.common.Mapper;
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72CheckFaultMapper extends Mapper<Inno72CheckFault> {
 
-	List<Inno72CheckFault> selectByPage(Map<String, Object> params);
+	List<Inno72CheckFault> selectCheckFaultByPage(Map<String, Object> params);
 
 	Inno72CheckFaultVo selectFaultDetail(Map<String, Object> params);
 

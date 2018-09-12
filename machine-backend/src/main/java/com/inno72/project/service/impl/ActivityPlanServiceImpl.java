@@ -645,6 +645,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			params.put("code", likeCode);
 			params.put("num", num);
 		}
+
 		return inno72ActivityPlanMapper.selectPlanList(params);
 	}
 

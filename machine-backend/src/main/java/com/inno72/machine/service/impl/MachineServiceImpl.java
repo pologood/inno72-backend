@@ -96,7 +96,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	private StringRedisTemplate stringRedisTemplate;
 
 	@Override
-	public Result<List<Inno72Machine>> findMachines(String machineCode, String localCode) {
+	public Result<List<MachineListVo>> findMachines(String machineCode, String localCode) {
 		Map<String, Object> param = new HashMap<>();
 		if (StringUtil.isNotEmpty(localCode)) {
 			int num = StringUtil.getAreaCodeNum(localCode);
@@ -107,7 +107,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		machineCode = Optional.ofNullable(machineCode).map(a -> a.replace("'", "")).orElse(machineCode);
 		param.put("machineCode", machineCode);
 
-		List<Inno72Machine> machines = inno72MachineMapper.selectMachinesByPage(param);
+		List<MachineListVo> machines = inno72MachineMapper.selectMachinesByPage(param);
 		return Results.success(machines);
 	}
 
@@ -281,10 +281,12 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			MachineAppStatus machineAppStatus = ms.get(0);
 			for (AppStatus status : machineAppStatus.getStatus()) {
 				Inno72App app = appService.findBy("appPackageName", status.getAppPackageName());
-				status.setAppType(app.getAppType());
-				if (status.getVersionCode() == -1) {
-					if (app != null) {
-						status.setAppName(app.getAppName());
+				if (app != null) {
+					status.setAppType(app.getAppType());
+					if (status.getVersionCode() == -1) {
+						if (app != null) {
+							status.setAppName(app.getAppName());
+						}
 					}
 				}
 			}
@@ -538,22 +540,29 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			logger.info("登陆用户为空");
 			return Results.failure("未找到用户登录信息");
 		}
-		String machineId = Optional.ofNullable(vo).map(a -> a.getMachineId()).orElse("");
-		String localId = Optional.ofNullable(vo).map(a -> a.getMachineId()).orElse("");
-		String monitorStart = Optional.ofNullable(vo).map(a -> a.getMonitorStart()).orElse("");
-		String monitorEnd = Optional.ofNullable(vo).map(a -> a.getMonitorEnd()).orElse("");
-		Inno72Machine machine = findById(machineId);
+		Inno72Machine machine = findById(vo.getMachineId());
 		if (machine == null) {
 			return Results.failure("机器id传入错误");
 		}
+		if (machine.getMachineStatus() < 2) {
+			return Results.failure("机器没有初始化不能修改机器信息");
+		}
+		String machineId = Optional.ofNullable(vo).map(a -> a.getMachineId()).orElse("");
+		String localId = Optional.ofNullable(vo).map(a -> a.getLocaleId()).orElse("");
+		String monitorStart = Optional.ofNullable(vo).map(a -> a.getMonitorStart()).orElse("");
+		String monitorEnd = Optional.ofNullable(vo).map(a -> a.getMonitorEnd()).orElse("");
 		machine.setLocaleId(localId);
 		machine.setMonitorStart(monitorStart);
 		machine.setMonitorEnd(monitorEnd);
 		machine.setUpdateId(mUser.getId());
+		machine.setOpenStatus(vo.getOpenStatus());
 		machine.setUpdateTime(LocalDateTime.now());
+		machine.setId(machineId);
+		machine.setMachineStatus(4);
+		machine.setUpdateId(mUser.getId());
 		int result = inno72MachineMapper.updateByPrimaryKeySelective(machine);
 		if (result != 1) {
-			return Results.failure("修改点位失败");
+			return Results.failure("修改机器失败");
 		}
 		return Results.success();
 	}
@@ -592,6 +601,15 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		msg.setMachineId(machine.getMachineCode());
 		msg.setData(machineCode);
 		return sendMsg(machine.getMachineCode(), msg);
+	}
+
+	@Override
+	public Result<Inno72Machine> findMachineInfoById(String machineId) {
+		Inno72Machine machine = inno72MachineMapper.findMachineInfoById(machineId);
+		if (machine == null) {
+			return Results.failure("机器id传入错误");
+		}
+		return Results.success(machine);
 	}
 
 	@Override

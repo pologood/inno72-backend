@@ -21,6 +21,7 @@ public class DateUtil {
 	public static final DateTimeFormatter DF_ONLY_YMD_S2 = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
 	public static final DateTimeFormatter DF_FULL_S1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	public static final DateTimeFormatter DF_FULL_S2 = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+    public static final SimpleDateFormat DF_ONLY_YMDHM = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public static LocalDate toDate(String str, DateTimeFormatter dateTimeFormatter) {
 		try {
@@ -52,6 +53,23 @@ public class DateUtil {
 
 	public static String nowStr(){
 		return toTimeStr(LocalDateTime.now(),DF_FULL_S1);
+	}
+
+	public static long subTime(Date date1,Date date2,int type){
+		long time1 = date1.getTime();
+		long time2 = date2.getTime();
+		long time = time1-time2;
+		long sub = 0l;
+		if(type == 1){//间隔秒数
+			sub = time/1000;
+		}else if(type == 2){//间隔分数
+			sub = time/(1000*60);
+		}else if(type == 3){//间隔小时
+			sub = time/(1000*60*60);
+		}else if(type == 4){//间隔天数
+			sub = time/(1000*60*60*24);
+		}
+		return sub;
 	}
 
 }

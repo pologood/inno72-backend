@@ -166,7 +166,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		}
 		params.put("keyword", keyword);
 
-		List<Inno72LocaleVo> list = inno72LocaleMapper.selectByPage(params);
+		List<Inno72LocaleVo> list = inno72LocaleMapper.selectLocaleByPage(params);
 
 		return list;
 	}
@@ -184,7 +184,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		}
 		params.put("keyword", keyword);
 
-		return inno72LocaleMapper.selectByList(params);
+		return inno72LocaleMapper.selectLocaleByList(params);
 	}
 
 }

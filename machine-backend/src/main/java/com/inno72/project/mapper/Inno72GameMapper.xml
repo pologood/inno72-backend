@@ -18,8 +18,10 @@
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
+  <resultMap id="BaseVoResultMap" type="com.inno72.project.vo.Inno72GameVo" extends="BaseResultMap">
   
-  <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+  </resultMap>
+  <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseVoResultMap">
 		SELECT 
 			g.id,
 			g.name,

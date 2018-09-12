@@ -1,7 +1,10 @@
 package com.inno72.service;
 
-import com.inno72.model.SocketAction;
+import com.inno72.model.SystemStatus;
 
 public interface SocketService {
-	public void manageSocket(SocketAction action, String machineCode, String sessionId);
+
+	void updateNetStatus(SystemStatus systemStatus);
+
+	void recordHeart(String machineCode);
 }

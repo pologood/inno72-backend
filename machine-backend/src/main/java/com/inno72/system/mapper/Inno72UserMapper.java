@@ -3,6 +3,8 @@ package com.inno72.system.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.inno72.common.Mapper;
 import com.inno72.system.model.Inno72User;
 
@@ -10,4 +12,6 @@ import com.inno72.system.model.Inno72User;
 public interface Inno72UserMapper extends Mapper<Inno72User> {
 
 	List<Inno72User> selectUsersByPage(Map<String, Object> param);
+
+	List<Map<String, Object>> selectUserFunction(@Param("userId") String userId);
 }

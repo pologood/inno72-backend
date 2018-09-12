@@ -47,7 +47,7 @@
 			<groupId>com.inno72</groupId>
 			<artifactId>inno72-http</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-		</dependency> 
+		</dependency>
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.system.mapper.Inno72UserFunctionAreaMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.system.model.Inno72UserFunctionArea">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="district" jdbcType="VARCHAR" property="district" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  
+  
+  <insert id="insertUserFunctionAreaList" parameterType="java.util.List">
+       insert into inno72_user_function_area (id, user_id,code,name,province,city,district,level,create_id,create_time) values
+       <foreach collection="list" item="m" index="index" separator=",">
+            (#{m.id},#{m.userId},#{m.code},#{m.name},#{m.province},#{m.city},#{m.district},#{m.level},#{m.createId},#{m.createTime})
+       </foreach>
+  </insert>
+</mapper>

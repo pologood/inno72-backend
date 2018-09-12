@@ -26,6 +26,7 @@ import com.inno72.project.mapper.Inno72GameMapper;
 import com.inno72.project.model.Inno72Game;
 import com.inno72.project.model.Inno72Goods;
 import com.inno72.project.service.GameService;
+import com.inno72.project.vo.Inno72GameVo;
 import com.inno72.system.model.Inno72User;
 
 import tk.mybatis.mapper.entity.Condition;
@@ -147,7 +148,7 @@ public class GameServiceImpl extends AbstractService<Inno72Game> implements Game
 	}
 
 	@Override
-	public List<Inno72Game> findByPage(String code, String keyword) {
+	public List<Inno72GameVo> findByPage(String code, String keyword) {
 		logger.info("----------------游戏分页列表--------------");
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		Map<String, Object> params = new HashMap<String, Object>();

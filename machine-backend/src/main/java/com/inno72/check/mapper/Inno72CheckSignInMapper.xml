@@ -22,7 +22,7 @@
      <result column="localeName" jdbcType="VARCHAR" property="localeName" />
   </resultMap>
   
-  <select id="selectByPage" parameterType="java.util.Map" resultMap="SignInResultMap">
+  <select id="selectSignInByPage" parameterType="java.util.Map" resultMap="SignInResultMap">
 		SELECT
 			sin.id,
 			u.NAME,
@@ -48,9 +48,10 @@
 			<if test="startTime !=null and startTime !='' ">
 			<![CDATA[ and ( sin.create_time  BETWEEN #{startTime} AND #{endTime} ) ]]>
 			</if>
+			and 9=9
 			ORDER BY sin.create_time DESC
   </select>
-  <select id="selectExportList" parameterType="java.util.Map" resultMap="SignInResultMap">
+  <select id="selectSignInExportList" parameterType="java.util.Map" resultMap="SignInResultMap">
 		SELECT
 			sin.id,
 			u.NAME,
@@ -76,6 +77,7 @@
 			<if test="startTime !=null and startTime !='' ">
 			<![CDATA[ and ( sin.create_time  BETWEEN #{startTime} AND #{endTime} ) ]]>
 			</if>
+			and 9=9
 			ORDER BY sin.create_time DESC
   </select>
   

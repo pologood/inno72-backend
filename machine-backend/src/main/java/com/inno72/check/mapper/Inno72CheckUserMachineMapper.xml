@@ -21,7 +21,6 @@
             (#{um.id},#{um.checkUserId},#{um.machineId})
         </foreach>
    </insert>
-   
    <select id="selectUserMachinDetailList" parameterType="String" resultType="java.util.Map">
 		 SELECT
 			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL( l.name,""),IFNULL( m.address,"")  ) AS machineLocale,
@@ -30,7 +29,7 @@
 			LEFT JOIN inno72_check_user_machine um ON um.machine_id=m.id
 			LEFT JOIN inno72_locale l ON l.id = m.locale_id
 			LEFT JOIN inno72_admin_area area ON area.code = l.area_code
-			WHERE um.check_user_id  = #{userId}
+			WHERE um.check_user_id  = #{userId} and 9=9
   	</select>
   
 </mapper>

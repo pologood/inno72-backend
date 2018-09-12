@@ -49,7 +49,7 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
 		}
 		params.put("keyword", keyword);
 
-		return inno72CheckSignInMapper.selectByPage(params);
+		return inno72CheckSignInMapper.selectSignInByPage(params);
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
 			params.put("endTime", endTime + " 23:59:59");
 		}
 		params.put("keyword", keyword);
-		List<Inno72CheckUserVo> list = inno72CheckSignInMapper.selectExportList(params);
+		List<Inno72CheckUserVo> list = inno72CheckSignInMapper.selectSignInExportList(params);
 		int size = list.size();
 		if (list != null && size > 0) {
 			ExportExcel<Inno72CheckUserVo> ee = new ExportExcel<Inno72CheckUserVo>();

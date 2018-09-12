@@ -46,6 +46,9 @@
 				LEFT JOIN  inno72_machine m ON m.id = apm.machine_id
 				LEFT JOIN inno72_locale locale ON locale.id = m.locale_id
 				where LEFT(locale.area_code,#{num}) = #{code}
+				
+				and 9=9
+				
 				GROUP BY apm.activity_plan_id
 			) m ON m.activity_plan_id = ap.id
 		WHERE   1=1

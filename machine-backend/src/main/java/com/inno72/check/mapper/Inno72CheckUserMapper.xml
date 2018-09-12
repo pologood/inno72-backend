@@ -26,7 +26,7 @@
      <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
   
-  <select id="selectByPage" parameterType="String" resultMap="BaseResultMap">
+  <select id="selectCheckUserByPage" parameterType="String" resultMap="BaseResultMap">
 		SELECT
 			u.id,
 			u.name,
@@ -40,7 +40,10 @@
 			u.is_delete
 		from inno72_check_user  u
 		LEFT JOIN inno72_admin_area a ON a.code = u.area
-		WHERE u.is_delete=0 
+		LEFT JOIN inno72_check_user_machine um on  um.check_user_id = u.id
+		LEFT JOIN inno72_machine m on m.id=um.machine_id
+		LEFT JOIN inno72_locale l ON l.id=m.locale_id
+		WHERE u.is_delete=0 and 9=9
 		<if test="keyword !=null and keyword !=''">and ( u.name LIKE '%${keyword}%' or u.phone LIKE '%${keyword}%' or u.enterprise LIKE '%${keyword}%' )</if>
 		ORDER BY u.update_time DESC
   </select>

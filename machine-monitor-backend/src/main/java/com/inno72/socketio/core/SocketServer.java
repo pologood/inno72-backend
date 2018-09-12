@@ -51,11 +51,7 @@ public class SocketServer {
 		server.addDisconnectListener(listener.disconnect());
 		server.addEventListener("message", String.class, listener.message());
 		server.addEventListener("monitor", String.class, listener.monitor());
-		// server.addEventListener("taskInfo", String.class,
-		// listener.taskInfo());
 		server.addEventListener("remote", byte[].class, listener.remote());
-		// deviceId message
-		// server.addEventListener("deviceIdMsg", String.class, listener.msg());
 
 		server.start();
 		Thread shutdownHookOne = new Thread() {

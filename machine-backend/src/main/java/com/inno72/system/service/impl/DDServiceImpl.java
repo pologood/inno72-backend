@@ -2,8 +2,12 @@ package com.inno72.system.service.impl;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +29,14 @@ import com.inno72.plugin.http.HttpClient;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.system.encrypt.DingTalkEncryptException;
 import com.inno72.system.encrypt.DingTalkEncryptor;
+import com.inno72.system.mapper.Inno72FunctionMapper;
+import com.inno72.system.mapper.Inno72UserFunctionAreaMapper;
+import com.inno72.system.mapper.Inno72UserMapper;
 import com.inno72.system.model.Inno72Dept;
 import com.inno72.system.model.Inno72Function;
 import com.inno72.system.model.Inno72User;
 import com.inno72.system.model.Inno72UserDept;
+import com.inno72.system.model.Inno72UserFunctionArea;
 import com.inno72.system.service.DDService;
 import com.inno72.system.service.DeptService;
 import com.inno72.system.service.FunctionService;
@@ -53,6 +61,13 @@ public class DDServiceImpl implements DDService {
 	private IRedisUtil redisUtil;
 	@Autowired
 	private MachineBackendProperties machineBackendProperties;
+
+	@Resource
+	private Inno72FunctionMapper inno72FunctionMapper;
+	@Resource
+	private Inno72UserMapper inno72UserMapper;
+	@Resource
+	private Inno72UserFunctionAreaMapper inno72UserFunctionAreaMapper;
 	// 需要写在配置中心
 	// String appid = "dingoa25um8bzdtan7hjgw";
 	// String appsecret =
@@ -213,10 +228,53 @@ public class DDServiceImpl implements DDService {
 			if (user == null) {
 				return Results.failure("未找到用户");
 			}
+			if (user.getIsDelete() != 0) {
+				return Results.failure("用户已停用或删除");
+			}
 			// List<Inno72Function> functions = functionService.findAll();
 			List<Inno72Function> functions = functionService.findFunctionsByUserId(user.getId());
+			// 处理半选
+			List<Inno72Function> functionParent = new ArrayList<Inno72Function>();
+
+			Inno72Function temp = new Inno72Function();
+			for (Inno72Function inno72Function : functions) {
+				if (3 == inno72Function.getFunctionLevel()) {
+					String parentId = inno72Function.getParentId();
+					// 判断父级ID是否存在(二级)
+					temp.setId(parentId);
+					if (!functions.contains(temp) && !functionParent.contains(temp)) {
+						Inno72Function f2 = inno72FunctionMapper.selectByPrimaryKey(parentId);
+						functionParent.add(f2);
+						temp.setId(f2.getParentId());
+						if (!functions.contains(temp) && !functionParent.contains(temp)) {
+							Inno72Function f1 = inno72FunctionMapper.selectByPrimaryKey(f2.getParentId());
+							functionParent.add(f1);
+						}
+					}
+				}
+				if (2 == inno72Function.getFunctionLevel()) {
+					String parentId = inno72Function.getParentId();
+					// 判断父级ID是否存在(二级)
+					temp.setId(parentId);
+					if (!functions.contains(temp) && !functionParent.contains(temp)) {
+						Inno72Function f1 = inno72FunctionMapper.selectByPrimaryKey(parentId);
+						functionParent.add(f1);
+					}
+				}
+			}
+			functions.addAll(functionParent);
+			Collections.sort(functions);
+			// 获取地区权限
+			Condition condition = new Condition(Inno72UserFunctionArea.class);
+			condition.createCriteria().andEqualTo("userId", user.getId());
+			List<Inno72UserFunctionArea> userFunctionArea = inno72UserFunctionAreaMapper.selectByCondition(condition);
+			for (Inno72UserFunctionArea inno72UserFunctionArea : userFunctionArea) {
+				int num = StringUtil.getAreaCodeNum(inno72UserFunctionArea.getCode());
+				inno72UserFunctionArea.setLevel(num);
+			}
+
 			String token = StringUtil.getUUID();
-			SessionData sessionData = new SessionData(token, user, functions);
+			SessionData sessionData = new SessionData(token, user, functions, userFunctionArea);
 			// 获取用户token使用
 			String userTokenKey = CommonConstants.USER_LOGIN_TOKEN_CACHE_KEY_PREF + user.getId();
 			// 获取用户之前登录的token
@@ -464,11 +522,50 @@ public class DDServiceImpl implements DDService {
 			return Results.failure("登录失败");
 		}
 		Inno72User user = users.get(0);
-		List<Inno72Function> functions = functionService.findAll();
-		// List<Inno72Function> functions =
-		// functionService.findFunctionsByUserId(user.getId());
+		// List<Inno72Function> functions = functionService.findAll();
+		List<Inno72Function> functions = functionService.findFunctionsByUserId(user.getId());
+		// 处理半选
+		List<Inno72Function> functionParent = new ArrayList<Inno72Function>();
+
+		Inno72Function temp = new Inno72Function();
+		for (Inno72Function inno72Function : functions) {
+			if (3 == inno72Function.getFunctionLevel()) {
+				String parentId = inno72Function.getParentId();
+				// 判断父级ID是否存在(二级)
+				temp.setId(parentId);
+				if (!functions.contains(temp) && !functionParent.contains(temp)) {
+					Inno72Function f2 = inno72FunctionMapper.selectByPrimaryKey(parentId);
+					functionParent.add(f2);
+					temp.setId(f2.getParentId());
+					if (!functions.contains(temp) && !functionParent.contains(temp)) {
+						Inno72Function f1 = inno72FunctionMapper.selectByPrimaryKey(f2.getParentId());
+						functionParent.add(f1);
+					}
+				}
+			}
+			if (2 == inno72Function.getFunctionLevel()) {
+				String parentId = inno72Function.getParentId();
+				// 判断父级ID是否存在(二级)
+				temp.setId(parentId);
+				if (!functions.contains(temp) && !functionParent.contains(temp)) {
+					Inno72Function f1 = inno72FunctionMapper.selectByPrimaryKey(parentId);
+					functionParent.add(f1);
+				}
+			}
+		}
+		functions.addAll(functionParent);
+		Collections.sort(functions);
+		// 获取地区权限
+		Condition condition1 = new Condition(Inno72UserFunctionArea.class);
+		condition1.createCriteria().andEqualTo("userId", user.getId());
+		List<Inno72UserFunctionArea> userFunctionArea = inno72UserFunctionAreaMapper.selectByCondition(condition1);
+		for (Inno72UserFunctionArea inno72UserFunctionArea : userFunctionArea) {
+			int num = StringUtil.getAreaCodeNum(inno72UserFunctionArea.getCode());
+			inno72UserFunctionArea.setLevel(num);
+		}
+
 		String token = StringUtil.getUUID();
-		SessionData sessionData = new SessionData(token, user, functions);
+		SessionData sessionData = new SessionData(token, user, functions, userFunctionArea);
 		// 获取用户token使用
 		String userTokenKey = CommonConstants.USER_LOGIN_TOKEN_CACHE_KEY_PREF + user.getId();
 		// 获取用户之前登录的token

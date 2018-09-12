@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.system.mapper.Inno72UserFunctionDataMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.system.model.Inno72UserFunctionData">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="function_id" jdbcType="VARCHAR" property="functionId" />
+    <result column="vo_name" jdbcType="VARCHAR" property="voName" />
+    <result column="vo_column" jdbcType="VARCHAR" property="voColumn" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    
+    <result column="function_level" jdbcType="TIMESTAMP" property="functionLevel" />
+    <result column="function_depict" jdbcType="VARCHAR" property="functionDepict" />
+  </resultMap>
+  
+  
+  <insert id="insertUserFunctionDataList" parameterType="java.util.List">
+        insert into inno72_user_function_data (id, user_id,function_id,vo_name,vo_column,create_id,create_time)
+        values
+        <foreach collection="list" item="m" index="index" separator=",">
+            (#{m.id},#{m.userId},#{m.functionId},#{m.voName},#{m.voColumn},#{m.createId},#{m.createTime})
+        </foreach>
+    </insert>
+    <select id="selectUserFunctionDataList" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			ufd.id,
+			ufd.function_id,
+			ufd.vo_name,
+			ufd.vo_column,
+			CONCAT(f1.function_depict,'-',f2.function_depict,'-',fd.function_depict ) AS function_depict,
+			3 AS function_level
+		FROM
+			inno72_user_function_data ufd
+			LEFT JOIN inno72_function_data fd ON fd.id = ufd.function_id
+			LEFT JOIN inno72_function f2 ON f2.id = fd.parent_id
+			LEFT JOIN inno72_function f1 ON f1.id = f2.parent_id
+			where ufd.user_id =#{userId}
+ 	 </select>
+ 	 
+ 	 <select id="selectFunctionDataByParentId" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			fd.id AS function_id,
+			fd.vo_name,
+			fd.vo_column,
+			CONCAT(f1.function_depict,'-',f2.function_depict,'-',fd.function_depict ) AS function_depict,
+			3 AS function_level
+		FROM
+			inno72_function_data fd
+			LEFT JOIN inno72_function f2 ON f2.id = fd.parent_id
+			LEFT JOIN inno72_function f1 ON f1.id = f2.parent_id
+			where fd.parent_id =#{functionId}
+ 	 </select>
+     
+    
+</mapper>

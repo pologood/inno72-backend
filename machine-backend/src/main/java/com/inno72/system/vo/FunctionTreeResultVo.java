@@ -24,7 +24,16 @@ public class FunctionTreeResultVo {
 
 	public static class FunctionTreeVo {
 		private String title;
+
+		private String selectName;
+
 		private String id;
+
+		private Integer level;
+
+		private String voName;
+
+		private String voColumn;
 		private List<FunctionTreeVo> children;
 
 		public String getTitle() {
@@ -49,6 +58,38 @@ public class FunctionTreeResultVo {
 
 		public void setChildren(List<FunctionTreeVo> children) {
 			this.children = children;
+		}
+
+		public String getVoName() {
+			return voName;
+		}
+
+		public void setVoName(String voName) {
+			this.voName = voName;
+		}
+
+		public String getVoColumn() {
+			return voColumn;
+		}
+
+		public void setVoColumn(String voColumn) {
+			this.voColumn = voColumn;
+		}
+
+		public Integer getLevel() {
+			return level;
+		}
+
+		public void setLevel(Integer level) {
+			this.level = level;
+		}
+
+		public String getSelectName() {
+			return selectName;
+		}
+
+		public void setSelectName(String selectName) {
+			this.selectName = selectName;
 		}
 
 	}

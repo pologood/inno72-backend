@@ -1,6 +1,7 @@
 package com.inno72.system.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.inno72.common.Result;
 import com.inno72.common.Service;
@@ -19,5 +20,9 @@ public interface UserService extends Service<Inno72User> {
 	Result<String> auth(String userId, String roleIds);
 
 	Result<List<Inno72UserRole>> queryUserRoles(String userId);
+
+	Result<String> updateStatus(String id, Integer status);
+
+	Map<String, Object> queryUserAuth(String userId);
 
 }

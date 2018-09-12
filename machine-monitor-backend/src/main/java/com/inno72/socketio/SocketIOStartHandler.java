@@ -6,8 +6,6 @@ import static com.inno72.model.MessageBean.SubEventType.MACHINESTATUS;
 import static com.inno72.model.MessageBean.SubEventType.SCREENSHOT;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,19 +26,16 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.inno72.common.CommonConstants;
-import com.inno72.common.MachineMonitorBackendProperties;
 import com.inno72.common.StringUtil;
 import com.inno72.model.AlarmMessageBean;
 import com.inno72.model.Inno72AppScreenShot;
 import com.inno72.model.MachineAppStatus;
-import com.inno72.model.MachineLogInfo;
 import com.inno72.model.MachineStatus;
 import com.inno72.model.MessageBean;
 import com.inno72.model.SystemStatus;
-import com.inno72.oss.OSSUtil;
-import com.inno72.plugin.http.HttpClient;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.service.AppScreenShotService;
+import com.inno72.service.SocketService;
 import com.inno72.socketio.core.SocketServer;
 import com.inno72.socketio.core.SocketServerHandler;
 import com.inno72.util.AesUtils;
@@ -58,10 +53,9 @@ public class SocketIOStartHandler {
 
 	@Autowired
 	private AppScreenShotService appScreenShotService;
-	private static int i = 0;
 
-	@Resource
-	private MachineMonitorBackendProperties machineMonitorBackendProperties;
+	@Autowired
+	private SocketService socketService;
 
 	private SocketServerHandler socketServerHandler() {
 
@@ -136,44 +130,14 @@ public class SocketIOStartHandler {
 				String message = AesUtils.decrypt(GZIPUtil.uncompress(data));
 				SystemStatus systemStatus = JSONObject.parseObject(message, SystemStatus.class);
 				systemStatus.setCreateTime(LocalDateTime.now());
+				systemStatus.setMachineId(machineId);
 				Query querySystemStatus = new Query();
 				querySystemStatus.addCriteria(Criteria.where("machineId").is(machineId));
 				mongoTpl.remove(querySystemStatus, "SystemStatus");
 				mongoTpl.save(systemStatus, "SystemStatus");
 				log.info("收到推送监控消息，sessionId:{},machineId：{}机器的系统信息已保存,消息内容：{}", key, machineId, message);
-				// 将当前时间与机器Id维护到机器日志表中
-				MachineLogInfo machineLogInfo = new MachineLogInfo();
-				machineLogInfo.setMachineId(machineId);
-				machineLogInfo.setCreateTime(LocalDateTime.now());
-				Query query = new Query();
-				query.addCriteria(Criteria.where("machineId").is(machineId));
-				mongoTpl.remove(query, "MachineLogInfo");
-				mongoTpl.save(machineLogInfo, "MachineLogInfo");
-				try {
-					String ping = systemStatus.getPing();
-					int pingInt = Integer.parseInt(ping.replace("ms", ""));
-					Map<String, Object> map = new HashMap<>();
-					map.put("machineCode", machineId);
-					if (pingInt <= 100) {
-						map.put("netStatus", 4);
-					} else if (pingInt > 100 && pingInt <= 300) {
-						map.put("netStatus", 3);
-					} else if (pingInt > 300 && pingInt <= 500) {
-						map.put("netStatus", 2);
-					} else if (pingInt > 500 && pingInt <= 1000) {
-						map.put("netStatus", 1);
-					} else {
-						map.put("netStatus", 0);
-					}
-					List<Map<String, Object>> list = new ArrayList<>();
-					list.add(map);
-					System.out.println(JSON.toJSONString(machineMonitorBackendProperties));
-					String urlProp = machineMonitorBackendProperties.getProps().get("updateMachineListNetStatusUrl");
-					HttpClient.post(urlProp, JSON.toJSONString(list));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
+				socketService.updateNetStatus(systemStatus);
+				socketService.recordHeart(machineId);
 			}
 
 			@Override
@@ -181,35 +145,17 @@ public class SocketIOStartHandler {
 				String machineId = Optional.ofNullable(data.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
 						.orElse("");
 				log.info("socket连接到服务器，机器machineId:{}", machineId);
-				if (!StringUtils.isEmpty(machineId)) {
-					String machinKey = CommonConstants.REDIS_BASE_PATH + machineId;
-					redisUtil.set(machinKey, sessionId);
-				}
 			}
 
 			@Override
 			public void closeNotify(String key, Map<String, List<String>> data) {
 				String machineId = Optional.ofNullable(data.get(CommonConstants.MACHINE_ID)).map(a -> a.get(0))
 						.orElse("");
-				if (!StringUtils.isEmpty(machineId)) {
-					log.info("断开连接，机器machineId:{}", machineId);
-					// 暂时不删除
-					// redisUtil.del(machinKey);
-				}
-				log.info("socket 断开了");
-			}
-
-			@Override
-			public String taskInfo(String key, String data, Map<String, List<String>> params) {
-				// TODO Auto-generated method stub
-				return null;
+				log.info("断开连接，机器machineId:{}", machineId);
 			}
 
 			@Override
 			public void remoteResponse(String string, byte[] data, Map<String, List<String>> urlParams) {
-				// InputStream sbs = new ByteArrayInputStream(data);
-				OSSUtil.uploadImgByBytes(data, "remote/" + i++ + ".jpg");
-				System.out.println("=========================");
 			}
 
 		};

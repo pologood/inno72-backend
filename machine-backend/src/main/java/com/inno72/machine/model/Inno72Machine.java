@@ -7,6 +7,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
 @Table(name = "inno72_machine")
 public class Inno72Machine {
@@ -53,12 +57,14 @@ public class Inno72Machine {
 	/**
 	 * 创建时间
 	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
 	@Column(name = "create_time")
 	private LocalDateTime createTime;
 
 	/**
 	 * 更新时间
 	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
 	@Column(name = "update_time")
 	private LocalDateTime updateTime;
 
@@ -85,11 +91,17 @@ public class Inno72Machine {
 	@Column(name = "bluetooth_address")
 	private String bluetoothAddress;
 
+	@Column(name = "open_status")
+	private Integer openStatus;
+
 	@Column(name = "monitor_start")
 	private String monitorStart;
 
 	@Column(name = "monitor_end")
 	private String monitorEnd;
+
+	@Transient
+	private String localStr;
 
 	public enum Machine_Status {
 		// 开机
@@ -354,6 +366,22 @@ public class Inno72Machine {
 
 	public void setMonitorEnd(String monitorEnd) {
 		this.monitorEnd = monitorEnd;
+	}
+
+	public Integer getOpenStatus() {
+		return openStatus;
+	}
+
+	public void setOpenStatus(Integer openStatus) {
+		this.openStatus = openStatus;
+	}
+
+	public String getLocalStr() {
+		return localStr;
+	}
+
+	public void setLocalStr(String localStr) {
+		this.localStr = localStr;
 	}
 
 }

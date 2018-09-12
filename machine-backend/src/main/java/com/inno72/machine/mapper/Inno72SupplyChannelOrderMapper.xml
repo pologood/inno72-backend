@@ -44,16 +44,8 @@
     LEFT JOIN inno72_admin_area t4 ON t4.CODE = t3.area_code
     left join inno72_check_user t6 on t1.user_id=t6.id
     left join inno72_admin_area t7 on t6.area=t7.code
-    left join inno72_admin_area t8 on t8.code = t4.parent_code
-    left join inno72_admin_area t9 on t9.code = t8.parent_code
-    left join inno72_admin_area t10 on t10.code = t9.parent_code
     <where>
-      <if test="areaCode != null">
-        and (t4.code = #{areaCode}
-        or t8.code = #{areaCode}
-        or t9.code = #{areaCode}
-        or t10.code = #{areaCode})
-      </if>
+      <if test="code !=null and code !=''">and LEFT(t3.area_code,#{num}) = LEFT(#{code},#{num})</if>
       <if test="beginTime != null">
         and t1.create_time <![CDATA[>]]> #{beginTime}
       </if>
@@ -67,6 +59,7 @@
         OR t6.phone like CONCAT('%','${keyword}','%')
         )
       </if>
+      and 9=9
     </where>
     order by t1.create_time desc
   </select>

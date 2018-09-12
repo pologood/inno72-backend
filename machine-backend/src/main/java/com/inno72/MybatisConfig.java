@@ -14,6 +14,8 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import com.github.miemiedev.mybatis.paginator.OffsetLimitInterceptor;
+import com.inno72.common.AuthPlugin;
+import com.inno72.common.DataAutherInterceptor;
 import com.inno72.utils.page.PagePlugin;
 
 import tk.mybatis.spring.mapper.MapperScannerConfigurer;
@@ -33,12 +35,21 @@ public class MybatisConfig {
 		PagePlugin pagePlugin = new PagePlugin();
 		pagePlugin.setProperties(props);
 
+		Properties props1 = new Properties();
+		props1.setProperty("authSqlId", "WithAuth");
+		AuthPlugin authPlugin = new AuthPlugin();
+		authPlugin.setProperties(props1);
+
+		DataAutherInterceptor dataAutherInterceptor = new DataAutherInterceptor();
+
 		OffsetLimitInterceptor offsetLimitInterceptor = new OffsetLimitInterceptor();
 		Properties offsetLimitProps = new Properties();
 		offsetLimitProps.setProperty("dialectClass", "com.github.miemiedev.mybatis.paginator.dialect.MySQLDialect");
 		offsetLimitInterceptor.setProperties(offsetLimitProps);
 
-		bean.setPlugins(new Interceptor[] { offsetLimitInterceptor, pagePlugin });
+		bean.setPlugins(new Interceptor[] { dataAutherInterceptor, offsetLimitInterceptor, authPlugin, pagePlugin });
+		// bean.setPlugins(new Interceptor[] { offsetLimitInterceptor,
+		// pagePlugin });
 
 		ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 

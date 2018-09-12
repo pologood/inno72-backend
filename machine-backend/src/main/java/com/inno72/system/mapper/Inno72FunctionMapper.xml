@@ -31,4 +31,8 @@
 		  </where>
 		order by f.function_level,f.parent_id
 	</select>
+	
+	<select id="selectFunctionByParentId" parameterType="String" resultMap="BaseResultMap">
+		SELECT * from inno72_function f where f.parent_id =#{parentId}
+	</select>
 </mapper>

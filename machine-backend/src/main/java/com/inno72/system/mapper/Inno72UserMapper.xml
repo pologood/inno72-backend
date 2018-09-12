@@ -32,4 +32,24 @@
 		group by u.id
 		order by u.create_time desc
 	</select>
+	
+	<select id="selectUserFunction" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+			CONCAT(IFNULL(r.`name`,""),'-',IFNULL(fpp.function_depict,""),'-',IFNULL(fp.function_depict,""),'-',IFNULL(f.function_depict,"")) AS name 
+		FROM
+			inno72_role_function rf
+			LEFT JOIN inno72_user_role ur ON rf.role_id = ur.role_id 
+			LEFT JOIN inno72_role r ON r.id = ur.role_id 
+			LEFT JOIN inno72_function f ON f.id = rf.function_id
+			LEFT JOIN inno72_function fp ON fp.id = f.parent_id
+			LEFT JOIN inno72_function fpp ON fpp.id = fp.parent_id
+		WHERE
+			ur.user_id = #{userId} 
+			and (f.function_level not IN (1) OR f.function_depict ='首页')
+			ORDER BY r.id,fpp.seq,fp.seq,f.seq
+	</select>
+	
+	
+	
 </mapper>
