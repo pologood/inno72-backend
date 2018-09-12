@@ -76,8 +76,8 @@
 		from inno72_machine m
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
 		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
-		where machine_status=4
-        and open_status=0
+		where m.machine_status=4
+        and m.open_status=0
 
     </select>
 </mapper>
