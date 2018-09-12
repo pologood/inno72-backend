@@ -154,5 +154,6 @@
     <module>machine-alarm</module>
     <module>machine-app-backend</module>
     <module>zuul</module>
+    <module>machine-remote-backend</module>
   </modules>
 </project>
