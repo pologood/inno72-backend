@@ -201,7 +201,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                         if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
                             List<Inno72CheckUserPhone> phones = getInno72CheckUserPhones(machineCode);
                             if(phones != null && phones.size()>0){
-                                text = "网络已经连续10分钟未连接成功，请及时处理";
+                                text = "网络已经连续10分钟未连接成功，请及时处理。";
                                 param.put("text",text);
                                 for (Inno72CheckUserPhone userPhone:phones){
                                     msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-AlarmDetailService");
