@@ -98,4 +98,12 @@ public class StringUtil {
 		return text;
 	}
 
+	public static Boolean senSmsActive(String active){
+		if(StringUtil.isNotEmpty(active) && (active.equals("prod") || active.equals("stage"))){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 }
