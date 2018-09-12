@@ -30,12 +30,8 @@ public class CheckAlarmMachineTask {
 	public void checkAllMachine() {
 		log.info("获取全部需要发送报警的机器开始");
 		List<Inno72Machine> list = machineService.findAlarmAllMachine();
-		if (list != null && list.size() > 0) {
-			log.info("获取全部需要发送报警的机器，共找到" + list.size() + "台机器");
-			alarmDetailService.addToMachineBean(list);
-		} else {
-			log.info("无新增机器到报警系统");
-		}
+		log.info("获取全部需要发送报警的机器，共找到" + list.size() + "台机器");
+		alarmDetailService.addToMachineBean(list);
 		log.info("获取全部需要发送报警的机器结束");
 	}
 
