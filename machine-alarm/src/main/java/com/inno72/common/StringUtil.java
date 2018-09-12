@@ -93,7 +93,7 @@ public class StringUtil {
 		}else if("test".equals(active)){
 			text = "测试："+text;
 		}else if("stage".equals(active)){
-			text = "预发"+text;
+			text = "预发："+text;
 		}
 		return text;
 	}
