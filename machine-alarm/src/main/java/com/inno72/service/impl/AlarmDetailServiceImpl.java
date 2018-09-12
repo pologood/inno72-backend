@@ -198,7 +198,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 					mongoUtil.save(alarmSendBean,"AlarmSendBean");
                 }else if(type == 2){
                     if(level == 1){
-                        if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
+                        if (StringUtil.senSmsActive(active)) {
                             List<Inno72CheckUserPhone> phones = getInno72CheckUserPhones(machineCode);
                             if(phones != null && phones.size()>0){
                                 text = "网络已经连续10分钟未连接成功，请及时处理。";
