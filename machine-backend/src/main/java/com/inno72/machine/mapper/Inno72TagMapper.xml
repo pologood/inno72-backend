@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.machine.mapper.Inno72TagMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.machine.model.Inno72Tag">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  
+  <select id="selectAllList"  resultType="String">
+		SELECT name FROM inno72_tag 
+  </select>
+  
+   <select id="selectTagByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+		SELECT * FROM inno72_tag t where t.name LIKE '%${keyword}%' 
+  </select>
+  
+  <insert id="insertTagList" parameterType="java.util.List">
+        insert into inno72_tag (id,name)
+        values
+        <foreach collection="list" item="t" index="index" separator=",">
+            (#{t.id},#{t.name})
+        </foreach>
+    </insert>
+  
+</mapper>

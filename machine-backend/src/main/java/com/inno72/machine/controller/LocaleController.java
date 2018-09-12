@@ -18,6 +18,7 @@ import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.machine.model.Inno72Locale;
+import com.inno72.machine.model.Inno72Tag;
 import com.inno72.machine.service.LocaleService;
 import com.inno72.machine.vo.Inno72LocaleVo;
 import com.inno72.machine.vo.MachineLocaleInfo;
@@ -88,5 +89,11 @@ public class LocaleController {
 			@RequestBody List<MachineLocaleInfo> machineCodeList) {
 		List<MachineLocaleInfo> list = localeService.selectLocaleByMachineCode(machineCodeList);
 		return ResultGenerator.genSuccessResult(list);
+	}
+
+	@RequestMapping(value = "/taglist", method = { RequestMethod.POST, RequestMethod.GET })
+	public ModelAndView taglist(@RequestParam(required = false) String keyword) {
+		List<Inno72Tag> list = localeService.findTagsByPage(keyword);
+		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 }
