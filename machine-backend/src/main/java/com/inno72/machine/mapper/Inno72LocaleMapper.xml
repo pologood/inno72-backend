@@ -11,6 +11,10 @@
     <result column="mall" jdbcType="VARCHAR" property="mall" />
     <result column="manager" jdbcType="VARCHAR" property="manager" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="monitor" jdbcType="INTEGER" property="monitor" />
+    <result column="monitor_start" jdbcType="VARCHAR" property="monitorStart" />
+    <result column="monitor_end" jdbcType="VARCHAR" property="monitorEnd" />
+    <result column="tag" jdbcType="VARCHAR" property="tag" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
@@ -28,6 +32,7 @@
     <result column="userNum" jdbcType="INTEGER" property="userNum" />
     <result column="areaName" jdbcType="INTEGER" property="areaName" />
     <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+    <result column="tags" jdbcType="VARCHAR" property="tags" />
     
     
     
@@ -39,7 +44,7 @@
 
 	<select id="selectLocaleByPage" parameterType="java.util.Map" resultMap="VoResultMap">
 	SELECT * FROM (
-		SELECT locale.*,
+		SELECT locale.*,JSON_EXTRACT(locale.tag,'$.tags') AS tags,
 		  CONCAT(area.province, area.city, area.district,area.circle) AS areaName,m.*
 		  FROM inno72_locale locale
 		  LEFT JOIN inno72_admin_area area ON area.code =locale.area_code
@@ -53,6 +58,7 @@
 			AND ( locale.manager LIKE '%${keyword}%' 
 			or locale.mobile LIKE '%${keyword}%' 
 			or locale.mall LIKE '%${keyword}%' 
+			or locale.tag LIKE '%${keyword}%'  
 			or locale.name LIKE '%${keyword}%' 
 			or area.province LIKE '%${keyword}%' 
 			or area.city LIKE '%${keyword}%' 
@@ -67,7 +73,7 @@
   
   
   <select id="selectLocaleByList" parameterType="java.util.Map" resultMap="VoResultMap">
-		SELECT locale.*,
+		SELECT locale.*,JSON_EXTRACT(locale.tag,'$.tags') AS tags,
 		CONCAT(area.province, area.city, area.district,area.circle,IFNULL( locale.mall,""),IFNULL( locale.name,"")) AS areaName
 		FROM inno72_locale locale
 		LEFT JOIN inno72_admin_area area ON area.code =locale.area_code
@@ -76,7 +82,8 @@
 		<if test="keyword !=null and keyword !='' ">
 			AND ( locale.manager LIKE '%${keyword}%' 
 			or locale.mobile LIKE '%${keyword}%' 
-			or locale.mall LIKE '%${keyword}%' 
+			or locale.mall LIKE '%${keyword}%'
+			or locale.tag LIKE '%${keyword}%'  
 			or locale.name LIKE '%${keyword}%' 
 			or area.province LIKE '%${keyword}%' 
 			or area.city LIKE '%${keyword}%' 

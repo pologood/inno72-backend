@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
@@ -22,7 +23,9 @@ import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.machine.mapper.Inno72LocaleMapper;
+import com.inno72.machine.mapper.Inno72TagMapper;
 import com.inno72.machine.model.Inno72Locale;
+import com.inno72.machine.model.Inno72Tag;
 import com.inno72.machine.service.LocaleService;
 import com.inno72.machine.vo.Inno72LocaleVo;
 import com.inno72.machine.vo.MachineLocaleInfo;
@@ -42,6 +45,10 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	@Resource
 	private Inno72AdminAreaMapper inno72AdminAreaMapper;
 
+	@Resource
+	private Inno72TagMapper inno72TagMapper;
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public Result<String> saveModel(Inno72Locale model) {
 		logger.info("---------------------点位新增-------------------");
@@ -53,6 +60,35 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 				return Results.failure("未找到用户登录信息");
 			}
 			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+
+			String tag = model.getTag().toString();
+			if (StringUtil.isNotBlank(tag)) {
+				Map<String, Object> tagMap = JSON.parseObject(tag, Map.class);
+				List<String> tagList = (List<String>) tagMap.get("tags");
+				// 查询标签库是否存在，不存在，则存入
+				List<String> oldTags = inno72TagMapper.selectAllList();
+				List<Inno72Tag> insertList = new ArrayList<>();
+				for (String t : tagList) {
+					if (!oldTags.contains(t)) {
+						Inno72Tag inno72Tag = new Inno72Tag();
+						inno72Tag.setId(StringUtil.getUUID());
+						inno72Tag.setName(t);
+						insertList.add(inno72Tag);
+					}
+				}
+				if (insertList.size() > 0) {
+					inno72TagMapper.insertTagList(insertList);
+				}
+			}
+			if (null == model.getMonitor()) {
+				return Results.failure("请选择监控设置！");
+			} else {
+				if (model.getMonitor() == 1) {
+					if (StringUtil.isBlank(model.getMonitorStart()) || StringUtil.isBlank(model.getMonitorStart())) {
+						return Results.failure("请选择监控时间！");
+					}
+				}
+			}
 
 			model.setId(StringUtil.getUUID());
 			model.setCreateId(userId);
@@ -108,6 +144,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		return machineLocaleInfos;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Result<String> updateModel(Inno72Locale model) {
 		logger.info("---------------------点位更新-------------------");
@@ -123,8 +160,32 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 			if (n > 0) {
 				return Results.failure("此点位机器已进行活动排期，暂不能修改！");
 			}
+			if (model.getMonitor() == 1) {
+				if (StringUtil.isBlank(model.getMonitorStart()) || StringUtil.isBlank(model.getMonitorStart())) {
+					return Results.failure("请选择监控时间！");
+				}
+			}
 
 			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+			String tag = model.getTag().toString();
+			if (StringUtil.isNotBlank(tag)) {
+				Map<String, Object> tagMap = JSON.parseObject(tag, Map.class);
+				List<String> tagList = (List<String>) tagMap.get("tags");
+				// 查询标签库是否存在，不存在，则存入
+				List<String> oldTags = inno72TagMapper.selectAllList();
+				List<Inno72Tag> insertList = new ArrayList<>();
+				for (String t : tagList) {
+					if (!oldTags.contains(t)) {
+						Inno72Tag inno72Tag = new Inno72Tag();
+						inno72Tag.setId(StringUtil.getUUID());
+						inno72Tag.setName(t);
+						insertList.add(inno72Tag);
+					}
+				}
+				if (insertList.size() > 0) {
+					inno72TagMapper.insertTagList(insertList);
+				}
+			}
 
 			model.setUpdateId(userId);
 			model.setUpdateTime(LocalDateTime.now());
@@ -185,6 +246,18 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		params.put("keyword", keyword);
 
 		return inno72LocaleMapper.selectLocaleByList(params);
+	}
+
+	@Override
+	public List<Inno72Tag> findTagsByPage(String keyword) {
+		logger.info("---------------------分页列表查询-------------------");
+		Map<String, Object> params = new HashMap<String, Object>();
+		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
+		params.put("keyword", keyword);
+
+		List<Inno72Tag> list = inno72TagMapper.selectTagByPage(params);
+
+		return list;
 	}
 
 }

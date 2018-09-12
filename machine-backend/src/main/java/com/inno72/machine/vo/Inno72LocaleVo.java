@@ -1,5 +1,7 @@
 package com.inno72.machine.vo;
 
+import com.alibaba.fastjson.JSON;
+import com.inno72.common.StringUtil;
 import com.inno72.machine.model.Inno72Locale;
 
 public class Inno72LocaleVo extends Inno72Locale {
@@ -18,6 +20,8 @@ public class Inno72LocaleVo extends Inno72Locale {
 	 * 区/县ID
 	 */
 	private String district;
+
+	private Object tags;
 
 	/**
 	 * 商圈ID
@@ -84,6 +88,18 @@ public class Inno72LocaleVo extends Inno72Locale {
 
 	public void setMachineCode(String machineCode) {
 		this.machineCode = machineCode;
+	}
+
+	public Object getTags() {
+		if (StringUtil.isNotBlank(tags.toString())) {
+			return JSON.parseArray(tags.toString(), String.class);
+		} else {
+			return null;
+		}
+	}
+
+	public void setTags(Object tags) {
+		this.tags = tags;
 	}
 
 }
