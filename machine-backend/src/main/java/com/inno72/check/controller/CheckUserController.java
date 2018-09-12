@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.check.model.Inno72CheckUserPhone;
 import com.inno72.check.service.CheckUserService;
 import com.inno72.check.vo.Inno72CheckUserVo;
@@ -83,7 +82,7 @@ public class CheckUserController {
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView list(@RequestParam(required = false) String keyword) {
-		List<Inno72CheckUser> list = checkUserService.findByPage(keyword);
+		List<Inno72CheckUserVo> list = checkUserService.findByPage(keyword);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 

@@ -312,7 +312,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	}
 
 	@Override
-	public List<Inno72CheckUser> findByPage(String keyword) {
+	public List<Inno72CheckUserVo> findByPage(String keyword) {
 		return inno72CheckUserMapper.selectCheckUserByPage(keyword);
 	}
 

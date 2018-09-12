@@ -21,7 +21,7 @@ public interface CheckUserService extends Service<Inno72CheckUser> {
 
 	Result<String> updateModel(Inno72CheckUserVo model);
 
-	List<Inno72CheckUser> findByPage(String keyword);
+	List<Inno72CheckUserVo> findByPage(String keyword);
 
 	List<Inno72AdminAreaVo> selectAreaMachineList(String code, String level);
 
