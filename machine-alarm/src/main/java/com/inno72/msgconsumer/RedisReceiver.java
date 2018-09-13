@@ -27,6 +27,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.DateUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.machine.vo.PointLog;
 import com.inno72.model.AlarmMessageBean;
 import com.inno72.model.ChannelGoodsAlarmBean;
 import com.inno72.model.DropGoodsExceptionInfo;
@@ -117,6 +118,7 @@ public class RedisReceiver {
 						text = "您好，"+localStr+"，机器编号："+machineCode+"，"+goodsName+"数量已少于10个，请及时补货";
 						param.put("text",StringUtil.setText(text,active));
 						msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-RedisReceiver");
+						this.sendLog(machineCode,CommonConstants.LOG_TYPE_LACKGOODS,text);
 					}else if(surPlusNum == 5){
 						if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
 							text = goodsName + "数量已少于5个，请及时处理。";
@@ -127,11 +129,13 @@ public class RedisReceiver {
 						}
 						text = "您好，"+localStr+"，机器编号："+machineCode+"，"+goodsName+"数量已少于5个，请及时补货";
 						param.put("text",StringUtil.setText(text,active));
+						this.sendLog(machineCode,CommonConstants.LOG_TYPE_LACKGOODS,text);
 						msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-RedisReceiver");
 					}else if(surPlusNum<5){
 						text = "您好，"+localStr+"，机器编号："+machineCode+"，"+goodsName+"数量已少于5个，请及时补货";
 						param.put("text",StringUtil.setText(text,active));
 						msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-RedisReceiver");
+						this.sendLog(machineCode,CommonConstants.LOG_TYPE_LACKGOODS,text);
 					}
 				}
 			}
@@ -244,6 +248,7 @@ public class RedisReceiver {
                     supplyChannel.setIsDelete(1);
                     supplyChannel.setMachineId(machine.getId());
                     supplyChannelService.closeSupply(supplyChannel);
+					this.sendLog(machineCode,CommonConstants.LOG_TYPE_DROPGOODS,text);
 					if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
 						if(alarmFlag){
 							Map<String, String> params = new HashMap<>();
@@ -329,5 +334,14 @@ public class RedisReceiver {
 		log.info("返回报警标记"+alarmFlag);
 		return alarmFlag;
 
+	}
+
+	public void sendLog(String machineCode,String type,String text){
+		PointLog pointLog = new PointLog();
+		pointLog.setType(type);
+		pointLog.setMachineCode(machineCode);
+		pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
+		pointLog.setDetail(text);
+		mongoTpl.save(pointLog);
 	}
 }

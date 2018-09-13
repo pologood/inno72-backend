@@ -1,5 +1,6 @@
 package com.inno72.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.DateUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.machine.vo.PointLog;
 import com.inno72.model.AlarmDetailBean;
 import com.inno72.model.AlarmExceptionMachineBean;
 import com.inno72.model.AlarmMachineBean;
@@ -196,6 +198,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 					alarmSendBean.setLocaleStr(localeStr);
 					alarmSendBean.setCreateTime(new Date());
 					mongoUtil.save(alarmSendBean,"AlarmSendBean");
+					this.sendLog(machineCode,CommonConstants.LOG_TYPE_HEART,text);
                 }else if(type == 2){
                     if(level == 1){
                         if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
@@ -230,6 +233,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 					alarmSendBean.setLocaleStr(localeStr);
 					alarmSendBean.setCreateTime(new Date());
 					mongoUtil.save(alarmSendBean,"AlarmSendBean");
+					this.sendLog(machineCode,CommonConstants.LOG_TYPE_CONNECT,text);
                 }
                 Query removeQuery = new Query();
                 removeQuery.addCriteria(Criteria.where("_id").is(bean.getId()));
@@ -352,7 +356,14 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 		redisUtil.del(connectTimeKey);
 	}
 
-
+	public void sendLog(String machineCode,String type,String text){
+		PointLog pointLog = new PointLog();
+		pointLog.setType(type);
+		pointLog.setMachineCode(machineCode);
+		pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
+		pointLog.setDetail(text);
+		mongoUtil.save(pointLog);
+	}
 
 
 }
