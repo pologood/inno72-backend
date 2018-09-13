@@ -81,12 +81,13 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
                 userMachine.setMachineId(machineId);
                 inno72CheckUserMachineMapper.insertSelective(userMachine);
             }
+			machine = inno72MachineMapper.getMachineByCode(machineCode);
 			PointLog pointLog = new PointLog();
             pointLog.setType(CommonConstants.LOG_TYPE_IN_FACTORY);
             pointLog.setMachineCode(machineCode);
             pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
-            pointLog.setDetail("机器入厂");
-			mongoTpl.save(pointLog);
+            pointLog.setDetail("设置机器入厂，"+checkUser.getName()+"设置了最新点位："+machine.getLocaleStr());
+			mongoTpl.save(pointLog,"PointLog");
         }else{
             return Results.failure("机器状态有误");
         }

@@ -72,6 +72,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 
 	@Override
 	public Result<String> addCheckFault(Inno72CheckFault checkFault) {
+		Inno72CheckUser checkUser = UserUtil.getUser();
 		String remark = checkFault.getRemark();
 		if (StringUtil.isEmpty(remark)) {
 			Results.failure("故障描述不能为空");
@@ -84,16 +85,16 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 				String time = DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S2);
 				checkFault.setCode("F" + StringUtil.createRandomCode(6) + time);
 				checkFault.setSubmitTime(LocalDateTime.now());
-				checkFault.setSubmitUser(UserUtil.getUser().getName());
+				checkFault.setSubmitUser(checkUser.getName());
 				checkFault.setMachineId(machineId);
 				checkFault.setWorkType(1);//
 				checkFault.setSource(1);// 巡检
 				checkFault.setUrgentStatus(1);// 日常
-				checkFault.setSubmitId(UserUtil.getUser().getId());
+				checkFault.setSubmitId(checkUser.getId());
 				checkFault.setSubmitUserType(1);// 巡检人员
 				checkFault.setStatus(2);// 处理中
-				checkFault.setReceiveUser(UserUtil.getUser().getName());
-				checkFault.setReceiveId(UserUtil.getUser().getId());
+				checkFault.setReceiveUser(checkUser.getName());
+				checkFault.setReceiveId(checkUser.getId());
 				checkFault.setUpdateTime(LocalDateTime.now());
 				String type = checkFault.getType();
 				Inno72CheckFaultType inno72CheckFaultType = inno72CheckFaultTypeMapper.selectByPrimaryKey(type);
@@ -107,8 +108,8 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 				inno72CheckFaultMapper.insertSelective(checkFault);
 				Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
 				faultRemark.setRemark(remark);
-				faultRemark.setUserId(UserUtil.getUser().getId());
-				faultRemark.setName(UserUtil.getUser().getName());
+				faultRemark.setUserId(checkUser.getId());
+				faultRemark.setName(checkUser.getName());
 				faultRemark.setType(1);
 				faultRemark.setCreateTime(LocalDateTime.now());
 				faultRemark.setFaultId(id);
@@ -131,7 +132,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 
 			}
 			Map<String, Object> queryMap = new HashMap<>();
-			queryMap.put("checkUserId", UserUtil.getUser().getId());
+			queryMap.put("checkUserId", checkUser.getId());
 			queryMap.put("machineIds", machineIds);
 			List<Inno72Machine> machines = inno72MachineMapper.selectByParam(queryMap);
 			Inno72CheckFaultType checkFaultType = inno72CheckFaultTypeMapper.selectByPrimaryKey(checkFault.getType());
@@ -160,10 +161,10 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 					List<CheckUserVo> checkUserList = machine.getCheckUserVoList();
 					List<String> userIdList = new ArrayList<>();
 					if (checkUserList != null && checkUserList.size() > 0) {
-						for (CheckUserVo checkUser : checkUserList) {
-							String phone = checkUser.getPhone();
+						for (CheckUserVo user : checkUserList) {
+							String phone = user.getPhone();
 							if (StringUtil.isNotEmpty(phone)) {
-								userIdList.add(checkUser.getId());
+								userIdList.add(user.getId());
 								msgUtil.sendPush(pushCode, params, phone, appName, title, messgeInfo);
 								msgUtil.sendSMS(smsCode, params, phone, appName);
 							}
@@ -194,7 +195,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 					pointLog.setType(CommonConstants.LOG_TYPE_SET_WORK);
 					pointLog.setMachineCode(machineCode);
 					pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
-					pointLog.setDetail("添加故障单");
+					pointLog.setDetail("操作工单：巡检人员"+checkUser.getName()+"对"+localeStr+"点位处的机器提交了故障单");
 					mongoTpl.save(pointLog);
 				}
 
@@ -241,11 +242,12 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		}
 		Inno72CheckFault fault = inno72CheckFaultMapper.selectDetail(checkFault.getId());
 		if(fault != null){
+			Inno72Machine machine = inno72MachineMapper.getMachineById(fault.getMachineId());
 			PointLog pointLog = new PointLog();
 			pointLog.setType(CommonConstants.LOG_TYPE_SET_WORK);
-			pointLog.setMachineCode(fault.getMachineCode());
+			pointLog.setMachineCode(machine.getMachineCode());
 			pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
-			pointLog.setDetail("解决工单");
+			pointLog.setDetail("解决工单:巡检人员解决了"+machine.getLocaleStr()+"点位所在机器的工单");
 			mongoTpl.save(pointLog);
 		}
 
@@ -304,11 +306,12 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		}
 		Inno72CheckFault fault = inno72CheckFaultMapper.selectDetail(faultId);
 		if(fault != null){
+			Inno72Machine machine = inno72MachineMapper.getMachineById(fault.getMachineId());
 			PointLog pointLog = new PointLog();
 			pointLog.setType(CommonConstants.LOG_TYPE_SET_WORK);
-			pointLog.setMachineCode(fault.getMachineCode());
+			pointLog.setMachineCode(machine.getMachineCode());
 			pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
-			pointLog.setDetail("回复工单");
+			pointLog.setDetail("操作工单:巡检人员"+UserUtil.getUser().getName()+"对"+machine.getLocaleStr()+"点位处机器的工单进行了回复");
 			mongoTpl.save(pointLog);
 		}
 		return ResultGenerator.genSuccessResult();
@@ -377,11 +380,12 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		inno72CheckFaultMapper.updateByPrimaryKeySelective(inno72CheckFault);
 		inno72CheckFault = inno72CheckFaultMapper.selectDetail(inno72CheckFault.getId());
 		if(inno72CheckFault != null){
+			Inno72Machine machine = inno72MachineMapper.getMachineById(inno72CheckFault.getMachineId());
 			PointLog pointLog = new PointLog();
 			pointLog.setType(CommonConstants.LOG_TYPE_SET_WORK);
 			pointLog.setMachineCode(inno72CheckFault.getMachineCode());
 			pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
-			pointLog.setDetail("接收工单");
+			pointLog.setDetail("操作工单：巡检人员"+checkUser.getName()+"对"+machine.getLocaleStr()+"点位处的机器接收了工单");
 			mongoTpl.save(pointLog);
 		}
 		return ResultGenerator.genSuccessResult();

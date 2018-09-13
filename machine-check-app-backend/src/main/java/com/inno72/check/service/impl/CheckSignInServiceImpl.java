@@ -2,6 +2,7 @@ package com.inno72.check.service.impl;
 
 import com.inno72.check.mapper.Inno72CheckSignInMapper;
 import com.inno72.check.model.Inno72CheckSignIn;
+import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.check.service.CheckSignInService;
 import com.inno72.check.vo.MachineSignInVo;
 import com.inno72.common.*;
@@ -31,6 +32,7 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
 	private MongoOperations mongoTpl;
     @Override
     public Result<String> add(Inno72CheckSignIn signIn) {
+		Inno72CheckUser checkUser = UserUtil.getUser();
     	String machineId = signIn.getMachineId();
     	if(StringUtil.isEmpty(machineId)){
     		return Results.failure("参数缺失");
@@ -42,12 +44,12 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
         if(count != 1){
             Results.failure("打卡失败");
         }
-		Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+		Inno72Machine machine = inno72MachineMapper.getMachineById(machineId);
 		PointLog pointLog = new PointLog();
 		pointLog.setType(CommonConstants.LOG_TYPE_MACHINE_SIGN);
 		pointLog.setMachineCode(machine.getMachineCode());
 		pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
-		pointLog.setDetail("机器打卡");
+		pointLog.setDetail("机器打卡:巡检人员"+checkUser.getName()+"对"+machine.getLocaleStr()+"点位处的机器进行了打卡");
 		mongoTpl.save(pointLog);
         return ResultGenerator.genSuccessResult();
     }
