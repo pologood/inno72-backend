@@ -11,7 +11,9 @@ import com.inno72.machine.model.Inno72Tag;
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72TagMapper extends Mapper<Inno72Tag> {
 
-	List<String> selectAllList();
+	List<String> selectAllTagNameList();
+
+	List<Inno72Tag> selectTagList(Map<String, Object> params);
 
 	List<Inno72Tag> selectTagByPage(Map<String, Object> params);
 

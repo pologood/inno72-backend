@@ -66,7 +66,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 				Map<String, Object> tagMap = JSON.parseObject(tag, Map.class);
 				List<String> tagList = (List<String>) tagMap.get("tags");
 				// 查询标签库是否存在，不存在，则存入
-				List<String> oldTags = inno72TagMapper.selectAllList();
+				List<String> oldTags = inno72TagMapper.selectAllTagNameList();
 				List<Inno72Tag> insertList = new ArrayList<>();
 				for (String t : tagList) {
 					if (!oldTags.contains(t)) {
@@ -172,7 +172,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 				Map<String, Object> tagMap = JSON.parseObject(tag, Map.class);
 				List<String> tagList = (List<String>) tagMap.get("tags");
 				// 查询标签库是否存在，不存在，则存入
-				List<String> oldTags = inno72TagMapper.selectAllList();
+				List<String> oldTags = inno72TagMapper.selectAllTagNameList();
 				List<Inno72Tag> insertList = new ArrayList<>();
 				for (String t : tagList) {
 					if (!oldTags.contains(t)) {
@@ -255,6 +255,18 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		params.put("keyword", keyword);
 
 		List<Inno72Tag> list = inno72TagMapper.selectTagByPage(params);
+
+		return list;
+	}
+
+	@Override
+	public List<Inno72Tag> getTaglist(String keyword) {
+		logger.info("---------------------不分页列表查询-------------------");
+		Map<String, Object> params = new HashMap<String, Object>();
+		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
+		params.put("keyword", keyword);
+
+		List<Inno72Tag> list = inno72TagMapper.selectTagList(params);
 
 		return list;
 	}

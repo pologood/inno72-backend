@@ -91,9 +91,16 @@ public class LocaleController {
 		return ResultGenerator.genSuccessResult(list);
 	}
 
-	@RequestMapping(value = "/taglist", method = { RequestMethod.POST, RequestMethod.GET })
+	@RequestMapping(value = "/tagList", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView taglist(@RequestParam(required = false) String keyword) {
 		List<Inno72Tag> list = localeService.findTagsByPage(keyword);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
+
+	@RequestMapping(value = "/getTagList", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Inno72Tag>> getTaglist(@RequestParam(required = false) String keyword) {
+		List<Inno72Tag> list = localeService.getTaglist(keyword);
+		return ResultGenerator.genSuccessResult(list);
+	}
+
 }

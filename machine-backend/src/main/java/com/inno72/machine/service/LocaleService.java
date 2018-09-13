@@ -31,4 +31,6 @@ public interface LocaleService extends Service<Inno72Locale> {
 
 	List<Inno72Tag> findTagsByPage(String keyword);
 
+	List<Inno72Tag> getTaglist(String keyword);
+
 }

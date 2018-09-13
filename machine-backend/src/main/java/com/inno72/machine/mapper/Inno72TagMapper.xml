@@ -9,8 +9,12 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
   </resultMap>
   
-  <select id="selectAllList"  resultType="String">
-		SELECT name FROM inno72_tag 
+  <select id="selectAllTagNameList"  resultType="String">
+		SELECT name FROM inno72_tag
+  </select>
+  
+  <select id="selectTagList" parameterType="java.util.Map" resultMap="BaseResultMap">
+		SELECT * FROM inno72_tag t where t.name LIKE '%${keyword}%' 
   </select>
   
    <select id="selectTagByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
