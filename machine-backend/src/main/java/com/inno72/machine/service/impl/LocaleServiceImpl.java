@@ -209,7 +209,6 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		vo.setProvince(province);
 		vo.setCity(city);
 		vo.setDistrict(district);
-		vo.setCircle(areaCode);
 
 		return inno72LocaleMapper.selectById(id);
 	}

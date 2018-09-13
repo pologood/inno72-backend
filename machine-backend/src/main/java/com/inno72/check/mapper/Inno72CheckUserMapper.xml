@@ -84,8 +84,7 @@
 		u.is_delete,
 		u.remark,
 		m.id AS machine_id,
-		CONCAT( area.province, area.city, area.district,
-		if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL(
+		CONCAT( area.province, area.city, area.district,IFNULL( l.mall,""),IFNULL(
 		l.name,""), '—', m.machine_code ) AS machine_code,
 		area.province as machine_province
 		from inno72_check_user u
@@ -144,8 +143,7 @@
 		SELECT
 		m.id AS CODE,
 		'' AS parent_code,
-		CONCAT( area.province, area.city, area.district,
-		if(area.circle='其他','',area.circle),IFNULL( locale.mall,""),IFNULL(
+		CONCAT( area.province, area.city, area.district,IFNULL( locale.mall,""),IFNULL(
 		locale.name,""), '—', m.machine_code ) AS NAME,
 		area.province,
 		area.city,

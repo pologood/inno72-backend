@@ -19,7 +19,7 @@
     </insert>
     <select id="selectPlanMachinDetailList" parameterType="String" resultType="java.util.Map">
 		 SELECT
-			CONCAT( area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL( l.mall,""),IFNULL( l.name,""),IFNULL( m.address,"")  ) AS machineLocale,
+			CONCAT( area.province, area.city, area.district,IFNULL( l.mall,""),IFNULL( l.name,""),IFNULL( m.address,"")  ) AS machineLocale,
 			m.machine_code AS machineCode
 		FROM inno72_machine m
 			LEFT JOIN inno72_activity_plan_machine apm ON apm.machine_id=m.id

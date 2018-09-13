@@ -32,8 +32,7 @@
     CONCAT(
     t4.province,
     t4.city,
-    t4.district,
-    if(t4.circle='其他','',t4.circle),IFNULL(t3.mall,""),IFNULL( t3.name,'')
+    t4.district,IFNULL(t3.mall,""),IFNULL( t3.name,'')
     ) AS localeStr,
     t6.name,
     t6.phone,

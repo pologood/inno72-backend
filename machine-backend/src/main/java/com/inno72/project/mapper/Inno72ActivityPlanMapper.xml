@@ -165,7 +165,7 @@
 		m.id,
 		machine_code as machineCode,
 		CONCAT(
-		area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL(
+		area.province, area.city, area.district,IFNULL(
 		l.mall,""),IFNULL(
 		l.name,"") ) as area
 		FROM inno72_machine m
@@ -264,7 +264,7 @@
 		CONCAT(IFNULL( com.merchant_name,''), '-',cop.shop_name ) AS coupons_shops_name,
 
 		ma.id AS machine_id,
-		CONCAT(area.province, area.city, area.district, if(area.circle='其他','',area.circle),IFNULL(
+		CONCAT(area.province, area.city, area.district,IFNULL(
 		l.mall,""),IFNULL(l.name,""),IFNULL(
 		ma.address,""),'-',ma.machine_code) as machine_code,
 		area.province as machine_province

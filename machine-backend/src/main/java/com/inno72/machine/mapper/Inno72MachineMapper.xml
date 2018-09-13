@@ -39,7 +39,7 @@
 	<select id="selectMachinesByPage" parameterType="java.util.Map"
 		resultMap="VoResultMap">
 		select m.id,m.machine_code,m.machine_status,
-		CONCAT_WS('-',aa.province,aa.city,aa.district,aa.circle,l.mall,l.name)
+		CONCAT_WS('-',aa.province,aa.city,aa.district,l.mall,l.name)
 		local_desc,
 		m.net_status,IFNULL(mm.name,case m.machine_status when '4'
 		then '默认活动' else '无' end )
@@ -70,7 +70,7 @@
 <select id="findMachineInfoById" parameterType="java.lang.String"
 		resultMap="BaseResultMap">
 		select m.*,
-		CONCAT_WS('-',aa.province,aa.city,aa.district,aa.circle,l.mall,l.name)
+		CONCAT_WS('-',aa.province,aa.city,aa.district,l.mall,l.name)
 		local_str
 		from inno72_machine m left join inno72_locale l on
 		m.locale_id=l.id
@@ -97,8 +97,7 @@
 		m.id,
 		m.machine_code,
 		CONCAT( area.province, area.city,
-		area.district,
-		if(area.circle='其他','',area.circle),IFNULL(
+		area.district,IFNULL(
 		l.mall,""),IFNULL(
 		l.name,"") ) AS local_desc,
 		date_format(ap.start_time,'%Y-%m-%d %H:%i:%s') AS start_time,
@@ -135,8 +134,8 @@
 
 	<select id="findStockOutMachines" resultMap="ExceptionVoResultMap">
 		select m.id,m.machine_code
-		,if(aa.province=aa.city,CONCAT_WS('-',aa.province,aa.district,if(aa.circle='其他','',aa.circle),l.mall),
-		CONCAT_WS('-',aa.province,aa.city,aa.district,if(aa.circle='其他','',aa.circle),l.mall))
+		,if(aa.province=aa.city,CONCAT_WS('-',aa.province,aa.district,l.mall),
+		CONCAT_WS('-',aa.province,aa.city,aa.district,l.mall))
 		local from (
 		select apm.machine_id,apg.goods_id,(
 		select IFNULL(
@@ -173,8 +172,8 @@
 
 	<select id="findMachines" resultMap="ExceptionVoResultMap">
 		select m.id,m.machine_code
-		,if(aa.province=aa.city,CONCAT_WS('-',aa.province,aa.district,if(aa.circle='其他','',aa.circle),l.mall),
-		CONCAT_WS('-',aa.province,aa.city,aa.district,if(aa.circle='其他','',aa.circle),l.mall))
+		,if(aa.province=aa.city,CONCAT_WS('-',aa.province,aa.district,l.mall),
+		CONCAT_WS('-',aa.province,aa.city,aa.district,l.mall))
 		local from inno72_machine m
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
 		LEFT JOIN inno72_admin_area
