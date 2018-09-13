@@ -691,7 +691,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 		}
 
-		List<PointLog> pointLogs = mongoTpl.find(query, PointLog.class);
+		List<PointLog> pointLogs = mongoTpl.find(query, PointLog.class, "PointLog");
 
 		return Results.success(pointLogs);
 	}
