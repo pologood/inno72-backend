@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,7 @@ import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.check.service.CheckFaultService;
 import com.inno72.check.vo.CheckUserVo;
 import com.inno72.common.AbstractService;
+import com.inno72.common.CommonConstants;
 import com.inno72.common.DateUtil;
 import com.inno72.common.ImageUtil;
 import com.inno72.common.Result;
@@ -36,6 +38,7 @@ import com.inno72.common.UploadUtil;
 import com.inno72.common.UserUtil;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72Machine;
+import com.inno72.machine.vo.PointLog;
 import com.inno72.msg.MsgUtil;
 
 import tk.mybatis.mapper.entity.Condition;
@@ -63,6 +66,9 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 
 	@Resource
 	private MsgUtil msgUtil;
+
+	@Resource
+	private MongoOperations mongoTpl;
 
 	@Override
 	public Result<String> addCheckFault(Inno72CheckFault checkFault) {
@@ -183,6 +189,13 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 					m.put("touser", userIdString);
 					m.put("agentid", "1000002");
 					msgUtil.sendQyWechatMsg("qywechat_msg", params, m, userIdString, appName);
+
+					PointLog pointLog = new PointLog();
+					pointLog.setType(CommonConstants.LOG_TYPE_SET_WORK);
+					pointLog.setMachineCode(machineCode);
+					pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
+					pointLog.setDetail("添加故障单");
+					mongoTpl.save(pointLog);
 				}
 
 			}
@@ -226,6 +239,16 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 				inno72CheckFaultImageMapper.insertSelective(faultImage);
 			}
 		}
+		Inno72CheckFault fault = inno72CheckFaultMapper.selectDetail(checkFault.getId());
+		if(fault != null){
+			PointLog pointLog = new PointLog();
+			pointLog.setType(CommonConstants.LOG_TYPE_SET_WORK);
+			pointLog.setMachineCode(fault.getMachineCode());
+			pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
+			pointLog.setDetail("解决工单");
+			mongoTpl.save(pointLog);
+		}
+
 		return ResultGenerator.genSuccessResult();
 	}
 
@@ -278,6 +301,15 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 				image.setCreateTime(LocalDateTime.now());
 				inno72CheckFaultImageMapper.insertSelective(image);
 			}
+		}
+		Inno72CheckFault fault = inno72CheckFaultMapper.selectDetail(faultId);
+		if(fault != null){
+			PointLog pointLog = new PointLog();
+			pointLog.setType(CommonConstants.LOG_TYPE_SET_WORK);
+			pointLog.setMachineCode(fault.getMachineCode());
+			pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
+			pointLog.setDetail("回复工单");
+			mongoTpl.save(pointLog);
 		}
 		return ResultGenerator.genSuccessResult();
 	}
@@ -343,6 +375,15 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		inno72CheckFault.setUpdateTime(LocalDateTime.now());
 		inno72CheckFault.setStatus(2);// 处理中
 		inno72CheckFaultMapper.updateByPrimaryKeySelective(inno72CheckFault);
+		inno72CheckFault = inno72CheckFaultMapper.selectDetail(inno72CheckFault.getId());
+		if(inno72CheckFault != null){
+			PointLog pointLog = new PointLog();
+			pointLog.setType(CommonConstants.LOG_TYPE_SET_WORK);
+			pointLog.setMachineCode(inno72CheckFault.getMachineCode());
+			pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
+			pointLog.setDetail("接收工单");
+			mongoTpl.save(pointLog);
+		}
 		return ResultGenerator.genSuccessResult();
 	}
 

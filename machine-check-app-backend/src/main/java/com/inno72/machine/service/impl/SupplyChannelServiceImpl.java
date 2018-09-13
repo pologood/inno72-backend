@@ -10,6 +10,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.inno72.common.DateUtil;
+import com.inno72.machine.vo.PointLog;
 import com.inno72.machine.vo.SupplyRequestVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,6 +137,12 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				condition.createCriteria().andEqualTo("supplyChannelId", supply.getId());
 				inno72SupplyChannelGoodsMapper.deleteByCondition(condition);// 删除货道关联商品
 			}
+			PointLog pointLog = new PointLog();
+			pointLog.setType(CommonConstants.LOG_TYPE_MERGE_CHANNEL);
+			pointLog.setMachineCode(machine.getMachineCode());
+			pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
+			pointLog.setDetail("合并货道");
+			mongoTpl.save(pointLog);
 			return ResultGenerator.genSuccessResult();
 		} else {
 			return ResultGenerator.genFailResult("该货道已合并");
@@ -189,6 +197,13 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			childChannel.setWorkStatus(0);
 			childChannel.setMachineId(supplyChannel.getMachineId());
 			inno72SupplyChannelMapper.insertSelective(childChannel);
+			Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+			PointLog pointLog = new PointLog();
+			pointLog.setType(CommonConstants.LOG_TYPE_SPLIT_CHANNEL);
+			pointLog.setMachineCode(machine.getMachineCode());
+			pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
+			pointLog.setDetail("拆分货道");
+			mongoTpl.save(pointLog);
 			return ResultGenerator.genSuccessResult();
 		} else {
 			return ResultGenerator.genFailResult("操作货道有误");
@@ -449,12 +464,14 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		String supplyChannelIds = ids.substring(0, ids.length() - 1);
 		List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectByIds(supplyChannelIds);
 		if (supplyChannelList != null && supplyChannelList.size() > 0) {
+			String machineId = supplyChannelList.get(0).getMachineId();
+			Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
 			String batchNo = StringUtil.getUUID();
 			LocalDateTime now = LocalDateTime.now();
 			Inno72SupplyChannelOrder order = new Inno72SupplyChannelOrder();
 			order.setId(batchNo);
 			order.setCreateTime(now);
-			order.setMachineId(supplyChannelList.get(0).getMachineId());
+			order.setMachineId(machineId);
 			order.setType(1);
 			order.setUserId(UserUtil.getUser().getId());
 			inno72SupplyChannelOrderMapper.insertSelective(order);
@@ -503,6 +520,12 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				});
 
 			});
+			PointLog pointLog = new PointLog();
+			pointLog.setType(CommonConstants.LOG_TYPE_MACHINE_SUPPLY);
+			pointLog.setMachineCode(machine.getMachineCode());
+			pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
+			pointLog.setDetail("机器补货");
+			mongoTpl.save(pointLog);
 		}
 		return ResultGenerator.genSuccessResult();
 	}
