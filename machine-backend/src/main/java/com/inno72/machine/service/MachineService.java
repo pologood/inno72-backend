@@ -13,6 +13,7 @@ import com.inno72.machine.vo.MachineNetInfo;
 import com.inno72.machine.vo.MachinePortalVo;
 import com.inno72.machine.vo.MachineStatusVo;
 import com.inno72.machine.vo.MachineStockOutInfo;
+import com.inno72.machine.vo.PointLog;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
 import com.inno72.machine.vo.UpdateMachineVo;
 
@@ -60,4 +61,6 @@ public interface MachineService extends Service<Inno72Machine> {
 	Result<Inno72Machine> findMachineInfoById(String machineId);
 
 	Result<String> cutDesktop(String machineId, Integer status);
+
+	Result<List<PointLog>> machinePointLog(String machineCode, String startTime, String endTime);
 }

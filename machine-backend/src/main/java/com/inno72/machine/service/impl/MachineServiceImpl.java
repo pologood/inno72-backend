@@ -1,6 +1,7 @@
 package com.inno72.machine.service.impl;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -35,6 +37,8 @@ import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.common.datetime.LocalDateTimeUtil;
+import com.inno72.common.datetime.LocalDateUtil;
 import com.inno72.machine.mapper.Inno72AppScreenShotMapper;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72App;
@@ -56,6 +60,7 @@ import com.inno72.machine.vo.MachineStartAppBean;
 import com.inno72.machine.vo.MachineStatus;
 import com.inno72.machine.vo.MachineStatusVo;
 import com.inno72.machine.vo.MachineStockOutInfo;
+import com.inno72.machine.vo.PointLog;
 import com.inno72.machine.vo.SendMessageBean;
 import com.inno72.machine.vo.SystemStatus;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
@@ -638,6 +643,57 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			map.put("msg", pmap);
 			return sendMsgStr(machine.getMachineCode(), JSON.toJSONString(map));
 		}
+	}
+
+	@Override
+	public Result<List<PointLog>> machinePointLog(String machineCode, String startTime, String endTime) {
+
+		if (StringUtil.isEmpty(machineCode)){
+			return Results.failure("机器编码不存在!");
+		}
+
+		Query query = new Query();
+
+		query.addCriteria(Criteria.where("machineCode").is(machineCode));
+
+		boolean isStartTime = StringUtil.isEmpty(startTime);
+		boolean isEndTime = StringUtil.isEmpty(endTime);
+		// 都没有值 倒序取1000条
+		if (!isStartTime && isEndTime){
+
+			query.with(new Sort(Sort.Direction.ASC, "pointTime"));
+			query.addCriteria(Criteria.where("pointTime").gt(startTime));
+
+		}else if (isStartTime && !isEndTime){
+
+			query.with(new Sort(Sort.Direction.DESC, "pointTime"));
+			query.addCriteria(Criteria.where("pointTime").lt(endTime));
+			query.limit(200);
+
+		}else if (isStartTime && isEndTime){
+
+			query.with(new Sort(Sort.Direction.DESC, "pointTime"));
+			query.limit(1000);
+
+		}else if (!isStartTime && !isEndTime) {
+			try {
+				LocalDate startLocalDate = LocalDateUtil.transfer(startTime);
+				LocalDate endLocalDate = LocalDateUtil.transfer(endTime);
+				if (startLocalDate.isAfter(endLocalDate)){
+					return Results.failure("结束时间不能比开始时间小！");
+				}
+			}catch (Exception e){
+				return Results.failure("导出传入日期格式错误! (ex: yyyy-MM-dd)");
+			}
+
+			query.with(new Sort(Sort.Direction.ASC, "pointTime"));
+			query.addCriteria(Criteria.where("pointTime").lt(endTime + " 23:59:59").gt(startTime));
+
+		}
+
+		List<PointLog> pointLogs = mongoTpl.find(query, PointLog.class);
+
+		return Results.success(pointLogs);
 	}
 
 	private Result<String> sendMsgStr(String machineCode, String json) {
