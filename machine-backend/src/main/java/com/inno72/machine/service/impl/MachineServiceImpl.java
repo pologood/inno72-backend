@@ -96,7 +96,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	private StringRedisTemplate stringRedisTemplate;
 
 	@Override
-	public Result<List<MachineListVo>> findMachines(String machineCode, String localCode) {
+	public Result<List<MachineListVo>> findMachines(String machineCode, String localCode, String startTime,
+			String endTime, String machineType, String machineStatus) {
 		Map<String, Object> param = new HashMap<>();
 		if (StringUtil.isNotEmpty(localCode)) {
 			int num = StringUtil.getAreaCodeNum(localCode);
@@ -106,7 +107,10 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		}
 		machineCode = Optional.ofNullable(machineCode).map(a -> a.replace("'", "")).orElse(machineCode);
 		param.put("machineCode", machineCode);
-
+		param.put("machineStatus", machineStatus);
+		param.put("machineType", machineType);
+		param.put("startTime", startTime);
+		param.put("endTime", endTime);
 		List<MachineListVo> machines = inno72MachineMapper.selectMachinesByPage(param);
 		return Results.success(machines);
 	}

@@ -1,7 +1,11 @@
 package com.inno72.machine.vo;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
 public class MachineListVo {
 	private String id;
@@ -13,6 +17,9 @@ public class MachineListVo {
 	private String goodsStatus;
 	private String machineStatus;
 	private String detail;
+	private Integer machineType;
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	private LocalDateTime insideTime;
 
 	private List<Map<String, Object>> planTime;
 
@@ -94,6 +101,22 @@ public class MachineListVo {
 
 	public void setDetail(String detail) {
 		this.detail = detail;
+	}
+
+	public Integer getMachineType() {
+		return machineType;
+	}
+
+	public void setMachineType(Integer machineType) {
+		this.machineType = machineType;
+	}
+
+	public LocalDateTime getInsideTime() {
+		return insideTime;
+	}
+
+	public void setInsideTime(LocalDateTime insideTime) {
+		this.insideTime = insideTime;
 	}
 
 }

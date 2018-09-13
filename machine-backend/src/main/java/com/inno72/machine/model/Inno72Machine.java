@@ -100,6 +100,10 @@ public class Inno72Machine {
 	@Column(name = "monitor_end")
 	private String monitorEnd;
 
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@Column(name = "inside_time")
+	private LocalDateTime insideTime;
+
 	@Transient
 	private String localStr;
 
@@ -382,6 +386,14 @@ public class Inno72Machine {
 
 	public void setLocalStr(String localStr) {
 		this.localStr = localStr;
+	}
+
+	public LocalDateTime getInsideTime() {
+		return insideTime;
+	}
+
+	public void setInsideTime(LocalDateTime insideTime) {
+		this.insideTime = insideTime;
 	}
 
 }

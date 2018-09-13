@@ -21,8 +21,9 @@
 		<result column="monitor_start" jdbcType="VARCHAR" property="monitorStart" />
 		<result column="monitor_end" jdbcType="VARCHAR" property="monitorEnd" />
 		<result column="local_str" jdbcType="VARCHAR" property="localStr" />
+		<result column="inside_time" jdbcType="TIMESTAMP" property="insideTime" />
 	</resultMap>
-	
+
 
 	<resultMap id="VoResultMap" type="com.inno72.machine.vo.MachineListVo">
 		<result column="id" jdbcType="VARCHAR" property="id" />
@@ -33,41 +34,39 @@
 		<result column="channel_status" jdbcType="VARCHAR" property="channelStatus" />
 		<result column="goods_status" jdbcType="VARCHAR" property="goodsStatus" />
 		<result column="machine_status" jdbcType="VARCHAR" property="machineStatus" />
+		<result column="machine_type" jdbcType="VARCHAR" property="machineType" />
+		<result column="inside_time" jdbcType="TIMESTAMP" property="insideTime" />
 		<association property="planTime" resultMap="planTimeResult" />
 	</resultMap>
 
 	<select id="selectMachinesByPage" parameterType="java.util.Map"
 		resultMap="VoResultMap">
 		select m.id,m.machine_code,m.machine_status,
-		CONCAT_WS('-',aa.province,aa.city,aa.district,l.mall,l.name)
+		CONCAT(aa.province,
+		aa.city, aa.district,IFNULL( l.mall,""),IFNULL( l.name,""))
 		local_desc,
-		m.net_status,IFNULL(mm.name,case m.machine_status when '4'
-		then '默认活动' else '无' end )
-		activity_name,mm.activity_plan_id
-
-		from inno72_machine m left join inno72_locale l on
+		m.net_status,l.type as machine_type,m.inside_time
+		from inno72_machine m
+		left join inno72_locale l on
 		m.locale_id=l.id
-		left join inno72_admin_area aa on l.area_code=aa.code
-		left join (
-		select ap.id activity_plan_id,apm.machine_id,a.name from
-		inno72_activity_plan ap
-		left join inno72_activity_plan_machine apm on
-		ap.id=apm.activity_plan_id
-		left join inno72_activity a on
-		ap.activity_id=a.id
-		where NOW() BETWEEN ap.start_time and ap.end_time
-		and ap.is_delete!=1
-		) mm on m.id=mm.machine_id
+		left join
+		inno72_admin_area aa on l.area_code=aa.code
 		where machine_status!=-1
 		<if test="code !=null and code !='' ">and LEFT(l.area_code,#{num})='${code}'</if>
 		<if test="machineCode !=null and machineCode !=''">
-			AND m.machine_code  LIKE '%${machineCode}%'
+			AND (m.machine_code LIKE '%${machineCode}%' or l.mall LIKE
+			'%${machineCode}%' or l.name LIKE '%${machineCode}%')
+		</if>
+		<if test="machineType !=null and machineType !='' ">and l.type=#{machineType}</if>
+		<if test="machineStatus !=null and machineStatus !='' ">and m.machine_status=#{machineStatus}</if>
+		<if test="startTime !=null and startTime !='' ">
+			<![CDATA[AND ( #{startTime} <= m.inside_time AND #{endTime} >= m.inside_time ) ]]>
 		</if>
 		and 9=9
-		order by m.update_time desc 
+		order by m.update_time desc
 
 	</select>
-<select id="findMachineInfoById" parameterType="java.lang.String"
+	<select id="findMachineInfoById" parameterType="java.lang.String"
 		resultMap="BaseResultMap">
 		select m.*,
 		CONCAT_WS('-',aa.province,aa.city,aa.district,l.mall,l.name)
@@ -75,7 +74,8 @@
 		from inno72_machine m left join inno72_locale l on
 		m.locale_id=l.id
 		left join inno72_admin_area aa on l.area_code=aa.code
-		where m.id=#{machineId}
+		where
+		m.id=#{machineId}
 
 	</select>
 
@@ -96,33 +96,43 @@
 		SELECT
 		m.id,
 		m.machine_code,
-		CONCAT( area.province, area.city,
+		CONCAT( area.province,
+		area.city,
 		area.district,IFNULL(
 		l.mall,""),IFNULL(
-		l.name,"") ) AS local_desc,
-		date_format(ap.start_time,'%Y-%m-%d %H:%i:%s') AS start_time,
+		l.name,"") ) AS
+		local_desc,
+		date_format(ap.start_time,'%Y-%m-%d %H:%i:%s') AS
+		start_time,
 		date_format(ap.end_time,'%Y-%m-%d %H:%i:%s') AS end_time,
 		a.name AS activityName,
-		CASE 
-			WHEN ap.start_time &gt; NOW() THEN '1'
-			WHEN ap.start_time &lt;  NOW() and ap.end_time &gt; NOW() THEN '2'
-			ELSE null
+		CASE
+		WHEN ap.start_time &gt; NOW() THEN '1'
+		WHEN
+		ap.start_time &lt; NOW() and ap.end_time &gt; NOW() THEN '2'
+		ELSE null
 		END state,
 		l.area_code
 		FROM
 		inno72_machine m
-		LEFT JOIN inno72_locale l ON l.id = m.locale_id
-		LEFT JOIN inno72_admin_area area on area.code=l.area_code
+		LEFT JOIN inno72_locale
+		l ON
+		l.id = m.locale_id
+		LEFT JOIN inno72_admin_area area on
+		area.code=l.area_code
 		LEFT JOIN
-		inno72_activity_plan_machine apm on apm.machine_id = m.id
+		inno72_activity_plan_machine apm on
+		apm.machine_id = m.id
 		LEFT JOIN
-		inno72_activity_plan ap ON ap.id = apm.activity_plan_id and ap.is_delete = 0 and NOW() &lt; ap.end_time
+		inno72_activity_plan ap ON ap.id =
+		apm.activity_plan_id and ap.is_delete = 0 and NOW() &lt; ap.end_time
 		<if test="startTime !=null and startTime !='' ">
 			<![CDATA[AND ( #{startTime} <= ap.end_time AND #{endTime} >= ap.start_time ) ]]>
 		</if>
 		LEFT JOIN
 		inno72_activity a ON a.id = ap.activity_id
-		where m.machine_status ='4'
+		where
+		m.machine_status ='4'
 		<if test="code !=null and code !='' ">and LEFT(l.area_code,#{num})='${code}'</if>
 		<if test="machineCode !=null and machineCode !=''">
 			AND m.machine_code=#{machineCode}
@@ -174,11 +184,14 @@
 		select m.id,m.machine_code
 		,if(aa.province=aa.city,CONCAT_WS('-',aa.province,aa.district,l.mall),
 		CONCAT_WS('-',aa.province,aa.city,aa.district,l.mall))
-		local from inno72_machine m
+		local from
+		inno72_machine m
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
-		LEFT JOIN inno72_admin_area
+		LEFT
+		JOIN inno72_admin_area
 		aa on aa.code=l.area_code
-		where m.machine_status=4
+		where
+		m.machine_status=4
 	</select>
 
 	<resultMap id="StockoutInfoResultMap" type="com.inno72.machine.vo.MachineStockOutInfo">
@@ -189,15 +202,21 @@
 	<select id="findMachineStockoutInfo" resultMap="StockoutInfoResultMap">
 		select g.name
 		good_name,(
-		select IFNULL( sum(sc.goods_count),0) gc from inno72_supply_channel sc left
-		join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id
-		where sc.machine_id=apm.machine_id and scg.goods_id=apg.goods_id)
-		good_count from inno72_activity_plan ap left join
+		select IFNULL( sum(sc.goods_count),0) gc from
+		inno72_supply_channel sc left
+		join inno72_supply_channel_goods scg on
+		sc.id=scg.supply_channel_id
+		where sc.machine_id=apm.machine_id and
+		scg.goods_id=apg.goods_id)
+		good_count from inno72_activity_plan ap left
+		join
 		inno72_activity_plan_machine apm on ap.id=apm.activity_plan_id
 		left join inno72_activity_plan_goods apg on ap.id=apg.activity_plan_id
 		left join inno72_goods g on apg.goods_id=g.id
-		where NOW() BETWEEN ap.start_time and ap.end_time and ap.is_delete!=1 and
-		apm.machine_id = #{machineId}
+		where NOW() BETWEEN
+		ap.start_time and ap.end_time and ap.is_delete!=1 and
+		apm.machine_id =
+		#{machineId}
 	</select>
 
 </mapper>

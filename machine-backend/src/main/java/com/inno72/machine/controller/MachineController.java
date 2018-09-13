@@ -75,9 +75,10 @@ public class MachineController {
 	 * @return
 	 */
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list(@RequestParam(required = false) String machineCode,
-			@RequestParam(required = false) String localCode) {
-		Result<List<MachineListVo>> list = machineService.findMachines(machineCode, localCode);
+	public ModelAndView list(String machineCode, String localCode, String startTime, String endTime, String machineType,
+			String machineStatus) {
+		Result<List<MachineListVo>> list = machineService.findMachines(machineCode, localCode, startTime, endTime,
+				machineType, machineStatus);
 		return ResultPages.page(list);
 	}
 
@@ -147,7 +148,7 @@ public class MachineController {
 		return machineService.updateMachine(vo);
 
 	}
-	
+
 	/**
 	 * 查询机器信息
 	 * 
@@ -159,7 +160,6 @@ public class MachineController {
 		return machineService.findMachineInfoById(machineId);
 
 	}
-
 
 	/**
 	 * 货道详情
