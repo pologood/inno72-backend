@@ -14,7 +14,11 @@ import com.inno72.machine.model.Inno72AdminArea;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
+import com.inno72.machine.vo.PointLog;
 import com.inno72.machine.vo.SupplyRequestVo;
+import com.inno72.mongo.MongoUtil;
+
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
@@ -41,6 +45,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
     @Resource
     private Inno72LocaleMapper inno72LocaleMapper;
 
+	@Resource
+	private MongoOperations mongoTpl;
+
     @Resource
     private Inno72CheckUserMapper inno72CheckUserMapper;
     @Override
@@ -62,6 +69,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
             machine.setMachineStatus(4);
             machine.setUpdateId(checkUser.getId());
             machine.setUpdateTime(LocalDateTime.now());
+            machine.setInsideTime(LocalDateTime.now());
             inno72MachineMapper.updateByPrimaryKeySelective(machine);
             Condition condition = new Condition(Inno72CheckUserMachine.class);
             condition.createCriteria().andEqualTo("checkUserId",checkUser.getId()).andEqualTo("machineId",machineId);
@@ -73,6 +81,13 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
                 userMachine.setMachineId(machineId);
                 inno72CheckUserMachineMapper.insertSelective(userMachine);
             }
+			machine = inno72MachineMapper.getMachineByCode(machineCode);
+			PointLog pointLog = new PointLog();
+            pointLog.setType(CommonConstants.LOG_TYPE_IN_FACTORY);
+            pointLog.setMachineCode(machineCode);
+            pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
+            pointLog.setDetail("设置机器入厂，"+checkUser.getName()+"设置了最新点位："+machine.getLocaleStr());
+			mongoTpl.save(pointLog,"PointLog");
         }else{
             return Results.failure("机器状态有误");
         }

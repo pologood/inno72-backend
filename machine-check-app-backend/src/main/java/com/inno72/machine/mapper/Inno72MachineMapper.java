@@ -21,4 +21,6 @@ public interface Inno72MachineMapper extends Mapper<Inno72Machine> {
 
     Inno72Machine getMachineByCode(String machineCode);
 
+    Inno72Machine getMachineById(String machineId);
+
 }

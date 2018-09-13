@@ -15,6 +15,7 @@
 		<result column="machine_status" jdbcType="INTEGER" property="machineStatus" />
 		<result column="net_status" jdbcType="INTEGER" property="netStatus" />
 		<result column="device_id" jdbcType="VARCHAR" property="deviceId" />
+        <result column="inside_time" jdbcType="TIMESTAMP" property="insideTime"/>
 		<result column="address" jdbcType="VARCHAR" property="address" />
 		<result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
 		<association property="supplyChannelVoList" resultMap="supplyChannelVoList"/>
@@ -168,6 +169,21 @@
 		LEFT JOIN inno72_locale t4 ON t4.id = t1.locale_id
 		LEFT JOIN inno72_admin_area t5 ON t5.CODE = t4.area_code
 		where t1.machine_code=#{machineCode}
+		limit 1
+	</select>
+
+    <select id="getMachineById" resultMap="BaseResultMap">
+		select t1.*,
+		 CONCAT(
+		t5.province,
+		t5.city,
+		t5.district,
+		if(t5.circle='其他','',t5.circle),IFNULL(t4.mall,""),IFNULL( t4.name,'')
+		) AS localeStr
+		from inno72_machine t1
+		LEFT JOIN inno72_locale t4 ON t4.id = t1.locale_id
+		LEFT JOIN inno72_admin_area t5 ON t5.CODE = t4.area_code
+		where t1.id=#{machineId}
 		limit 1
 	</select>
 </mapper>
