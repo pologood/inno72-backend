@@ -18,6 +18,7 @@ import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.utils.StringUtil;
+import com.inno72.dataauth.DataAutherInterceptor;
 import com.inno72.system.mapper.Inno72FunctionDataMapper;
 import com.inno72.system.mapper.Inno72FunctionMapper;
 import com.inno72.system.mapper.Inno72UserFunctionDataMapper;
@@ -167,6 +168,7 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 			}
 			re.setFunctions(rr);
 		}
+		DataAutherInterceptor.setUserId(null);
 		FunctionTreeVo root = new FunctionTreeVo();
 		root.setId("XX");
 		root.setTitle("机器管理系统");
