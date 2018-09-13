@@ -282,22 +282,22 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
         exceptionBean.setMachineCode(bean.getMachineCode());
         exceptionBean.setCreateTime(now);
         exceptionBean.setLocaleStr(bean.getLocaleStr());
-        if(StringUtil.isEmpty(value) && sub>1) {//间隔时间大于1分钟
+        if(StringUtil.isEmpty(value) && sub>=1) {//间隔时间大于1分钟
             exceptionBean.setLevel(1);
 			mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
             logger.info("超过1分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
             redisUtil.set(key,"2");
-        }else if("2".equals(value) && sub>5){//间隔时间大于5分钟
+        }else if("2".equals(value) && sub>=5){//间隔时间大于5分钟
             exceptionBean.setLevel(2);
 			mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
             logger.info("超过5分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
             redisUtil.set(key,"3");
-        }else if("3".equals(value) && sub>10){//间隔大于10分钟
+        }else if("3".equals(value) && sub>=10){//间隔大于10分钟
             exceptionBean.setLevel(3);
 			mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
             logger.info("超过10分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
             redisUtil.set(key,"4");
-        }else if("4".equals(value) && sub>30){//间隔大于30分钟
+        }else if("4".equals(value) && sub>=30){//间隔大于30分钟
             String heartTimeKey = CommonConstants.MACHINE_ALARM_HEART_TIME_BEF+bean.getMachineId();
             String heartTimeValue = redisUtil.get(heartTimeKey);
             if(StringUtil.isEmpty(heartTimeValue)){//redis为空时发送
@@ -322,12 +322,12 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
         exceptionBean.setMachineCode(bean.getMachineCode());
         exceptionBean.setLocaleStr(bean.getLocaleStr());
         exceptionBean.setCreateTime(now);
-        if(StringUtil.isEmpty(value) && sub>10){//间隔时间大于10分钟
+        if(StringUtil.isEmpty(value) && sub>=10){//间隔时间大于10分钟
             exceptionBean.setLevel(1);
 			mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
             logger.info("超过10分钟未发送连接的机器，编号为：{}",bean.getMachineCode());
             redisUtil.set(key,"2");
-        }else if("2".equals(value) && sub>30){
+        }else if("2".equals(value) && sub>=30){
             String connectTimeKey = CommonConstants.MACHINE_ALARM_CONNECT_TIME_BEF+bean.getMachineId();
             String connectTimeValue = redisUtil.get(connectTimeKey);
             if(StringUtil.isEmpty(connectTimeValue)){//redis为空时发送
@@ -362,7 +362,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 		pointLog.setMachineCode(machineCode);
 		pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
 		pointLog.setDetail(text);
-		mongoUtil.save(pointLog);
+		mongoUtil.save(pointLog,"PointLog");
 	}
 
 

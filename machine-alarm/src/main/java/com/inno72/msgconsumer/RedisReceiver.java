@@ -342,6 +342,6 @@ public class RedisReceiver {
 		pointLog.setMachineCode(machineCode);
 		pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
 		pointLog.setDetail(text);
-		mongoTpl.save(pointLog);
+		mongoTpl.save(pointLog,"PointLog");
 	}
 }

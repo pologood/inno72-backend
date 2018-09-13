@@ -13,6 +13,7 @@ public class PointLog {
 	 */
 	public static final String POINT_TYPE = "logType";
 
+
 	/**
 	 * 机器CODE { OtherLog } -> instanceName
 	 *
