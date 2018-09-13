@@ -19,7 +19,7 @@ public interface LocaleService extends Service<Inno72Locale> {
 
 	List<Inno72LocaleVo> getList(String code, String keyword);
 
-	List<Inno72LocaleVo> findByPage(String code, String keyword);
+	List<Inno72LocaleVo> findByPage(String code, String keyword, String type);
 
 	Result<String> delById(String id);
 

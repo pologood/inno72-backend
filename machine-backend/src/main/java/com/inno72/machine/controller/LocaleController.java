@@ -72,8 +72,8 @@ public class LocaleController {
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView list(@RequestParam(required = false) String code,
-			@RequestParam(required = false) String keyword) {
-		List<Inno72LocaleVo> list = localeService.findByPage(code, keyword);
+			@RequestParam(required = false) String keyword, @RequestParam(required = false) String type) {
+		List<Inno72LocaleVo> list = localeService.findByPage(code, keyword, type);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 

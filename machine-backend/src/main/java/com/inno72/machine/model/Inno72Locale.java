@@ -27,6 +27,9 @@ public class Inno72Locale {
 	@Column(name = "name")
 	private String name;
 
+	@Column(name = "type")
+	private Integer type;
+
 	@NotBlank(message = "请选择区域")
 	@Column(name = "area_code")
 	private String areaCode;
@@ -139,6 +142,14 @@ public class Inno72Locale {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
 	}
 
 	public String getAreaCode() {

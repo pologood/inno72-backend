@@ -214,7 +214,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	}
 
 	@Override
-	public List<Inno72LocaleVo> findByPage(String code, String keyword) {
+	public List<Inno72LocaleVo> findByPage(String code, String keyword, String type) {
 		logger.info("---------------------分页列表查询-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
@@ -225,6 +225,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 			params.put("num", num);
 		}
 		params.put("keyword", keyword);
+		params.put("type", type);
 
 		List<Inno72LocaleVo> list = inno72LocaleMapper.selectLocaleByPage(params);
 
