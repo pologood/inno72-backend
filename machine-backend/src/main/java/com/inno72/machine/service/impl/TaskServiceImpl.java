@@ -147,10 +147,10 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 						return Results.failure("操作货道不是同一批次");
 					}
 				}
-				if (task.getType() == 1) {
+				if (type == 1) {
 					LogUtil.logger(LogType.TASK_INSTALL.getCode(), taskMachine.getMachineCode(),
 							"任务安装app:" + task.getApp());
-				} else if (task.getType() == 2) {
+				} else if (type == 2) {
 					LogUtil.logger(LogType.TASK_UNISTALL.getCode(), taskMachine.getMachineCode(),
 							"任务卸载app:" + task.getApp());
 				}
