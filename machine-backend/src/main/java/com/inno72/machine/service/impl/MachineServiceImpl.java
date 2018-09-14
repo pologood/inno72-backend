@@ -693,7 +693,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		}
 
 		List<PointLog> pointLogs = mongoTpl.find(query, PointLog.class, "PointLog");
-		if ((isStartTime && !isEndTime) || (isStartTime && isEndTime)){
+		if (isStartTime && !isEndTime){
 			if (pointLogs.size() > 1){
 				Collections.reverse(pointLogs);
 			}
