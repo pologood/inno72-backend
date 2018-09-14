@@ -14,9 +14,7 @@ import com.inno72.machine.model.Inno72AdminArea;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
-import com.inno72.machine.vo.PointLog;
 import com.inno72.machine.vo.SupplyRequestVo;
-import com.inno72.mongo.MongoUtil;
 
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
@@ -44,9 +42,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
     @Resource
     private Inno72LocaleMapper inno72LocaleMapper;
-
-	@Resource
-	private MongoOperations mongoTpl;
 
     @Resource
     private Inno72CheckUserMapper inno72CheckUserMapper;

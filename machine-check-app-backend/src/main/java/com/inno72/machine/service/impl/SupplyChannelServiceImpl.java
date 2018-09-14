@@ -10,10 +10,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.inno72.common.DateUtil;
-import com.inno72.log.PointLogContext;
-import com.inno72.log.vo.LogType;
-import com.inno72.machine.vo.PointLog;
 import com.inno72.machine.vo.SupplyRequestVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
