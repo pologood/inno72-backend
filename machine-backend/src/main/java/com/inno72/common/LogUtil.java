@@ -2,12 +2,15 @@ package com.inno72.common;
 
 import java.time.LocalDateTime;
 
-import org.mortbay.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.inno72.log.PointLogContext;
 import com.inno72.log.vo.LogType;
 
 public class LogUtil {
+	private static Logger logger = LoggerFactory.getLogger(LogUtil.class);
+
 	/**
 	 * @param msg
 	 *            消息体 msg[0] type 日志类型 msg[1] machineCode 机器code msg[2] detail
@@ -17,7 +20,7 @@ public class LogUtil {
 		new PointLogContext(LogType.POINT).machineCode(msg[1])
 				.pointTime(DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S1)).type(msg[0]).detail(msg[2])
 				.tag("").bulid();
-		Log.info("======================================================");
+		logger.info("======================================================");
 
 	}
 }
