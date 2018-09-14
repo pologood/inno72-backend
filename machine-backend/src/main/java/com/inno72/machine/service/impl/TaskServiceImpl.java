@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSON;
 import com.inno72.common.AbstractService;
 import com.inno72.common.DateUtil;
+import com.inno72.common.LogType;
+import com.inno72.common.LogUtil;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
@@ -144,6 +146,13 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 						logger.info("操作货道不是同一批次");
 						return Results.failure("操作货道不是同一批次");
 					}
+				}
+				if (type == 1) {
+					LogUtil.logger(LogType.TASK_INSTALL.getCode(), taskMachine.getMachineCode(),
+							"任务安装app:" + task.getApp());
+				} else if (type == 2) {
+					LogUtil.logger(LogType.TASK_UNISTALL.getCode(), taskMachine.getMachineCode(),
+							"任务卸载app:" + task.getApp());
 				}
 
 				insertTaskMachinList.add(insertTaskMachine);

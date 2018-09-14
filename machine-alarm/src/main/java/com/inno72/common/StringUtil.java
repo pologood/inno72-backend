@@ -113,7 +113,7 @@ public class StringUtil {
 				.pointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1))
 				.type(msg[0])
 				.detail(msg[2])
-				.tag("");
+				.tag("").bulid();
 	}
 
 }
