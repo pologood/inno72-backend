@@ -2,6 +2,8 @@ package com.inno72.common;
 
 import java.time.LocalDateTime;
 
+import org.mortbay.log.Log;
+
 import com.inno72.log.PointLogContext;
 import com.inno72.log.vo.LogType;
 
@@ -15,5 +17,7 @@ public class LogUtil {
 		new PointLogContext(LogType.POINT).machineCode(msg[1])
 				.pointTime(DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S1)).type(msg[0]).detail(msg[2])
 				.tag("").bulid();
+		Log.info("======================================================");
+
 	}
 }

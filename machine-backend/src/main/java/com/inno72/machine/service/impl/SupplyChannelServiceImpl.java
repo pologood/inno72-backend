@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import javax.annotation.Resource;
 
-import org.mortbay.log.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -97,8 +96,6 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				machineId = channel.getMachineId();
 				Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
 				if (machine != null) {
-					Log.info("================" + chan.getStatus().intValue());
-					Log.info("================" + (chan.getStatus().intValue() == 0));
 
 					if (chan.getStatus().intValue() == 0) {
 						LogUtil.logger(LogType.ENABLE_CHANNEL.getCode(), machine.getMachineCode(),
