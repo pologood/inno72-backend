@@ -31,13 +31,14 @@ import com.inno72.check.model.Inno72CheckFault;
 import com.inno72.check.service.CheckFaultService;
 import com.inno72.common.AbstractService;
 import com.inno72.common.DateUtil;
+import com.inno72.common.LogType;
+import com.inno72.common.LogUtil;
 import com.inno72.common.MachineBackendProperties;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
-import com.inno72.common.datetime.LocalDateTimeUtil;
 import com.inno72.common.datetime.LocalDateUtil;
 import com.inno72.machine.mapper.Inno72AppScreenShotMapper;
 import com.inno72.machine.mapper.Inno72MachineMapper;
@@ -350,6 +351,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 				sl.add(bean);
 			}
 			msg.setData(sl);
+			LogUtil.logger(LogType.CUT_APP.getCode(), machine.getMachineCode(), "切换app，包名：" + appPackageName);
 			return sendMsg(machine.getMachineCode(), msg);
 		}
 		return Results.failure("发送失败");
@@ -372,6 +374,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		bean.setVersionCode(versionCode);
 		il.add(bean);
 		msg.setData(il);
+		LogUtil.logger(LogType.MACHINE_INSTALL.getCode(), machine.getMachineCode(), "安装app：" + appPackageName);
 		return sendMsg(machine.getMachineCode(), msg);
 	}
 
@@ -605,6 +608,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		msg.setSubEventType(4);
 		msg.setMachineId(machine.getMachineCode());
 		msg.setData(machineCode);
+		LogUtil.logger(LogType.UPDATE_MACHINECODE.getCode(), machine.getMachineCode(), "更新机器编号为:" + machineCode);
 		return sendMsg(machine.getMachineCode(), msg);
 	}
 
@@ -648,7 +652,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	@Override
 	public Result<List<PointLog>> machinePointLog(String machineCode, String startTime, String endTime) {
 
-		if (StringUtil.isEmpty(machineCode)){
+		if (StringUtil.isEmpty(machineCode)) {
 			return Results.failure("机器编码不存在!");
 		}
 
@@ -659,30 +663,30 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		boolean isStartTime = StringUtil.isEmpty(startTime);
 		boolean isEndTime = StringUtil.isEmpty(endTime);
 		// 都没有值 倒序取1000条
-		if (!isStartTime && isEndTime){
+		if (!isStartTime && isEndTime) {
 
 			query.with(new Sort(Sort.Direction.ASC, "pointTime"));
 			query.addCriteria(Criteria.where("pointTime").gt(startTime));
 
-		}else if (isStartTime && !isEndTime){
+		} else if (isStartTime && !isEndTime) {
 
 			query.with(new Sort(Sort.Direction.DESC, "pointTime"));
 			query.addCriteria(Criteria.where("pointTime").lt(endTime));
 			query.limit(200);
 
-		}else if (isStartTime && isEndTime){
+		} else if (isStartTime && isEndTime) {
 
 			query.with(new Sort(Sort.Direction.DESC, "pointTime"));
 			query.limit(1000);
 
-		}else if (!isStartTime && !isEndTime) {
+		} else if (!isStartTime && !isEndTime) {
 			try {
 				LocalDate startLocalDate = LocalDateUtil.transfer(startTime);
 				LocalDate endLocalDate = LocalDateUtil.transfer(endTime);
-				if (startLocalDate.isAfter(endLocalDate)){
+				if (startLocalDate.isAfter(endLocalDate)) {
 					return Results.failure("结束时间不能比开始时间小！");
 				}
-			}catch (Exception e){
+			} catch (Exception e) {
 				return Results.failure("导出传入日期格式错误! (ex: yyyy-MM-dd)");
 			}
 
