@@ -35,6 +35,18 @@
 		<result column="machine_status" jdbcType="VARCHAR" property="machineStatus" />
 		<association property="planTime" resultMap="planTimeResult" />
 	</resultMap>
+	
+	<resultMap id="Vo1ResultMap" type="com.inno72.machine.vo.MachineListVo1">
+		<result column="id" jdbcType="VARCHAR" property="id" />
+		<result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+		<result column="local_desc" jdbcType="VARCHAR" property="localDesc" />
+		<result column="net_status" jdbcType="INTEGER" property="netStatus" />
+		<result column="activity_name" jdbcType="VARCHAR" property="activityName" />
+		<result column="channel_status" jdbcType="VARCHAR" property="channelStatus" />
+		<result column="goods_status" jdbcType="VARCHAR" property="goodsStatus" />
+		<result column="machine_status" jdbcType="VARCHAR" property="machineStatus" />
+		<association property="planTime" resultMap="planTimeResult" />
+	</resultMap>
 
 	<select id="selectMachinesByPage" parameterType="java.util.Map"
 		resultMap="VoResultMap">
@@ -91,7 +103,7 @@
 		<result column="end_time" property="endTime" />
 	</resultMap>
 	<select id="findMachinePlan" parameterType="java.util.Map"
-		resultMap="VoResultMap">
+		resultMap="Vo1ResultMap">
 		select * from (
 		SELECT
 		m.id,
