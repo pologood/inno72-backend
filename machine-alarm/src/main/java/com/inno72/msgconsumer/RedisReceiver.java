@@ -248,7 +248,9 @@ public class RedisReceiver {
                     supplyChannel.setIsDelete(1);
                     supplyChannel.setMachineId(machine.getId());
                     supplyChannelService.closeSupply(supplyChannel);
-					StringUtil.logger(CommonConstants.LOG_TYPE_DROPGOODS,machineCode,text);
+					if(alarmFlag) {
+						StringUtil.logger(CommonConstants.LOG_TYPE_DROPGOODS, machineCode, text);
+					}
 					if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
 						if(alarmFlag){
 							Map<String, String> params = new HashMap<>();
