@@ -40,6 +40,7 @@ import com.inno72.socketio.core.SocketServer;
 import com.inno72.socketio.core.SocketServerHandler;
 import com.inno72.util.AesUtils;
 import com.inno72.util.GZIPUtil;
+import com.inno72.util.LogUtil;
 
 @Configuration
 public class SocketIOStartHandler {
@@ -138,6 +139,7 @@ public class SocketIOStartHandler {
 				log.info("收到推送监控消息，sessionId:{},machineId：{}机器的系统信息已保存,消息内容：{}", key, machineId, message);
 				socketService.updateNetStatus(systemStatus);
 				socketService.recordHeart(machineId);
+				LogUtil.logger("1", machineId, JSON.toJSONString(systemStatus));
 			}
 
 			@Override
