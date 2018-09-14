@@ -678,7 +678,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		} else if (isStartTime && isEndTime) {
 
 			query.with(new Sort(Sort.Direction.DESC, "pointTime"));
-			query.limit(1000);
+			query.limit(200);
 
 		} else if (!isStartTime && !isEndTime) {
 			try {
@@ -697,7 +697,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		}
 
 		List<PointLog> pointLogs = mongoTpl.find(query, PointLog.class, "PointLog");
-		if (isStartTime && !isEndTime){
+		if ( isStartTime ){
 			if (pointLogs.size() > 1){
 				Collections.reverse(pointLogs);
 			}
