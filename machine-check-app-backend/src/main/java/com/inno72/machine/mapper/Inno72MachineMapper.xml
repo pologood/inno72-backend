@@ -15,7 +15,6 @@
 		<result column="machine_status" jdbcType="INTEGER" property="machineStatus" />
 		<result column="net_status" jdbcType="INTEGER" property="netStatus" />
 		<result column="device_id" jdbcType="VARCHAR" property="deviceId" />
-        <result column="inside_time" jdbcType="TIMESTAMP" property="insideTime"/>
 		<result column="address" jdbcType="VARCHAR" property="address" />
 		<result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
 		<association property="supplyChannelVoList" resultMap="supplyChannelVoList"/>
