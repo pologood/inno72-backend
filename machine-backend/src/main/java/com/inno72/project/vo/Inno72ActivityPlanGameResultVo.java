@@ -10,6 +10,8 @@ public class Inno72ActivityPlanGameResultVo extends Inno72ActivityPlanGameResult
 
 	private Integer number;
 
+	private Integer userDayNumber;
+
 	public String getShopsId() {
 		return shopsId;
 	}
@@ -32,6 +34,14 @@ public class Inno72ActivityPlanGameResultVo extends Inno72ActivityPlanGameResult
 
 	public void setNumber(Integer number) {
 		this.number = number;
+	}
+
+	public Integer getUserDayNumber() {
+		return userDayNumber;
+	}
+
+	public void setUserDayNumber(Integer userDayNumber) {
+		this.userDayNumber = userDayNumber;
 	}
 
 }

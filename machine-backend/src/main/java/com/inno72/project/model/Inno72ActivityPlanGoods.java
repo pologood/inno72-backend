@@ -35,6 +35,12 @@ public class Inno72ActivityPlanGoods {
 	private Integer number;
 
 	/**
+	 * 商品每天获取数量
+	 */
+	@Column(name = "user_day_number")
+	private Integer userDayNumber;
+
+	/**
 	 * 获取ID
 	 *
 	 * @return id - ID
@@ -97,6 +103,14 @@ public class Inno72ActivityPlanGoods {
 
 	public void setNumber(Integer number) {
 		this.number = number;
+	}
+
+	public Integer getUserDayNumber() {
+		return userDayNumber;
+	}
+
+	public void setUserDayNumber(Integer userDayNumber) {
+		this.userDayNumber = userDayNumber;
 	}
 
 }
