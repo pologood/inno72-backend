@@ -11,6 +11,8 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import com.inno72.common.DateUtil;
+import com.inno72.log.PointLogContext;
+import com.inno72.log.vo.LogType;
 import com.inno72.machine.vo.PointLog;
 import com.inno72.machine.vo.SupplyRequestVo;
 import org.slf4j.Logger;
@@ -137,12 +139,8 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				condition.createCriteria().andEqualTo("supplyChannelId", supply.getId());
 				inno72SupplyChannelGoodsMapper.deleteByCondition(condition);// 删除货道关联商品
 			}
-			PointLog pointLog = new PointLog();
-			pointLog.setType(CommonConstants.LOG_TYPE_MERGE_CHANNEL);
-			pointLog.setMachineCode(machine.getMachineCode());
-			pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
-			pointLog.setDetail("合并货道:在"+machine.getLocaleStr()+"点位处的机器对"+parentCode+"货道和"+childCode+"货道进行了合并，合并后为"+parentCode+"货道，"+childCode+"货道已被清除");
-			mongoTpl.save(pointLog);
+			String detail = "合并货道:在"+machine.getLocaleStr()+"点位处的机器对"+parentCode+"货道和"+childCode+"货道进行了合并，合并后为"+parentCode+"货道，"+childCode+"货道已被清除";
+			StringUtil.logger(CommonConstants.LOG_TYPE_MERGE_CHANNEL,machineCode,detail);
 			return ResultGenerator.genSuccessResult();
 		} else {
 			return ResultGenerator.genFailResult("该货道已合并");
@@ -198,12 +196,8 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			childChannel.setMachineId(supplyChannel.getMachineId());
 			inno72SupplyChannelMapper.insertSelective(childChannel);
 			Inno72Machine machine = inno72MachineMapper.getMachineById(machineId);
-			PointLog pointLog = new PointLog();
-			pointLog.setType(CommonConstants.LOG_TYPE_SPLIT_CHANNEL);
-			pointLog.setMachineCode(machine.getMachineCode());
-			pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
-			pointLog.setDetail("拆分货道：在"+machine.getLocaleStr()+"点位处的机器对"+code+"货道进行了拆分，拆分后变为"+code+"货道和"+newCode+"货道");
-			mongoTpl.save(pointLog);
+			String detail = "拆分货道：在"+machine.getLocaleStr()+"点位处的机器对"+code+"货道进行了拆分，拆分后变为"+code+"货道和"+newCode+"货道";
+			StringUtil.logger(CommonConstants.LOG_TYPE_SPLIT_CHANNEL,machine.getMachineCode(),detail);
 			return ResultGenerator.genSuccessResult();
 		} else {
 			return ResultGenerator.genFailResult("操作货道有误");
@@ -521,12 +515,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				});
 
 			});
-			PointLog pointLog = new PointLog();
-			pointLog.setType(CommonConstants.LOG_TYPE_MACHINE_SUPPLY);
-			pointLog.setMachineCode(machine.getMachineCode());
-			pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
-			pointLog.setDetail("机器补货："+checkUser.getName()+"对"+machine.getLocaleStr()+"的机器进行了补货");
-			mongoTpl.save(pointLog);
+			String detail = "机器补货："+checkUser.getName()+"对"+machine.getLocaleStr()+"的机器进行了补货";
+			StringUtil.logger(CommonConstants.LOG_TYPE_MACHINE_SUPPLY,machine.getMachineCode(),detail);
+
 		}
 		return ResultGenerator.genSuccessResult();
 	}
