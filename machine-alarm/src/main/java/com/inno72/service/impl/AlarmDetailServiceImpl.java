@@ -198,7 +198,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 					alarmSendBean.setLocaleStr(localeStr);
 					alarmSendBean.setCreateTime(new Date());
 					mongoUtil.save(alarmSendBean,"AlarmSendBean");
-					this.sendLog(machineCode,CommonConstants.LOG_TYPE_HEART,text);
+					StringUtil.logger(CommonConstants.LOG_TYPE_HEART,machineCode,text);
                 }else if(type == 2){
                     if(level == 1){
                         if (StringUtil.isNotEmpty(active) && active.equals("prod")) {
@@ -233,7 +233,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 					alarmSendBean.setLocaleStr(localeStr);
 					alarmSendBean.setCreateTime(new Date());
 					mongoUtil.save(alarmSendBean,"AlarmSendBean");
-					this.sendLog(machineCode,CommonConstants.LOG_TYPE_CONNECT,text);
+					StringUtil.logger(CommonConstants.LOG_TYPE_CONNECT,machineCode,text);
                 }
                 Query removeQuery = new Query();
                 removeQuery.addCriteria(Criteria.where("_id").is(bean.getId()));
@@ -356,14 +356,6 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 		redisUtil.del(connectTimeKey);
 	}
 
-	public void sendLog(String machineCode,String type,String text){
-		PointLog pointLog = new PointLog();
-		pointLog.setType(type);
-		pointLog.setMachineCode(machineCode);
-		pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
-		pointLog.setDetail(text);
-		mongoUtil.save(pointLog,"PointLog");
-	}
 
 
 }
