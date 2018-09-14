@@ -198,8 +198,7 @@
 		<result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
 		<result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
 		<result column="user_max_times" jdbcType="INTEGER" property="userMaxTimes" />
-		<result column="day_user_max_times" jdbcType="INTEGER"
-			property="dayUserMaxTimes" />
+		<result column="day_user_max_times" jdbcType="INTEGER" property="dayUserMaxTimes" />
 		<result column="remark" jdbcType="VARCHAR" property="remark" />
 		<result column="create_id" jdbcType="VARCHAR" property="createId" />
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -223,6 +222,7 @@
 		<result column="goods_prize_type" property="prizeType" />
 		<result column="goods_name" property="activityPlanId" />
 		<result column="goods_number" property="number" />
+		<result column="goods_user_day_number" property="userDayNumber" />
 		<result column="goods_shops_id" property="shopsId" />
 		<result column="goods_shops_name" property="shopName" />
 	</resultMap>
@@ -251,8 +251,9 @@
 		rg.result_remark AS goods_result_remark,
 		rg.prize_type AS goods_prize_type,
 		g.name AS goods_name,
-		g.number AS goods_number,
 		g.shop_id AS goods_shops_id,
+		apg.number AS goods_number,
+		apg.user_day_number AS goods_user_day_number,
 		CONCAT(IFNULL( goodm.merchant_name,''), '-',goodp.shop_name) AS goods_shops_name,
 
 		rc.result_code AS coupons_result_code,
@@ -277,6 +278,7 @@
 		LEFT JOIN inno72_coupon co ON co.id = rc.prize_id
 		LEFT JOIN inno72_activity a ON a.id = ap.activity_id
 		LEFT JOIN inno72_goods g ON g.id = rg.prize_id
+		LEFT JOIN inno72_activity_plan_goods apg ON apg.goods_id = rg.prize_id and apg.activity_plan_id=ap.id
 		LEFT JOIN inno72_shops goodp ON goodp.id=g.shop_id
 		LEFT JOIN inno72_merchant goodm ON goodm.id=g.seller_id
 

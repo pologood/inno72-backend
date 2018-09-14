@@ -192,6 +192,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					planGood.setActivityPlanId(activityPlanId);
 					planGood.setGoodsId(goodsId);
 					planGood.setNumber(inno72ActivityPlanGameResult.getNumber());
+					planGood.setUserDayNumber(inno72ActivityPlanGameResult.getUserDayNumber());
 
 					insertPlanGoodList.add(planGood);
 
@@ -477,6 +478,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					planGood.setActivityPlanId(activityPlan.getId());
 					planGood.setGoodsId(goodsId);
 					planGood.setNumber(inno72ActivityPlanGameResult.getNumber());
+					planGood.setUserDayNumber(inno72ActivityPlanGameResult.getUserDayNumber());
 
 					// 活动游戏结果数据
 					Inno72ActivityPlanGameResult planGameResult = new Inno72ActivityPlanGameResult();
