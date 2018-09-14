@@ -190,13 +190,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 					m.put("touser", userIdString);
 					m.put("agentid", "1000002");
 					msgUtil.sendQyWechatMsg("qywechat_msg", params, m, userIdString, appName);
-
-					PointLog pointLog = new PointLog();
-					pointLog.setType(CommonConstants.LOG_TYPE_SET_WORK);
-					pointLog.setMachineCode(machineCode);
-					pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
-					pointLog.setDetail("操作工单：巡检人员"+checkUser.getName()+"对"+localeStr+"点位处的机器提交了故障单");
-					mongoTpl.save(pointLog);
+					StringUtil.logger(CommonConstants.LOG_TYPE_SET_WORK,machineCode,"操作工单：巡检人员"+checkUser.getName()+"对"+localeStr+"点位处的机器提交了故障单");
 				}
 
 			}
@@ -243,12 +237,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		Inno72CheckFault fault = inno72CheckFaultMapper.selectDetail(checkFault.getId());
 		if(fault != null){
 			Inno72Machine machine = inno72MachineMapper.getMachineById(fault.getMachineId());
-			PointLog pointLog = new PointLog();
-			pointLog.setType(CommonConstants.LOG_TYPE_SET_WORK);
-			pointLog.setMachineCode(machine.getMachineCode());
-			pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
-			pointLog.setDetail("解决工单:巡检人员解决了"+machine.getLocaleStr()+"点位所在机器的工单");
-			mongoTpl.save(pointLog);
+			StringUtil.logger(CommonConstants.LOG_TYPE_SET_WORK,machine.getMachineCode(),"解决工单:巡检人员解决了"+machine.getLocaleStr()+"点位所在机器的工单");
 		}
 
 		return ResultGenerator.genSuccessResult();
@@ -307,12 +296,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		Inno72CheckFault fault = inno72CheckFaultMapper.selectDetail(faultId);
 		if(fault != null){
 			Inno72Machine machine = inno72MachineMapper.getMachineById(fault.getMachineId());
-			PointLog pointLog = new PointLog();
-			pointLog.setType(CommonConstants.LOG_TYPE_SET_WORK);
-			pointLog.setMachineCode(machine.getMachineCode());
-			pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
-			pointLog.setDetail("操作工单:巡检人员"+UserUtil.getUser().getName()+"对"+machine.getLocaleStr()+"点位处机器的工单进行了回复");
-			mongoTpl.save(pointLog);
+			StringUtil.logger(CommonConstants.LOG_TYPE_SET_WORK,machine.getMachineCode(),"操作工单:巡检人员"+UserUtil.getUser().getName()+"对"+machine.getLocaleStr()+"点位处机器的工单进行了回复");
 		}
 		return ResultGenerator.genSuccessResult();
 	}
@@ -381,12 +365,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		inno72CheckFault = inno72CheckFaultMapper.selectDetail(inno72CheckFault.getId());
 		if(inno72CheckFault != null){
 			Inno72Machine machine = inno72MachineMapper.getMachineById(inno72CheckFault.getMachineId());
-			PointLog pointLog = new PointLog();
-			pointLog.setType(CommonConstants.LOG_TYPE_SET_WORK);
-			pointLog.setMachineCode(inno72CheckFault.getMachineCode());
-			pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
-			pointLog.setDetail("操作工单：巡检人员"+checkUser.getName()+"对"+machine.getLocaleStr()+"点位处的机器接收了工单");
-			mongoTpl.save(pointLog);
+			StringUtil.logger(CommonConstants.LOG_TYPE_SET_WORK,machine.getMachineCode(),"操作工单：巡检人员"+checkUser.getName()+"对"+machine.getLocaleStr()+"点位处的机器接收了工单");
 		}
 		return ResultGenerator.genSuccessResult();
 	}
