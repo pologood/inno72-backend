@@ -15,6 +15,6 @@ public class LogUtil {
 	public static void logger(String... msg) {
 		new PointLogContext(LogType.POINT).machineCode(msg[1])
 				.pointTime(DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S1)).type(msg[0]).detail(msg[2])
-				.tag("");
+				.tag("").bulid();
 	}
 }
