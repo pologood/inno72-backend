@@ -64,6 +64,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
             machine.setMachineStatus(4);
             machine.setUpdateId(checkUser.getId());
             machine.setUpdateTime(LocalDateTime.now());
+            machine.setInsideTime(LocalDateTime.now());
             inno72MachineMapper.updateByPrimaryKeySelective(machine);
             Condition condition = new Condition(Inno72CheckUserMachine.class);
             condition.createCriteria().andEqualTo("checkUserId",checkUser.getId()).andEqualTo("machineId",machineId);

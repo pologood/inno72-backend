@@ -91,6 +91,15 @@ public class Inno72Machine {
 	@Column(name = "device_id")
 	private String deviceId;
 
+	/**
+	 * 入厂时间
+	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
+	@Column(name = "inside_time")
+	private LocalDateTime insideTime;
+
 
 	@Transient
 	private String address;
@@ -354,6 +363,15 @@ public class Inno72Machine {
 	 */
 	public void setDeviceId(String deviceId) {
 		this.deviceId = deviceId;
+	}
+
+
+	public LocalDateTime getInsideTime() {
+		return insideTime;
+	}
+
+	public void setInsideTime(LocalDateTime insideTime) {
+		this.insideTime = insideTime;
 	}
 
 	public String getAddress() {
