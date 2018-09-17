@@ -1,5 +1,6 @@
 package com.inno72.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.DateUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.machine.vo.PointLog;
 import com.inno72.model.AlarmDetailBean;
 import com.inno72.model.AlarmExceptionMachineBean;
 import com.inno72.model.AlarmMachineBean;
@@ -196,6 +198,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 					alarmSendBean.setLocaleStr(localeStr);
 					alarmSendBean.setCreateTime(new Date());
 					mongoUtil.save(alarmSendBean,"AlarmSendBean");
+					StringUtil.logger(CommonConstants.LOG_TYPE_HEART,machineCode,text);
                 }else if(type == 2){
                     if(level == 1){
                         if (StringUtil.senSmsActive(active)) {
@@ -230,6 +233,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 					alarmSendBean.setLocaleStr(localeStr);
 					alarmSendBean.setCreateTime(new Date());
 					mongoUtil.save(alarmSendBean,"AlarmSendBean");
+					StringUtil.logger(CommonConstants.LOG_TYPE_CONNECT,machineCode,text);
                 }
                 Query removeQuery = new Query();
                 removeQuery.addCriteria(Criteria.where("_id").is(bean.getId()));
@@ -278,22 +282,22 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
         exceptionBean.setMachineCode(bean.getMachineCode());
         exceptionBean.setCreateTime(now);
         exceptionBean.setLocaleStr(bean.getLocaleStr());
-        if(StringUtil.isEmpty(value) && sub>1) {//间隔时间大于1分钟
+        if(StringUtil.isEmpty(value) && sub>=1) {//间隔时间大于1分钟
             exceptionBean.setLevel(1);
 			mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
             logger.info("超过1分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
             redisUtil.set(key,"2");
-        }else if("2".equals(value) && sub>5){//间隔时间大于5分钟
+        }else if("2".equals(value) && sub>=5){//间隔时间大于5分钟
             exceptionBean.setLevel(2);
 			mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
             logger.info("超过5分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
             redisUtil.set(key,"3");
-        }else if("3".equals(value) && sub>10){//间隔大于10分钟
+        }else if("3".equals(value) && sub>=10){//间隔大于10分钟
             exceptionBean.setLevel(3);
 			mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
             logger.info("超过10分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
             redisUtil.set(key,"4");
-        }else if("4".equals(value) && sub>30){//间隔大于30分钟
+        }else if("4".equals(value) && sub>=30){//间隔大于30分钟
             String heartTimeKey = CommonConstants.MACHINE_ALARM_HEART_TIME_BEF+bean.getMachineId();
             String heartTimeValue = redisUtil.get(heartTimeKey);
             if(StringUtil.isEmpty(heartTimeValue)){//redis为空时发送
@@ -318,12 +322,12 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
         exceptionBean.setMachineCode(bean.getMachineCode());
         exceptionBean.setLocaleStr(bean.getLocaleStr());
         exceptionBean.setCreateTime(now);
-        if(StringUtil.isEmpty(value) && sub>10){//间隔时间大于10分钟
+        if(StringUtil.isEmpty(value) && sub>=10){//间隔时间大于10分钟
             exceptionBean.setLevel(1);
 			mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
             logger.info("超过10分钟未发送连接的机器，编号为：{}",bean.getMachineCode());
             redisUtil.set(key,"2");
-        }else if("2".equals(value) && sub>30){
+        }else if("2".equals(value) && sub>=30){
             String connectTimeKey = CommonConstants.MACHINE_ALARM_CONNECT_TIME_BEF+bean.getMachineId();
             String connectTimeValue = redisUtil.get(connectTimeKey);
             if(StringUtil.isEmpty(connectTimeValue)){//redis为空时发送
@@ -351,7 +355,6 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 		String connectTimeKey = CommonConstants.MACHINE_ALARM_CONNECT_TIME_BEF+machineId;
 		redisUtil.del(connectTimeKey);
 	}
-
 
 
 

@@ -11,13 +11,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.common.AbstractService;
+import com.inno72.common.LogType;
+import com.inno72.common.LogUtil;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.mapper.Inno72SupplyChannelMapper;
+import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.model.Inno72SupplyChannel;
 import com.inno72.machine.service.SupplyChannelService;
 import com.inno72.machine.vo.ChannelListVo;
@@ -36,6 +41,8 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 
 	@Resource
 	private Inno72SupplyChannelMapper inno72SupplyChannelMapper;
+	@Resource
+	private Inno72MachineMapper inno72MachineMapper;
 
 	@Override
 	public Result<String> initChannel(String machineCode, List<Inno72SupplyChannel> channels) {
@@ -87,6 +94,17 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				channel.setUpdateId(mUser.getId());
 				inno72SupplyChannelMapper.updateByPrimaryKeySelective(channel);
 				machineId = channel.getMachineId();
+				Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+				if (machine != null) {
+
+					if (chan.getStatus().intValue() == 0) {
+						LogUtil.logger(LogType.ENABLE_CHANNEL.getCode(), machine.getMachineCode(),
+								"启用货道:" + JSON.toJSONString(chan));
+					} else {
+						LogUtil.logger(LogType.DELETE_CHANNEL.getCode(), machine.getMachineCode(),
+								"停用货道:" + JSON.toJSONString(chan));
+					}
+				}
 			}
 
 		}

@@ -1,12 +1,19 @@
 package com.inno72.machine.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +27,7 @@ import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.common.Results;
+import com.inno72.common.StringUtil;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.vo.ChannelListVo;
@@ -30,6 +38,7 @@ import com.inno72.machine.vo.MachineNetInfo;
 import com.inno72.machine.vo.MachinePortalVo;
 import com.inno72.machine.vo.MachineStatusVo;
 import com.inno72.machine.vo.MachineStockOutInfo;
+import com.inno72.machine.vo.PointLog;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
 import com.inno72.machine.vo.UpdateMachineVo;
 
@@ -53,6 +62,67 @@ public class MachineController {
 	public Result<List<MachineNetInfo>> updateMachineListNetStatus(@RequestBody List<MachineNetInfo> list) {
 		return machineService.updateMachineListNetStatus(list);
 
+	}
+
+	/**
+	 * 机器日志
+	 *
+	 * @param machineCode machineCode
+	 * @param startTime startTime
+	 * @param endTime endTime
+	 * @return 日志列表
+	 */
+	@RequestMapping(value = "/machinePointLog", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<PointLog>> machinePointLog(String machineCode, String startTime, String endTime) {
+		return machineService.machinePointLog(machineCode, startTime, endTime);
+	}
+	/**
+	 * 导出机器日志
+	 *
+	 * @param machineCode machineCode
+	 * @param startTime startTime
+	 * @param endTime endTime
+	 * @return 日志列表
+	 */
+	@RequestMapping(value = "/exportMachinePointLog", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> exportMachinePointLog(String machineCode, String startTime, String endTime, HttpServletResponse response)
+			throws IOException {
+		if (StringUtil.isEmpty(startTime) || StringUtil.isEmpty(endTime)){
+			return Results.failure("导出请传入时间区间!");
+		}
+		Result<List<PointLog>> listResult = machineService.machinePointLog(machineCode, startTime, endTime);
+		if (listResult.getCode() == Result.FAILURE){
+			return Results.failure(listResult.getMsg());
+		}
+		List<PointLog> logs = listResult.getData();
+
+		String fileName = "export" + ".xls";
+		int rowNum = 1;
+		String[] headers = {"时间","事件"};
+
+		HSSFWorkbook workbook = new HSSFWorkbook();
+		HSSFSheet sheet = workbook.createSheet("机器事件");
+		HSSFRow row = sheet.createRow(0);
+
+		for(int i=0;i<headers.length;i++){
+			HSSFCell cell = row.createCell(i);
+			HSSFRichTextString text = new HSSFRichTextString(headers[i]);
+			cell.setCellValue(text);
+		}
+		//在表中存放查询到的数据放入对应的列
+		for (PointLog log : logs) {
+			HSSFRow row1 = sheet.createRow(rowNum);
+			row1.createCell(0).setCellValue(log.getPointTime());
+			row1.createCell(1).setCellValue(log.getDetail());
+			rowNum++;
+		}
+
+		response.setContentType("application/octet-stream");
+		response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+		response.flushBuffer();
+		workbook.write(response.getOutputStream());
+
+		return Results.success();
 	}
 
 	/**
@@ -176,8 +246,7 @@ public class MachineController {
 	/**
 	 * 启用、停用货道（1停用，0请用）
 	 *
-	 * @param channelId
-	 * @param status
+	 * @param channels
 	 * @return
 	 */
 	@RequestMapping(value = "/deleteChannel", method = { RequestMethod.POST, RequestMethod.GET })
@@ -189,8 +258,7 @@ public class MachineController {
 	/**
 	 * 更新商品余量
 	 *
-	 * @param channelId
-	 * @param count
+	 * @param channels
 	 * @return
 	 */
 	@RequestMapping(value = "/updateGoodsCount", method = { RequestMethod.POST, RequestMethod.GET })

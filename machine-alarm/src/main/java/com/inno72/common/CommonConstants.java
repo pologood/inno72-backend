@@ -60,6 +60,19 @@ public class CommonConstants {
     /**网络连接时间Redis前缀*/
     public final static String MACHINE_ALARM_CONNECT_TIME_BEF = "machine-alarm:connect-time:";
 
+    /**日志：缺货*/
+    public final static String LOG_TYPE_LACKGOODS = "61";
+
+	/**日志：掉货*/
+	public final static String LOG_TYPE_DROPGOODS = "62";
+
+	/**日志：心跳*/
+	public final static String LOG_TYPE_HEART = "63";
+
+	/**日志：网络*/
+	public final static String LOG_TYPE_CONNECT = "64";
+
+
 
 
 }

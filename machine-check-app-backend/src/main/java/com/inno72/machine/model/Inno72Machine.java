@@ -91,6 +91,7 @@ public class Inno72Machine {
 	@Column(name = "device_id")
 	private String deviceId;
 
+
 	@Transient
 	private String address;
 

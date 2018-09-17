@@ -1,8 +1,10 @@
 package com.inno72.machine.service.impl;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +17,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -29,12 +32,15 @@ import com.inno72.check.model.Inno72CheckFault;
 import com.inno72.check.service.CheckFaultService;
 import com.inno72.common.AbstractService;
 import com.inno72.common.DateUtil;
+import com.inno72.common.LogType;
+import com.inno72.common.LogUtil;
 import com.inno72.common.MachineBackendProperties;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.common.datetime.LocalDateUtil;
 import com.inno72.machine.mapper.Inno72AppScreenShotMapper;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72App;
@@ -56,6 +62,7 @@ import com.inno72.machine.vo.MachineStartAppBean;
 import com.inno72.machine.vo.MachineStatus;
 import com.inno72.machine.vo.MachineStatusVo;
 import com.inno72.machine.vo.MachineStockOutInfo;
+import com.inno72.machine.vo.PointLog;
 import com.inno72.machine.vo.SendMessageBean;
 import com.inno72.machine.vo.SystemStatus;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
@@ -349,6 +356,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 				sl.add(bean);
 			}
 			msg.setData(sl);
+			LogUtil.logger(LogType.CUT_APP.getCode(), machine.getMachineCode(), "切换app，包名：" + appPackageName);
 			return sendMsg(machine.getMachineCode(), msg);
 		}
 		return Results.failure("发送失败");
@@ -371,6 +379,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		bean.setVersionCode(versionCode);
 		il.add(bean);
 		msg.setData(il);
+		LogUtil.logger(LogType.MACHINE_INSTALL.getCode(), machine.getMachineCode(), "安装app：" + appPackageName);
 		return sendMsg(machine.getMachineCode(), msg);
 	}
 
@@ -442,17 +451,17 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		List<Inno72CheckFault> faults = checkFaultService.findByCondition(condition);
 		for (Inno72CheckFault fault : faults) {
 			switch (fault.getStatus()) {
-			case 1:
-				waitOrder += 1;
-				break;
-			case 2:
-				processed += 1;
-				break;
-			case 3:
-				waitConfirm += 1;
-				break;
-			default:
-				break;
+				case 1:
+					waitOrder += 1;
+					break;
+				case 2:
+					processed += 1;
+					break;
+				case 3:
+					waitConfirm += 1;
+					break;
+				default:
+					break;
 			}
 		}
 		int paiActivityCount = activityPlanService.selectPaiYangActivityCount();
@@ -466,66 +475,66 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	@Override
 	public Result<List<MachineExceptionVo>> findExceptionMachine(Integer type) {
 		switch (type) {
-		case 1:
-			List<MachineLogInfo> netList = mongoTpl.find(new Query(), MachineLogInfo.class, "MachineLogInfo");
-			Map<String, String> online = new HashMap<>();
-			Map<String, String> offline = new HashMap<>();
-			for (MachineLogInfo machineLogInfo : netList) {
-				LocalDateTime createTime = machineLogInfo.getCreateTime();
-				Duration duration = Duration.between(createTime, LocalDateTime.now());
-				long between = duration.toMinutes();
-				if (between > 2) {
-					offline.put(machineLogInfo.getMachineId(), DateUtil.toTimeStr(createTime, DateUtil.DF_FULL_S1));
-				} else {
-					online.put(machineLogInfo.getMachineId(), "");
+			case 1:
+				List<MachineLogInfo> netList = mongoTpl.find(new Query(), MachineLogInfo.class, "MachineLogInfo");
+				Map<String, String> online = new HashMap<>();
+				Map<String, String> offline = new HashMap<>();
+				for (MachineLogInfo machineLogInfo : netList) {
+					LocalDateTime createTime = machineLogInfo.getCreateTime();
+					Duration duration = Duration.between(createTime, LocalDateTime.now());
+					long between = duration.toMinutes();
+					if (between > 2) {
+						offline.put(machineLogInfo.getMachineId(), DateUtil.toTimeStr(createTime, DateUtil.DF_FULL_S1));
+					} else {
+						online.put(machineLogInfo.getMachineId(), "");
+					}
 				}
-			}
-			List<MachineExceptionVo> exceptionVos = inno72MachineMapper.findMachines();
-			Iterator<MachineExceptionVo> it = exceptionVos.iterator();
-			while (it.hasNext()) {
-				MachineExceptionVo vo = it.next();
-				if (online.containsKey(vo.getMachineCode())) {
-					it.remove();
-				} else {
-					vo.setOfflineTime(Optional.ofNullable(offline.get(vo.getMachineCode())).orElse("未知"));
+				List<MachineExceptionVo> exceptionVos = inno72MachineMapper.findMachines();
+				Iterator<MachineExceptionVo> it = exceptionVos.iterator();
+				while (it.hasNext()) {
+					MachineExceptionVo vo = it.next();
+					if (online.containsKey(vo.getMachineCode())) {
+						it.remove();
+					} else {
+						vo.setOfflineTime(Optional.ofNullable(offline.get(vo.getMachineCode())).orElse("未知"));
+					}
 				}
-			}
-			return Results.success(exceptionVos);
-		case 2:
-			List<MachineStatus> statusList = mongoTpl.find(new Query(), MachineStatus.class, "MachineStatus");
-			Map<String, MachineStatus> exception = new HashMap<>();
-			for (MachineStatus machineStatus : statusList) {
-				if (machineStatus.getMachineDoorStatus() == 1 || machineStatus.getDropGoodsSwitch() == 0
-						|| !StringUtils.isEmpty(machineStatus.getGoodsChannelStatus())
-						|| machineStatus.getScreenIntensity() < 20 || machineStatus.getVoice() < 20) {
-					exception.put(machineStatus.getMachineId(), machineStatus);
+				return Results.success(exceptionVos);
+			case 2:
+				List<MachineStatus> statusList = mongoTpl.find(new Query(), MachineStatus.class, "MachineStatus");
+				Map<String, MachineStatus> exception = new HashMap<>();
+				for (MachineStatus machineStatus : statusList) {
+					if (machineStatus.getMachineDoorStatus() == 1 || machineStatus.getDropGoodsSwitch() == 0
+							|| !StringUtils.isEmpty(machineStatus.getGoodsChannelStatus())
+							|| machineStatus.getScreenIntensity() < 20 || machineStatus.getVoice() < 20) {
+						exception.put(machineStatus.getMachineId(), machineStatus);
+					}
 				}
-			}
-			List<MachineExceptionVo> exceptionVos1 = inno72MachineMapper.findMachines();
-			Iterator<MachineExceptionVo> it1 = exceptionVos1.iterator();
-			while (it1.hasNext()) {
-				MachineExceptionVo vo = it1.next();
-				if (!exception.containsKey(vo.getMachineCode())) {
-					it1.remove();
-				} else {
-					MachineStatus status = exception.get(vo.getMachineCode());
-					vo.setMachineDoorStatus(status.getMachineDoorStatus());
-					vo.setDropGoodsSwitch(status.getDropGoodsSwitch());
-					vo.setTemperature(status.getTemperatureSwitchStatus());
-					vo.setScreenIntensity(status.getScreenIntensity());
-					String channelStatus = Optional.ofNullable(status.getGoodsChannelStatus())
-							.map(a -> a.replace("[]", "")).orElse("");
-					vo.setGoodsChannelStatus(channelStatus);
-					vo.setVoice(status.getVoice());
-					vo.setUpdateTime(DateUtil.toTimeStr(status.getCreateTime(), DateUtil.DF_FULL_S1));
+				List<MachineExceptionVo> exceptionVos1 = inno72MachineMapper.findMachines();
+				Iterator<MachineExceptionVo> it1 = exceptionVos1.iterator();
+				while (it1.hasNext()) {
+					MachineExceptionVo vo = it1.next();
+					if (!exception.containsKey(vo.getMachineCode())) {
+						it1.remove();
+					} else {
+						MachineStatus status = exception.get(vo.getMachineCode());
+						vo.setMachineDoorStatus(status.getMachineDoorStatus());
+						vo.setDropGoodsSwitch(status.getDropGoodsSwitch());
+						vo.setTemperature(status.getTemperatureSwitchStatus());
+						vo.setScreenIntensity(status.getScreenIntensity());
+						String channelStatus = Optional.ofNullable(status.getGoodsChannelStatus())
+								.map(a -> a.replace("[]", "")).orElse("");
+						vo.setGoodsChannelStatus(channelStatus);
+						vo.setVoice(status.getVoice());
+						vo.setUpdateTime(DateUtil.toTimeStr(status.getCreateTime(), DateUtil.DF_FULL_S1));
+					}
 				}
-			}
-			return Results.success(exceptionVos1);
-		case 3:
-			List<MachineExceptionVo> stockOutVos = inno72MachineMapper.findStockOutMachines();
-			return Results.success(stockOutVos);
-		default:
-			return Results.failure("参数传入错误");
+				return Results.success(exceptionVos1);
+			case 3:
+				List<MachineExceptionVo> stockOutVos = inno72MachineMapper.findStockOutMachines();
+				return Results.success(stockOutVos);
+			default:
+				return Results.failure("参数传入错误");
 		}
 
 	}
@@ -604,6 +613,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		msg.setSubEventType(4);
 		msg.setMachineId(machine.getMachineCode());
 		msg.setData(machineCode);
+		LogUtil.logger(LogType.UPDATE_MACHINECODE.getCode(), machine.getMachineCode(), "更新机器编号为:" + machineCode);
 		return sendMsg(machine.getMachineCode(), msg);
 	}
 
@@ -642,6 +652,62 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			map.put("msg", pmap);
 			return sendMsgStr(machine.getMachineCode(), JSON.toJSONString(map));
 		}
+	}
+
+	@Override
+	public Result<List<PointLog>> machinePointLog(String machineCode, String startTime, String endTime) {
+
+		if (StringUtil.isEmpty(machineCode)) {
+			return Results.failure("机器编码不存在!");
+		}
+
+		Query query = new Query();
+
+		query.addCriteria(Criteria.where("machineCode").is(machineCode));
+
+		boolean isStartTime = StringUtil.isEmpty(startTime);
+		boolean isEndTime = StringUtil.isEmpty(endTime);
+		// 都没有值 倒序取1000条
+		if (!isStartTime && isEndTime) {
+
+			query.with(new Sort(Sort.Direction.ASC, "pointTime"));
+			query.addCriteria(Criteria.where("pointTime").gt(startTime));
+
+		} else if (isStartTime && !isEndTime) {
+
+			query.with(new Sort(Sort.Direction.DESC, "pointTime"));
+			query.addCriteria(Criteria.where("pointTime").lt(endTime));
+			query.limit(200);
+
+		} else if (isStartTime && isEndTime) {
+
+			query.with(new Sort(Sort.Direction.DESC, "pointTime"));
+			query.limit(200);
+
+		} else if (!isStartTime && !isEndTime) {
+			try {
+				LocalDate startLocalDate = LocalDateUtil.transfer(startTime);
+				LocalDate endLocalDate = LocalDateUtil.transfer(endTime);
+				if (startLocalDate.isAfter(endLocalDate)) {
+					return Results.failure("结束时间不能比开始时间小！");
+				}
+			} catch (Exception e) {
+				return Results.failure("导出传入日期格式错误! (ex: yyyy-MM-dd)");
+			}
+
+			query.with(new Sort(Sort.Direction.ASC, "pointTime"));
+			query.addCriteria(Criteria.where("pointTime").lt(endTime + " 23:59:59").gt(startTime));
+
+		}
+
+		List<PointLog> pointLogs = mongoTpl.find(query, PointLog.class, "PointLog");
+		if ( isStartTime ){
+			if (pointLogs.size() > 1){
+				Collections.reverse(pointLogs);
+			}
+		}
+
+		return Results.success(pointLogs);
 	}
 
 	private Result<String> sendMsgStr(String machineCode, String json) {

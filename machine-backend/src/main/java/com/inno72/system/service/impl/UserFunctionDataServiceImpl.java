@@ -18,6 +18,7 @@ import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.utils.StringUtil;
+import com.inno72.dataauth.DataAutherInterceptor;
 import com.inno72.system.mapper.Inno72FunctionDataMapper;
 import com.inno72.system.mapper.Inno72FunctionMapper;
 import com.inno72.system.mapper.Inno72UserFunctionDataMapper;
@@ -167,11 +168,12 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 			}
 			re.setFunctions(rr);
 		}
+		DataAutherInterceptor.setUserId(null);
 		FunctionTreeVo root = new FunctionTreeVo();
 		root.setId("XX");
 		root.setTitle("机器管理系统");
 		Condition condition = new Condition(Inno72Function.class);
-		condition.createCriteria().andEqualTo("functionLevel", 1);
+		condition.createCriteria().andEqualTo("functionLevel", 1).andNotEqualTo("functionDepict", "首页");
 		List<Inno72Function> first = inno72FunctionMapper.selectByCondition(condition);
 		List<FunctionTreeVo> firstVoList = new ArrayList<>();
 		for (Inno72Function funFirst : first) {
@@ -183,7 +185,8 @@ public class UserFunctionDataServiceImpl extends AbstractService<Inno72UserFunct
 			funFirstVo.setSelectName(funFirst.getFunctionDepict());
 			firstVoList.add(funFirstVo);
 			condition = new Condition(Inno72Function.class);
-			condition.createCriteria().andEqualTo("functionLevel", 2).andEqualTo("parentId", funFirst.getId());
+			condition.createCriteria().andEqualTo("functionLevel", 2).andNotEqualTo("functionDepict", "活动排期")
+					.andNotEqualTo("functionDepict", "机器排期").andEqualTo("parentId", funFirst.getId());
 			List<Inno72Function> second = inno72FunctionMapper.selectByCondition(condition);
 			List<FunctionTreeVo> secondVoList = new ArrayList<>();
 			for (Inno72Function funSecond : second) {
