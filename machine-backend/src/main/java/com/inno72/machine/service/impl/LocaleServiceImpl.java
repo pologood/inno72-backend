@@ -206,6 +206,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		String province = StringUtil.getAreaParentCode(areaCode, 1);
 		String city = StringUtil.getAreaParentCode(areaCode, 2);
 		String district = StringUtil.getAreaParentCode(areaCode, 3);
+
 		vo.setProvince(province);
 		vo.setCity(city);
 		vo.setDistrict(district);

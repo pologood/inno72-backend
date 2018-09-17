@@ -40,7 +40,7 @@
   </resultMap>
   
   <select id="selectById" parameterType="String" resultMap="VoResultMap">
-		SELECT * FROM inno72_locale where id=#{id}
+		SELECT *,JSON_EXTRACT(tag,'$.tags') AS tags FROM inno72_locale where id=#{id}
   </select>
 
 	<select id="selectLocaleByPage" parameterType="java.util.Map" resultMap="VoResultMap">
