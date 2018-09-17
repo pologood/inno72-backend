@@ -47,7 +47,11 @@ public class MessageBean<T> {
 		// app状态
 		APPSTATUS(2),
 		// 截屏
-		SCREENSHOT(3);
+		SCREENSHOT(3),
+		// 改变机器编号
+		UPDATEMACHINECODE(4),
+		// 改变温度
+		UPDATEMWD(5);
 
 		private int v;
 

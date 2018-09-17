@@ -1,10 +1,7 @@
 package com.inno72.machine.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alibaba.fastjson.JSON;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
@@ -67,49 +63,57 @@ public class MachineController {
 	/**
 	 * 机器日志
 	 *
-	 * @param machineCode machineCode
-	 * @param startTime startTime
-	 * @param endTime endTime
+	 * @param machineCode
+	 *            machineCode
+	 * @param startTime
+	 *            startTime
+	 * @param endTime
+	 *            endTime
 	 * @return 日志列表
 	 */
 	@RequestMapping(value = "/machinePointLog", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<List<PointLog>> machinePointLog(String machineCode, String startTime, String endTime) {
 		return machineService.machinePointLog(machineCode, startTime, endTime);
 	}
+
 	/**
 	 * 导出机器日志
 	 *
-	 * @param machineCode machineCode
-	 * @param startTime startTime
-	 * @param endTime endTime
+	 * @param machineCode
+	 *            machineCode
+	 * @param startTime
+	 *            startTime
+	 * @param endTime
+	 *            endTime
 	 * @return 日志列表
 	 */
 	@RequestMapping(value = "/exportMachinePointLog", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> exportMachinePointLog(String machineCode, String startTime, String endTime, HttpServletResponse response)
-			throws IOException {
-		if (StringUtil.isEmpty(startTime) || StringUtil.isEmpty(endTime)){
+	public Result<String> exportMachinePointLog(String machineCode, String startTime, String endTime,
+			HttpServletResponse response) throws IOException {
+		if (StringUtil.isEmpty(startTime) || StringUtil.isEmpty(endTime)) {
 			return Results.failure("导出请传入时间区间!");
 		}
 		Result<List<PointLog>> listResult = machineService.machinePointLog(machineCode, startTime, endTime);
-		if (listResult.getCode() == Result.FAILURE){
+		if (listResult.getCode() == Result.FAILURE) {
 			return Results.failure(listResult.getMsg());
 		}
 		List<PointLog> logs = listResult.getData();
 
 		String fileName = "export" + ".xls";
 		int rowNum = 1;
-		String[] headers = {"时间","事件"};
+		String[] headers = { "时间", "事件" };
 
+		@SuppressWarnings("resource")
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet = workbook.createSheet("机器事件");
 		HSSFRow row = sheet.createRow(0);
 
-		for(int i=0;i<headers.length;i++){
+		for (int i = 0; i < headers.length; i++) {
 			HSSFCell cell = row.createCell(i);
 			HSSFRichTextString text = new HSSFRichTextString(headers[i]);
 			cell.setCellValue(text);
 		}
-		//在表中存放查询到的数据放入对应的列
+		// 在表中存放查询到的数据放入对应的列
 		for (PointLog log : logs) {
 			HSSFRow row1 = sheet.createRow(rowNum);
 			row1.createCell(0).setCellValue(log.getPointTime());
@@ -150,32 +154,6 @@ public class MachineController {
 		Result<List<MachineListVo>> list = machineService.findMachines(machineCode, localCode, startTime, endTime,
 				machineType, machineStatus);
 		return ResultPages.page(list);
-	}
-
-	public static void main(String[] args) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("id", "abcde");
-		map.put("machineCode", "1234");
-		map.put("local", "北京市朝阳区大悦城一层");
-		map.put("offline_time", "2018.08.03 12:02:30");
-		List<Map<String, Object>> list = new ArrayList<>();
-		Map<String, Object> mm = new HashMap<>();
-		mm.put("goodName", "娃哈哈");
-		mm.put("goodCount", 10);
-		Map<String, Object> mm1 = new HashMap<>();
-		mm1.put("goodName", "娃哇哇");
-		mm1.put("goodCount", 5);
-		list.add(mm);
-		list.add(mm1);
-		map.put("stockoutInfo", list);
-		map.put("machineDoorStatus", 1);
-		map.put("dropGoodsSwitch", 1);
-		map.put("temperature", 36);
-		map.put("screenIntensity", 10);
-		map.put("goodsChannelStatus", "");
-		map.put("voice", 10);
-		map.put("update_time", "2018.08.03 12:02:30");
-		System.out.println(JSON.toJSONString(Results.success(map)));
 	}
 
 	/**
@@ -388,6 +366,31 @@ public class MachineController {
 	@RequestMapping(value = "/cutDesktop", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> cutDesktop(@RequestParam String machineId, @RequestParam Integer status) {
 		return machineService.cutDesktop(machineId, status);
+
+	}
+
+	/**
+	 * 更改温度
+	 * 
+	 * @param machineId
+	 * @param temperature
+	 * @return
+	 */
+	@RequestMapping(value = "/updateTemperature", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> updateTemperature(@RequestParam String machineId, @RequestParam Integer temperature) {
+		return machineService.updateTemperature(machineId, temperature);
+
+	}
+
+	/**
+	 * 查询温度
+	 * 
+	 * @param machineId
+	 * @return
+	 */
+	@RequestMapping(value = "/findTemperature", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> findTemperature(@RequestParam String machineId) {
+		return machineService.findTemperature(machineId);
 
 	}
 

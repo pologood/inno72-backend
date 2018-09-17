@@ -64,4 +64,8 @@ public interface MachineService extends Service<Inno72Machine> {
 	Result<String> cutDesktop(String machineId, Integer status);
 
 	Result<List<PointLog>> machinePointLog(String machineCode, String startTime, String endTime);
+
+	Result<String> updateTemperature(String machineId, Integer temperature);
+
+	Result<String> findTemperature(String machineId);
 }
