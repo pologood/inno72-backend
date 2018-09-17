@@ -24,6 +24,7 @@ import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.common.Results;
 import com.inno72.common.StringUtil;
+import com.inno72.machine.model.Inno72AppLog;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.vo.ChannelListVo;
@@ -391,6 +392,34 @@ public class MachineController {
 	@RequestMapping(value = "/findTemperature", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> findTemperature(@RequestParam String machineId) {
 		return machineService.findTemperature(machineId);
+
+	}
+
+	/**
+	 * 抓取日志
+	 * 
+	 * @param machineId
+	 * @param logType
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	@RequestMapping(value = "/grabLog", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> grabLog(@RequestParam String machineId, @RequestParam Integer logType,
+			@RequestParam String startTime, @RequestParam String endTime) {
+		return machineService.grabLog(machineId, logType, startTime, endTime);
+
+	}
+
+	/**
+	 * 查询日志列表
+	 * 
+	 * @param machineId
+	 * @return
+	 */
+	@RequestMapping(value = "/getLogs", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Inno72AppLog>> getLogs(@RequestParam String machineId) {
+		return machineService.getLogs(machineId);
 
 	}
 

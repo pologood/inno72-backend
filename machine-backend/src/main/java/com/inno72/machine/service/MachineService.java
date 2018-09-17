@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.inno72.common.Result;
 import com.inno72.common.Service;
+import com.inno72.machine.model.Inno72AppLog;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.vo.ChannelListVo;
 import com.inno72.machine.vo.MachineAppStatus;
@@ -68,4 +69,8 @@ public interface MachineService extends Service<Inno72Machine> {
 	Result<String> updateTemperature(String machineId, Integer temperature);
 
 	Result<String> findTemperature(String machineId);
+
+	Result<String> grabLog(String machineId, Integer logType, String startTime, String endTime);
+
+	Result<List<Inno72AppLog>> getLogs(String machineId);
 }

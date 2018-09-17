@@ -44,8 +44,10 @@ import com.inno72.common.datetime.LocalDateUtil;
 import com.inno72.machine.mapper.Inno72AppScreenShotMapper;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72App;
+import com.inno72.machine.model.Inno72AppLog;
 import com.inno72.machine.model.Inno72AppScreenShot;
 import com.inno72.machine.model.Inno72Machine;
+import com.inno72.machine.service.AppLogService;
 import com.inno72.machine.service.AppService;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.service.SupplyChannelService;
@@ -67,6 +69,7 @@ import com.inno72.machine.vo.SendMessageBean;
 import com.inno72.machine.vo.SystemStatus;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
 import com.inno72.machine.vo.UpdateMachineVo;
+import com.inno72.msg.MsgUtil;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.project.service.ActivityPlanService;
 import com.inno72.system.model.Inno72User;
@@ -100,7 +103,11 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	@Autowired
 	private ActivityPlanService activityPlanService;
 	@Autowired
+	private AppLogService appLogService;
+	@Autowired
 	private StringRedisTemplate stringRedisTemplate;
+	@Autowired
+	private MsgUtil msgUtil;
 
 	@Override
 	public Result<List<MachineListVo>> findMachines(String machineCode, String localCode, String startTime,
@@ -760,5 +767,45 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			return Results.success("-1");
 		}
 		return Results.success(statusList.get(0).getTemperature());
+	}
+
+	@Override
+	public Result<String> grabLog(String machineId, Integer logType, String startTime, String endTime) {
+		Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+		if (machine == null) {
+			return Results.failure("机器id不存在");
+		}
+		Map<String, Object> param = new HashMap<>();
+		param.put("pushType", 1);
+		Map<String, Object> msgInfo = new HashMap<>();
+
+		Map<String, Object> info = new HashMap<>();
+		info.put("logType", logType);
+		info.put("startTime", startTime);
+		info.put("endTime", endTime);
+
+		List<Map<String, Object>> infos = new ArrayList<>();
+		infos.add(info);
+		msgInfo.put("packInfo", infos);
+		param.put("msgInfo", msgInfo);
+
+		Map<String, String> params = new HashMap<>();
+		params.put("msg", JSON.toJSONString(param));
+		msgUtil.sendPush("push_android_transmission_common", params, machine.getMachineCode(),
+				"machine-backend--grabLog", "获取日志", "获取日志");
+		return Results.success();
+	}
+
+	@Override
+	public Result<List<Inno72AppLog>> getLogs(String machineId) {
+		Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+		if (machine == null) {
+			return Results.failure("机器id不存在");
+		}
+		Condition condition = new Condition(Inno72AppLog.class);
+		condition.createCriteria().andEqualTo("machineCode", machine.getMachineCode());
+		condition.orderBy("reciveTime").desc();
+		List<Inno72AppLog> list = appLogService.findByCondition(condition);
+		return Results.success(list);
 	}
 }
