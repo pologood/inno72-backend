@@ -185,6 +185,7 @@
 	left join inno72_activity_plan_machine t7 on t4.id=t7.machine_id
 	left join inno72_activity_plan t8 on t7.activity_plan_id=t8.id
     where t4.machine_status=4 and now() BETWEEN t8.start_time and t8.end_time
+    and t2.is_delete=0
  group by t4.machine_code,t1.goods_id,t8.id
   </select>
 
@@ -208,6 +209,23 @@
 	left join inno72_activity_plan t8 on t7.activity_plan_id=t8.id
     where
     t4.machine_status=4 and now() BETWEEN t8.start_time and t8.end_time
-    and t2.goods_id=#{goodsId} and t1.machine_id=#{machineId}
+    and t2.goods_id=#{goodsId} and t1.is_delete=0 and t1.machine_id=#{machineId}
   </select>
+
+
+
+    <select id="selectLockGoodsList" resultType="com.inno72.model.GoodsBean">
+        select sum(t1.goods_count) totalCount,
+        t3.name goodsName,t3.id goodsId
+        from inno72_supply_channel t1
+        inner join inno72_supply_channel_goods t2 on t1.id=t2.supply_channel_id
+        inner join inno72_goods t3 on t2.goods_id=t3.id
+        left join inno72_machine t4 on t1.machine_id=t4.id
+        left join inno72_activity_plan_machine t7 on t4.id=t7.machine_id
+        left join inno72_activity_plan t8 on t7.activity_plan_id=t8.id
+        where
+        t4.machine_status=4 and now() BETWEEN t8.start_time and t8.end_time
+        and t1.machine_id=#{machineId} and t1.is_delete=0
+        group by t3.id
+    </select>
 </mapper>
