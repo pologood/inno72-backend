@@ -60,12 +60,16 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 				return Results.failure("未找到用户登录信息");
 			}
 			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+			if (null == model.getType()) {
+				return Results.failure("请选择点位类型！");
+			}
 
-			String tag = model.getTag().toString();
-			if (StringUtil.isNotBlank(tag)) {
-				Map<String, Object> tagMap = JSON.parseObject(tag, Map.class);
-				List<String> tagList = (List<String>) tagMap.get("tags");
-				// 查询标签库是否存在，不存在，则存入
+			List<String> tagList = JSON.parseArray(model.getTag().toString(), String.class);
+			Map<String, Object> tagMap = new HashMap<>();
+			tagMap.put("tags", tagList);
+			model.setTag(JSON.toJSON(tagMap).toString());
+			// 查询标签库是否存在，不存在，则存入
+			if (tagList != null && tagList.size() > 0) {
 				List<String> oldTags = inno72TagMapper.selectAllTagNameList();
 				List<Inno72Tag> insertList = new ArrayList<>();
 				for (String t : tagList) {
@@ -80,6 +84,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 					inno72TagMapper.insertTagList(insertList);
 				}
 			}
+
 			if (null == model.getMonitor()) {
 				return Results.failure("请选择监控设置！");
 			} else {
@@ -155,23 +160,20 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
-			// 已排期未结束，不能修改
-			int n = inno72LocaleMapper.selectIsUseingPlan(model.getId());
-			if (n > 0) {
-				return Results.failure("此点位机器已进行活动排期，暂不能修改！");
-			}
+
 			if (model.getMonitor() == 1) {
 				if (StringUtil.isBlank(model.getMonitorStart()) || StringUtil.isBlank(model.getMonitorStart())) {
 					return Results.failure("请选择监控时间！");
 				}
 			}
-
 			String userId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-			String tag = model.getTag().toString();
-			if (StringUtil.isNotBlank(tag)) {
-				Map<String, Object> tagMap = JSON.parseObject(tag, Map.class);
-				List<String> tagList = (List<String>) tagMap.get("tags");
-				// 查询标签库是否存在，不存在，则存入
+
+			List<String> tagList = JSON.parseArray(model.getTag().toString(), String.class);
+			Map<String, Object> tagMap = new HashMap<>();
+			tagMap.put("tags", tagList);
+			model.setTag(JSON.toJSON(tagMap).toString());
+			// 查询标签库是否存在，不存在，则存入
+			if (tagList != null && tagList.size() > 0) {
 				List<String> oldTags = inno72TagMapper.selectAllTagNameList();
 				List<Inno72Tag> insertList = new ArrayList<>();
 				for (String t : tagList) {

@@ -3,7 +3,6 @@ package com.inno72.machine.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -34,7 +33,7 @@ public class LocaleController {
 	private LocaleService localeService;
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> add(@Valid Inno72Locale locale, BindingResult bindingResult) {
+	public Result<String> add(Inno72Locale locale, BindingResult bindingResult) {
 		try {
 			if (bindingResult.hasErrors()) {
 				return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
