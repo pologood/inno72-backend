@@ -28,14 +28,17 @@ import com.inno72.model.AlarmDetailBean;
 import com.inno72.model.AlarmExceptionMachineBean;
 import com.inno72.model.AlarmMachineBean;
 import com.inno72.model.AlarmSendBean;
+import com.inno72.model.Inno72AlarmGroup;
 import com.inno72.model.Inno72CheckUserPhone;
 import com.inno72.model.Inno72Machine;
 import com.inno72.mongo.MongoUtil;
 import com.inno72.msg.MsgUtil;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.service.AlarmDetailService;
+import com.inno72.service.AlarmGroupService;
 import com.inno72.service.AlarmMsgService;
 import com.inno72.service.CheckUserService;
+import com.inno72.service.MachineService;
 
 @Service
 @Transactional
@@ -57,6 +60,12 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 
     @Resource
     private MongoUtil mongoUtil;
+
+    @Resource
+    private AlarmGroupService alarmGroupService;
+
+	@Resource
+	private MachineService machineService;
 
     @Value("${inno72.dingding.groupId}")
     private String groupId;
@@ -138,7 +147,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                 if((startDate != null && startDate.after(now) || (endDate != null && endDate.before(now)))){
                     alarmFlag = false;//不发报警
                 }
-                if(alarmFlag){
+                if(alarmFlag && StringUtil.isNotEmpty(bean.getLocaleStr())){
                     this.addHeartExceptionMachine(bean,now);
                     this.addConnectExceptionMachine(bean,now);
                 }
@@ -158,86 +167,91 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                 Map<String,String> param = new HashMap<>();
                 String localeStr = bean.getLocaleStr();
                 String machineCode = bean.getMachineCode();
-                param.put("machineCode", machineCode);
-                param.put("localStr", localeStr);
-                String text = "";
-                Query query = new Query();
-                query.addCriteria(Criteria.where("id").is(bean.getDetailId()));
-                AlarmDetailBean detailBean = mongoUtil.findOne(query,AlarmDetailBean.class,"AlarmDetailBean");
-                String pageInfo = "";
-                if(detailBean != null){
-                    pageInfo = detailBean.getPageInfo();
-                    if(StringUtil.isNotEmpty(pageInfo)){
-                        pageInfo = "，页面停留在"+pageInfo;
-                    }
-                }
-                if(type == 1){
-                    if(level == 1){
-                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续1分钟"+pageInfo+"，请及时联系巡检人员。";
-                    }else if(level == 2){
-                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续5分钟"+pageInfo+"，请及时联系巡检人员。";
-                    }else if(level == 3){
-                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续10分钟"+pageInfo+"，请及时联系巡检人员。";
-                    }else if(level == 4){
-                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续30分钟"+pageInfo+"，请及时联系巡检人员。";
-                    }
-                    param.put("text",StringUtil.setText(text,active));
-                    msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-AlarmDetailService");
-                    logger.info("心跳异常发送钉钉消息："+groupId);
-					AlarmSendBean alarmSendBean = new AlarmSendBean();
-					alarmSendBean.setId(StringUtil.getUUID());
-					alarmSendBean.setInfo(text);
-					alarmSendBean.setLevel(level);
-					alarmSendBean.setMachineId(bean.getMachineId());
-					alarmSendBean.setMachineCode(machineCode);
-					alarmSendBean.setType(type);
-					if(detailBean != null) {
-						alarmSendBean.setRemark(detailBean.getRemark());
-						alarmSendBean.setPageInfo(detailBean.getPageInfo());
-					}
-					alarmSendBean.setLocaleStr(localeStr);
-					alarmSendBean.setCreateTime(new Date());
-					mongoUtil.save(alarmSendBean,"AlarmSendBean");
-					StringUtil.logger(CommonConstants.LOG_TYPE_HEART,machineCode,text);
-                }else if(type == 2){
-                    if(level == 1){
-                        if (StringUtil.senSmsActive(active)) {
-                            List<Inno72CheckUserPhone> phones = getInno72CheckUserPhones(machineCode);
-                            if(phones != null && phones.size()>0){
-                                text = "网络已经连续10分钟未连接成功，请及时处理。";
-                                param.put("text",text);
-                                for (Inno72CheckUserPhone userPhone:phones){
-                                    msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-AlarmDetailService");
-                                }
-                            }
-                        }
-						alarmMsgService.saveAlarmMsg(CommonConstants.MACHINE_NET_EXCEPTION,CommonConstants.SYS_MACHINE_NET,machineCode,0,localeStr);
-                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时联系巡检人员。";
-                    }else if(level == 2){
-                        text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续30分钟未连接成功，请及时联系巡检人员。";
-                    }
-					param.put("text",StringUtil.setText(text,active));
-                    msgUtil.sendDDTextByGroup("dingding_alarm_common", param, groupId, "machineAlarm-AlarmDetailService");
-                    logger.info("网络连接异常发送钉钉消息："+groupId);
-					AlarmSendBean alarmSendBean = new AlarmSendBean();
-					alarmSendBean.setId(StringUtil.getUUID());
-					alarmSendBean.setInfo(text);
-					alarmSendBean.setLevel(level);
-					alarmSendBean.setMachineId(bean.getMachineId());
-					alarmSendBean.setMachineCode(machineCode);
-					alarmSendBean.setType(type);
+                Inno72Machine machine = machineService.findByCode(machineCode);
+                String areaCode = machine.getAreaCode();
+                if(StringUtil.isNotEmpty(areaCode)){
+					Inno72AlarmGroup group = alarmGroupService.selectByParam(machine.getAreaCode());
+					param.put("machineCode", machineCode);
+					param.put("localStr", localeStr);
+					String text = "";
+					Query query = new Query();
+					query.addCriteria(Criteria.where("id").is(bean.getDetailId()));
+					AlarmDetailBean detailBean = mongoUtil.findOne(query,AlarmDetailBean.class,"AlarmDetailBean");
+					String pageInfo = "";
 					if(detailBean != null){
-						alarmSendBean.setRemark(detailBean.getRemark());
-						alarmSendBean.setPageInfo(detailBean.getPageInfo());
+						pageInfo = detailBean.getPageInfo();
+						if(StringUtil.isNotEmpty(pageInfo)){
+							pageInfo = "，页面停留在"+pageInfo;
+						}
 					}
-					alarmSendBean.setLocaleStr(localeStr);
-					alarmSendBean.setCreateTime(new Date());
-					mongoUtil.save(alarmSendBean,"AlarmSendBean");
-					StringUtil.logger(CommonConstants.LOG_TYPE_CONNECT,machineCode,text);
-                }
-                Query removeQuery = new Query();
-                removeQuery.addCriteria(Criteria.where("_id").is(bean.getId()));
-				mongoUtil.remove(removeQuery,"AlarmExceptionMachineBean");
+					if(type == 1){
+						if(level == 1){
+							text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续1分钟"+pageInfo+"，请及时联系巡检人员。";
+						}else if(level == 2){
+							text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续5分钟"+pageInfo+"，请及时联系巡检人员。";
+						}else if(level == 3){
+							text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续10分钟"+pageInfo+"，请及时联系巡检人员。";
+						}else if(level == 4){
+							text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续30分钟"+pageInfo+"，请及时联系巡检人员。";
+						}
+						param.put("text",StringUtil.setText(text,active));
+						msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId1(), "machineAlarm-AlarmDetailService");
+						logger.info("心跳异常发送钉钉消息："+groupId);
+						AlarmSendBean alarmSendBean = new AlarmSendBean();
+						alarmSendBean.setId(StringUtil.getUUID());
+						alarmSendBean.setInfo(text);
+						alarmSendBean.setLevel(level);
+						alarmSendBean.setMachineId(bean.getMachineId());
+						alarmSendBean.setMachineCode(machineCode);
+						alarmSendBean.setType(type);
+						if(detailBean != null) {
+							alarmSendBean.setRemark(detailBean.getRemark());
+							alarmSendBean.setPageInfo(detailBean.getPageInfo());
+						}
+						alarmSendBean.setLocaleStr(localeStr);
+						alarmSendBean.setCreateTime(new Date());
+						mongoUtil.save(alarmSendBean,"AlarmSendBean");
+						StringUtil.logger(CommonConstants.LOG_TYPE_HEART,machineCode,text);
+					}else if(type == 2){
+						if(level == 1){
+							if (StringUtil.senSmsActive(active)) {
+								List<Inno72CheckUserPhone> phones = getInno72CheckUserPhones(machineCode);
+								if(phones != null && phones.size()>0){
+									text = "网络已经连续10分钟未连接成功，请及时处理。";
+									param.put("text",text);
+									for (Inno72CheckUserPhone userPhone:phones){
+										msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-AlarmDetailService");
+									}
+								}
+							}
+							alarmMsgService.saveAlarmMsg(CommonConstants.MACHINE_NET_EXCEPTION,CommonConstants.SYS_MACHINE_NET,machineCode,0,localeStr);
+							text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时联系巡检人员。";
+						}else if(level == 2){
+							text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续30分钟未连接成功，请及时联系巡检人员。";
+						}
+						param.put("text",StringUtil.setText(text,active));
+						msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId1(), "machineAlarm-AlarmDetailService");
+						logger.info("网络连接异常发送钉钉消息："+groupId);
+						AlarmSendBean alarmSendBean = new AlarmSendBean();
+						alarmSendBean.setId(StringUtil.getUUID());
+						alarmSendBean.setInfo(text);
+						alarmSendBean.setLevel(level);
+						alarmSendBean.setMachineId(bean.getMachineId());
+						alarmSendBean.setMachineCode(machineCode);
+						alarmSendBean.setType(type);
+						if(detailBean != null){
+							alarmSendBean.setRemark(detailBean.getRemark());
+							alarmSendBean.setPageInfo(detailBean.getPageInfo());
+						}
+						alarmSendBean.setLocaleStr(localeStr);
+						alarmSendBean.setCreateTime(new Date());
+						mongoUtil.save(alarmSendBean,"AlarmSendBean");
+						StringUtil.logger(CommonConstants.LOG_TYPE_CONNECT,machineCode,text);
+					}
+					Query removeQuery = new Query();
+					removeQuery.addCriteria(Criteria.where("_id").is(bean.getId()));
+					mongoUtil.remove(removeQuery,"AlarmExceptionMachineBean");
+				}
             }
         }
     }

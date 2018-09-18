@@ -18,6 +18,7 @@
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete"/>
+      <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
   </resultMap>
 
   <update id="closeSupply">
@@ -29,4 +30,18 @@
     </if>
     where code = #{code} and machine_id=#{machineId}
   </update>
+
+    <select id="selectNormalSupply" resultMap="BaseResultMap">
+        select sc.* from inno72_supply_channel sc left join inno72_supply_channel_goods cg on sc.id=cg.supply_channel_id
+        where sc.machine_id=#{machineId} and sc.is_delete=0 and cg.goods_id in
+        (select g.goods_id from inno72_supply_channel c left join inno72_supply_channel_goods g on c.id=g.supply_channel_id
+         where c.machine_id=#{machineId} and c.code = #{code})
+    </select>
+
+    <select id="selectByParam" resultMap="BaseResultMap">
+        select c.*,ig.name goodsName from inno72_supply_channel c
+        left join inno72_supply_channel_goods g on c.id=g.supply_channel_id
+        left join inno72_goods ig on g.goods_id=ig.id
+        where c.machine_id=#{machineId} and c.code = #{code}
+    </select>
 </mapper>

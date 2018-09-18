@@ -1,5 +1,7 @@
 package com.inno72.model;
 
+import java.util.List;
+
 /**
  * @Auther: wxt
  * @Date: 2018/7/22 17:53
@@ -13,6 +15,8 @@ public class ChannelGoodsAlarmBean {
     private int lackNum;//缺货多少个
     private int surPlusNum;//剩余多少个
     private String localeStr;//点位
+
+	private List<GoodsBean> goodsBeanList;
 
     public int getLackNum() {
         return lackNum;
@@ -61,5 +65,13 @@ public class ChannelGoodsAlarmBean {
     public void setLocaleStr(String localeStr) {
         this.localeStr = localeStr;
     }
+
+	public List<GoodsBean> getGoodsBeanList() {
+		return goodsBeanList;
+	}
+
+	public void setGoodsBeanList(List<GoodsBean> goodsBeanList) {
+		this.goodsBeanList = goodsBeanList;
+	}
 }
 

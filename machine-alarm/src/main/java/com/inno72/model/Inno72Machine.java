@@ -99,6 +99,8 @@ public class Inno72Machine {
 
     private String localeStr;
 
+    private String areaCode;
+
     public int getOpenStatus() {
         return openStatus;
     }
@@ -373,30 +375,12 @@ public class Inno72Machine {
     public void setMonitorEnd(String monitorEnd) {
         this.monitorEnd = monitorEnd;
     }
-    /**
-     * 重写equls方法
-     *
-     * */
-   /* @Override
-    public boolean equals(Object object){
-        if(this == object){
-            return true;
-        }
 
-        if(object == null){
-            return false;
-        }
+	public String getAreaCode() {
+		return areaCode;
+	}
 
-        if(this.getClass() != object.getClass()){
-            return false;
-        }
-
-        final Inno72Machine inno72Machine = (Inno72Machine) object;
-        if(!this.getMachineCode().equals(inno72Machine.getMachineCode())){
-            return false;
-        }
-        return true;
-    }*/
-
-
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
+	}
 }

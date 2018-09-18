@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.mapper.Inno72AlarmGroupMapper">
+    <resultMap id="BaseResultMap" type="com.inno72.model.Inno72AlarmGroup">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="group_id1" jdbcType="VARCHAR" property="groupId1"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="level" jdbcType="INTEGER" property="level"/>
+        <result column="group_id2" jdbcType="VARCHAR" property="groupId2"/>
+        <result column="area_name" jdbcType="VARCHAR" property="areaName"/>
+    </resultMap>
+
+    <select id="selectByParam" resultMap="BaseResultMap">
+        select * from inno72_alarm_group where
+        area_code = left(#{areaCode},2) or area_code = left(#{areaCode},4) or area_code=left(#{areaCode},6)limit 1
+    </select>
+</mapper>

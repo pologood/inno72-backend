@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -101,6 +102,9 @@ public class Inno72SupplyChannel {
 
 	@Column(name = "work_status")
 	private Integer workStatus;
+
+	@Transient
+	private String goodsName;
 
 	public String getId() {
 		return id;
@@ -212,5 +216,13 @@ public class Inno72SupplyChannel {
 
 	public void setWorkStatus(Integer workStatus) {
 		this.workStatus = workStatus;
+	}
+
+	public String getGoodsName() {
+		return goodsName;
+	}
+
+	public void setGoodsName(String goodsName) {
+		this.goodsName = goodsName;
 	}
 }

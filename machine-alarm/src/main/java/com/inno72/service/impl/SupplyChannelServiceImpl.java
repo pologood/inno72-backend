@@ -1,6 +1,8 @@
 package com.inno72.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -26,4 +28,22 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     public void closeSupply(Inno72SupplyChannel supplyChannel) {
         inno72SupplyChannelMapper.closeSupply(supplyChannel);
     }
+
+	@Override
+	public List<Inno72SupplyChannel> selectNormalSupply(String machineId, String code) {
+    	Map<String,Object> map = new HashMap<>();
+    	map.put("machineId",machineId);
+    	map.put("code",code);
+    	List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectNormalSupply(map);
+		return list;
+	}
+
+	@Override
+	public Inno72SupplyChannel selectByParam(String machineId, String code) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("machineId",machineId);
+		map.put("code",code);
+		Inno72SupplyChannel supplyChannel = inno72SupplyChannelMapper.selectByParam(map);
+		return supplyChannel;
+	}
 }
