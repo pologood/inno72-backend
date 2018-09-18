@@ -48,7 +48,6 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	@Resource
 	private Inno72TagMapper inno72TagMapper;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Result<String> saveModel(Inno72Locale model) {
 		logger.info("---------------------点位新增-------------------");
@@ -149,7 +148,6 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		return machineLocaleInfos;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Result<String> updateModel(Inno72Locale model) {
 		logger.info("---------------------点位更新-------------------");
