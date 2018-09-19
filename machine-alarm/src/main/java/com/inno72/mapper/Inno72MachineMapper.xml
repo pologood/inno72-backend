@@ -46,7 +46,7 @@
 	    m.monitor_start,
 	    m.monitor_end,
 	    a3.code as areaCode,
-	    CONCAT(IFNULL( l.mall, "" ),IFNULL( l.NAME, "" )) address
+	    CONCAT(if(a1.name='其他','',a1.name),IFNULL( l.mall, "" ),IFNULL( l.NAME, "" )) address
       FROM
 	    inno72_machine m
 	    left join inno72_locale l on m.locale_id=l.id

@@ -132,6 +132,7 @@ public class RedisReceiver {
 							goodsInfo = goodsInfo.substring(0,goodsInfo.length()-1);
 						}
 					}
+
 					if(surPlusNum == 20){
 						if (StringUtil.senSmsActive(active)) {
 							text = goodsInfo;
@@ -206,23 +207,27 @@ public class RedisReceiver {
 						ddMaram.put("localStr", localStr);
 						Map<String,String> smsMap = new HashMap<>();
 						smsMap.put("machineCode", machineCode);
-						smsMap.put("localStr", localStr);
+						String address = machine.getAddress();
+						if(StringUtil.isNotEmpty(address)){
+							if(address.length()>12){
+								address = address.substring(0,12);
+							}
+							smsMap.put("localStr", address);
+						}
 						if(normalSupplyList != null && normalSupplyList.size()>0){//有未被锁定的货道
+							if(StringUtil.senSmsActive(active)){//生产，预发发送短信
+								text = channelNum+"货道掉货异常，货道已经被锁定";
+								smsMap.put("text",  text);
+								this.sendSms(smsMap,machineCode,"sms_alarm_drop");
+							}
 							text = "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。";
-							if(StringUtil.senSmsActive(active)){//生产，预发发送短信
-								text = "掉货异常，货道已经被锁定，请及时处理。";
-								smsMap.put("text",  text);
-								this.sendSms(smsMap,machineCode);
-							}
 						}else{//货道全部被锁
-							text = "您好，"+localStr+"，机器编号："+machineCode+"，"+supplyChannel.getGoodsName()+"所在的货道全部被锁定，请及时联系巡检人员处理。";
 							if(StringUtil.senSmsActive(active)){//生产，预发发送短信
-								text = "您好，"+localStr+"，机器编号："+machineCode+"，"+supplyChannel.getGoodsName()+"所在的货道全部被锁定，请及时联系巡检人员处理。";
+								text = channelNum+"货道掉货异常，"+supplyChannel.getGoodsName()+"所在货道已全部被锁定";
 								smsMap.put("text",  text);
-								for(Inno72CheckUserPhone userPhone :inno72CheckUserPhones){
-									msgUtil.sendSMS("sms_alarm_common", smsMap, userPhone.getPhone(), "machineAlarm-RedisReceiver");
-								}
+								this.sendSms(smsMap,machineCode,"sms_alarm_drop");
 							}
+							text = "您好，"+localStr+"，机器编号："+machineCode+"，"+supplyChannel.getGoodsName()+"所在的货道全部被锁定，请及时联系巡检人员处理。";
 						}
 						ddMaram.put("text",StringUtil.setText(text,active));
 						//发送钉钉消息
@@ -308,10 +313,10 @@ public class RedisReceiver {
 	}
 
 
-	public void sendSms(Map<String,String> params,String machineCode){
+	public void sendSms(Map<String,String> params,String machineCode,String channel){
 		List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
 		for(Inno72CheckUserPhone userPhone :inno72CheckUserPhones){
-			msgUtil.sendSMS("sms_alarm_common", params, userPhone.getPhone(), "machineAlarm-RedisReceiver");
+			msgUtil.sendSMS(channel, params, userPhone.getPhone(), "machineAlarm-RedisReceiver");
 		}
 	}
 

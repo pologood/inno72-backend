@@ -215,14 +215,16 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 					}else if(type == 2){
 						if(level == 1){
 							if (StringUtil.senSmsActive(active)) {
-								List<Inno72CheckUserPhone> phones = getInno72CheckUserPhones(machineCode);
-								if(phones != null && phones.size()>0){
-									text = "网络已经连续10分钟未连接成功，请及时处理。";
-									param.put("text",text);
-									for (Inno72CheckUserPhone userPhone:phones){
-										msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-AlarmDetailService");
+								text = "10分钟";
+								param.put("text",text);
+								String address = machine.getAddress();
+								if(StringUtil.isNotEmpty(address)){
+									if(address.length()>12){
+										address = address.substring(0,12);
 									}
+									param.put("localStr",address);
 								}
+								this.sendSms(param,machineCode,"sms_alarm_connect");
 							}
 							alarmMsgService.saveAlarmMsg(CommonConstants.MACHINE_NET_EXCEPTION,CommonConstants.SYS_MACHINE_NET,machineCode,0,localeStr);
 							text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时联系巡检人员。";
@@ -368,6 +370,13 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 		redisUtil.del(connectKey);
 		String connectTimeKey = CommonConstants.MACHINE_ALARM_CONNECT_TIME_BEF+machineId;
 		redisUtil.del(connectTimeKey);
+	}
+
+	public void sendSms(Map<String,String> params,String machineCode,String channel){
+		List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
+		for(Inno72CheckUserPhone userPhone :inno72CheckUserPhones){
+			msgUtil.sendSMS(channel, params, userPhone.getPhone(), "machineAlarm-AlarmDetailService");
+		}
 	}
 
 
