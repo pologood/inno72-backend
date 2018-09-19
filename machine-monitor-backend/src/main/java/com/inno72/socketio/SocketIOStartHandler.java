@@ -106,6 +106,7 @@ public class SocketIOStartHandler {
 						query.addCriteria(Criteria.where("machineId").is(machineId));
 						mongoTpl.remove(query, "MachineAppStatus");
 						mongoTpl.save(apps, "MachineAppStatus");
+						socketService.checkApp(apps);
 					} else if (SCREENSHOT.v() == subEventType) {
 						String url = $json.getJSONObject("data").getString("imgUrl");
 						Inno72AppScreenShot model = new Inno72AppScreenShot();
