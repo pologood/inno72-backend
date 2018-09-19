@@ -98,16 +98,14 @@ public class SocketServiceImpl implements SocketService {
 
 	@Override
 	public void checkApp(MachineAppStatus apps) {
-		System.out.println("==================");
 		if (apps != null && apps.getStatus() != null) {
 			List<MachineInstallAppBean> il = new ArrayList<>();
 			List<AppStatus> apps1 = apps.getStatus();
 			for (AppStatus app : apps1) {
 				Query query = new Query();
 				query.addCriteria(Criteria.where("appPackageName").is(app.getAppPackageName()));
-				List<AppVersion> appVersions = mongoTpl.find(query, AppVersion.class);
-				System.out.println(JSON.toJSONString(appVersions));
-				if (appVersions != null) {
+				List<AppVersion> appVersions = mongoTpl.find(query, AppVersion.class, "AppVersion");
+				if (appVersions != null && !appVersions.isEmpty()) {
 					AppVersion appVersion = appVersions.get(0);
 					if (app.getVersionCode() != appVersion.getAppVersionCode()) {
 						MachineInstallAppBean bean = new MachineInstallAppBean();
