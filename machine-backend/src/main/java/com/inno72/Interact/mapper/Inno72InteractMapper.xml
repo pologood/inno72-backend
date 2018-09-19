@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.Interact.mapper.Inno72InteractMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.Interact.model.Inno72Interact">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="game_id" jdbcType="VARCHAR" property="gameId" />
+    <result column="day" jdbcType="INTEGER" property="day" />
+    <result column="manager" jdbcType="VARCHAR" property="manager" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="times" jdbcType="INTEGER" property="times" />
+    <result column="day_times" jdbcType="INTEGER" property="dayTimes" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="day_number" jdbcType="INTEGER" property="dayNumber" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  <resultMap id="ListVoResultMap" type="com.inno72.Interact.vo.InteractListVo">
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="game_name" jdbcType="VARCHAR" property="gameName" />
+    <result column="merchant_num" jdbcType="INTEGER" property="merchantNum" />
+    <result column="goods_num" jdbcType="INTEGER" property="goodsNum" />
+    <result column="real_day" jdbcType="VARCHAR" property="realDay" />
+    <result column="day" jdbcType="VARCHAR" property="day" />
+    <result column="real_num" jdbcType="INTEGER" property="realNum" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="manager" jdbcType="VARCHAR" property="manager" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  
+  <select id="selectByPage" parameterType="java.util.Map" resultMap="ListVoResultMap">
+		SELECT
+		 	i.name,
+			i.manager,
+			i.create_time,
+			i.`status`,
+			gm.`name`AS game_name,
+			2 AS merchant_num,
+			10 AS goods_num,
+			2 AS real_day,
+			2 AS day,
+			2 AS real_num,
+			2 AS number
+		FROM
+			inno72_interact i
+			LEFT JOIN inno72_game gm ON gm.id = i.game_id
+			where i.is_delete = 0 
+			<if test="keyword !=null and keyword !='' ">
+			
+			</if>
+			ORDER BY i.update_time DESC
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+</mapper>
