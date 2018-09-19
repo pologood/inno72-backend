@@ -213,7 +213,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 						mongoUtil.save(alarmSendBean,"AlarmSendBean");
 						StringUtil.logger(CommonConstants.LOG_TYPE_HEART,machineCode,text);
 					}else if(type == 2){
-						if(level == 1){
+							if(level == 1){
 							if (StringUtil.senSmsActive(active)) {
 								text = "10分钟";
 								param.put("text",text);
