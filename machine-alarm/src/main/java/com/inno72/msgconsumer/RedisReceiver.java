@@ -144,7 +144,7 @@ public class RedisReceiver {
 							String address = machine.getAddress();
 							if(StringUtil.isNotEmpty(address)){
 								if(address.length()>10){
-									address = address.substring(0,10);
+									address = address.substring(address.length()-10,address.length());
 								}
 								param.put("localStr", address);
 							}
@@ -220,7 +220,7 @@ public class RedisReceiver {
 						String address = machine.getAddress();
 						if(StringUtil.isNotEmpty(address)){
 							if(address.length()>10){
-								address = address.substring(0,10);
+								address = address.substring(address.length()-10,address.length());
 							}
 							smsMap.put("localStr", address);
 						}

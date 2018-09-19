@@ -220,7 +220,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 								String address = machine.getAddress();
 								if(StringUtil.isNotEmpty(address)){
 									if(address.length()>10){
-										address = address.substring(0,10);
+										address = address.substring(address.length()-10,address.length());
 									}
 									param.put("localStr",address);
 								}
