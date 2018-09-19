@@ -98,6 +98,7 @@ public class SocketServiceImpl implements SocketService {
 
 	@Override
 	public void checkApp(MachineAppStatus apps) {
+		System.out.println("==================");
 		if (apps != null && apps.getStatus() != null) {
 			List<MachineInstallAppBean> il = new ArrayList<>();
 			List<AppStatus> apps1 = apps.getStatus();
@@ -114,6 +115,7 @@ public class SocketServiceImpl implements SocketService {
 					il.add(bean);
 				}
 			}
+			System.out.println(JSON.toJSONString(il));
 			if (!il.isEmpty()) {
 				SendMessageBean msg = new SendMessageBean();
 				msg.setEventType(2);
