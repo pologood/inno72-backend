@@ -105,14 +105,18 @@ public class SocketServiceImpl implements SocketService {
 			for (AppStatus app : apps1) {
 				Query query = new Query();
 				query.addCriteria(Criteria.where("appPackageName").is(app.getAppPackageName()));
-				AppVersion appVersion = mongoTpl.findOne(query, AppVersion.class);
-				if (appVersion != null && app.getVersionCode() != appVersion.getAppVersionCode()) {
-					MachineInstallAppBean bean = new MachineInstallAppBean();
-					bean.setAppPackageName(appVersion.getAppPackageName());
-					bean.setUrl(appVersion.getDownloadUrl());
-					bean.setVersionCode(appVersion.getAppVersionCode());
-					bean.setSeq(appVersion.getSeq());
-					il.add(bean);
+				List<AppVersion> appVersions = mongoTpl.find(query, AppVersion.class);
+				System.out.println(JSON.toJSONString(appVersions));
+				if (appVersions != null) {
+					AppVersion appVersion = appVersions.get(0);
+					if (app.getVersionCode() != appVersion.getAppVersionCode()) {
+						MachineInstallAppBean bean = new MachineInstallAppBean();
+						bean.setAppPackageName(appVersion.getAppPackageName());
+						bean.setUrl(appVersion.getDownloadUrl());
+						bean.setVersionCode(appVersion.getAppVersionCode());
+						bean.setSeq(appVersion.getSeq());
+						il.add(bean);
+					}
 				}
 			}
 			System.out.println(JSON.toJSONString(il));
