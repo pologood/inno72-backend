@@ -213,14 +213,14 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 						mongoUtil.save(alarmSendBean,"AlarmSendBean");
 						StringUtil.logger(CommonConstants.LOG_TYPE_HEART,machineCode,text);
 					}else if(type == 2){
-						if(level == 1){
+							if(level == 1){
 							if (StringUtil.senSmsActive(active)) {
 								text = "10分钟";
 								param.put("text",text);
 								String address = machine.getAddress();
 								if(StringUtil.isNotEmpty(address)){
-									if(address.length()>12){
-										address = address.substring(0,12);
+									if(address.length()>10){
+										address = address.substring(address.length()-10,address.length());
 									}
 									param.put("localStr",address);
 								}

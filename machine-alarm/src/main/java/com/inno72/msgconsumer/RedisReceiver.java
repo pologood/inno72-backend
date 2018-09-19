@@ -115,10 +115,15 @@ public class RedisReceiver {
 				param.put("localStr", localStr);
 				if(alarmFlag){
 					List<GoodsBean> goodsBeanList = channelGoodsAlarmBean.getGoodsBeanList();
+					if(goodsName.length()>3){
+						goodsInfo+=goodsName.substring(goodsName.length()-3,goodsName.length())+"剩"+surPlusNum+"，";
+					}else{
+						goodsInfo+=goodsName+"剩"+surPlusNum+"，";
+					}
 					if(goodsBeanList != null && goodsBeanList.size()>0){
 						for(GoodsBean goodsBean:goodsBeanList){
 							String goods = goodsBean.getGoodsName();
-							if(StringUtil.isNotEmpty(goods)){
+							if(StringUtil.isNotEmpty(goods) && !goods.equals(goodsName)){
 								int goodsSize = goods.length();
 								if(goodsSize>3){
 									goodsInfo +=goods.substring(goodsSize-3,goodsSize);
@@ -136,17 +141,22 @@ public class RedisReceiver {
 					if(surPlusNum == 20){
 						if (StringUtil.senSmsActive(active)) {
 							text = goodsInfo;
-							param.put("text",  text);
-							for(Inno72CheckUserPhone userPhone :inno72CheckUserPhones){
-								msgUtil.sendSMS("sms_alarm_common", param, userPhone.getPhone(), "machineAlarm-RedisReceiver");
+							String address = machine.getAddress();
+							if(StringUtil.isNotEmpty(address)){
+								if(address.length()>10){
+									address = address.substring(address.length()-10,address.length());
+								}
+								param.put("localStr", address);
 							}
+							param.put("text",  text);
+							this.sendSms(param,machineCode,"sms_alarm_lackgoods");
 						}
-						text = "您好，"+machine.getAddress()+"，机器编号："+machineCode+"，"+goodsInfo+"请及时联系巡检人员补货";
+						text = "您好，"+machine.getLocaleStr()+"，机器编号："+machineCode+"，"+goodsInfo+"请及时联系巡检人员补货";
 						param.put("text",StringUtil.setText(text,active));
 						msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId2(), "machineAlarm-RedisReceiver");
 						StringUtil.logger(CommonConstants.LOG_TYPE_LACKGOODS,machineCode,text);
 					}else if(surPlusNum == 10 || surPlusNum == 5){
-						text = "您好，"+machine.getAddress()+"，机器编号："+machineCode+"，"+goodsInfo+"请及时联系巡检人员补货";
+						text = "您好，"+machine.getLocaleStr()+"，机器编号："+machineCode+"，"+goodsInfo+"请及时联系巡检人员补货";
 						param.put("text",StringUtil.setText(text,active));
 						StringUtil.logger(CommonConstants.LOG_TYPE_LACKGOODS,machineCode,text);
 						msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId2(), "machineAlarm-RedisReceiver");
@@ -176,7 +186,7 @@ public class RedisReceiver {
             List<DropGoodsExceptionInfo> dropGoodsExceptionInfoList = mongoTpl.find(query, DropGoodsExceptionInfo.class, "DropGoodsExceptionInfo");
             if (dropGoodsExceptionInfoList.size() > 0) {
                 //根据机器编码查询点位接口
-                String localStr = getLocaleString(machineCode);
+                String localStr = machine.getLocaleStr();
                 log.info("machineDropGoods send msg ，localStr:{}", localStr);
                 //循环
                 for (DropGoodsExceptionInfo dropGoodsExceptionInfo : dropGoodsExceptionInfoList) {
@@ -209,8 +219,8 @@ public class RedisReceiver {
 						smsMap.put("machineCode", machineCode);
 						String address = machine.getAddress();
 						if(StringUtil.isNotEmpty(address)){
-							if(address.length()>12){
-								address = address.substring(0,12);
+							if(address.length()>10){
+								address = address.substring(address.length()-10,address.length());
 							}
 							smsMap.put("localStr", address);
 						}
