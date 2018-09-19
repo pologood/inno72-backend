@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.inno72.Interact.model.Inno72InteractMerchant;
 import com.inno72.Interact.service.InteractMerchantService;
+import com.inno72.Interact.vo.InteractMerchantVo;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
@@ -28,7 +29,7 @@ public class InteractMerchantController {
 	private InteractMerchantService interactMerchantService;
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> add(Inno72InteractMerchant interactMerchant) {
+	public Result<String> add(InteractMerchantVo interactMerchant) {
 		interactMerchantService.save(interactMerchant);
 		return ResultGenerator.genSuccessResult();
 	}

@@ -23,7 +23,6 @@ import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
-import com.inno72.project.mapper.Inno72MerchantMapper;
 import com.inno72.system.model.Inno72User;
 
 /**
@@ -35,8 +34,6 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 	private static Logger logger = LoggerFactory.getLogger(InteractServiceImpl.class);
 	@Resource
 	private Inno72InteractMapper inno72InteractMapper;
-	@Resource
-	private Inno72MerchantMapper inno72MerchantMapper;
 
 	@Override
 	public List<InteractListVo> findByPage(String keyword, Integer status) {
