@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.vo.InteractListVo;
+import com.inno72.common.Result;
 import com.inno72.common.Service;
 
 /**
@@ -12,5 +13,9 @@ import com.inno72.common.Service;
 public interface InteractService extends Service<Inno72Interact> {
 
 	List<InteractListVo> findByPage(String keyword, Integer status);
+
+	Result<Object> save(Inno72Interact model, Integer type);
+
+	Result<Object> update(Inno72Interact model, Integer type);
 
 }

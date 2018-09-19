@@ -1,12 +1,17 @@
 package com.inno72.Interact.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
 @Table(name = "inno72_interact")
 public class Inno72Interact {
@@ -70,8 +75,10 @@ public class Inno72Interact {
 	/**
 	 * 创建时间
 	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "create_time")
-	private Date createTime;
+	private LocalDateTime createTime;
 
 	/**
 	 * 更新人
@@ -82,8 +89,10 @@ public class Inno72Interact {
 	/**
 	 * 更新时间
 	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "update_time")
-	private Date updateTime;
+	private LocalDateTime updateTime;
 
 	/**
 	 * @return id
@@ -294,7 +303,7 @@ public class Inno72Interact {
 	 *
 	 * @return create_time - 创建时间
 	 */
-	public Date getCreateTime() {
+	public LocalDateTime getCreateTime() {
 		return createTime;
 	}
 
@@ -304,7 +313,7 @@ public class Inno72Interact {
 	 * @param createTime
 	 *            创建时间
 	 */
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(LocalDateTime createTime) {
 		this.createTime = createTime;
 	}
 
@@ -332,7 +341,7 @@ public class Inno72Interact {
 	 *
 	 * @return update_time - 更新时间
 	 */
-	public Date getUpdateTime() {
+	public LocalDateTime getUpdateTime() {
 		return updateTime;
 	}
 
@@ -342,7 +351,7 @@ public class Inno72Interact {
 	 * @param updateTime
 	 *            更新时间
 	 */
-	public void setUpdateTime(Date updateTime) {
+	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
 	}
 }

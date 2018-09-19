@@ -26,9 +26,20 @@ public class InteractController {
 	@Resource
 	private InteractService interactService;
 
+	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
+	public ModelAndView list(String keyword, Integer status) {
+		List<InteractListVo> list = interactService.findByPage(keyword, status);
+		return ResultPages.page(ResultGenerator.genSuccessResult(list));
+	}
+
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> add(Inno72Interact interact) {
-		interactService.save(interact);
+	public Result<Object> add(Inno72Interact interact, Integer type) {
+		return interactService.save(interact, type);
+	}
+
+	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> update(Inno72Interact interact, Integer type) {
+		interactService.update(interact, type);
 		return ResultGenerator.genSuccessResult();
 	}
 
@@ -38,21 +49,10 @@ public class InteractController {
 		return ResultGenerator.genSuccessResult();
 	}
 
-	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> update(Inno72Interact interact) {
-		interactService.update(interact);
-		return ResultGenerator.genSuccessResult();
-	}
-
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<Inno72Interact> detail(@RequestParam String id) {
 		Inno72Interact interact = interactService.findById(id);
 		return ResultGenerator.genSuccessResult(interact);
 	}
 
-	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list(String keyword, Integer status) {
-		List<InteractListVo> list = interactService.findByPage(keyword, status);
-		return ResultPages.page(ResultGenerator.genSuccessResult(list));
-	}
 }
