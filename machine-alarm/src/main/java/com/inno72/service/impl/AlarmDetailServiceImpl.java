@@ -219,8 +219,8 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 								param.put("text",text);
 								String address = machine.getAddress();
 								if(StringUtil.isNotEmpty(address)){
-									if(address.length()>12){
-										address = address.substring(0,12);
+									if(address.length()>10){
+										address = address.substring(0,10);
 									}
 									param.put("localStr",address);
 								}
