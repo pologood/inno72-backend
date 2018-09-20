@@ -15,6 +15,7 @@
     <!--
       WARNING - @mbg.generated
     -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="interact_id" jdbcType="VARCHAR" property="interactId" />
     <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
     <result column="user_day_number" jdbcType="INTEGER" property="userDayNumber" />

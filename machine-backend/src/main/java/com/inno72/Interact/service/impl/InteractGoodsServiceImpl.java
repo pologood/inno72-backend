@@ -148,12 +148,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 			interactGoods.setGoodsId(model.getId());
 			interactGoods = inno72InteractGoodsMapper.selectOne(interactGoods);
 
-			interactGoods.setType(model.getType());
-			if (null == model.getType()) {
-				logger.info("请选择商品类型");
-				return Results.failure("请选择商品类型");
-			}
-			if (0 == model.getType()) {
+			if (0 == interactGoods.getType()) {
 				if (StringUtil.isBlank(model.getSellerId())) {
 					logger.info("请选择商家");
 					return Results.failure("请选择商家");
