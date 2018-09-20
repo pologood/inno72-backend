@@ -79,8 +79,8 @@ public class LocaleController {
 
 	@RequestMapping(value = "/getList", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<List<Inno72LocaleVo>> getList(@RequestParam(required = false) String code,
-			@RequestParam(required = false) String keyword) {
-		List<Inno72LocaleVo> list = localeService.getList(code, keyword);
+			@RequestParam(required = false) String keyword, String tag) {
+		List<Inno72LocaleVo> list = localeService.getList(code, keyword, tag);
 		return ResultGenerator.genSuccessResult(list);
 	}
 

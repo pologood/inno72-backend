@@ -60,7 +60,7 @@
 			AND ( locale.manager LIKE '%${keyword}%' 
 			or locale.mobile LIKE '%${keyword}%' 
 			or locale.mall LIKE '%${keyword}%' 
-			or locale.tag LIKE '%${keyword}%'  
+			or JSON_EXTRACT(locale.tag, '$.tags') LIKE '%${keyword}%'  
 			or locale.name LIKE '%${keyword}%' 
 			or area.province LIKE '%${keyword}%' 
 			or area.city LIKE '%${keyword}%' 
@@ -84,12 +84,14 @@
 			AND ( locale.manager LIKE '%${keyword}%' 
 			or locale.mobile LIKE '%${keyword}%' 
 			or locale.mall LIKE '%${keyword}%'
-			or locale.tag LIKE '%${keyword}%'  
 			or locale.name LIKE '%${keyword}%' 
 			or area.province LIKE '%${keyword}%' 
 			or area.city LIKE '%${keyword}%' 
 			or area.district LIKE '%${keyword}%' 
 			)
+		</if>
+		<if test="tag !=null and tag !='' ">
+			AND JSON_EXTRACT(locale.tag, '$.tags') LIKE '%${tag}%'  
 		</if>
 		and 9=9
 	ORDER BY locale.area_code

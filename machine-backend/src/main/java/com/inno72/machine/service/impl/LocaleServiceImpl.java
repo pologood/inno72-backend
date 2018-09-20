@@ -234,7 +234,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	}
 
 	@Override
-	public List<Inno72LocaleVo> getList(String code, String keyword) {
+	public List<Inno72LocaleVo> getList(String code, String keyword, String tag) {
 		logger.info("---------------------列表查询-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
@@ -245,6 +245,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 			params.put("num", num);
 		}
 		params.put("keyword", keyword);
+		params.put("tag", tag);
 
 		return inno72LocaleMapper.selectLocaleByList(params);
 	}
