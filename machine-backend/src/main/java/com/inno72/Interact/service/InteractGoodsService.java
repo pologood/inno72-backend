@@ -1,5 +1,7 @@
 package com.inno72.Interact.service;
 
+import java.util.List;
+
 import com.inno72.Interact.model.Inno72InteractGoods;
 import com.inno72.Interact.vo.InteractGoodsVo;
 import com.inno72.common.Result;
@@ -15,5 +17,7 @@ public interface InteractGoodsService extends Service<Inno72InteractGoods> {
 	InteractGoodsVo findGoodsById(String id);
 
 	Result<String> update(InteractGoodsVo model);
+
+	List<InteractGoodsVo> getList(String interactId, String shopsId);
 
 }

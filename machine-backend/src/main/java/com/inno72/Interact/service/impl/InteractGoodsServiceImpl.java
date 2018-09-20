@@ -1,6 +1,9 @@
 package com.inno72.Interact.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -220,4 +223,14 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 		return inno72InteractGoodsMapper.selectInteractGoodsById(id);
 	}
 
+	@Override
+	public List<InteractGoodsVo> getList(String interactId, String shopsId) {
+		logger.info("---------------------获取活动下商品列表-------------------");
+
+		Map<String, Object> pm = new HashMap<>();
+		pm.put("interactId", interactId);
+		pm.put("shopsId", shopsId);
+		return inno72InteractGoodsMapper.selectGoods(pm);
+
+	}
 }

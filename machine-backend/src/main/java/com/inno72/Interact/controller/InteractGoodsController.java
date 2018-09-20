@@ -51,6 +51,12 @@ public class InteractGoodsController {
 		return ResultGenerator.genSuccessResult(interactGoods);
 	}
 
+	@RequestMapping(value = "/getList", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<InteractGoodsVo>> getList(String interactId, String shopsId) {
+		List<InteractGoodsVo> list = interactGoodsService.getList(interactId, shopsId);
+		return ResultGenerator.genSuccessResult(list);
+	}
+
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView list() {
 		Condition condition = new Condition(Inno72InteractGoods.class);

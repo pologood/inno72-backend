@@ -52,6 +52,21 @@
 			ig.goods_id = #{id}
   </select>
   
+  <select id="selectGoods" parameterType="String" resultMap="InteractGoodsVoResultMap">
+		SELECT
+			g.id,
+			g.`code`,
+			g.`name`
+		FROM
+			inno72_goods g
+			LEFT JOIN inno72_interact_goods ig ON ig.goods_id = g.id 
+		WHERE 1=1 
+		<if test="interactId !=null and interactId !='' ">and ig.interact_id = #{interactId} </if>
+		<if test="shopsId !=null and shopsId !='' ">and g.shop_id = #{shopsId} </if>
+				
+  </select>
+  
+
   
   
   
