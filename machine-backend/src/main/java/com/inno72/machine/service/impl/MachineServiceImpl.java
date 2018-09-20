@@ -600,6 +600,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (machine == null) {
 			return Results.failure("机器id不存在");
 		}
+		if (machine.getMachineCode().equals(machineCode)) {
+			return Results.failure("机器编号相同");
+		}
 		Condition condition = new Condition(Inno72Machine.class);
 		condition.createCriteria().andEqualTo("machineCode", machineCode);
 		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition);
@@ -776,7 +779,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			return Results.failure("机器id不存在");
 		}
 		Map<String, Object> param = new HashMap<>();
-		param.put("pushType", 1);
+		param.put("pushType", 2);
 		Map<String, Object> msgInfo = new HashMap<>();
 
 		Map<String, Object> info = new HashMap<>();
