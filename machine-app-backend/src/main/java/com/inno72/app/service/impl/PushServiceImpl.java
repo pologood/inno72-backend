@@ -52,6 +52,7 @@ public class PushServiceImpl implements PushService {
 		} else if (pushMsg.getPushType() == PushMsgVo.Push_Type.SEND_ADB.v()) {
 			PushMsgInfo push = new PushMsgInfo();
 			push.setPushType(pushMsg.getPushType());
+			push.setMsgInfo(pushMsg.getMsgInfo());
 			$info = JSON.toJSONString(push);
 			logger.info("发送请求发送ADBpush内容：{}", $info);
 		} else {
