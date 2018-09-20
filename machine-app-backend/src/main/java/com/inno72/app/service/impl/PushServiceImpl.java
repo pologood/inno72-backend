@@ -49,6 +49,11 @@ public class PushServiceImpl implements PushService {
 			push.setPushType(pushMsg.getPushType());
 			$info = JSON.toJSONString(push);
 			logger.info("发送请求发送图片push内容：{}", $info);
+		} else if (pushMsg.getPushType() == PushMsgVo.Push_Type.SEND_ADB.v()) {
+			PushMsgInfo push = new PushMsgInfo();
+			push.setPushType(pushMsg.getPushType());
+			$info = JSON.toJSONString(push);
+			logger.info("发送请求发送ADBpush内容：{}", $info);
 		} else {
 			return Results.failure("pushType错误");
 		}
