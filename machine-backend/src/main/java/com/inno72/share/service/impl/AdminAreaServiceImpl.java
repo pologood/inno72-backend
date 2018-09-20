@@ -94,11 +94,7 @@ public class AdminAreaServiceImpl extends AbstractService<Inno72AdminArea> imple
 		map.put("name",name);
 		List<Inno72AdminArea> adminAreaList = inno72AdminAreaMapper.findByParam(map);
 		if(adminAreaList != null && adminAreaList.size()>0){
-			if(adminAreaList.size()>1){
-				return Results.failure("已存在此区域");
-			}else{
-				return ResultGenerator.genSuccessResult();
-			}
+			return Results.failure("已存在此区域");
 		}else{
 			Inno72AdminArea area = new Inno72AdminArea();
 			area.setCode(code);
