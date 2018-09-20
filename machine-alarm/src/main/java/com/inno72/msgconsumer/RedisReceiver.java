@@ -80,9 +80,6 @@ public class RedisReceiver {
     @Resource
     private AlarmGroupService alarmGroupService;
 
-    @Value("${inno72.dingding.groupId}")
-    private String groupId;
-
     public void receiveMessage(String message) throws UnsupportedEncodingException {
 
 

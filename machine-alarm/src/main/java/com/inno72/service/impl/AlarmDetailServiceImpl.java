@@ -67,9 +67,6 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 	@Resource
 	private MachineService machineService;
 
-    @Value("${inno72.dingding.groupId}")
-    private String groupId;
-
     @Override
     public void addToMachineBean(List<Inno72Machine> list) {
         Query query = new Query();
