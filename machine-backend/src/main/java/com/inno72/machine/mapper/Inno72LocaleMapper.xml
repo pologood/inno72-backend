@@ -91,7 +91,7 @@
 			)
 		</if>
 		<if test="tag !=null and tag !='' ">
-			AND JSON_EXTRACT(locale.tag, '$.tags') LIKE '%${keyword}%'  
+			AND JSON_EXTRACT(locale.tag, '$.tags') LIKE '%${tag}%'  
 		</if>
 		and 9=9
 	ORDER BY locale.area_code
