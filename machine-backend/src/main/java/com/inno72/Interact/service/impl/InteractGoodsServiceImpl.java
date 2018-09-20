@@ -132,4 +132,9 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 		return Results.success("操作成功");
 	}
 
+	@Override
+	public InteractGoodsVo findShopsById(String id) {
+		return inno72InteractGoodsMapper.selectInteractGoodsById(id);
+	}
+
 }
