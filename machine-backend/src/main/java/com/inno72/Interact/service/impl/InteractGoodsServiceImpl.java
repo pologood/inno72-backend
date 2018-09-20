@@ -143,11 +143,11 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 				return Results.failure("未找到用户登录信息");
 			}
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-
 			// 数据校验
 			Inno72InteractGoods interactGoods = new Inno72InteractGoods();
-			interactGoods.setId(StringUtil.getUUID());
-			interactGoods.setInteractId(model.getInteractId());
+			interactGoods.setGoodsId(model.getId());
+			interactGoods = inno72InteractGoodsMapper.selectOne(interactGoods);
+
 			interactGoods.setType(model.getType());
 			if (null == model.getType()) {
 				logger.info("请选择商品类型");
@@ -182,14 +182,10 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					logger.info("请输入商品价格");
 					return Results.failure("请输入商品价格");
 				}
-				model.setId(StringUtil.getUUID());
-				model.setCreateId(mUserId);
 				model.setUpdateId(mUserId);
-				model.setCreateTime(LocalDateTime.now());
 				model.setUpdateTime(LocalDateTime.now());
 
-				inno72GoodsMapper.insert(model);
-				interactGoods.setGoodsId(model.getId());
+				inno72GoodsMapper.updateByPrimaryKey(model);
 				interactGoods.setUserDayNumber(model.getUserDayNumber());
 			} else {
 				if (StringUtil.isBlank(model.getName())) {
@@ -205,18 +201,15 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					return Results.failure("请选择店铺");
 				}
 				Inno72Coupon coupon = new Inno72Coupon();
-				coupon.setId(StringUtil.getUUID());
+				coupon.setId(model.getId());
 				coupon.setName(model.getName());
 				coupon.setCode(model.getCode());
-				coupon.setActivityPlanId(model.getInteractId());
 				coupon.setShopsId(model.getShopId());
-				coupon.setCreateId(mUserId);
 				coupon.setUpdateId(mUserId);
-				inno72CouponMapper.insert(coupon);
-				interactGoods.setGoodsId(coupon.getId());
+				inno72CouponMapper.updateByPrimaryKey(coupon);
 			}
 
-			inno72InteractGoodsMapper.insert(interactGoods);
+			inno72InteractGoodsMapper.updateByPrimaryKey(interactGoods);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.info(e.getMessage());
@@ -226,7 +219,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 	}
 
 	@Override
-	public InteractGoodsVo findShopsById(String id) {
+	public InteractGoodsVo findGoodsById(String id) {
 		return inno72InteractGoodsMapper.selectInteractGoodsById(id);
 	}
 

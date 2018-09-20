@@ -12,7 +12,7 @@ public interface InteractGoodsService extends Service<Inno72InteractGoods> {
 
 	Result<String> save(InteractGoodsVo interactGoods);
 
-	InteractGoodsVo findShopsById(String id);
+	InteractGoodsVo findGoodsById(String id);
 
 	Result<String> update(InteractGoodsVo model);
 
