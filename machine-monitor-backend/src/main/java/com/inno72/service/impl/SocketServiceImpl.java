@@ -101,7 +101,12 @@ public class SocketServiceImpl implements SocketService {
 		if (apps != null && apps.getStatus() != null) {
 			List<MachineInstallAppBean> il = new ArrayList<>();
 			List<AppStatus> apps1 = apps.getStatus();
+			int verisonCode = 0;
 			for (AppStatus app : apps1) {
+				if ("com.inno72.installer".equals(app.getAppPackageName())) {
+					verisonCode = app.getVersionCode();
+					System.out.println(verisonCode + "======================");
+				}
 				Query query = new Query();
 				query.addCriteria(Criteria.where("appPackageName").is(app.getAppPackageName()));
 				List<AppVersion> appVersions = mongoTpl.find(query, AppVersion.class, "AppVersion");
@@ -117,7 +122,7 @@ public class SocketServiceImpl implements SocketService {
 					}
 				}
 			}
-			if (!il.isEmpty()) {
+			if (!il.isEmpty() && verisonCode >= 5) {
 				SendMessageBean msg = new SendMessageBean();
 				msg.setEventType(2);
 				msg.setSubEventType(2);
