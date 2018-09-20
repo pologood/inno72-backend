@@ -40,15 +40,15 @@ public class InteractShopsController {
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> update(Inno72InteractShops interactShops) {
+	public Result<String> update(InteractShopsVo interactShops) {
 		interactShopsService.update(interactShops);
 		return ResultGenerator.genSuccessResult();
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<Inno72InteractShops> detail(@RequestParam String id) {
-		Inno72InteractShops interactShops = interactShopsService.findById(id);
-		return ResultGenerator.genSuccessResult(interactShops);
+	public Result<InteractShopsVo> detail(@RequestParam String id) {
+		InteractShopsVo interactShopsVo = interactShopsService.findShopsById(id);
+		return ResultGenerator.genSuccessResult(interactShopsVo);
 	}
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })

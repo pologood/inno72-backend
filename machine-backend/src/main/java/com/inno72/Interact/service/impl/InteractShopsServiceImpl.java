@@ -1,7 +1,6 @@
 package com.inno72.Interact.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -23,8 +22,6 @@ import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72ShopsMapper;
 import com.inno72.system.model.Inno72User;
-
-import tk.mybatis.mapper.entity.Condition;
 
 /**
  * Created by CodeGenerator on 2018/09/19.
@@ -99,7 +96,6 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 				return Results.failure("未找到用户登录信息");
 			}
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-			model.setId(StringUtil.getUUID());
 			model.setCreateId(mUserId);
 			model.setUpdateId(mUserId);
 			model.setCreateTime(LocalDateTime.now());
@@ -124,13 +120,12 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 
 			inno72ShopsMapper.updateByPrimaryKey(model);
 			// 中间表 关联关系
-			Condition condition = new Condition(Inno72InteractShops.class);
-			condition.createCriteria().andEqualTo("interactId", model.getInteractId()).andEqualTo("shopsId",
-					model.getId());
-			List<Inno72InteractShops> interactShopsList = inno72InteractShopsMapper.selectByCondition(condition);
-			Inno72InteractShops interactShops = interactShopsList.get(0);
-			interactShops.setIsVip(model.getIsVip());
-			inno72InteractShopsMapper.updateByPrimaryKey(interactShops);
+			Inno72InteractShops interactShops = new Inno72InteractShops();
+			interactShops.setShopsId(model.getId());
+			Inno72InteractShops oldInteractShops = inno72InteractShopsMapper.selectOne(interactShops);
+
+			oldInteractShops.setIsVip(model.getIsVip());
+			inno72InteractShopsMapper.updateByPrimaryKey(oldInteractShops);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -138,6 +133,11 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 			return Results.failure("操作失败");
 		}
 		return Results.success("操作成功");
+	}
+
+	@Override
+	public InteractShopsVo findShopsById(String id) {
+		return inno72InteractShopsMapper.selectInteractShopsById(id);
 	}
 
 }

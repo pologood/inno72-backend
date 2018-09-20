@@ -10,4 +10,40 @@
     <result column="shops_id" jdbcType="VARCHAR" property="shopsId" />
     <result column="is_vip" jdbcType="INTEGER" property="isVip" />
   </resultMap>
+  
+  <resultMap id="InteractShopsVoResultMap" type="com.inno72.Interact.vo.InteractShopsVo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="interact_id" jdbcType="VARCHAR" property="interactId" />
+    <result column="shops_id" jdbcType="VARCHAR" property="shopsId" />
+    <result column="is_vip" jdbcType="INTEGER" property="isVip" />
+    
+    <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
+    <result column="shop_code" jdbcType="VARCHAR" property="shopCode" />
+    <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
+    <result column="session_key" jdbcType="VARCHAR" property="sessionKey" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  <select id="selectInteractShopsById" parameterType="String" resultMap="InteractShopsVoResultMap">
+		SELECT
+			s.*,
+			isp.interact_id,
+			isp.is_vip
+		FROM
+			inno72_interact_shops isp
+			LEFT JOIN inno72_shops s ON s.id = isp.shops_id
+			WHERE isp.shops_id=#{id}
+  </select>
+  
+  
+  
+  
 </mapper>

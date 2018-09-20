@@ -14,4 +14,6 @@ public interface InteractShopsService extends Service<Inno72InteractShops> {
 
 	Result<String> update(InteractShopsVo model);
 
+	InteractShopsVo findShopsById(String id);
+
 }
