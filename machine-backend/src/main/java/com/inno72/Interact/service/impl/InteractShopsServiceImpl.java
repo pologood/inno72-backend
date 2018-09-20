@@ -1,6 +1,7 @@
 package com.inno72.Interact.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -21,7 +22,10 @@ import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72ShopsMapper;
+import com.inno72.project.model.Inno72Shops;
 import com.inno72.system.model.Inno72User;
+
+import tk.mybatis.mapper.entity.Condition;
 
 /**
  * Created by CodeGenerator on 2018/09/19.
@@ -47,6 +51,7 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 			}
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			model.setId(StringUtil.getUUID());
+			model.setIsDelete(0);
 			model.setCreateId(mUserId);
 			model.setUpdateId(mUserId);
 			model.setCreateTime(LocalDateTime.now());
@@ -133,6 +138,22 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 			return Results.failure("操作失败");
 		}
 		return Results.success("操作成功");
+	}
+
+	@Override
+	public List<Inno72Shops> getList(String merchantId) {
+		logger.info("---------------------获取商户下店铺列表-------------------");
+
+		Inno72Shops inno72Shops = new Inno72Shops();
+		inno72Shops.setIsDelete(0);
+		inno72Shops.setSellerId(merchantId);
+		Condition condition = new Condition(Inno72Shops.class);
+		condition.createCriteria().andEqualTo(inno72Shops);
+
+		List<Inno72Shops> inno72ShopsList = inno72ShopsMapper.selectByCondition(condition);
+
+		return inno72ShopsList;
+
 	}
 
 	@Override

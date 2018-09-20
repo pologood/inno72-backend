@@ -1,5 +1,7 @@
 package com.inno72.Interact.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +46,13 @@ public class InteractMerchantController {
 	public Result<String> delete(@RequestParam String id) {
 		interactMerchantService.deleteById(id);
 		return ResultGenerator.genSuccessResult();
+	}
+
+	@RequestMapping(value = "/getList", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<InteractMerchantVo>> getList(String interactId) {
+		List<InteractMerchantVo> list = interactMerchantService.getList(interactId);
+
+		return ResultGenerator.genSuccessResult(list);
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.inno72.Interact.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -50,6 +51,7 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 			}
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			model.setId(StringUtil.getUUID());
+			model.setIsDelete(0);
 			model.setCreateId(mUserId);
 			model.setUpdateId(mUserId);
 			model.setCreateTime(LocalDateTime.now());
@@ -117,6 +119,13 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 			return Results.failure("操作失败");
 		}
 		return Results.success("操作成功");
+	}
+
+	@Override
+	public List<InteractMerchantVo> getList(String interactId) {
+		logger.info("---------------------获取活动下商户列表-------------------");
+		return inno72InteractMerchantMapper.selectMerchantByInteractId(interactId);
+
 	}
 
 	@Override

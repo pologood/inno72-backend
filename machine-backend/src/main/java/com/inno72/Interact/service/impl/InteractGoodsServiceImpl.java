@@ -90,6 +90,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					return Results.failure("请输入商品价格");
 				}
 				model.setId(StringUtil.getUUID());
+				model.setIsDelete(0);
 				model.setCreateId(mUserId);
 				model.setUpdateId(mUserId);
 				model.setCreateTime(LocalDateTime.now());
@@ -113,6 +114,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 				}
 				Inno72Coupon coupon = new Inno72Coupon();
 				coupon.setId(StringUtil.getUUID());
+				coupon.setIsDelete(0);
 				coupon.setName(model.getName());
 				coupon.setCode(model.getCode());
 				coupon.setActivityPlanId(model.getInteractId());
