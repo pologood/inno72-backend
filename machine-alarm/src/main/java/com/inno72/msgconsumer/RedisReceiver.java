@@ -153,13 +153,17 @@ public class RedisReceiver {
 						}
 						text = "您好，"+machine.getLocaleStr()+"，机器编号："+machineCode+"，"+goodsInfo+"请及时联系巡检人员补货";
 						param.put("text",StringUtil.setText(text,active));
-						msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId2(), "machineAlarm-RedisReceiver");
-						StringUtil.logger(CommonConstants.LOG_TYPE_LACKGOODS,machineCode,text);
+						if(group != null){
+							msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId2(), "machineAlarm-RedisReceiver");
+							StringUtil.logger(CommonConstants.LOG_TYPE_LACKGOODS,machineCode,text);
+						}
 					}else if(surPlusNum == 10 || surPlusNum == 5){
 						text = "您好，"+machine.getLocaleStr()+"，机器编号："+machineCode+"，"+goodsInfo+"请及时联系巡检人员补货";
 						param.put("text",StringUtil.setText(text,active));
-						StringUtil.logger(CommonConstants.LOG_TYPE_LACKGOODS,machineCode,text);
-						msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId2(), "machineAlarm-RedisReceiver");
+						if(group != null){
+							StringUtil.logger(CommonConstants.LOG_TYPE_LACKGOODS,machineCode,text);
+							msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId2(), "machineAlarm-RedisReceiver");
+						}
 					}
 				}
 			}
@@ -240,8 +244,10 @@ public class RedisReceiver {
 							text = "您好，"+localStr+"，机器编号："+machineCode+"，"+supplyChannel.getGoodsName()+"所在的货道全部被锁定，请及时联系巡检人员处理。";
 						}
 						ddMaram.put("text",StringUtil.setText(text,active));
-						//发送钉钉消息
-						msgUtil.sendDDTextByGroup("dingding_alarm_common", ddMaram,group.getGroupId1() , "machineAlarm-RedisReceiver");
+						if(group != null){
+							//发送钉钉消息
+							msgUtil.sendDDTextByGroup("dingding_alarm_common", ddMaram,group.getGroupId1() , "machineAlarm-RedisReceiver");
+						}
 					}
 					//保存接口
 					int lackNum = 0;
