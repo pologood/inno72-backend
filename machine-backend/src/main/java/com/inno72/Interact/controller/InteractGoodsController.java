@@ -40,7 +40,7 @@ public class InteractGoodsController {
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> update(Inno72InteractGoods interactGoods) {
+	public Result<String> update(InteractGoodsVo interactGoods) {
 		interactGoodsService.update(interactGoods);
 		return ResultGenerator.genSuccessResult();
 	}
