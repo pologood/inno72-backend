@@ -30,8 +30,7 @@ public class InteractShopsController {
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> add(InteractShopsVo interactShops) {
-		interactShopsService.save(interactShops);
-		return ResultGenerator.genSuccessResult();
+		return interactShopsService.save(interactShops);
 	}
 
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })

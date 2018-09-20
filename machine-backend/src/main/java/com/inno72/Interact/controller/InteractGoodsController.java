@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.inno72.Interact.model.Inno72InteractGoods;
 import com.inno72.Interact.service.InteractGoodsService;
+import com.inno72.Interact.vo.InteractGoodsVo;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
@@ -28,9 +29,8 @@ public class InteractGoodsController {
 	private InteractGoodsService interactGoodsService;
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> add(Inno72InteractGoods interactGoods) {
-		interactGoodsService.save(interactGoods);
-		return ResultGenerator.genSuccessResult();
+	public Result<String> add(InteractGoodsVo interactGoods) {
+		return interactGoodsService.save(interactGoods);
 	}
 
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })
