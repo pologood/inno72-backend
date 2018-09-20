@@ -107,7 +107,7 @@ public class SocketServiceImpl implements SocketService {
 				List<AppVersion> appVersions = mongoTpl.find(query, AppVersion.class, "AppVersion");
 				if (appVersions != null && !appVersions.isEmpty()) {
 					AppVersion appVersion = appVersions.get(0);
-					if (app.getVersionCode() != appVersion.getAppVersionCode()) {
+					if (app.getVersionCode() < appVersion.getAppVersionCode()) {
 						MachineInstallAppBean bean = new MachineInstallAppBean();
 						bean.setAppPackageName(appVersion.getAppPackageName());
 						bean.setUrl(appVersion.getDownloadUrl());
@@ -117,7 +117,6 @@ public class SocketServiceImpl implements SocketService {
 					}
 				}
 			}
-			System.out.println(JSON.toJSONString(il));
 			if (!il.isEmpty()) {
 				SendMessageBean msg = new SendMessageBean();
 				msg.setEventType(2);
