@@ -600,6 +600,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (machine == null) {
 			return Results.failure("机器id不存在");
 		}
+		if (machine.getMachineCode().equals(machineCode)) {
+			return Results.failure("机器编号相同");
+		}
 		Condition condition = new Condition(Inno72Machine.class);
 		condition.createCriteria().andEqualTo("machineCode", machineCode);
 		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition);
