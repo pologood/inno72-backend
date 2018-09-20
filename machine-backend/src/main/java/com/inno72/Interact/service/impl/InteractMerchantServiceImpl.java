@@ -21,6 +21,7 @@ import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72MerchantMapper;
+import com.inno72.project.model.Inno72Merchant;
 import com.inno72.system.model.Inno72User;
 
 /**
@@ -80,6 +81,47 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 			return Results.failure("操作失败");
 		}
 		return Results.success("操作成功");
+	}
+
+	@Override
+	public Result<String> update(InteractMerchantVo model) {
+
+		try {
+			SessionData session = SessionUtil.sessionData.get();
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+			model.setUpdateId(mUserId);
+			model.setUpdateTime(LocalDateTime.now());
+			// 数据校验
+			if (StringUtil.isBlank(model.getChannelId())) {
+				logger.info("请选择渠道");
+				return Results.failure("请选择渠道");
+			}
+			if (StringUtil.isBlank(model.getMerchantCode())) {
+				logger.info("请填写商家编号");
+				return Results.failure("请填写商家编号");
+			}
+			if (StringUtil.isBlank(model.getMerchantName())) {
+				logger.info("请填写商家名称");
+				return Results.failure("请填写商家名称");
+			}
+
+			inno72MerchantMapper.updateByPrimaryKey(model);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+		return Results.success("操作成功");
+	}
+
+	@Override
+	public Inno72Merchant findMerchantsById(String id) {
+		return inno72MerchantMapper.selectByPrimaryKey(id);
 	}
 
 }
