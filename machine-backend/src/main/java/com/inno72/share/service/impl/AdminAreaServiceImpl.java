@@ -89,12 +89,21 @@ public class AdminAreaServiceImpl extends AbstractService<Inno72AdminArea> imple
 		if (StringUtil.isEmpty(code) || StringUtil.isEmpty(name)) {
 			return Results.failure("参数有误");
 		}
-		Inno72AdminArea area = new Inno72AdminArea();
-		area.setCode(code);
-		area.setName(name);
-		area.setDistrict(name);
-		inno72AdminAreaMapper.updateByPrimaryKeySelective(area);
-		return ResultGenerator.genSuccessResult();
+		Map<String,Object> map = new HashMap<>();
+		map.put("code",code);
+		map.put("name",name);
+		List<Inno72AdminArea> adminAreaList = inno72AdminAreaMapper.findByParam(map);
+		if(adminAreaList != null && adminAreaList.size()>0){
+			return Results.failure("已存在此区域");
+		}else{
+			Inno72AdminArea area = new Inno72AdminArea();
+			area.setCode(code);
+			area.setName(name);
+			area.setDistrict(name);
+			inno72AdminAreaMapper.updateByPrimaryKeySelective(area);
+			return ResultGenerator.genSuccessResult();
+		}
+
 	}
 
 }

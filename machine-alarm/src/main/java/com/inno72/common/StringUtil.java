@@ -99,11 +99,12 @@ public class StringUtil {
 	}
 
 	public static Boolean senSmsActive(String active) {
-		if (StringUtil.isNotEmpty(active) && (active.equals("prod") || active.equals("stage"))) {
-			return true;
-		} else {
-			return false;
-		}
+		return true;
+//		if (StringUtil.isNotEmpty(active) && (active.equals("prod") || active.equals("stage"))) {
+//			return true;
+//		} else {
+//			return false;
+//		}
 	}
 
 	/**
@@ -115,6 +116,21 @@ public class StringUtil {
 		new PointLogContext(LogType.POINT).machineCode(msg[1])
 				.pointTime(DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S1)).type(msg[0]).detail(msg[2])
 				.tag("").bulid();
+	}
+
+	public static int getAreaCodeNum(String s) {
+		for (int i = s.length() - 1; i >= 0; i--) {
+			if (!"0".equals(String.valueOf(s.charAt(i)))) {
+				if (i < 2) {
+					return 2;
+				} else if ((i + 1) < 4) {
+					return 3;
+				} else {
+					return i + 1;
+				}
+			}
+		}
+		return 0;
 	}
 
 }

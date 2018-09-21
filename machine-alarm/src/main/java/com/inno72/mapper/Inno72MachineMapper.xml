@@ -20,6 +20,7 @@
         <result column="open_status" jdbcType="INTEGER" property="openStatus"/>
         <result column="monitor_start" jdbcType="VARCHAR" property="monitorStart"/>
         <result column="monitor_end" jdbcType="VARCHAR" property="monitorEnd"/>
+        <result column="areaCode" jdbcType="VARCHAR" property="areaCode"/>
 
     </resultMap>
 
@@ -30,22 +31,33 @@
 			area.province,
 			area.city,
 			area.district,
-		IF ( area.circle = '其他', '', area.circle ),IFNULL( l.mall, "" ),IFNULL( l.NAME, "" ) ) AS localeStr
+		IF ( area.circle = '其他' or area.circle is null, '', area.circle ),IFNULL( l.mall, "" ),IFNULL( l.NAME, "" ) ) AS localeStr
 		FROM inno72_machine m
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
 		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
 		WHERE
 			m.machine_status  = #{machineStatus} and m.open_status = 0
 	</select>
-    <select id="findMachineByMachineCode" parameterType="String" resultType="com.inno72.model.Inno72Machine">
+    <select id="findMachineByMachineCode" resultMap="BaseResultMap">
       SELECT
         m.id,
-	    m.open_status AS openStatus,
-	    m.machine_status AS machineStatus,
-	    m.monitor_start AS monitorStart,
-	    m.monitor_end AS monitorEnd
+	    m.open_status,
+	    m.machine_status,
+	    l.monitor_start,
+	    l.monitor_end,
+	    if(a3.level=2,a3.code,a2.code) AS areaCode,
+	    CONCAT(if(a1.name='其他','',a1.name),IFNULL( l.mall, "" ),IFNULL( l.NAME, "" )) address,
+	    CONCAT(
+			a1.province,
+			a1.city,
+			a1.district,
+		IF ( a1.circle = '其他' or a1.circle is null, '', a1.circle ),IFNULL( l.mall, "" ),IFNULL( l.NAME, "" ) ) AS localeStr
       FROM
 	    inno72_machine m
+	    left join inno72_locale l on m.locale_id=l.id
+	    left join inno72_admin_area a1 on l.area_code=a1.code
+	    left join inno72_admin_area a2 on a1.parent_code=a2.code
+	    left join inno72_admin_area a3 on a2.parent_code=a3.code
       WHERE
 	    m.machine_code = #{machineCode}
 	</select>
@@ -71,7 +83,7 @@
 			area.province,
 			area.city,
 			area.district,
-		IF ( area.circle = '其他', '', area.circle ),IFNULL( l.mall, "" ),IFNULL( l.NAME, "" ) ) AS localeStr,
+		IF ( area.circle = '其他' or area.circle is null, '', area.circle ),IFNULL( l.mall, "" ),IFNULL( l.NAME, "" ) ) AS localeStr,
 		l.monitor_start,l.monitor_end
 		from inno72_machine m
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id

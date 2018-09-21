@@ -48,6 +48,8 @@ import com.inno72.machine.vo.SupplyChannelVo;
 import com.inno72.machine.vo.WorkOrderVo;
 import com.inno72.model.AlarmMessageBean;
 import com.inno72.model.ChannelGoodsAlarmBean;
+import com.inno72.model.GoodsBean;
+import com.inno72.model.MachineDropGoodsBean;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.utils.page.Pagination;
 import com.mongodb.DBCollection;
@@ -612,12 +614,14 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		if(supplyChannel != null){
 			int totalCount = supplyChannel.getGoodsCount();
 			logger.info("查询出商品货道信息{}",JSON.toJSON(supplyChannel));
-			if(totalCount == 10 || totalCount == 5){
+			if(totalCount == 20 || totalCount == 10 || totalCount == 5){
 				ChannelGoodsAlarmBean alarmBean = new ChannelGoodsAlarmBean();
 				alarmBean.setGoodsName(supplyChannel.getGoodsName());
 				alarmBean.setMachineCode(supplyChannel.getMachineCode());
 				alarmBean.setSurPlusNum(totalCount);
 				alarmBean.setLocaleStr(supplyChannel.getLocaleStr());
+				List<GoodsBean> goodsBeanList = inno72SupplyChannelMapper.selectLockGoodsList(machineId);
+				alarmBean.setGoodsBeanList(goodsBeanList);
 				AlarmMessageBean alarmMessageBean = new AlarmMessageBean();
 				alarmMessageBean.setSystem("machineLackGoods");
 				alarmMessageBean.setType("machineLackGoodsException");
@@ -627,6 +631,20 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			}
 		}
 
+	}
+
+	@Override
+	public void setDropGoods(SupplyRequestVo vo) {
+		String machineCode = vo.getMachineCode();
+		String code = vo.getSupplyCode();
+		MachineDropGoodsBean machineDropGoodsBean = new MachineDropGoodsBean();
+		machineDropGoodsBean.setChannelNum(code);
+		machineDropGoodsBean.setMachineCode(machineCode);
+		AlarmMessageBean<MachineDropGoodsBean> alarmMessageBean = new AlarmMessageBean();
+		alarmMessageBean.setSystem("machineDropGoods");
+		alarmMessageBean.setType("machineDropGoodsException");
+		alarmMessageBean.setData(machineDropGoodsBean);
+		redisUtil.publish("moniterAlarm",JSONObject.toJSONString(alarmMessageBean));
 	}
 
 	public void addSupplyChannelToMongo(Inno72SupplyChannel supplyChannel) {

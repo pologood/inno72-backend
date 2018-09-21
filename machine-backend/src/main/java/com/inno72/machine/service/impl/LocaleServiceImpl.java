@@ -87,7 +87,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 			if (null == model.getMonitor()) {
 				return Results.failure("请选择监控设置！");
 			} else {
-				if (model.getMonitor() == 1) {
+				if (model.getMonitor() == 0) {
 					if (StringUtil.isBlank(model.getMonitorStart()) || StringUtil.isBlank(model.getMonitorStart())) {
 						return Results.failure("请选择监控时间！");
 					}
@@ -159,7 +159,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 				return Results.failure("未找到用户登录信息");
 			}
 
-			if (model.getMonitor() == 1) {
+			if (model.getMonitor() == 0) {
 				if (StringUtil.isBlank(model.getMonitorStart()) || StringUtil.isBlank(model.getMonitorStart())) {
 					return Results.failure("请选择监控时间！");
 				}
@@ -234,7 +234,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 	}
 
 	@Override
-	public List<Inno72LocaleVo> getList(String code, String keyword) {
+	public List<Inno72LocaleVo> getList(String code, String keyword, String tag) {
 		logger.info("---------------------列表查询-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
@@ -245,6 +245,7 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 			params.put("num", num);
 		}
 		params.put("keyword", keyword);
+		params.put("tag", tag);
 
 		return inno72LocaleMapper.selectLocaleByList(params);
 	}

@@ -28,4 +28,8 @@
             and left(#{code},#{num}) = left(code,#{num})
         </if>
     </select>
+    <select id="findByParam" resultMap="BaseResultMap">
+        select * from inno72_admin_area where parent_code in
+        (select parent_code from inno72_admin_area where code=#{code}) and name=#{name}
+    </select>
 </mapper>

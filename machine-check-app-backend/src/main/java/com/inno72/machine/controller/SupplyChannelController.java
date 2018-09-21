@@ -181,4 +181,10 @@ public class SupplyChannelController {
 	}
 
 
+	@RequestMapping(value="setDropGoods")
+	public void setDropGoods(@RequestBody SupplyRequestVo vo){
+		supplyChannelService.setDropGoods(vo);
+	}
+
+
 }

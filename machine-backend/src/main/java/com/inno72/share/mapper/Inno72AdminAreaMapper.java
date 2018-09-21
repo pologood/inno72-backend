@@ -14,4 +14,6 @@ public interface Inno72AdminAreaMapper extends Mapper<Inno72AdminArea> {
 	Inno72AdminArea selectMaxByParentCode(String parentCode);
 
 	List<Inno72AdminArea> findByPage(Map<String,Object> map);
+
+	List<Inno72AdminArea> findByParam(Map<String,Object> map);
 }

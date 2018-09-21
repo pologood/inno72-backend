@@ -17,7 +17,7 @@ public interface LocaleService extends Service<Inno72Locale> {
 	@Override
 	Inno72LocaleVo findById(String id);
 
-	List<Inno72LocaleVo> getList(String code, String keyword);
+	List<Inno72LocaleVo> getList(String code, String keyword, String tag);
 
 	List<Inno72LocaleVo> findByPage(String code, String keyword, String type);
 

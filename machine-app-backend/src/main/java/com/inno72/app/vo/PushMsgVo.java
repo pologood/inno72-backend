@@ -16,7 +16,9 @@ public class PushMsgVo {
 		// 发送日志
 		SEND_LOG(2),
 		// 发送图片
-		SEND_IMG(3);
+		SEND_IMG(3),
+		// 发送adb
+		SEND_ADB(4);
 
 		private int v;
 

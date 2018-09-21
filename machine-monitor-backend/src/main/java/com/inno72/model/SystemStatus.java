@@ -32,6 +32,7 @@ public class SystemStatus {
 	private long sdTotle;
 	private String ping;
 	private String ping1;
+	private String count;
 
 	/**
 	 * 创建时间
@@ -133,6 +134,14 @@ public class SystemStatus {
 
 	public void setPing1(String ping1) {
 		this.ping1 = ping1;
+	}
+
+	public String getCount() {
+		return count;
+	}
+
+	public void setCount(String count) {
+		this.count = count;
 	}
 
 }
