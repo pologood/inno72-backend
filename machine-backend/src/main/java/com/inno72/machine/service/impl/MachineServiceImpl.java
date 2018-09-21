@@ -764,7 +764,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			return Results.failure("机器id不存在");
 		}
 		Query query = new Query();
-		query.addCriteria(Criteria.where("machineId").is(machineId));
+		query.addCriteria(Criteria.where("machineId").is(machine.getMachineCode()));
 		List<MachineStatus> statusList = mongoTpl.find(query, MachineStatus.class, "MachineStatus");
 		if (statusList == null || statusList.isEmpty() || StringUtil.isBlank(statusList.get(0).getTemperature())) {
 			return Results.success("-1");
