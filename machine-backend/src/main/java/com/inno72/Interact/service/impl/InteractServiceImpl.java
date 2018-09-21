@@ -13,8 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inno72.Interact.mapper.Inno72InteractGoodsMapper;
+import com.inno72.Interact.mapper.Inno72InteractMachineMapper;
 import com.inno72.Interact.mapper.Inno72InteractMapper;
 import com.inno72.Interact.model.Inno72Interact;
+import com.inno72.Interact.model.Inno72InteractGoods;
+import com.inno72.Interact.model.Inno72InteractMachine;
 import com.inno72.Interact.service.InteractService;
 import com.inno72.Interact.vo.InteractListVo;
 import com.inno72.common.AbstractService;
@@ -34,6 +38,11 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 	private static Logger logger = LoggerFactory.getLogger(InteractServiceImpl.class);
 	@Resource
 	private Inno72InteractMapper inno72InteractMapper;
+
+	@Resource
+	private Inno72InteractGoodsMapper inno72InteractGoodsMapper;
+	@Resource
+	private Inno72InteractMachineMapper inno72InteractMachineMapper;
 
 	@Override
 	public List<InteractListVo> findByPage(String keyword, Integer status) {
@@ -133,6 +142,57 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			inno72InteractMapper.updateByPrimaryKey(model);
 
 			return Results.warn("操作成功", 0, model.getId());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+	}
+
+	@Override
+	public Result<String> next(String interactId, String type) {
+
+		try {
+			SessionData session = SessionUtil.sessionData.get();
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+
+			if (StringUtil.isBlank(type)) {
+				logger.info("参数错误");
+				return Results.failure("参数错误");
+			}
+
+			if (type.equals("goods")) {
+				// 判断是否有商品
+
+				Inno72InteractGoods ig = new Inno72InteractGoods();
+				ig.setInteractId(interactId);
+				int n = inno72InteractGoodsMapper.selectCount(ig);
+
+				if (n > 0) {
+					return Results.success("成功");
+				} else {
+					return Results.failure("失败");
+				}
+
+			} else if (type.equals("machine")) {
+				// 判断是否有机器
+				Inno72InteractMachine im = new Inno72InteractMachine();
+				im.setInteractId(interactId);
+				int n = inno72InteractMachineMapper.selectCount(im);
+				if (n > 0) {
+					return Results.success("成功");
+				} else {
+					return Results.failure("失败");
+				}
+			} else {
+				logger.info("参数错误");
+				return Results.failure("参数错误");
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();

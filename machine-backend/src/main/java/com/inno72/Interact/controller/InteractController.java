@@ -55,4 +55,10 @@ public class InteractController {
 		return ResultGenerator.genSuccessResult(interact);
 	}
 
+	@RequestMapping(value = "/next", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> next(@RequestParam String interactId, @RequestParam String type) {
+		interactService.next(interactId, type);
+		return ResultGenerator.genSuccessResult();
+	}
+
 }

@@ -18,4 +18,6 @@ public interface InteractService extends Service<Inno72Interact> {
 
 	Result<Object> update(Inno72Interact model, Integer type);
 
+	Result<String> next(String interactId, String type);
+
 }
