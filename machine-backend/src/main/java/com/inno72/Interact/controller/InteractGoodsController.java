@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +25,7 @@ import tk.mybatis.mapper.entity.Condition;
  */
 @RestController
 @RequestMapping("/project/interact/goods")
+@CrossOrigin
 public class InteractGoodsController {
 	@Resource
 	private InteractGoodsService interactGoodsService;

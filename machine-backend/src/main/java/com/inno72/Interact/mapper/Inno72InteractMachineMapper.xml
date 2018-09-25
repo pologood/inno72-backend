@@ -9,4 +9,95 @@
     <result column="interact_id" jdbcType="VARCHAR" property="interactId" />
     <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
   </resultMap>
+  
+  <resultMap id="MachineResultMap" type="com.inno72.Interact.vo.MachineVo">
+   	<result column="local_desc" jdbcType="VARCHAR" property="localDesc" />
+    <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+   <association property="machineActivity" resultMap="machineActivityResultMap" />
+  </resultMap>
+  
+  <resultMap id="machineActivityResultMap" type="com.inno72.Interact.vo.MachineActivityVo">
+   	<result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="activity_name" jdbcType="VARCHAR" property="activityName" />
+    <result column="start_time" jdbcType="VARCHAR" property="startTime" />
+    <result column="end_time" jdbcType="VARCHAR" property="endTime" />
+  </resultMap>
+  
+  <select id="selectPlanMachines" parameterType="java.util.Map" resultMap="MachineResultMap">
+  	SELECT
+  		CONCAT( area.province, area.city, area.district, IFNULL( l.mall, "" ), IFNULL( l.NAME, "" ) ) AS local_desc,
+		m.id AS machine_id,
+		m.machine_code AS machine_code,
+		a.id AS activityId,
+		a.name AS activityName,
+		date_format( ap.start_time, '%Y-%m-%d %H:%i:%s' ) AS start_time,
+		date_format( ap.end_time, '%Y-%m-%d %H:%i:%s' ) AS end_time
+	FROM
+		inno72_machine m
+		LEFT JOIN inno72_locale l ON l.id = m.locale_id
+		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
+		LEFT JOIN inno72_activity_plan_machine apm ON apm.machine_id = m.id
+		LEFT JOIN inno72_activity_plan ap ON ap.id = apm.activity_plan_id 
+		AND ap.is_delete = 0 
+		<if test="startTime !=null and startTime !='' ">
+			<![CDATA[AND ( #{startTime} <= ap.end_time AND #{endTime} >= ap.start_time ) ]]>
+		</if>
+		LEFT JOIN inno72_activity a ON a.id = ap.activity_id and a.is_delete = 0 
+		WHERE
+			m.machine_status = '4' 
+		<if test="keyword !=null and keyword !='' ">
+			AND (l.mall LIKE '%${keyword}%'  
+			or l.name LIKE '%${keyword}%' 
+			or JSON_EXTRACT(l.tag, '$.tags') LIKE '%${keyword}%'  
+			or area.province LIKE '%${keyword}%' 
+			or area.city LIKE '%${keyword}%' 
+			or area.district LIKE '%${keyword}%' 
+			)
+		</if>
+  </select>
+  
+  <select id="selectInteractMachines" parameterType="java.util.Map" resultMap="MachineResultMap">
+  	SELECT
+  		CONCAT( area.province, area.city, area.district, IFNULL( l.mall, "" ), IFNULL( l.NAME, "" ) ) AS local_desc,
+		m.id AS machine_id,
+		m.machine_code AS machine_code,
+		t.id AS activityId,
+		t.name AS activityName,
+		date_format( mt.start_time, '%Y-%m-%d %H:%i:%s' ) AS start_time,
+		date_format( mt.end_time, '%Y-%m-%d %H:%i:%s' ) AS end_time
+	FROM
+		inno72_machine m
+		LEFT JOIN inno72_locale l ON l.id = m.locale_id
+		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
+		LEFT JOIN inno72_interact_machine im ON im.machine_id = m.id
+		LEFT JOIN inno72_interact_machine_time mt ON mt.interact_machine_id = im.id
+			<if test="startTime !=null and startTime !='' ">
+				<![CDATA[AND ( #{startTime} <= mt.end_time AND #{endTime} >= mt.start_time ) ]]>
+			</if>
+		LEFT JOIN inno72_interact t ON t.id = im.interact_id and t.is_delete = 0 
+		WHERE
+			m.machine_status = '4' 
+		<if test="keyword !=null and keyword !='' ">
+			AND (l.mall LIKE '%${keyword}%'  
+			or l.name LIKE '%${keyword}%' 
+			or JSON_EXTRACT(l.tag, '$.tags') LIKE '%${keyword}%'  
+			or area.province LIKE '%${keyword}%' 
+			or area.city LIKE '%${keyword}%' 
+			or area.district LIKE '%${keyword}%' 
+			)
+		</if>
+			
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 </mapper>

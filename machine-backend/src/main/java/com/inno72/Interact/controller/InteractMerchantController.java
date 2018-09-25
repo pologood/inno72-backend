@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,7 @@ import com.inno72.project.model.Inno72Merchant;
  */
 @RestController
 @RequestMapping("/project/interact/merchant")
+@CrossOrigin
 public class InteractMerchantController {
 	@Resource
 	private InteractMerchantService interactMerchantService;
