@@ -30,6 +30,11 @@ public class Inno72Interact {
 	private String gameId;
 
 	/**
+	 * 关联游戏
+	 */
+	private String planCode;
+
+	/**
 	 * 活动时长
 	 */
 	private Integer day;
@@ -144,6 +149,14 @@ public class Inno72Interact {
 	 */
 	public void setGameId(String gameId) {
 		this.gameId = gameId;
+	}
+
+	public String getPlanCode() {
+		return planCode;
+	}
+
+	public void setPlanCode(String planCode) {
+		this.planCode = planCode;
 	}
 
 	/**

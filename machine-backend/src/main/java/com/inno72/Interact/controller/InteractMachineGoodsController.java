@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.inno72.Interact.model.Inno72InteractMachineGoods;
 import com.inno72.Interact.service.InteractMachineGoodsService;
+import com.inno72.Interact.vo.InteractMachineGoods;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
@@ -30,7 +32,7 @@ public class InteractMachineGoodsController {
 	private InteractMachineGoodsService interactMachineGoodsService;
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> add(Inno72InteractMachineGoods interactMachineGoods) {
+	public Result<String> add(@RequestBody InteractMachineGoods interactMachineGoods) {
 		interactMachineGoodsService.save(interactMachineGoods);
 		return ResultGenerator.genSuccessResult();
 	}

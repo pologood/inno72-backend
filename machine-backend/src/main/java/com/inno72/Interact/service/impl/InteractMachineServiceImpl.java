@@ -77,7 +77,6 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
-			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			String interactId = model.getInteractId();
 
 			List<MachineTime> machines = model.getMachines();
@@ -111,7 +110,6 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 
 					insetInteractMachineTimeList.add(interactMachineTime);
 				}
-
 			}
 			inno72InteractMachineMapper.insertInteractMachineList(insetInteractMachineList);
 			inno72InteractMachineTimeMapper.insertInteractMachineTimeList(insetInteractMachineTimeList);

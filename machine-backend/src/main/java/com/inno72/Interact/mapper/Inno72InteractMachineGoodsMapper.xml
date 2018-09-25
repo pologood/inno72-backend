@@ -13,4 +13,14 @@
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
   </resultMap>
+  
+  
+  
+  <insert id="insertInteractMachineGoodsList" parameterType="java.util.List">
+        insert into inno72_interact_machine_goods (id,interact_machine_id,goods_id,number,seq,start_time,end_time)
+        values
+        <foreach collection="list" item="t" index="index" separator=",">
+            (#{t.id}, #{t.interactMachineId},#{t.goodsId},#{t.number},#{t.seq},#{t.startTime},#{t.endTime})
+        </foreach>
+    </insert>
 </mapper>
