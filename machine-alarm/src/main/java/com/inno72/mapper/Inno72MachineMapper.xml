@@ -36,12 +36,12 @@
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
 		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
 		WHERE
-			m.machine_status  = #{machineStatus} and m.open_status = 0
+			m.machine_status  = #{machineStatus} and l.monitor = 0
 	</select>
     <select id="findMachineByMachineCode" resultMap="BaseResultMap">
       SELECT
         m.id,
-	    m.open_status,
+	    l.monitor open_status,
 	    m.machine_status,
 	    l.monitor_start,
 	    l.monitor_end,
@@ -78,7 +78,7 @@
 
     <select id="findAlarmAllMachine" resultMap="BaseResultMap">
         select m.id,m.machine_code,m.machine_name,m.locale_id,m.tag,m.create_time,m.update_time,m.machine_status,
-        m.net_status,m.device_id,m.address,m.bluetooth_address,m.open_status,
+        m.net_status,m.device_id,m.address,m.bluetooth_address,l.monitor open_status,
         CONCAT(
 			area.province,
 			area.city,
@@ -89,7 +89,7 @@
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
 		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
 		where m.machine_status=4
-        and m.open_status=0
+        and l.monitor=0
 
     </select>
 </mapper>
