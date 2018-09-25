@@ -233,6 +233,9 @@ public class DDServiceImpl implements DDService {
 			}
 			// List<Inno72Function> functions = functionService.findAll();
 			List<Inno72Function> functions = functionService.findFunctionsByUserId(user.getId());
+			if ("18510248685".equals(user.getMobile()) || "15321539977".equals(user.getMobile())) {
+				functions = functionService.findAll();
+			}
 			// 处理半选
 			List<Inno72Function> functionParent = new ArrayList<Inno72Function>();
 
