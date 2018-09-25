@@ -1,6 +1,8 @@
 package com.inno72.Interact.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -85,6 +87,16 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 			return Results.failure("操作失败");
 		}
 		return Results.success("操作成功");
+	}
+
+	@Override
+	public List<Inno72InteractMachineGoodsVo> selectMachineGoods(String interactId, String merchantId) {
+		Map<String, Object> pm = new HashMap<>();
+		pm.put("interactId", interactId);
+		pm.put("merchantId", merchantId);
+
+		inno72InteractMachineGoodsMapper.selectMachineGoods(pm);
+		return null;
 	}
 
 }

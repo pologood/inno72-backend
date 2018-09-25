@@ -4,9 +4,19 @@ import com.inno72.Interact.model.Inno72InteractMachineGoods;
 
 public class Inno72InteractMachineGoodsVo extends Inno72InteractMachineGoods {
 
+	private String goodsName;
+
 	private String startTimeStr;
 
 	private String endTimeStr;
+
+	public String getGoodsName() {
+		return goodsName;
+	}
+
+	public void setGoodsName(String goodsName) {
+		this.goodsName = goodsName;
+	}
 
 	public String getStartTimeStr() {
 		return startTimeStr;

@@ -12,6 +12,11 @@
     <result column="seq" jdbcType="INTEGER" property="seq" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+  </resultMap>
+  
+  <resultMap id="BaseVoResultMap" type="com.inno72.Interact.vo.Inno72InteractMachineGoodsVo" extends="BaseResultMap">
+    <result column="goods_name" jdbcType="TIMESTAMP" property="goodsName" />
   </resultMap>
   
   
@@ -22,5 +27,19 @@
         <foreach collection="list" item="t" index="index" separator=",">
             (#{t.id}, #{t.interactMachineId},#{t.goodsId},#{t.number},#{t.seq},#{t.startTime},#{t.endTime})
         </foreach>
-    </insert>
+  </insert>
+  <select id="selectMachineGoods" parameterType="java.util.Map" resultMap="BaseVoResultMap">
+		SELECT
+			img.*,
+			g.NAME AS goods_name
+		FROM
+			inno72_interact_machine_goods img
+			LEFT JOIN inno72_interact_machine im ON im.interact_id = img.interact_machine_id
+			LEFT JOIN inno72_goods g ON g.id = img.goods_id
+		where 1=1
+		<if test="interactId !=null and interactId !='' ">and im.interact_id = #{interactId} </if>
+		<if test="merchantId !=null and merchantId !='' ">and im.merchant_id = #{merchantId} </if>
+  </select>		
+    
+    
 </mapper>

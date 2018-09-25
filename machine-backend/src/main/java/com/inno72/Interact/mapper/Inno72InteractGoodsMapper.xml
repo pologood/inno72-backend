@@ -52,7 +52,7 @@
 			ig.goods_id = #{id}
   </select>
   
-  <select id="selectGoods" parameterType="String" resultMap="InteractGoodsVoResultMap">
+  <select id="selectGoods" parameterType="java.util.Map" resultMap="InteractGoodsVoResultMap">
 		SELECT
 			g.id,
 			g.`code`,

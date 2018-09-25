@@ -10,16 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.inno72.Interact.model.Inno72InteractMachineGoods;
 import com.inno72.Interact.service.InteractMachineGoodsService;
+import com.inno72.Interact.vo.Inno72InteractMachineGoodsVo;
 import com.inno72.Interact.vo.InteractMachineGoods;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
-import com.inno72.common.ResultPages;
-
-import tk.mybatis.mapper.entity.Condition;
 
 /**
  * Created by CodeGenerator on 2018/09/19.
@@ -56,9 +53,10 @@ public class InteractMachineGoodsController {
 	}
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list() {
-		Condition condition = new Condition(Inno72InteractMachineGoods.class);
-		List<Inno72InteractMachineGoods> list = interactMachineGoodsService.findByPage(condition);
-		return ResultPages.page(ResultGenerator.genSuccessResult(list));
+	public Result<List<Inno72InteractMachineGoodsVo>> list(String interactId, String merchantId) {
+
+		List<Inno72InteractMachineGoodsVo> list = interactMachineGoodsService.selectMachineGoods(interactId,
+				merchantId);
+		return ResultGenerator.genSuccessResult(list);
 	}
 }
