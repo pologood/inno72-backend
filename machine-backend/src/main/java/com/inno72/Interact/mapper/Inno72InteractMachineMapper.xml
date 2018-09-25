@@ -91,6 +91,15 @@
   </select>
   
   
+  <insert id="insertInteractMachineList" parameterType="java.util.List">
+        insert into inno72_interact_machine (id, interact_id,machine_id)
+        values
+        <foreach collection="list" item="t" index="index" separator=",">
+            (#{t.id}, #{t.interactId},#{t.machineId})
+        </foreach>
+    </insert>
+  
+  
   
   
   

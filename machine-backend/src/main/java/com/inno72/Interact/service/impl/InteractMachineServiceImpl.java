@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.Interact.mapper.Inno72InteractMachineMapper;
+import com.inno72.Interact.mapper.Inno72InteractMachineTimeMapper;
 import com.inno72.Interact.model.Inno72InteractMachine;
 import com.inno72.Interact.model.Inno72InteractMachineTime;
 import com.inno72.Interact.service.InteractMachineService;
@@ -39,6 +40,9 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 	private static Logger logger = LoggerFactory.getLogger(InteractMachineServiceImpl.class);
 	@Resource
 	private Inno72InteractMachineMapper inno72InteractMachineMapper;
+
+	@Resource
+	private Inno72InteractMachineTimeMapper inno72InteractMachineTimeMapper;
 
 	@Override
 	public List<MachineVo> getList(String keyword, String startTime, String endTime) {
@@ -106,11 +110,11 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 					interactMachineTime.setInteractMachineId(interactMachine.getId());
 
 					insetInteractMachineTimeList.add(interactMachineTime);
-
 				}
 
 			}
-
+			inno72InteractMachineMapper.insertInteractMachineList(insetInteractMachineList);
+			inno72InteractMachineTimeMapper.insertInteractMachineTimeList(insetInteractMachineTimeList);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.info(e.getMessage());
