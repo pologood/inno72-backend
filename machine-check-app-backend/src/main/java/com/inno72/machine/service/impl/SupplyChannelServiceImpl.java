@@ -519,8 +519,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				});
 
 			});
-			if(!detail.equals("")){
-				StringUtil.logger(CommonConstants.LOG_TYPE_MACHINE_SUPPLY,machine.getMachineCode(),"用户"+checkUser.getName()+detail.toString());
+			String detailStr = detail.toString();
+			if(!detailStr.equals("")){
+				StringUtil.logger(CommonConstants.LOG_TYPE_MACHINE_SUPPLY,machine.getMachineCode(),"用户"+checkUser.getName()+detailStr);
 			}
 		}
 		return ResultGenerator.genSuccessResult();
