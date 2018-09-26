@@ -98,6 +98,32 @@
             (#{t.id}, #{t.interactId},#{t.machineId})
         </foreach>
     </insert>
+    
+    
+    <select id="getHavingMachines" parameterType="java.util.Map" resultMap="MachineResultMap">
+	  	SELECT
+			im.id,
+			CONCAT( area.province, area.city, area.district, IFNULL( l.mall, "" ), IFNULL( l.NAME, "" ) ) AS local_desc,
+			m.machine_code,
+			m.id AS machine_id 
+		FROM
+			inno72_interact_machine im
+			LEFT JOIN inno72_machine m ON m.id = im.machine_id
+			LEFT JOIN inno72_locale l ON l.id = m.locale_id
+			LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
+		WHERE
+			m.machine_status = '4' 
+			<if test="keyword !=null and keyword !='' ">
+				AND (l.mall LIKE '%${keyword}%'  
+				or l.name LIKE '%${keyword}%' 
+				or JSON_EXTRACT(l.tag, '$.tags') LIKE '%${keyword}%'  
+				or area.province LIKE '%${keyword}%' 
+				or area.city LIKE '%${keyword}%' 
+				or area.district LIKE '%${keyword}%' 
+				or m.machine_code LIKE '%${keyword}%' 
+				)
+		</if>
+  	</select>
   
   
   
