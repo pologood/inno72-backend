@@ -77,8 +77,16 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 				}
 			}
 		}
-
-		return ResultGenerator.genSuccessResult(appList);
+		List<Inno72App> resultList = new ArrayList<>();
+		if(appList != null && appList.size()>0){
+			for(Inno72App app:appList){
+				String packageName = app.getAppPackageName();
+				if(!packageName.equals("com.inno72.app")){
+					resultList.add(app);
+				}
+			}
+		}
+		return ResultGenerator.genSuccessResult(resultList);
 	}
 
 	@Override
