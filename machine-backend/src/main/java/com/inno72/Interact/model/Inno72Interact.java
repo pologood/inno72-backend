@@ -37,7 +37,7 @@ public class Inno72Interact {
 	/**
 	 * 活动时长
 	 */
-	private Integer day;
+	private String day;
 
 	/**
 	 * 活动负责人
@@ -164,7 +164,7 @@ public class Inno72Interact {
 	 *
 	 * @return day - 活动时长
 	 */
-	public Integer getDay() {
+	public String getDay() {
 		return day;
 	}
 
@@ -174,7 +174,7 @@ public class Inno72Interact {
 	 * @param day
 	 *            活动时长
 	 */
-	public void setDay(Integer day) {
+	public void setDay(String day) {
 		this.day = day;
 	}
 

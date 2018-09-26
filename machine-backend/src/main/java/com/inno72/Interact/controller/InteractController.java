@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.service.InteractService;
 import com.inno72.Interact.vo.InteractListVo;
+import com.inno72.Interact.vo.InteractRuleVo;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
@@ -55,6 +57,12 @@ public class InteractController {
 	public Result<Inno72Interact> detail(@RequestParam String id) {
 		Inno72Interact interact = interactService.findById(id);
 		return ResultGenerator.genSuccessResult(interact);
+	}
+
+	@RequestMapping(value = "/rule", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> updateRule(@RequestBody InteractRuleVo interactRule) {
+		interactService.updateRule(interactRule);
+		return ResultGenerator.genSuccessResult();
 	}
 
 	@RequestMapping(value = "/next", method = { RequestMethod.POST, RequestMethod.GET })

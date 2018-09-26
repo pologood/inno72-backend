@@ -21,6 +21,7 @@ import com.inno72.Interact.model.Inno72InteractGoods;
 import com.inno72.Interact.model.Inno72InteractMachine;
 import com.inno72.Interact.service.InteractService;
 import com.inno72.Interact.vo.InteractListVo;
+import com.inno72.Interact.vo.InteractRuleVo;
 import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
@@ -28,6 +29,8 @@ import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.system.model.Inno72User;
+
+import tk.mybatis.mapper.entity.Condition;
 
 /**
  * Created by CodeGenerator on 2018/09/19.
@@ -142,6 +145,88 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			inno72InteractMapper.updateByPrimaryKey(model);
 
 			return Results.warn("操作成功", 0, model.getId());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+	}
+
+	@Override
+	public Result<Object> updateRule(InteractRuleVo interactRule) {
+
+		try {
+			SessionData session = SessionUtil.sessionData.get();
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+
+			Inno72Interact interact = inno72InteractMapper.selectByPrimaryKey(interactRule.getId());
+
+			interact.setUpdateId(mUserId);
+			interact.setUpdateTime(LocalDateTime.now());
+
+			if (interactRule.getType() == 1) {
+				// 下一步
+				if (null == interactRule.getTimes()) {
+					logger.info("填写同一用户参与活动次数");
+					return Results.failure("填写同一用户参与活动次数");
+				}
+				if (null == interactRule.getDayTimes()) {
+					logger.info("填写同一用户每天参与活动次数");
+					return Results.failure("填写同一用户每天参与活动次数");
+				}
+				if (null == interactRule.getNumber()) {
+					logger.info("填写同一用户获得商品次数");
+					return Results.failure("填写同一用户获得商品次数");
+				}
+				if (null == interactRule.getDayNumber()) {
+					logger.info("填写同一用户每天得商品次数");
+					return Results.failure("填写同一用户每天得商品次数");
+				}
+				interact.setTimes(interactRule.getTimes());
+				interact.setDayTimes(interactRule.getDayTimes());
+				interact.setNumber(interactRule.getNumber());
+				interact.setDayNumber(interactRule.getDayNumber());
+
+				interact.setStatus(1);
+
+			} else if (null == interactRule.getType()) {
+				logger.info("参数错误");
+				return Results.failure("参数错误");
+			}
+
+			List<Map<String, Object>> goodsRule = interactRule.getGoodsRule();
+			for (Map<String, Object> map : goodsRule) {
+				String goodsId = map.get("goodsId").toString();
+				Integer userDayNumber = (Integer) map.get("userDayNumber");
+				if (StringUtil.isBlank(goodsId) || null == userDayNumber) {
+					logger.info("填写商品规则");
+					return Results.failure("填写商品规则");
+				}
+			}
+
+			for (Map<String, Object> map : goodsRule) {
+				String goodsId = map.get("goodsId").toString();
+				Integer userDayNumber = (Integer) map.get("userDayNumber");
+				Inno72InteractGoods interactGoods = new Inno72InteractGoods();
+				interactGoods.setInteractId(interactRule.getId());
+				interactGoods.setGoodsId(goodsId);
+
+				Condition condition = new Condition(Inno72InteractGoods.class);
+				condition.createCriteria().andEqualTo(interactGoods);
+
+				interactGoods.setUserDayNumber(userDayNumber);
+				inno72InteractGoodsMapper.updateByCondition(interactGoods, condition);
+
+			}
+			inno72InteractMapper.updateByPrimaryKey(interact);
+
+			return Results.success();
 
 		} catch (Exception e) {
 			e.printStackTrace();
