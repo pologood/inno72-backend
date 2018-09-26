@@ -1,5 +1,6 @@
 package com.inno72.machine.service.impl;
 
+import java.text.MessageFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -222,7 +223,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		}
 		Result<String> result = supplyChannelService.updateGoodsCount(channels);
 		if (result.getCode() == Result.SUCCESS) {
-			Inno72Machine machine = findBy("machineCode", result.getData());
+			Inno72Machine machine = findById(result.getData());
 			if (machine != null) {
 				machine.setUpdateId(mUser.getId());
 				machine.setUpdateTime(LocalDateTime.now());
@@ -337,6 +338,12 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<String> cutApp(String machineId, String appPackageName) {
+		SessionData session = SessionUtil.sessionData.get();
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
 		Inno72Machine machine = findById(machineId);
 		if (machine == null) {
 			return Results.failure("机器id传入错误");
@@ -345,6 +352,10 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		query.addCriteria(Criteria.where("machineId").is(machine.getMachineCode()));
 		List<MachineAppStatus> ms = mongoTpl.find(query, MachineAppStatus.class, "MachineAppStatus");
 		if (ms != null && !ms.isEmpty()) {
+			String name1 = "未知";
+			String version1 = "未知版本";
+			String name2 = "未知";
+			String version2 = "未知版本";
 			MachineAppStatus machineAppStatus = ms.get(0);
 			SendMessageBean msg = new SendMessageBean();
 			msg.setEventType(2);
@@ -352,19 +363,27 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			msg.setMachineId(machine.getMachineCode());
 			List<MachineStartAppBean> sl = new ArrayList<>();
 			for (AppStatus status : machineAppStatus.getStatus()) {
+				if (status.getAppStatus() == 1) {
+					name1 = status.getAppName();
+					version1 = status.getVersionName();
+				}
 				MachineStartAppBean bean = new MachineStartAppBean();
 				bean.setAppPackageName(status.getAppPackageName());
 				Inno72App app = appService.findBy("appPackageName", status.getAppPackageName());
 				bean.setAppType(app.getAppType());
 				if (appPackageName.equals(status.getAppPackageName()) || app.getAppType() == 1) {
 					bean.setStartStatus(1);
+					name2 = status.getAppName();
+					version2 = status.getVersionName();
 				} else {
 					bean.setStartStatus(2);
 				}
 				sl.add(bean);
 			}
 			msg.setData(sl);
-			LogUtil.logger(LogType.CUT_APP.getCode(), machine.getMachineCode(), "切换app，包名：" + appPackageName);
+			String m = "用户{0}，在erp系统中将运行的App由{1}{2}切换为{3}{4}";
+			String mm = MessageFormat.format(m, mUser.getName(), name1, version1, name2, version2);
+			LogUtil.logger(LogType.CUT_APP.getCode(), machine.getMachineCode(), mm);
 			return sendMsg(machine.getMachineCode(), msg);
 		}
 		return Results.failure("发送失败");
@@ -372,6 +391,12 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<String> installApp(String machineId, String appPackageName, String url, Integer versionCode) {
+		SessionData session = SessionUtil.sessionData.get();
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
 		Inno72Machine machine = findById(machineId);
 		if (machine == null) {
 			return Results.failure("机器id传入错误");
@@ -387,7 +412,10 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		bean.setVersionCode(versionCode);
 		il.add(bean);
 		msg.setData(il);
-		LogUtil.logger(LogType.MACHINE_INSTALL.getCode(), machine.getMachineCode(), "安装app：" + appPackageName);
+		Inno72App app = appService.findBy("appPackageName", appPackageName);
+		String m = "用户{0}，在erp系统中升级{1}，升级版本为{2}";
+		String mm = MessageFormat.format(m, mUser.getName(), app.getAppName(), versionCode);
+		LogUtil.logger(LogType.MACHINE_INSTALL.getCode(), machine.getMachineCode(), mm);
 		return sendMsg(machine.getMachineCode(), msg);
 	}
 
@@ -624,7 +652,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		msg.setSubEventType(4);
 		msg.setMachineId(machine.getMachineCode());
 		msg.setData(machineCode);
-		LogUtil.logger(LogType.UPDATE_MACHINECODE.getCode(), machine.getMachineCode(), "更新机器编号为:" + machineCode);
+		String m = "用户{0}，在erp系统中修改机器编号，修改前{1}，修改后{2}";
+		String mm = MessageFormat.format(m, mUser.getName(), machine.getMachineCode(), machineCode);
+		LogUtil.logger(LogType.UPDATE_MACHINECODE.getCode(), machine.getMachineCode(), mm);
 		return sendMsg(machine.getMachineCode(), msg);
 	}
 

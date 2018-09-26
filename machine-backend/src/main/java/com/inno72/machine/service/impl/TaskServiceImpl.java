@@ -1,5 +1,6 @@
 package com.inno72.machine.service.impl;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,7 @@ import com.inno72.machine.mapper.Inno72TaskMachineMapper;
 import com.inno72.machine.mapper.Inno72TaskMapper;
 import com.inno72.machine.model.Inno72App;
 import com.inno72.machine.model.Inno72Task;
+import com.inno72.machine.service.AppService;
 import com.inno72.machine.service.TaskService;
 import com.inno72.machine.vo.Inno72TaskMachineVo;
 import com.inno72.machine.vo.Inno72TaskVo;
@@ -57,6 +60,8 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 	private Inno72TaskMachineMapper inno72TaskMachineMapper;
 	@Resource
 	private Inno72MachineMapper inno72MachineMapper;
+	@Autowired
+	private AppService appService;
 
 	// yyyy-MM-dd HH:mm
 	private String timeRegex = "^((([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))|((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[3579][26])00))-02-29))\\s+([0-1]?[0-9]|2[0-3]):([0-5][0-9])$";
@@ -147,12 +152,17 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 						return Results.failure("操作货道不是同一批次");
 					}
 				}
+
 				if (type == 1) {
-					LogUtil.logger(LogType.TASK_INSTALL.getCode(), taskMachine.getMachineCode(),
-							"任务安装app:" + task.getApp());
+					Inno72App app = appService.findBy("appPackageName", task.getApp());
+					String m = "用户{0}，在erp系统中升级{1}，升级版本为{2}";
+					String mm = MessageFormat.format(m, mUser.getName(), app.getAppName(), task.getAppVersion());
+					LogUtil.logger(LogType.TASK_INSTALL.getCode(), taskMachine.getMachineCode(), mm);
 				} else if (type == 2) {
-					LogUtil.logger(LogType.TASK_UNISTALL.getCode(), taskMachine.getMachineCode(),
-							"任务卸载app:" + task.getApp());
+					Inno72App app = appService.findBy("appPackageName", task.getApp());
+					String m = "用户{0}，在erp系统中卸载{1}";
+					String mm = MessageFormat.format(m, mUser.getName(), app.getAppName());
+					LogUtil.logger(LogType.TASK_UNISTALL.getCode(), taskMachine.getMachineCode(), mm);
 				}
 
 				insertTaskMachinList.add(insertTaskMachine);
