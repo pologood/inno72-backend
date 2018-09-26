@@ -34,6 +34,12 @@ public class Inno72InteractMachine {
 	private String machineCode;
 
 	/**
+	 * 机器活动时间状态：0正常，1长期
+	 */
+	@Column(name = "state")
+	private String state;
+
+	/**
 	 * 获取ID
 	 *
 	 * @return id - ID
@@ -96,6 +102,14 @@ public class Inno72InteractMachine {
 
 	public void setMachineCode(String machineCode) {
 		this.machineCode = machineCode;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
 
 }

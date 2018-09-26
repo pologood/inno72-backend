@@ -12,6 +12,8 @@ public class MachineVo {
 
 	private String localDesc;
 
+	private Integer state;
+
 	private List<MachineActivityVo> machineActivity;
 
 	public String getId() {
@@ -52,6 +54,14 @@ public class MachineVo {
 
 	public void setMachineActivity(List<MachineActivityVo> machineActivity) {
 		this.machineActivity = machineActivity;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
 	}
 
 	@Override

@@ -51,13 +51,17 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 		Map<String, Object> pm = new HashMap<>();
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		pm.put("keyword", keyword);
-		pm.put("startTime", endTime);
+		pm.put("startTime", startTime);
+		pm.put("endTime", endTime);
 		List<MachineVo> planMachines = inno72InteractMachineMapper.selectPlanMachines(pm);
 		List<MachineVo> interactMachines = inno72InteractMachineMapper.selectInteractMachines(pm);
 
 		for (MachineVo machine : interactMachines) {
 			if (planMachines.contains(machine)) {
 				int index = planMachines.indexOf(machine);
+				if (planMachines.get(index).getState() == 1) {
+					machine.setState(1);
+				}
 				machine.getMachineActivity().addAll(planMachines.get(index).getMachineActivity());
 				planMachines.remove(index);
 			}
