@@ -252,6 +252,7 @@ public class RedisReceiver {
 					int lackNum = 0;
 					alarmMsgService.saveAlarmMsg(type, system, machineCode, lackNum, localStr);
 					if(alarmFlag) {
+						text = "掉货异常，提醒方式：短信和钉钉，内容：您好，"+localStr+"机器编号："+machineCode+","+channelNum+"掉货异常，货道已被锁定，请及时联系巡检人员。";
 						StringUtil.logger(CommonConstants.LOG_TYPE_DROPGOODS, machineCode, text);
 					}
                 }

@@ -210,6 +210,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 							alarmSendBean.setLocaleStr(localeStr);
 							alarmSendBean.setCreateTime(new Date());
 							mongoUtil.save(alarmSendBean,"AlarmSendBean");
+							text = "网络异常，提醒方式：钉钉，内容："+text;
 							StringUtil.logger(CommonConstants.LOG_TYPE_HEART,machineCode,text);
 						}
 					}else if(type == 2){
@@ -249,6 +250,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 							alarmSendBean.setLocaleStr(localeStr);
 							alarmSendBean.setCreateTime(new Date());
 							mongoUtil.save(alarmSendBean,"AlarmSendBean");
+							text = "网络异常，提醒方式：钉钉，内容："+text;
 							StringUtil.logger(CommonConstants.LOG_TYPE_CONNECT,machineCode,text);
 						}
 					}
