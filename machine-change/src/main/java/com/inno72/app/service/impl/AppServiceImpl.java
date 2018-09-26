@@ -95,7 +95,7 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 				MachineStartAppBean bean = new MachineStartAppBean();
 				bean.setAppPackageName(status.getAppPackageName());
 				Map<String,Object> map = new HashMap<String,Object>();
-				map.put("appPackageName",appPackageName);
+				map.put("appPackageName",status.getAppPackageName());
 				Inno72App app = inno72AppMapper.findOneByParam(map);
 				bean.setAppType(app.getAppType());
 				if (appPackageName.equals(status.getAppPackageName()) || app.getAppType() == 1) {
@@ -112,6 +112,7 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 	}
 
 	private Result<String> sendMsg(String machineCode, SendMessageBean... beans) {
+//		String url = "http://pre_test.72solo.com:30130/sendMsgToClient/sendMsg";
 		String url = "http://pre_test.72solo.com:9080/sendMsgToClient/sendMsg";//测试
 //		String url = "http://api.monitor.inner.inno72.com:9080/sendMsgToClient/sendMsg";//正式
 //		String url ="http://api.monitor.inner.inno72.com:9080/sendMsgToClient/sendMsg";//预发
