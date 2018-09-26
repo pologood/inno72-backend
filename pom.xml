@@ -155,5 +155,6 @@
     <module>machine-app-backend</module>
     <module>zuul</module>
     <module>machine-remote-backend</module>
+    <module>machine-change</module>
   </modules>
 </project>

@@ -16,7 +16,6 @@ import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.vo.SupplyRequestVo;
 
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
@@ -77,7 +76,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
                 inno72CheckUserMachineMapper.insertSelective(userMachine);
             }
 			machine = inno72MachineMapper.getMachineByCode(machineCode);
-			String detail = "机器入厂:"+checkUser.getName()+"设置了最新点位："+machine.getLocaleStr();
+			String detail = "用户"+checkUser.getName()+"，在互动管家中进行机器入厂操作，选择点位是："+machine.getLocaleStr();
 			StringUtil.logger(CommonConstants.LOG_TYPE_IN_FACTORY,machine.getMachineCode(),detail);
         }else{
             return Results.failure("机器状态有误");

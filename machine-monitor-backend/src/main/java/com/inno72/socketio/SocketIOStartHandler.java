@@ -5,6 +5,7 @@ import static com.inno72.model.MessageBean.SubEventType.APPSTATUS;
 import static com.inno72.model.MessageBean.SubEventType.MACHINESTATUS;
 import static com.inno72.model.MessageBean.SubEventType.SCREENSHOT;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -140,7 +141,11 @@ public class SocketIOStartHandler {
 				log.info("收到推送监控消息，sessionId:{},machineId：{}机器的系统信息已保存,消息内容：{}", key, machineId, message);
 				socketService.updateNetStatus(systemStatus);
 				socketService.recordHeart(machineId);
-				LogUtil.logger("1", machineId, JSON.toJSONString(systemStatus));
+				String msg = "机器编号：{0}，网速（访问72服务器）：{1}，网速（访问阿里服务器）：{2}，运营商：{3}，网络类型：{4}，SD卡剩余内存：{5}，SD卡总内存：{6}，客流量：{7}";
+				String logs = MessageFormat.format(msg, machineId, systemStatus.getPing(), systemStatus.getPing1(),
+						systemStatus.getNetworkOperateName(), systemStatus.getNetworkType(), systemStatus.getSdFree(),
+						systemStatus.getSdTotle(), systemStatus.getCount());
+				LogUtil.logger("1", machineId, logs, JSON.toJSONString(systemStatus));
 			}
 
 			@Override

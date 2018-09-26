@@ -1,8 +1,7 @@
-package com.inno72.util;
+package com.inno72.common.util;
 
 import java.time.LocalDateTime;
 
-import com.inno72.common.DateUtil;
 import com.inno72.log.PointLogContext;
 import com.inno72.log.vo.LogType;
 
@@ -15,6 +14,6 @@ public class LogUtil {
 	public static void logger(String... msg) {
 		new PointLogContext(LogType.POINT).machineCode(msg[1])
 				.pointTime(DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S1)).type(msg[0]).detail(msg[2])
-				.tag(msg[3]).bulid();
+				.tag("").bulid();
 	}
 }

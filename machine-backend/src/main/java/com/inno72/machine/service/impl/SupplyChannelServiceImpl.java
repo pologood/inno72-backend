@@ -1,5 +1,6 @@
 package com.inno72.machine.service.impl;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alibaba.fastjson.JSON;
 import com.inno72.common.AbstractService;
 import com.inno72.common.LogType;
 import com.inno72.common.LogUtil;
@@ -86,6 +86,8 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			return Results.failure("货道信息传入错误");
 		}
 		String machineId = "";
+		String code = "";
+		int status = 0;
 		for (UpdateMachineChannelVo chan : channels) {
 			Inno72SupplyChannel channel = findById(chan.getChannelId());
 			if (channel != null) {
@@ -94,19 +96,23 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				channel.setUpdateId(mUser.getId());
 				inno72SupplyChannelMapper.updateByPrimaryKeySelective(channel);
 				machineId = channel.getMachineId();
-				Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
-				if (machine != null) {
-
-					if (chan.getStatus().intValue() == 0) {
-						LogUtil.logger(LogType.ENABLE_CHANNEL.getCode(), machine.getMachineCode(),
-								"启用货道:" + JSON.toJSONString(chan));
-					} else {
-						LogUtil.logger(LogType.DELETE_CHANNEL.getCode(), machine.getMachineCode(),
-								"停用货道:" + JSON.toJSONString(chan));
-					}
-				}
+				code += channel.getCode() + "、";
+				status = chan.getStatus().intValue();
 			}
 
+		}
+		Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+		if (machine != null) {
+
+			if (status == 0) {
+				String m = "用户{0}，在erp系统中停用货道{1}";
+				String mm = MessageFormat.format(m, mUser.getName(), code);
+				LogUtil.logger(LogType.ENABLE_CHANNEL.getCode(), machine.getMachineCode(), mm);
+			} else {
+				String m = "用户{0}，在erp系统中停用货道{1}";
+				String mm = MessageFormat.format(m, mUser.getName(), code);
+				LogUtil.logger(LogType.DELETE_CHANNEL.getCode(), machine.getMachineCode(), mm);
+			}
 		}
 		return Results.success(machineId);
 	}
@@ -131,6 +137,12 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				channel.setUpdateId(mUser.getId());
 				inno72SupplyChannelMapper.updateByPrimaryKeySelective(channel);
 				machineId = channel.getMachineId();
+				Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+				if (machine != null) {
+					String m = "用户{0}，在erp系统中为{1}货道补货，补货数量为{2}";
+					String mm = MessageFormat.format(m, mUser.getName(), channel.getCode(), chan.getCount());
+					LogUtil.logger(LogType.UPDATE_GOODS_COUNT.getCode(), machine.getMachineCode(), mm);
+				}
 			}
 
 		}

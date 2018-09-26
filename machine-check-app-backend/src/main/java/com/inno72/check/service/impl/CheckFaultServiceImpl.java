@@ -190,7 +190,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 					m.put("touser", userIdString);
 					m.put("agentid", "1000002");
 					msgUtil.sendQyWechatMsg("qywechat_msg", params, m, userIdString, appName);
-					StringUtil.logger(CommonConstants.LOG_TYPE_SET_WORK,machineCode,"操作工单：巡检人员"+checkUser.getName()+"对"+localeStr+"点位处的机器提交了故障单");
+					StringUtil.logger(CommonConstants.LOG_TYPE_SET_WORK,machineCode,"用户"+checkUser.getName()+"在互动管家中进行机器报障，故障类型："+faultType);
 				}
 
 			}
@@ -213,9 +213,10 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		inno72CheckFaultMapper.updateByPrimaryKeySelective(upCheckFault);
 		Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
 		String remarkId = StringUtil.getUUID();
+		Inno72CheckUser user = UserUtil.getUser();
 		faultRemark.setId(remarkId);
-		faultRemark.setUserId(UserUtil.getUser().getId());
-		faultRemark.setName(UserUtil.getUser().getName());
+		faultRemark.setUserId(user.getId());
+		faultRemark.setName(user.getName());
 		faultRemark.setFaultId(checkFault.getId());
 		faultRemark.setCreateTime(LocalDateTime.now());
 		faultRemark.setType(1);
@@ -237,7 +238,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		Inno72CheckFault fault = inno72CheckFaultMapper.selectDetail(checkFault.getId());
 		if(fault != null){
 			Inno72Machine machine = inno72MachineMapper.getMachineById(fault.getMachineId());
-			StringUtil.logger(CommonConstants.LOG_TYPE_SET_WORK,machine.getMachineCode(),"解决工单:巡检人员解决了"+machine.getLocaleStr()+"点位所在机器的工单");
+			StringUtil.logger(CommonConstants.LOG_TYPE_SET_WORK,machine.getMachineCode(),"用户"+user.getName()+"，在互动管家中处理工单，工单ID"+fault.getCode());
 		}
 
 		return ResultGenerator.genSuccessResult();
@@ -272,12 +273,13 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		String remark = inno72CheckFault.getRemark();
 		String[] images = inno72CheckFault.getImages();
 		Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
+		Inno72CheckUser user = UserUtil.getUser();
 		String id = StringUtil.getUUID();
 		faultRemark.setId(id);
 		faultRemark.setFaultId(faultId);
-		faultRemark.setUserId(UserUtil.getUser().getId());
+		faultRemark.setUserId(user.getId());
 		faultRemark.setType(1);
-		faultRemark.setName(UserUtil.getUser().getName());
+		faultRemark.setName(user.getName());
 		faultRemark.setRemark(remark);
 		faultRemark.setCreateTime(LocalDateTime.now());
 		inno72CheckFaultRemarkMapper.insertSelective(faultRemark);
@@ -296,7 +298,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		Inno72CheckFault fault = inno72CheckFaultMapper.selectDetail(faultId);
 		if(fault != null){
 			Inno72Machine machine = inno72MachineMapper.getMachineById(fault.getMachineId());
-			StringUtil.logger(CommonConstants.LOG_TYPE_SET_WORK,machine.getMachineCode(),"操作工单:巡检人员"+UserUtil.getUser().getName()+"对"+machine.getLocaleStr()+"点位处机器的工单进行了回复");
+			StringUtil.logger(CommonConstants.LOG_TYPE_SET_WORK,machine.getMachineCode(),"用户"+user.getName()+"，在互动管家中处理工单，工单ID"+fault.getCode());
 		}
 		return ResultGenerator.genSuccessResult();
 	}
@@ -365,7 +367,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		inno72CheckFault = inno72CheckFaultMapper.selectDetail(inno72CheckFault.getId());
 		if(inno72CheckFault != null){
 			Inno72Machine machine = inno72MachineMapper.getMachineById(inno72CheckFault.getMachineId());
-			StringUtil.logger(CommonConstants.LOG_TYPE_SET_WORK,machine.getMachineCode(),"操作工单：巡检人员"+checkUser.getName()+"对"+machine.getLocaleStr()+"点位处的机器接收了工单");
+			StringUtil.logger(CommonConstants.LOG_TYPE_SET_WORK,machine.getMachineCode(),"用户"+checkUser.getName()+"，在互动管家中处理工单，工单ID"+inno72CheckFault.getCode());
 		}
 		return ResultGenerator.genSuccessResult();
 	}
