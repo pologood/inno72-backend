@@ -468,7 +468,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			order.setMachineId(machineId);
 			order.setType(1);
 			order.setUserId(checkUser.getId());
-			StringBuffer detail = new StringBuffer("用户"+checkUser.getName());
+			StringBuffer detail = new StringBuffer("");
 			inno72SupplyChannelOrderMapper.insertSelective(order);
 			supplyChannelList.forEach(supplyChannel -> {
 				String supplyChannelId = supplyChannel.getId();
@@ -519,8 +519,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				});
 
 			});
-			StringUtil.logger(CommonConstants.LOG_TYPE_MACHINE_SUPPLY,machine.getMachineCode(),detail.toString());
-
+			if(!detail.equals("")){
+				StringUtil.logger(CommonConstants.LOG_TYPE_MACHINE_SUPPLY,machine.getMachineCode(),"用户"+checkUser.getName()+detail.toString());
+			}
 		}
 		return ResultGenerator.genSuccessResult();
 	}
