@@ -24,13 +24,16 @@
     </select>
 
     <select id="findOneByParam" resultMap="BaseResultMap">
-        select * from inno72_app where
-        <if test="appPackageName != null">
-            and app_package_name = #{appPackageName}
-        </if>
-        <if test="appType != null">
-            and app_type = #{appType}
-        </if>
+        select * from inno72_app
+        <where>
+            <if test="appPackageName != null">
+                and app_package_name = #{appPackageName}
+            </if>
+            <if test="appType != null">
+                and app_type = #{appType}
+            </if>
+        </where>
+
         limit 1
     </select>
 </mapper>

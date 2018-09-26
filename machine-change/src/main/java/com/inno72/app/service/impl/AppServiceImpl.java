@@ -112,7 +112,7 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 	}
 
 	private Result<String> sendMsg(String machineCode, SendMessageBean... beans) {
-		String url = machineChangeProperties.get("sendAppMsgUrl");
+		String url = "http://api.monitor.inner.inno72.com:9080/sendMsgToClient/sendMsg";
 		try {
 			String result = HttpClient.post(url, JSON.toJSONString(beans));
 			if (!StringUtil.isEmpty(result)) {
