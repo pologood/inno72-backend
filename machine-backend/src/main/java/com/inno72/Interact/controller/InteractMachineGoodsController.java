@@ -53,10 +53,9 @@ public class InteractMachineGoodsController {
 	}
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72InteractMachineGoodsVo>> list(String interactId, String merchantId) {
+	public Result<List<Inno72InteractMachineGoodsVo>> list(String interactId, String machineId) {
 
-		List<Inno72InteractMachineGoodsVo> list = interactMachineGoodsService.selectMachineGoods(interactId,
-				merchantId);
+		List<Inno72InteractMachineGoodsVo> list = interactMachineGoodsService.selectMachineGoods(interactId, machineId);
 		return ResultGenerator.genSuccessResult(list);
 	}
 }

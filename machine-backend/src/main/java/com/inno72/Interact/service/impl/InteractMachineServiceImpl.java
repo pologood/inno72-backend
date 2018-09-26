@@ -93,6 +93,7 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 				interactMachine.setId(StringUtil.getUUID());
 				interactMachine.setInteractId(interactId);
 				interactMachine.setMachineId(machineId);
+				interactMachine.setMachineCode(machineTime.getMachineCode());
 				insetInteractMachineList.add(interactMachine);
 				List<Map<String, String>> planTime = machineTime.getPlanTime();
 				if (null == planTime || planTime.size() < 1) {

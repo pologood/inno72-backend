@@ -7,6 +7,8 @@ public class MachineTime {
 
 	private String machineId;
 
+	private String machineCode;
+
 	private List<Map<String, String>> planTime;
 
 	public String getMachineId() {
@@ -15,6 +17,14 @@ public class MachineTime {
 
 	public void setMachineId(String machineId) {
 		this.machineId = machineId;
+	}
+
+	public String getMachineCode() {
+		return machineCode;
+	}
+
+	public void setMachineCode(String machineCode) {
+		this.machineCode = machineCode;
 	}
 
 	public List<Map<String, String>> getPlanTime() {

@@ -75,7 +75,7 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 					machineGoods.setId(StringUtil.getUUID());
 					machineGoods.setInteractMachineId(base.getId());
 					machineGoods.setStartTime(DateUtil.toDateTime(machineGoods.getStartTimeStr(), DateUtil.DF_FULL_S1));
-					machineGoods.setStartTime(DateUtil.toDateTime(machineGoods.getEndTimeStr(), DateUtil.DF_FULL_S1));
+					machineGoods.setEndTime(DateUtil.toDateTime(machineGoods.getEndTimeStr(), DateUtil.DF_FULL_S1));
 				}
 			}
 
@@ -90,13 +90,13 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 	}
 
 	@Override
-	public List<Inno72InteractMachineGoodsVo> selectMachineGoods(String interactId, String merchantId) {
+	public List<Inno72InteractMachineGoodsVo> selectMachineGoods(String interactId, String machineId) {
 		Map<String, Object> pm = new HashMap<>();
 		pm.put("interactId", interactId);
-		pm.put("merchantId", merchantId);
+		pm.put("machineId", machineId);
 
-		inno72InteractMachineGoodsMapper.selectMachineGoods(pm);
-		return null;
+		List<Inno72InteractMachineGoodsVo> list = inno72InteractMachineGoodsMapper.selectMachineGoods(pm);
+		return list;
 	}
 
 }

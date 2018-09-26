@@ -28,6 +28,12 @@ public class Inno72InteractMachine {
 	private String machineId;
 
 	/**
+	 * 机器code
+	 */
+	@Column(name = "machine_code")
+	private String machineCode;
+
+	/**
 	 * 获取ID
 	 *
 	 * @return id - ID
@@ -83,4 +89,13 @@ public class Inno72InteractMachine {
 	public void setMachineId(String machineId) {
 		this.machineId = machineId;
 	}
+
+	public String getMachineCode() {
+		return machineCode;
+	}
+
+	public void setMachineCode(String machineCode) {
+		this.machineCode = machineCode;
+	}
+
 }

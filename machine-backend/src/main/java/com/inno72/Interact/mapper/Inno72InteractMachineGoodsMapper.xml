@@ -34,11 +34,11 @@
 			g.NAME AS goods_name
 		FROM
 			inno72_interact_machine_goods img
-			LEFT JOIN inno72_interact_machine im ON im.interact_id = img.interact_machine_id
+			LEFT JOIN inno72_interact_machine im ON im.id = img.interact_machine_id
 			LEFT JOIN inno72_goods g ON g.id = img.goods_id
 		where 1=1
 		<if test="interactId !=null and interactId !='' ">and im.interact_id = #{interactId} </if>
-		<if test="merchantId !=null and merchantId !='' ">and im.merchant_id = #{merchantId} </if>
+		<if test="machineId !=null and machineId !='' ">and im.machine_id = #{machineId} </if>
   </select>		
     
     
