@@ -41,9 +41,6 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 	@Resource
 	private Inno72AppMapper inno72AppMapper;
 
-	@Resource
-	private MongoUtil mongoUtil;
-
 	@Autowired
 	private MongoOperations mongoTpl;
 
