@@ -112,7 +112,7 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 				return Results.failure("请填写商家名称");
 			}
 
-			inno72MerchantMapper.updateByPrimaryKey(model);
+			inno72MerchantMapper.updateByPrimaryKeySelective(model);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.info(e.getMessage());

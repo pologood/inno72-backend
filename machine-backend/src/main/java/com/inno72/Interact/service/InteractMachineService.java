@@ -17,4 +17,6 @@ public interface InteractMachineService extends Service<Inno72InteractMachine> {
 
 	Result<String> save(InteractMachineTime model);
 
+	List<MachineVo> getHavingMachines(String interactId, String keyword);
+
 }

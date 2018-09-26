@@ -185,7 +185,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 				model.setUpdateId(mUserId);
 				model.setUpdateTime(LocalDateTime.now());
 
-				inno72GoodsMapper.updateByPrimaryKey(model);
+				inno72GoodsMapper.updateByPrimaryKeySelective(model);
 				interactGoods.setUserDayNumber(model.getUserDayNumber());
 			} else {
 				if (StringUtil.isBlank(model.getName())) {
@@ -206,10 +206,10 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 				coupon.setCode(model.getCode());
 				coupon.setShopsId(model.getShopId());
 				coupon.setUpdateId(mUserId);
-				inno72CouponMapper.updateByPrimaryKey(coupon);
+				inno72CouponMapper.updateByPrimaryKeySelective(coupon);
 			}
 
-			inno72InteractGoodsMapper.updateByPrimaryKey(interactGoods);
+			inno72InteractGoodsMapper.updateByPrimaryKeySelective(interactGoods);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.info(e.getMessage());

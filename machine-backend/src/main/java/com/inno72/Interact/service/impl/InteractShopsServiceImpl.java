@@ -123,7 +123,7 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 				return Results.failure("选择是否入会");
 			}
 
-			inno72ShopsMapper.updateByPrimaryKey(model);
+			inno72ShopsMapper.updateByPrimaryKeySelective(model);
 			// 中间表 关联关系
 			Inno72InteractShops interactShops = new Inno72InteractShops();
 			interactShops.setShopsId(model.getId());

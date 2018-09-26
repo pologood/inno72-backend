@@ -29,8 +29,8 @@
 			m.merchant_code,
 			m.merchant_name 
 		FROM
-			inno72_merchant m
-			LEFT JOIN inno72_interact_merchant im ON im.merchant_id = m.id 
+			inno72_interact_merchant im
+			LEFT JOIN inno72_merchant m ON m.id = im.merchant_id
 		WHERE m.is_delete = 0 
 			AND im.interact_id = #{interactId}
   </select>

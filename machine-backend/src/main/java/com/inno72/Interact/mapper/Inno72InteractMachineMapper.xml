@@ -11,6 +11,7 @@
   </resultMap>
   
   <resultMap id="MachineResultMap" type="com.inno72.Interact.vo.MachineVo">
+  	<result column="id" jdbcType="VARCHAR" property="id" />
    	<result column="local_desc" jdbcType="VARCHAR" property="localDesc" />
     <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
     <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
@@ -112,7 +113,7 @@
 			LEFT JOIN inno72_locale l ON l.id = m.locale_id
 			LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
 		WHERE
-			m.machine_status = '4' 
+			im.interact_id = #{interactId}
 			<if test="keyword !=null and keyword !='' ">
 				AND (l.mall LIKE '%${keyword}%'  
 				or l.name LIKE '%${keyword}%' 
@@ -124,15 +125,6 @@
 				)
 		</if>
   	</select>
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
   
 </mapper>

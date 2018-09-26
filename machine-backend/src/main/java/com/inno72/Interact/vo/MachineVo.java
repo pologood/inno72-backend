@@ -4,6 +4,8 @@ import java.util.List;
 
 public class MachineVo {
 
+	private String id;
+
 	private String machineId;
 
 	private String machineCode;
@@ -11,6 +13,14 @@ public class MachineVo {
 	private String localDesc;
 
 	private List<MachineActivityVo> machineActivity;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getMachineId() {
 		return machineId;

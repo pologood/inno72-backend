@@ -122,4 +122,17 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 		return Results.success("操作成功");
 	}
 
+	@Override
+	public List<MachineVo> getHavingMachines(String interactId, String keyword) {
+		logger.info("---------------------获取已添加机器-------------------");
+
+		Map<String, Object> pm = new HashMap<>();
+		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
+		pm.put("keyword", keyword);
+		pm.put("interactId", interactId);
+		List<MachineVo> interactMachines = inno72InteractMachineMapper.getHavingMachines(pm);
+
+		return interactMachines;
+	}
+
 }
