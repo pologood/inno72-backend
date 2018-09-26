@@ -522,7 +522,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			String detailStr = detail.toString();
 			logger.info("补货添加日志：{}",detailStr);
 			if(!detailStr.equals("")){
-				logger.info("补货添加日志：{}",detailStr);
+				logger.info("补货添加日志：{}","用户"+checkUser.getName()+detailStr);
 				StringUtil.logger(CommonConstants.LOG_TYPE_MACHINE_SUPPLY,machine.getMachineCode(),"用户"+checkUser.getName()+detailStr);
 			}
 		}
