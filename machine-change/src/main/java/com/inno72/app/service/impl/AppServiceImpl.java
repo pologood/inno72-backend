@@ -122,8 +122,9 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 	private Result<String> sendMsg(String machineCode, SendMessageBean... beans) {
 //		String url = "http://pre_test.72solo.com:30130/sendMsgToClient/sendMsg";
 //		String url = "http://pre_test.72solo.com:9080/sendMsgToClient/sendMsg";//测试
-		String url = "http://api.monitor.inner.inno72.com:9080/sendMsgToClient/sendMsg";//正式
+//		String url = "http://api.monitor.inner.inno72.com:9080/sendMsgToClient/sendMsg";//正式
 //		String url ="http://api.monitor.inner.inno72.com:9080/sendMsgToClient/sendMsg";//预发
+		String url = machineChangeProperties.getProps().get("sendAppMsgUrl");
 		try {
 			String result = HttpClient.post(url, JSON.toJSONString(beans));
 			if (!StringUtil.isEmpty(result)) {
