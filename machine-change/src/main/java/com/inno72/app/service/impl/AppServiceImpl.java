@@ -94,29 +94,40 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 		Query query = new Query();
 		query.addCriteria(Criteria.where("machineId").is(machineId));
 		MachineAppStatus machineAppStatus = mongoTpl.findOne(query,MachineAppStatus.class,"MachineAppStatus");
-			SendMessageBean msg = new SendMessageBean();
-			msg.setEventType(2);
-			msg.setSubEventType(1);
-			msg.setMachineId(machineId);
-			List<MachineStartAppBean> sl = new ArrayList<>();
-			for (AppStatus status : machineAppStatus.getStatus()) {
-				MachineStartAppBean bean = new MachineStartAppBean();
-				bean.setAppPackageName(status.getAppPackageName());
-				Map<String,Object> map = new HashMap<String,Object>();
-				map.put("appPackageName",status.getAppPackageName());
-				Inno72App app = inno72AppMapper.findOneByParam(map);
-				bean.setAppType(app.getAppType());
-				if (appPackageName.equals(status.getAppPackageName()) || app.getAppType() == 1) {
-					bean.setStartStatus(1);
-				} else {
-					bean.setStartStatus(2);
-				}
-				sl.add(bean);
+		SendMessageBean msg = new SendMessageBean();
+		msg.setEventType(2);
+		msg.setSubEventType(1);
+		msg.setMachineId(machineId);
+		String name1 = "未知";
+		String version1 = "未知版本";
+		String name2 = "未知";
+		String version2 = "未知版本";
+		List<MachineStartAppBean> sl = new ArrayList<>();
+		for (AppStatus status : machineAppStatus.getStatus()) {
+			if (status.getAppStatus() == 1) {
+				name1 = status.getAppName();
+				version1 = status.getVersionName();
 			}
-			msg.setData(sl);
-			LogUtil.logger(LogType.CUT_APP.getCode(), machineId, "切换app，包名：" + appPackageName);
 
-			return sendMsg(machineId,msg);
+			MachineStartAppBean bean = new MachineStartAppBean();
+			bean.setAppPackageName(status.getAppPackageName());
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("appPackageName",status.getAppPackageName());
+			Inno72App app = inno72AppMapper.findOneByParam(map);
+			bean.setAppType(app.getAppType());
+			if (appPackageName.equals(status.getAppPackageName()) || app.getAppType() == 1) {
+				bean.setStartStatus(1);
+				name2 = status.getAppName();
+				version2 = status.getVersionName();
+			} else {
+				bean.setStartStatus(2);
+			}
+			sl.add(bean);
+		}
+		msg.setData(sl);
+		LogUtil.logger(LogType.CUT_APP.getCode(), machineId, "用户将运行的APP由"+name1+version1+"切换为"+name2+version2);
+
+		return sendMsg(machineId,msg);
 	}
 
 	private Result<String> sendMsg(String machineCode, SendMessageBean... beans) {
