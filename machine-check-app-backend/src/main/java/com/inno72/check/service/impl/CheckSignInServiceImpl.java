@@ -8,7 +8,6 @@ import com.inno72.check.vo.MachineSignInVo;
 import com.inno72.common.*;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72Machine;
-import com.inno72.machine.vo.PointLog;
 
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
@@ -45,12 +44,7 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
             Results.failure("打卡失败");
         }
 		Inno72Machine machine = inno72MachineMapper.getMachineById(machineId);
-		PointLog pointLog = new PointLog();
-		pointLog.setType(CommonConstants.LOG_TYPE_MACHINE_SIGN);
-		pointLog.setMachineCode(machine.getMachineCode());
-		pointLog.setPointTime(DateUtil.toTimeStr(LocalDateTime.now(),DateUtil.DF_FULL_S1));
-		pointLog.setDetail("机器打卡:巡检人员"+checkUser.getName()+"对"+machine.getLocaleStr()+"点位处的机器进行了打卡");
-		mongoTpl.save(pointLog);
+		StringUtil.logger(CommonConstants.LOG_TYPE_MACHINE_SIGN,machine.getMachineCode(),"用户"+checkUser.getName()+"，在互动管家中进行机器打卡");
         return ResultGenerator.genSuccessResult();
     }
 

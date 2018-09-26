@@ -468,6 +468,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			order.setMachineId(machineId);
 			order.setType(1);
 			order.setUserId(checkUser.getId());
+			StringBuffer detail = new StringBuffer("用户"+checkUser.getName());
 			inno72SupplyChannelOrderMapper.insertSelective(order);
 			supplyChannelList.forEach(supplyChannel -> {
 				String supplyChannelId = supplyChannel.getId();
@@ -490,6 +491,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 						supplyChannel.setGoodsCount(afterGoodsCount);
 						supplyChannel.setIsDelete(0);
 						inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
+						detail.append("为"+supplyChannel.getCode()+"货道补货，补货数量为"+afterGoodsCount+"；");
 						Condition condition = new Condition(Inno72SupplyChannelGoods.class);
 						condition.createCriteria().andEqualTo("supplyChannelId", supplyChannel.getId());
 						inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
@@ -515,8 +517,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				});
 
 			});
-			String detail = "机器补货："+checkUser.getName()+"对"+machine.getLocaleStr()+"的机器进行了补货";
-			StringUtil.logger(CommonConstants.LOG_TYPE_MACHINE_SUPPLY,machine.getMachineCode(),detail);
+			StringUtil.logger(CommonConstants.LOG_TYPE_MACHINE_SUPPLY,machine.getMachineCode(),detail.toString());
 
 		}
 		return ResultGenerator.genSuccessResult();
