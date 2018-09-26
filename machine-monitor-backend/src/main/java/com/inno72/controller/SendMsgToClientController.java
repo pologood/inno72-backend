@@ -120,5 +120,9 @@ public class SendMsgToClientController {
 		app.setStatus(1);
 		mongoTpl.save(app);
 	}
-
+public static void main(String[] args) {
+	String a="H4sIAAAAAAAAABWUywHDMAhDVzKY7zjGmP1HiHJqmroGniRyDm1ecWKUypm69Wr3Dpq+SdR19lmbrxzDu+zN9HqRmtt25rjme0LoztliR3e+kMxrdOh52Y06JTytZPH0WZxSOpr3r2nnxHkyTGcOi89pTrwUf2/tW0IrInztQ7hq7sa972TNqNB5fsvsbdQWFS50I6mZ2XfnfVLxunYY+2jfRXP9aOfhlLX2zvNOmIeet3m/dGWRqAGQEg3Mhcdr6kbsOazE7c+YdmS+1ccqTBbnfpTobqOELOF7dDDFS+mVbNFVGRqWtXY317ETHAKCTVZkcny9stXhqi2i1mei3bjuHdO5LyI3OHQUG2/2eyxneqvcA7wrz3FoFE+495BCged5rqKXIJ3iuQAnI0TocptcfD7yuw/UxuOeix7ZGSNZV1/hvPmY1w0/AII6kMRrnZ+fgr3ZFe1NETqgrHdcqsBADRyXrq2nGtyYk+PgD13GEAeeI8IDtHhksM2lXDkJnC+hYr/I5dX89uN1Nqbyd/jukkmegWS5McswlEmYVh/IbC3//Ynht0/w7N9pVRRz3l/f1uNc5/5Ud+k67SslRphrBdSG7rW9T9R7FdSkCToQ0d7cGdAc0fRtuYhlAv10LPjWnrbRrjWwrv0MhpYtYCFldf5Z9iuNYeTInTcCgyrUi4n1JfwLAtZAxbK2+ZK0pBkizKli02zZsxCPlQ+CmgNKehyKd6ffwJVtHRmrWwroaLyRpWc7R2TVuENoNhnkvP6rffsiiIgo34Xewx/0amFNUwk+0q62QxBgxdEicBAqfNl++0JOoWf1KnMv54KPcRZgYv03wlshY1gvL1UKqa/clElwbFAgJpf4pNkUKiLPsAGgi98gGJUg2m1x5Pwd3Dy2CQE/Bk/FQhP/JsAKaaF+BMtrVB/UxQ/4t65EFG5hCyxUh/5KA7XwqzGihwUxWEG3/J/ZMIY+nLrbsN7EEgIxtiK+i0i+8lg4REzWbcOVnmBx4M/GcsEprcYK9etQF0vp9OQHMteKTmAFAAA=";
+			String aa = GZIPUtil.uncompress(AesUtils.decrypt(a));
+			System.out.println(aa);
+}
 }
