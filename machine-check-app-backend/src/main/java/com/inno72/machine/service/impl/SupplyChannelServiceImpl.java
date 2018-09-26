@@ -491,7 +491,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 						supplyChannel.setGoodsCount(afterGoodsCount);
 						supplyChannel.setIsDelete(0);
 						inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
-						detail.append("为"+supplyChannel.getCode()+"货道补货，补货数量为"+afterGoodsCount+"；");
+						if((beforeGoodsCount !=0 || afterGoodsCount != 0) && beforeGoodsCount != afterGoodsCount ){
+							detail.append("为"+supplyChannel.getCode()+"货道补货，补货数量为"+afterGoodsCount+"；");
+						}
 						Condition condition = new Condition(Inno72SupplyChannelGoods.class);
 						condition.createCriteria().andEqualTo("supplyChannelId", supplyChannel.getId());
 						inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
