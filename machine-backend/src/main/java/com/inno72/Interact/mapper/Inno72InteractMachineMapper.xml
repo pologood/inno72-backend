@@ -33,8 +33,8 @@
   		CONCAT( area.province, area.city, area.district, IFNULL( l.mall, "" ), IFNULL( l.NAME, "" ) ) AS local_desc,
 		m.id AS machine_id,
 		m.machine_code AS machine_code,
-		a.id AS activityId,
-		a.name AS activityName,
+		a.id AS activity_id,
+		a.name AS activity_name,
 		date_format( ap.start_time, '%Y-%m-%d %H:%i:%s' ) AS start_time,
 		date_format( ap.end_time, '%Y-%m-%d %H:%i:%s' ) AS end_time,
 		CASE WHEN <![CDATA[ap.end_time >=#{endTime}]]> THEN 1 ELSE 0 END state
@@ -48,9 +48,7 @@
 		LEFT JOIN inno72_activity a ON a.id = ap.activity_id and a.is_delete = 0 
 		WHERE
 			m.machine_status = '4' 
-		<if test="machineId !=null and machineId !='' ">
-			AND m.machine_id = machineId
-		</if>
+		<if test="machineId !=null and machineId !='' ">AND m.id = #{machineId}</if>
 		<if test="keyword !=null and keyword !='' ">
 			AND (l.mall LIKE '%${keyword}%'  
 			or l.name LIKE '%${keyword}%' 
@@ -67,8 +65,8 @@
   		CONCAT( area.province, area.city, area.district, IFNULL( l.mall, "" ), IFNULL( l.NAME, "" ) ) AS local_desc,
 		m.id AS machine_id,
 		m.machine_code AS machine_code,
-		t.id AS activityId,
-		t.name AS activityName,
+		t.id AS activity_id,
+		t.name AS activity_name,
 		date_format( mt.start_time, '%Y-%m-%d %H:%i:%s' ) AS start_time,
 		date_format( mt.end_time, '%Y-%m-%d %H:%i:%s' ) AS end_time,
 		CASE WHEN <![CDATA[mm.max_time >=#{endTime}]]> THEN 1 ELSE 0 END state
@@ -106,8 +104,8 @@
 		im.state,
 		im.query_start_time,
 		im.query_end_time,
-		t.id AS activityId,
-		t.name AS activityName,
+		t.id AS activity_id,
+		t.name AS activity_name,
 		date_format( mt.start_time, '%Y-%m-%d %H:%i:%s' ) AS start_time,
 		date_format( mt.end_time, '%Y-%m-%d %H:%i:%s' ) AS end_time
 		
@@ -120,12 +118,8 @@
 		LEFT JOIN inno72_interact t ON t.id = im.interact_id and t.is_delete = 0 
 		WHERE
 			m.machine_status = '4' 
-		<if test="machineId !=null and machineId !='' ">
-			AND m.machine_id = machineId
-		</if>
-		<if test="interactId !=null and interactId !='' ">
-			AND im.interact_id = interactId
-		</if>
+		<if test="machineId !=null and machineId !='' ">AND m.id = #{machineId}</if>
+		<if test="interactId !=null and interactId !='' ">AND im.interact_id = #{interactId}</if>
   </select>
   
   
