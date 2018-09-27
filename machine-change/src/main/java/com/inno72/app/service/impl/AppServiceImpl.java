@@ -143,12 +143,12 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 						return Results.failure(r);
 					}
 				} else {
-					return Results.failure($_result.getString("msg"));
+					return Results.failure("切换APP失败，请检查机器网络");
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Results.failure("发送失败");
+			return Results.failure("切换APP失败，请检查机器网络");
 		}
 		return Results.success();
 	}

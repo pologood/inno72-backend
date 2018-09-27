@@ -1,5 +1,6 @@
 package com.inno72.app.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,21 +37,7 @@ public class AppController {
 	public Result<String> changeApp(String machineId,String appPackageName){
 		logger.info("切换APP接口接收参数：{}",machineId,appPackageName);
 		Result<String> result = appService.changeApp(machineId,appPackageName);
-		JSONObject obj = JSON.parseObject(result.getData());
-		Object ma = obj.get(machineId);
-		int code = 1;
-		String msg = "切换APP失败，请检查机器网络";
-		if(ma != null){
-			String value = obj.get(machineId).toString();
-			if(value.equals("发送成功")){
-				code = 0;
-				msg = "发送成功";
-			}
-		}
-		result.setData("");
-		result.setCode(code);
-		result.setMsg(msg);
 		logger.info("切换APP返回H5数据：{}",JSON.toJSON(result));
-		return result;
+		return null;
 	}
 }
