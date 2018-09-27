@@ -140,7 +140,7 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 				if ($_result.getInteger("code") == 0) {
 					String r = $_result.getJSONObject("data").getString(machineCode);
 					if (!"发送成功".equals(r)) {
-						return Results.failure(r);
+						return Results.failure("切换APP失败，请检查机器网络");
 					}
 				} else {
 					return Results.failure("切换APP失败，请检查机器网络");

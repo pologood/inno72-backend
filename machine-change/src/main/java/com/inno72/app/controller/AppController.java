@@ -37,6 +37,9 @@ public class AppController {
 	public Result<String> changeApp(String machineId,String appPackageName){
 		logger.info("切换APP接口接收参数：{}",machineId,appPackageName);
 		Result<String> result = appService.changeApp(machineId,appPackageName);
+		if(result.getCode()==0){
+			result.setMsg("发送成功");
+		}
 		logger.info("切换APP返回H5数据：{}",JSON.toJSON(result));
 		return result;
 	}
