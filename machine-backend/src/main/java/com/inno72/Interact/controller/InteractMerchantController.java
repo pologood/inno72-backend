@@ -45,9 +45,8 @@ public class InteractMerchantController {
 	}
 
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> delete(@RequestParam String id) {
-		interactMerchantService.deleteById(id);
-		return ResultGenerator.genSuccessResult();
+	public Result<String> delete(String interactId, String merchantId) {
+		return interactMerchantService.deleteById(interactId, merchantId);
 	}
 
 	@RequestMapping(value = "/getList", method = { RequestMethod.POST, RequestMethod.GET })

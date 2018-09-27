@@ -1,7 +1,9 @@
 package com.inno72.Interact.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -11,9 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inno72.Interact.mapper.Inno72InteractGoodsMapper;
 import com.inno72.Interact.mapper.Inno72InteractShopsMapper;
 import com.inno72.Interact.model.Inno72InteractShops;
 import com.inno72.Interact.service.InteractShopsService;
+import com.inno72.Interact.vo.InteractGoodsVo;
 import com.inno72.Interact.vo.InteractShopsVo;
 import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
@@ -38,6 +42,8 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 	private Inno72InteractShopsMapper inno72InteractShopsMapper;
 	@Resource
 	private Inno72ShopsMapper inno72ShopsMapper;
+	@Resource
+	private Inno72InteractGoodsMapper inno72InteractGoodsMapper;
 
 	@Override
 	public Result<String> save(InteractShopsVo model) {
@@ -159,6 +165,46 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 	@Override
 	public InteractShopsVo findShopsById(String id) {
 		return inno72InteractShopsMapper.selectInteractShopsById(id);
+	}
+
+	@Override
+	public Result<String> deleteById(String interactId, String shopsId) {
+		try {
+			SessionData session = SessionUtil.sessionData.get();
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+
+			// 查询店铺下是否存在商品
+			Map<String, Object> pm = new HashMap<>();
+			pm.put("interactId", interactId);
+			pm.put("shopsId", shopsId);
+			List<InteractGoodsVo> goods = inno72InteractGoodsMapper.selectGoods(pm);
+			if (goods != null && goods.size() > 0) {
+				logger.info("店铺下存在商品，不能删除");
+				return Results.failure("店铺下存在商品，不能删除");
+			}
+			Inno72Shops shops = new Inno72Shops();
+			shops.setId(shopsId);
+			shops.setIsDelete(1);
+			shops.setUpdateId(mUserId);
+			shops.setUpdateTime(LocalDateTime.now());
+			inno72ShopsMapper.updateByPrimaryKeySelective(shops);
+			// 中间表 关联关系
+			Inno72InteractShops interactShops = new Inno72InteractShops();
+			interactShops.setShopsId(shopsId);
+			interactShops.setInteractId(interactId);
+			inno72InteractShopsMapper.delete(interactShops);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+		return Results.success("操作成功");
 	}
 
 }

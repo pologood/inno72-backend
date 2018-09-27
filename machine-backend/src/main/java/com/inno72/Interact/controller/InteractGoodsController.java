@@ -36,9 +36,8 @@ public class InteractGoodsController {
 	}
 
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> delete(@RequestParam String id) {
-		interactGoodsService.deleteById(id);
-		return ResultGenerator.genSuccessResult();
+	public Result<String> delete(String interactId, String goodsId) {
+		return interactGoodsService.deleteById(interactId, goodsId);
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })

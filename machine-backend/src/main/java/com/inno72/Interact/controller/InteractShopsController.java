@@ -37,9 +37,8 @@ public class InteractShopsController {
 	}
 
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> delete(@RequestParam String id) {
-		interactShopsService.deleteById(id);
-		return ResultGenerator.genSuccessResult();
+	public Result<String> delete(String interactId, String shopsId) {
+		return interactShopsService.deleteById(interactId, shopsId);
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })

@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.Interact.mapper.Inno72InteractGoodsMapper;
+import com.inno72.Interact.mapper.Inno72InteractMachineGoodsMapper;
 import com.inno72.Interact.model.Inno72InteractGoods;
+import com.inno72.Interact.model.Inno72InteractMachineGoods;
 import com.inno72.Interact.service.InteractGoodsService;
 import com.inno72.Interact.vo.InteractGoodsVo;
 import com.inno72.common.AbstractService;
@@ -26,6 +28,7 @@ import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72CouponMapper;
 import com.inno72.project.mapper.Inno72GoodsMapper;
 import com.inno72.project.model.Inno72Coupon;
+import com.inno72.project.model.Inno72Goods;
 import com.inno72.system.model.Inno72User;
 
 /**
@@ -41,6 +44,8 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 	private Inno72CouponMapper inno72CouponMapper;
 	@Resource
 	private Inno72GoodsMapper inno72GoodsMapper;
+	@Resource
+	private Inno72InteractMachineGoodsMapper inno72InteractMachineGoodsMapper;
 
 	@Override
 	public Result<String> save(InteractGoodsVo model) {
@@ -232,5 +237,53 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 		pm.put("shopsId", shopsId);
 		return inno72InteractGoodsMapper.selectGoods(pm);
 
+	}
+
+	@Override
+	public Result<String> deleteById(String interactId, String goodsId) {
+		try {
+			SessionData session = SessionUtil.sessionData.get();
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+			// 查看商品是否被关联
+			Inno72InteractMachineGoods machineGoods = new Inno72InteractMachineGoods();
+			machineGoods.setGoodsId(goodsId);
+			int n = inno72InteractMachineGoodsMapper.selectCount(machineGoods);
+
+			if (n > 0) {
+				logger.info("请商品已关联机器不能删除");
+				return Results.failure("请商品已关联机器不能删除");
+			}
+
+			Inno72InteractGoods interactGoods = new Inno72InteractGoods();
+			interactGoods.setInteractId(interactId);
+			interactGoods.setGoodsId(goodsId);
+			interactGoods = inno72InteractGoodsMapper.selectOne(interactGoods);
+			if (0 == interactGoods.getType()) {
+				Inno72Goods goods = new Inno72Goods();
+				goods.setId(goodsId);
+				goods.setIsDelete(1);
+				goods.setUpdateId(mUserId);
+				goods.setUpdateTime(LocalDateTime.now());
+				inno72GoodsMapper.updateByPrimaryKeySelective(goods);
+			} else {
+				Inno72Coupon coupon = new Inno72Coupon();
+				coupon.setId(goodsId);
+				coupon.setIsDelete(1);
+				coupon.setUpdateId(mUserId);
+				inno72CouponMapper.updateByPrimaryKeySelective(coupon);
+			}
+
+			inno72InteractGoodsMapper.delete(interactGoods);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+		return Results.success("操作成功");
 	}
 }

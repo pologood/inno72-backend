@@ -22,8 +22,12 @@ import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72MerchantMapper;
+import com.inno72.project.mapper.Inno72ShopsMapper;
 import com.inno72.project.model.Inno72Merchant;
+import com.inno72.project.model.Inno72Shops;
 import com.inno72.system.model.Inno72User;
+
+import tk.mybatis.mapper.entity.Condition;
 
 /**
  * Created by CodeGenerator on 2018/09/19.
@@ -38,6 +42,8 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 	private Inno72InteractMerchantMapper inno72InteractMerchantMapper;
 	@Resource
 	private Inno72MerchantMapper inno72MerchantMapper;
+	@Resource
+	private Inno72ShopsMapper inno72ShopsMapper;
 
 	@Override
 	public Result<String> save(InteractMerchantVo model) {
@@ -131,6 +137,50 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 	@Override
 	public Inno72Merchant findMerchantsById(String id) {
 		return inno72MerchantMapper.selectByPrimaryKey(id);
+	}
+
+	@Override
+	public Result<String> deleteById(String interactId, String merchantId) {
+		try {
+			SessionData session = SessionUtil.sessionData.get();
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+
+			// 查询店铺下是否存在店铺
+			Inno72Shops inno72Shops = new Inno72Shops();
+			inno72Shops.setIsDelete(0);
+			inno72Shops.setSellerId(merchantId);
+			Condition condition = new Condition(Inno72Shops.class);
+			condition.createCriteria().andEqualTo(inno72Shops);
+			List<Inno72Shops> shops = inno72ShopsMapper.selectByCondition(condition);
+
+			if (shops != null && shops.size() > 0) {
+				logger.info("商户下存在店铺，不能删除");
+				return Results.failure("商户下存在店铺，不能删除");
+			}
+
+			Inno72Merchant merchant = new Inno72Merchant();
+			merchant.setId(merchantId);
+			merchant.setIsDelete(1);
+			merchant.setUpdateId(mUserId);
+			merchant.setUpdateTime(LocalDateTime.now());
+			inno72MerchantMapper.updateByPrimaryKeySelective(merchant);
+
+			// 中间表
+			Inno72InteractMerchant interactMerchant = new Inno72InteractMerchant();
+			interactMerchant.setMerchantId(merchantId);
+			interactMerchant.setInteractId(interactId);
+			inno72InteractMerchantMapper.delete(interactMerchant);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+		return Results.success("操作成功");
 	}
 
 }
