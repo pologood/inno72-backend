@@ -63,6 +63,11 @@ public class Inno72InteractMachineGoods {
 	/**
 	 * 类型
 	 */
+	private Integer state;
+
+	/**
+	 * 类型
+	 */
 	private Integer type;
 
 	/**
@@ -196,6 +201,14 @@ public class Inno72InteractMachineGoods {
 	 */
 	public void setEndTime(LocalDateTime endTime) {
 		this.endTime = endTime;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
 	}
 
 	public Integer getType() {

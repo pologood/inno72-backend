@@ -77,6 +77,10 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 					machineGoods.setStartTime(DateUtil.toDateTime(machineGoods.getStartTimeStr(), DateUtil.DF_FULL_S1));
 					machineGoods.setEndTime(DateUtil.toDateTime(machineGoods.getEndTimeStr(), DateUtil.DF_FULL_S1));
 				}
+				Inno72InteractMachineGoods del = new Inno72InteractMachineGoods();
+				del.setInteractMachineId(base.getId());
+				// 先删除之前活动机器上绑定的商品
+				inno72InteractMachineGoodsMapper.delete(del);
 			}
 
 			inno72InteractMachineGoodsMapper.insertInteractMachineGoodsList(goods);
