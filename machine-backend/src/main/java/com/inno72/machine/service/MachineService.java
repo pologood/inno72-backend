@@ -10,6 +10,7 @@ import com.inno72.machine.vo.ChannelListVo;
 import com.inno72.machine.vo.MachineAppStatus;
 import com.inno72.machine.vo.MachineExceptionVo;
 import com.inno72.machine.vo.MachineListVo;
+import com.inno72.machine.vo.MachineListVo1;
 import com.inno72.machine.vo.MachineNetInfo;
 import com.inno72.machine.vo.MachinePortalVo;
 import com.inno72.machine.vo.MachineStatusVo;
@@ -48,7 +49,7 @@ public interface MachineService extends Service<Inno72Machine> {
 
 	Result<List<String>> findMachineByMachineStatus(int id);
 
-	List<MachineListVo> findMachinePlan(String machineCode, String localCode, String startTime, String endTime);
+	List<MachineListVo1> findMachinePlan(String machineCode, String localCode, String startTime, String endTime);
 
 	Result<MachinePortalVo> findMachinePortalData();
 
