@@ -38,6 +38,6 @@ public class AppController {
 		logger.info("切换APP接口接收参数：{}",machineId,appPackageName);
 		Result<String> result = appService.changeApp(machineId,appPackageName);
 		logger.info("切换APP返回H5数据：{}",JSON.toJSON(result));
-		return null;
+		return result;
 	}
 }
