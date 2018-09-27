@@ -28,6 +28,9 @@ public class AppController {
 	@RequestMapping(value="change")
 	public Result<String> changeApp(String machineId,String appPackageName){
 		Result<String> result = appService.changeApp(machineId,appPackageName);
+		if(result.getCode()==0){
+			result.setMsg("切换APP失败，请检查机器网络");
+		}
 		return result;
 	}
 }
