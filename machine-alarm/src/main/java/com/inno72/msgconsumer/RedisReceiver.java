@@ -193,10 +193,10 @@ public class RedisReceiver {
 				pushMap.put("text", "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。");
 				log.info("machineDropGoods send msg ，params：{}", pushMap.toString());
 //				//查询巡检人员手机号
-//				for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-//					String phone = inno72CheckUserPhone1.getPhone();
-//					msgUtil.sendPush("push_alarm_common", pushMap, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
-//				}
+				for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+					String phone = inno72CheckUserPhone1.getPhone();
+					msgUtil.sendPush("push_alarm_common", pushMap, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
+				}
 				//钉钉报警
 				Map<String, String> ddMaram = new HashMap<>();
 				ddMaram.put("machineCode", machineCode);
@@ -231,111 +231,14 @@ public class RedisReceiver {
 					//发送钉钉消息
 					log.info("发送钉钉消息{}",JSON.toJSON(ddMaram));
 					msgUtil.sendDDTextByGroup("dingding_alarm_common", ddMaram,group.getGroupId1() , "machineAlarm-RedisReceiver");
+					text = "掉货异常，提醒方式：短信和钉钉，内容：您好，"+localStr+"机器编号："+machineCode+","+channelNum+"掉货异常，货道已被锁定，请及时联系巡检人员。";
+					StringUtil.logger(CommonConstants.LOG_TYPE_DROPGOODS, machineCode, text);
+					log.info("发送掉货异常埋点日志",CommonConstants.LOG_TYPE_DROPGOODS,machineCode,text);
 				}
 			}
 			//保存接口
 			int lackNum = 0;
 			alarmMsgService.saveAlarmMsg(type, system, machineCode, lackNum, localStr);
-			if(alarmFlag) {
-				text = "掉货异常，提醒方式：短信和钉钉，内容：您好，"+localStr+"机器编号："+machineCode+","+channelNum+"掉货异常，货道已被锁定，请及时联系巡检人员。";
-				StringUtil.logger(CommonConstants.LOG_TYPE_DROPGOODS, machineCode, text);
-				log.info("发送掉货异常埋点日志",CommonConstants.LOG_TYPE_DROPGOODS,machineCode,text);
-			}
-
-
-
-
-
-
-
-
-
-
-
-
-
-            //保存消息次数等信息
-//            Query query = new Query();
-//            query.addCriteria(Criteria.where("machineCode").is(machineCode));
-//            log.info("machineDropGoods send msg ，machineCode：{}", machineCode);
-//            List<DropGoodsExceptionInfo> dropGoodsExceptionInfoList = mongoTpl.find(query, DropGoodsExceptionInfo.class, "DropGoodsExceptionInfo");
-//            if (dropGoodsExceptionInfoList.size() > 0) {
-//                //根据机器编码查询点位接口
-//                String localStr = machine.getLocaleStr();
-//                log.info("machineDropGoods send msg ，localStr:{}", localStr);
-//                //循环
-//                for (DropGoodsExceptionInfo dropGoodsExceptionInfo : dropGoodsExceptionInfoList) {
-//                    Integer updateNum = dropGoodsExceptionInfo.getErrorNum() + 1;
-//                    log.info("machineDropGoods send msg ，save to mongo machineCode : {},num：{}", dropGoodsExceptionInfo.getMachineCode(), updateNum);
-//                    dropGoodsExceptionInfo.setErrorNum(updateNum);
-//                    mongoTpl.remove(query, "DropGoodsExceptionInfo");
-//                    mongoTpl.save(dropGoodsExceptionInfo, "DropGoodsExceptionInfo");
-//					supplyChannel.setIsDelete(1);
-//					supplyChannelService.closeSupply(supplyChannel);//锁货道
-//					List<Inno72SupplyChannel> normalSupplyList = supplyChannelService.selectNormalSupply(machine.getId(),channelNum);
-//                    //连续掉货两次
-//					if(alarmFlag){
-//						//巡检app接口
-//						Map<String, String> pushMap = new HashMap<>();
-//						pushMap.put("machineCode", machineCode);
-//						pushMap.put("localStr", localStr);
-//						pushMap.put("text", "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。");
-//						log.info("machineDropGoods send msg ，params：{}", pushMap.toString());
-//						//查询巡检人员手机号
-//						for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-//							String phone = inno72CheckUserPhone1.getPhone();
-//							msgUtil.sendPush("push_alarm_common", pushMap, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
-//						}
-//						//钉钉报警
-//						Map<String, String> ddMaram = new HashMap<>();
-//						ddMaram.put("machineCode", machineCode);
-//						ddMaram.put("localStr", localStr);
-//						Map<String,String> smsMap = new HashMap<>();
-//						smsMap.put("machineCode", machineCode);
-//						String address = machine.getAddress();
-//						if(StringUtil.isNotEmpty(address)){
-//							if(address.length()>10){
-//								address = address.substring(address.length()-10,address.length());
-//							}
-//							smsMap.put("localStr", address);
-//						}
-//						if(normalSupplyList != null && normalSupplyList.size()>0){//有未被锁定的货道
-//							if(StringUtil.senSmsActive(active)){//生产，预发发送短信
-//								text = "货道"+channelNum+"掉货异常，货道已经被锁定";
-//								smsMap.put("text",  text);
-//								this.sendSms(smsMap,machineCode,"sms_alarm_drop");
-//							}
-//							text = "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。";
-//						}else{//货道全部被锁
-//							if(StringUtil.senSmsActive(active)){//生产，预发发送短信
-//								text = "货道"+channelNum+"掉货异常，"+supplyChannel.getGoodsName()+"所在货道已全部被锁定";
-//								smsMap.put("text",  text);
-//								this.sendSms(smsMap,machineCode,"sms_alarm_drop");
-//							}
-//							text = "您好，"+localStr+"，机器编号："+machineCode+"，"+supplyChannel.getGoodsName()+"所在的货道全部被锁定，请及时联系巡检人员处理。";
-//						}
-//						ddMaram.put("text",StringUtil.setText(text,active));
-//						if(group != null){
-//							//发送钉钉消息
-//							msgUtil.sendDDTextByGroup("dingding_alarm_common", ddMaram,group.getGroupId1() , "machineAlarm-RedisReceiver");
-//						}
-//					}
-//					//保存接口
-//					int lackNum = 0;
-//					alarmMsgService.saveAlarmMsg(type, system, machineCode, lackNum, localStr);
-//					if(alarmFlag) {
-//						text = "掉货异常，提醒方式：短信和钉钉，内容：您好，"+localStr+"机器编号："+machineCode+","+channelNum+"掉货异常，货道已被锁定，请及时联系巡检人员。";
-//						StringUtil.logger(CommonConstants.LOG_TYPE_DROPGOODS, machineCode, text);
-//					}
-//                }
-//            } else {
-//                DropGoodsExceptionInfo dropGoodsExceptionInfo = new DropGoodsExceptionInfo();
-//                dropGoodsExceptionInfo.setCreateTime(LocalDateTime.now());
-//                dropGoodsExceptionInfo.setErrorNum(1);
-//                dropGoodsExceptionInfo.setMachineCode(machineCode);
-//                log.info("no alarm ,just save dropGoodsExceptionInfo：{}", dropGoodsExceptionInfo.toString());
-//                mongoTpl.save(dropGoodsExceptionInfo, "DropGoodsExceptionInfo");
-//            }
         }
     }
 
