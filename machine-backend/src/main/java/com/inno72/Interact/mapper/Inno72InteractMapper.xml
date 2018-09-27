@@ -23,6 +23,7 @@
   </resultMap>
   
   <resultMap id="ListVoResultMap" type="com.inno72.Interact.vo.InteractListVo">
+  	<result column="id" jdbcType="VARCHAR" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="game_name" jdbcType="VARCHAR" property="gameName" />
     <result column="merchant_num" jdbcType="INTEGER" property="merchantNum" />
@@ -38,6 +39,7 @@
   
   <select id="selectByPage" parameterType="java.util.Map" resultMap="ListVoResultMap">
 		SELECT
+			i.id,
 		 	i.name,
 			i.manager,
 			i.create_time,

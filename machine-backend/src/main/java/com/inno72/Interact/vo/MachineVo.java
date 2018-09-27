@@ -1,6 +1,12 @@
 package com.inno72.Interact.vo;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
 public class MachineVo {
 
@@ -13,6 +19,14 @@ public class MachineVo {
 	private String localDesc;
 
 	private Integer state;
+
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private LocalDateTime queryStartTime;
+
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private LocalDateTime queryEndTime;
 
 	private List<MachineActivityVo> machineActivity;
 
@@ -50,6 +64,22 @@ public class MachineVo {
 
 	public List<MachineActivityVo> getMachineActivity() {
 		return machineActivity;
+	}
+
+	public LocalDateTime getQueryStartTime() {
+		return queryStartTime;
+	}
+
+	public void setQueryStartTime(LocalDateTime queryStartTime) {
+		this.queryStartTime = queryStartTime;
+	}
+
+	public LocalDateTime getQueryEndTime() {
+		return queryEndTime;
+	}
+
+	public void setQueryEndTime(LocalDateTime queryEndTime) {
+		this.queryEndTime = queryEndTime;
 	}
 
 	public void setMachineActivity(List<MachineActivityVo> machineActivity) {

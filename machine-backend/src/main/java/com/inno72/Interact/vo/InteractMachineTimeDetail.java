@@ -3,7 +3,13 @@ package com.inno72.Interact.vo;
 import java.util.List;
 import java.util.Map;
 
-public class MachineTime {
+public class InteractMachineTimeDetail {
+
+	private String interactId;
+
+	private String queryStartTime;
+
+	private String queryEndTime;
 
 	private String machineId;
 
@@ -12,6 +18,30 @@ public class MachineTime {
 	private Integer state;
 
 	private List<Map<String, String>> planTime;
+
+	public String getInteractId() {
+		return interactId;
+	}
+
+	public void setInteractId(String interactId) {
+		this.interactId = interactId;
+	}
+
+	public String getQueryStartTime() {
+		return queryStartTime;
+	}
+
+	public void setQueryStartTime(String queryStartTime) {
+		this.queryStartTime = queryStartTime;
+	}
+
+	public String getQueryEndTime() {
+		return queryEndTime;
+	}
+
+	public void setQueryEndTime(String queryEndTime) {
+		this.queryEndTime = queryEndTime;
+	}
 
 	public String getMachineId() {
 		return machineId;

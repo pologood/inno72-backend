@@ -2,6 +2,8 @@ package com.inno72.Interact.vo;
 
 public class InteractListVo {
 
+	private String id;
+
 	private String name;
 
 	private String gameName;
@@ -23,6 +25,14 @@ public class InteractListVo {
 	private String createTime;
 
 	private String status;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;

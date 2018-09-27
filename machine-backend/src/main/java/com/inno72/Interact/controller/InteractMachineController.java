@@ -34,8 +34,7 @@ public class InteractMachineController {
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> add(@RequestBody InteractMachineTime interactMachineTime) {
-		interactMachineService.save(interactMachineTime);
-		return ResultGenerator.genSuccessResult();
+		return interactMachineService.save(interactMachineTime);
 	}
 
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })
@@ -45,15 +44,14 @@ public class InteractMachineController {
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> update(Inno72InteractMachine interactMachine) {
-		interactMachineService.update(interactMachine);
-		return ResultGenerator.genSuccessResult();
+	public Result<String> update(@RequestBody InteractMachineTime interactMachineTime) {
+		return interactMachineService.update(interactMachineTime);
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<Inno72InteractMachine> detail(@RequestParam String id) {
-		Inno72InteractMachine interactMachine = interactMachineService.findById(id);
-		return ResultGenerator.genSuccessResult(interactMachine);
+	public Result<MachineVo> detail(@RequestParam String interactId, @RequestParam String machineId) {
+		MachineVo detail = interactMachineService.findById(interactId, machineId);
+		return ResultGenerator.genSuccessResult(detail);
 	}
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })

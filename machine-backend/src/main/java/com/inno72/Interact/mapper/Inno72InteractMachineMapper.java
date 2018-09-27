@@ -16,6 +16,8 @@ public interface Inno72InteractMachineMapper extends Mapper<Inno72InteractMachin
 
 	List<MachineVo> selectInteractMachines(Map<String, Object> pm);
 
+	MachineVo selectMachineTimeDetail(Map<String, Object> pm);
+
 	List<MachineVo> getHavingMachines(Map<String, Object> pm);
 
 	int insertInteractMachineList(@Param("list") List<Inno72InteractMachine> list);

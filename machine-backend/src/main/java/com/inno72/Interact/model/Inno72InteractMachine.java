@@ -1,10 +1,17 @@
 package com.inno72.Interact.model;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
 @Table(name = "inno72_interact_machine")
 public class Inno72InteractMachine {
@@ -34,10 +41,26 @@ public class Inno72InteractMachine {
 	private String machineCode;
 
 	/**
+	 * 开始时间
+	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Column(name = "query_start_time")
+	private LocalDateTime queryStartTime;
+
+	/**
+	 * 结束时间
+	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Column(name = "query_end_time")
+	private LocalDateTime queryEndTime;
+
+	/**
 	 * 机器活动时间状态：0正常，1长期
 	 */
 	@Column(name = "state")
-	private String state;
+	private Integer state;
 
 	/**
 	 * 获取ID
@@ -104,11 +127,27 @@ public class Inno72InteractMachine {
 		this.machineCode = machineCode;
 	}
 
-	public String getState() {
+	public LocalDateTime getQueryStartTime() {
+		return queryStartTime;
+	}
+
+	public void setQueryStartTime(LocalDateTime queryStartTime) {
+		this.queryStartTime = queryStartTime;
+	}
+
+	public LocalDateTime getQueryEndTime() {
+		return queryEndTime;
+	}
+
+	public void setQueryEndTime(LocalDateTime queryEndTime) {
+		this.queryEndTime = queryEndTime;
+	}
+
+	public Integer getState() {
 		return state;
 	}
 
-	public void setState(String state) {
+	public void setState(Integer state) {
 		this.state = state;
 	}
 
