@@ -223,16 +223,22 @@ public class DDServiceImpl implements DDService {
 			if (dingIdResult.getCode() != Result.SUCCESS) {
 				return Results.failure("获取dingId失败");
 			}
+			logger.info("进来====================1");
 			// 历经九九八十一难终于拿到用户的一个标识
 			Inno72User user = userService.findBy("dingId", dingIdResult.getData());
+			logger.info("进来====================2");
 			if (user == null) {
 				return Results.failure("未找到用户");
 			}
 			if (user.getIsDelete() != 0) {
 				return Results.failure("用户已停用或删除");
 			}
+			logger.info("进来====================3");
+
 			// List<Inno72Function> functions = functionService.findAll();
 			List<Inno72Function> functions = functionService.findFunctionsByUserId(user.getId());
+			logger.info("进来====================4");
+
 			if ("18510248685".equals(user.getMobile()) || "15321539977".equals(user.getMobile())) {
 				functions = functionService.findAll();
 			}
