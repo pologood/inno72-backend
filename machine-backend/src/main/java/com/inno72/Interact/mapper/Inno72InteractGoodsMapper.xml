@@ -56,7 +56,9 @@
 		SELECT
 			g.id,
 			g.`code`,
-			g.`name`
+			g.`name`,
+			ig.user_day_number,
+			ig.type 
 		FROM
 			inno72_interact_goods ig 
 			LEFT JOIN inno72_goods g ON g.id = ig.goods_id 
