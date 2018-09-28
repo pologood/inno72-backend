@@ -62,8 +62,8 @@ public class InteractMachineController {
 	}
 
 	@RequestMapping(value = "/getList", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<MachineVo>> getList(String keyword, String startTime, String endTime) {
-		List<MachineVo> list = interactMachineService.getList(keyword, startTime, endTime);
+	public Result<List<MachineVo>> getList(String keyword, String queryStartTime, String queryEndTime) {
+		List<MachineVo> list = interactMachineService.getList(keyword, queryStartTime, queryEndTime);
 		return ResultGenerator.genSuccessResult(list);
 	}
 

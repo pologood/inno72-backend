@@ -142,7 +142,7 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 				return Results.failure("参数错误");
 			}
 
-			inno72InteractMapper.updateByPrimaryKey(model);
+			inno72InteractMapper.updateByPrimaryKeySelective(model);
 
 			return Results.warn("操作成功", 0, model.getId());
 
@@ -228,12 +228,12 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 					condition.createCriteria().andEqualTo(interactGoods);
 
 					interactGoods.setUserDayNumber(userDayNumber);
-					inno72InteractGoodsMapper.updateByCondition(interactGoods, condition);
+					inno72InteractGoodsMapper.updateByConditionSelective(interactGoods, condition);
 
 				}
 			}
 
-			inno72InteractMapper.updateByPrimaryKey(interact);
+			inno72InteractMapper.updateByPrimaryKeySelective(interact);
 
 			return Results.success();
 

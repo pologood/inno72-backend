@@ -136,7 +136,7 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 			Inno72InteractShops oldInteractShops = inno72InteractShopsMapper.selectOne(interactShops);
 
 			oldInteractShops.setIsVip(model.getIsVip());
-			inno72InteractShopsMapper.updateByPrimaryKey(oldInteractShops);
+			inno72InteractShopsMapper.updateByPrimaryKeySelective(oldInteractShops);
 
 		} catch (Exception e) {
 			e.printStackTrace();
