@@ -50,6 +50,11 @@
 		 where is_delete =0 and game_id=#{id} <![CDATA[and NOW() <= end_time ]]>
   </select>
   
+  <select id="selectPlanIdByGame" parameterType="String" resultType="String">
+  	SELECT id FROM inno72_activity_plan
+		 where is_delete =0 and game_id=#{id}
+  </select>
+  
   <delete id="deleteMachineGameByMachineId">
         delete from inno72_machine_game
         where  machine_id IN
