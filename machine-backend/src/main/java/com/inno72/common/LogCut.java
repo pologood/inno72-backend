@@ -16,8 +16,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alibaba.fastjson.JSON;
-
 @Aspect
 @Component
 public class LogCut {
@@ -72,7 +70,8 @@ public class LogCut {
 		}
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 				.getRequest();
-		logger.info("请求地址{}返回值为：{}", request.getServletPath(), JSON.toJSONString(retVal));
+		// logger.info("请求地址{}返回值为：{}", request.getServletPath(),
+		// JSON.toJSONString(retVal));
 	}
 
 }
