@@ -195,35 +195,44 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 
 				interact.setStatus(1);
 
+			} else if (interactRule.getType() == 0) {
+				interact.setTimes(interactRule.getTimes());
+				interact.setDayTimes(interactRule.getDayTimes());
+				interact.setNumber(interactRule.getNumber());
+				interact.setDayNumber(interactRule.getDayNumber());
+
 			} else if (null == interactRule.getType()) {
 				logger.info("参数错误");
 				return Results.failure("参数错误");
 			}
 
 			List<Map<String, Object>> goodsRule = interactRule.getGoodsRule();
-			for (Map<String, Object> map : goodsRule) {
-				String goodsId = map.get("goodsId").toString();
-				Integer userDayNumber = (Integer) map.get("userDayNumber");
-				if (StringUtil.isBlank(goodsId) || null == userDayNumber) {
-					logger.info("填写商品规则");
-					return Results.failure("填写商品规则");
+			if (null != goodsRule && goodsRule.size() > 0) {
+				for (Map<String, Object> map : goodsRule) {
+					String goodsId = map.get("goodsId").toString();
+					Integer userDayNumber = (Integer) map.get("userDayNumber");
+					if (StringUtil.isBlank(goodsId) || null == userDayNumber) {
+						logger.info("填写商品规则");
+						return Results.failure("填写商品规则");
+					}
+				}
+
+				for (Map<String, Object> map : goodsRule) {
+					String goodsId = map.get("goodsId").toString();
+					Integer userDayNumber = (Integer) map.get("userDayNumber");
+					Inno72InteractGoods interactGoods = new Inno72InteractGoods();
+					interactGoods.setInteractId(interactRule.getId());
+					interactGoods.setGoodsId(goodsId);
+
+					Condition condition = new Condition(Inno72InteractGoods.class);
+					condition.createCriteria().andEqualTo(interactGoods);
+
+					interactGoods.setUserDayNumber(userDayNumber);
+					inno72InteractGoodsMapper.updateByCondition(interactGoods, condition);
+
 				}
 			}
 
-			for (Map<String, Object> map : goodsRule) {
-				String goodsId = map.get("goodsId").toString();
-				Integer userDayNumber = (Integer) map.get("userDayNumber");
-				Inno72InteractGoods interactGoods = new Inno72InteractGoods();
-				interactGoods.setInteractId(interactRule.getId());
-				interactGoods.setGoodsId(goodsId);
-
-				Condition condition = new Condition(Inno72InteractGoods.class);
-				condition.createCriteria().andEqualTo(interactGoods);
-
-				interactGoods.setUserDayNumber(userDayNumber);
-				inno72InteractGoodsMapper.updateByCondition(interactGoods, condition);
-
-			}
 			inno72InteractMapper.updateByPrimaryKey(interact);
 
 			return Results.success();
