@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.common.AbstractService;
+import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
@@ -27,6 +28,7 @@ import com.inno72.project.model.Inno72Game;
 import com.inno72.project.model.Inno72Goods;
 import com.inno72.project.service.GameService;
 import com.inno72.project.vo.Inno72GameVo;
+import com.inno72.redis.IRedisUtil;
 import com.inno72.system.model.Inno72User;
 
 import tk.mybatis.mapper.entity.Condition;
@@ -41,6 +43,9 @@ public class GameServiceImpl extends AbstractService<Inno72Game> implements Game
 	private static Logger logger = LoggerFactory.getLogger(GameServiceImpl.class);
 	@Resource
 	private Inno72GameMapper inno72GameMapper;
+
+	@Resource
+	private IRedisUtil redisUtil;
 
 	Pattern patternNumbe = Pattern.compile("^[0-9]{1,8}$");
 
@@ -139,6 +144,12 @@ public class GameServiceImpl extends AbstractService<Inno72Game> implements Game
 			model.setUpdateId(userId);
 			model.setUpdateTime(LocalDateTime.now());
 			super.update(model);
+			// 更新排期游戏缓存
+			List<String> planIdList = inno72GameMapper.selectPlanIdByGame(model.getId());
+			for (String planId : planIdList) {
+				redisUtil.del(CommonConstants.REDIS_ACTIVITY_PLAN_CACHE_KEY + planId + "*");
+			}
+
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 			return Results.failure("操作失败");
