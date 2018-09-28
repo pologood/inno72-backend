@@ -38,6 +38,7 @@
   </resultMap>
   
   <select id="selectByPage" parameterType="java.util.Map" resultMap="ListVoResultMap">
+  SELECT * from (
 		SELECT
 			i.id,
 			i.name,
@@ -84,7 +85,7 @@
 		<if test="status ==2"> and i.status=1 and (day='max' or (day != 'max' and day >= DATEDIFF(NOW(),it.min_time) )) </if>
 		<if test="status ==3"> and i.status=2 </if>
 		<if test="status ==4"> and i.status=1 and DATEDIFF(NOW(),it.min_time) > day </if>
-		
+		) t
 		<if test="orderBy !=null and orderBy !='' ">
 			ORDER BY ${orderBy}
 		</if>
