@@ -27,9 +27,9 @@ public class AppController {
 	@Resource
 	private AppService appService;
 	@RequestMapping(value="get")
-	public Result<List<Inno72App>> getAppList(String machineId){
+	public Result<Map<String,Object>> getAppList(String machineId){
 		logger.info("查询机器运行的APP列表接口{}",machineId);
-		Result<List<Inno72App>> result = appService.getAppList(machineId);
+		Result<Map<String,Object>> result = appService.getAppList(machineId);
 		return result;
 	}
 

@@ -18,7 +18,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.inno72.app.mapper.Inno72AppMapper;
 import com.inno72.app.model.Inno72App;
+import com.inno72.app.model.Inno72Machine;
 import com.inno72.app.service.AppService;
+import com.inno72.app.service.MachineService;
 import com.inno72.common.AbstractService;
 import com.inno72.common.MachineChangeProperties;
 import com.inno72.common.Result;
@@ -41,6 +43,9 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 	@Resource
 	private Inno72AppMapper inno72AppMapper;
 
+	@Resource
+	private MachineService machineService;
+
 	@Autowired
 	private MongoOperations mongoTpl;
 
@@ -52,7 +57,8 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 	}
 
 	@Override
-	public Result<List<Inno72App>> getAppList(String machineId) {
+	public Result<Map<String,Object>> getAppList(String machineId) {
+		Map<String,Object> map = new HashMap<>();
 		Query query = new Query();
 		query.addCriteria(Criteria.where("machineId").is(machineId));
 		List<Inno72App> appList = null;
@@ -83,7 +89,14 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 				}
 			}
 		}
-		return ResultGenerator.genSuccessResult(resultList);
+		Inno72Machine machine = machineService.getMachineByCode(machineId);
+		int netStatus = 0;
+		if(machine != null){
+			netStatus = machine.getNetStatus();
+		}
+		map.put("netStatus",netStatus);
+		map.put("resultList",resultList);
+		return ResultGenerator.genSuccessResult(map);
 	}
 
 	@Override
