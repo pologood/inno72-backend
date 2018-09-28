@@ -147,7 +147,8 @@ public class GameServiceImpl extends AbstractService<Inno72Game> implements Game
 			// 更新排期游戏缓存
 			List<String> planIdList = inno72GameMapper.selectPlanIdByGame(model.getId());
 			for (String planId : planIdList) {
-				redisUtil.del(CommonConstants.REDIS_ACTIVITY_PLAN_CACHE_KEY + planId + "*");
+				long n = redisUtil.del(CommonConstants.REDIS_ACTIVITY_PLAN_CACHE_KEY + planId + "*");
+				logger.info("更新游戏删除排期缓存：" + planId + "结果：" + n);
 			}
 
 		} catch (Exception e) {
