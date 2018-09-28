@@ -40,25 +40,54 @@
   <select id="selectByPage" parameterType="java.util.Map" resultMap="ListVoResultMap">
 		SELECT
 			i.id,
-		 	i.name,
+			i.name,
 			i.manager,
 			i.create_time,
-			i.`status`,
-			gm.`name`AS game_name,
-			2 AS merchant_num,
-			10 AS goods_num,
-			2 AS real_day,
-			2 AS day,
-			2 AS real_num,
-			2 AS number
+			CASE 
+			WHEN i.status=0 THEN 0
+			WHEN i.status=1 and 0 >= DATEDIFF(NOW(),it.min_time) THEN 1
+			WHEN i.status=1 and (day='max' or (day != 'max' and day >= DATEDIFF(NOW(),it.min_time) )) THEN 2
+			WHEN i.status=2 THEN 3
+			WHEN i.status=1 and DATEDIFF(NOW(),it.min_time) > day THEN 4
+			ELSE NULL
+			END As status,
+			gm.name AS game_name,
+			( SELECT count( 1 ) FROM inno72_interact_machine WHERE interact_id = i.id ) AS merchant_num,
+			ig.goods_num AS goods_num,
+			IF(0>DATEDIFF(NOW(),it.min_time),0,DATEDIFF(NOW(),it.min_time)) AS real_day,
+			i.day AS day,
+			( SELECT count( 1 ) FROM inno72_order r WHERE r.inno72_activity_id = i.id ) AS real_num,
+			ig.number AS number,
+			( SELECT count( 1 ) FROM inno72_order r WHERE r.inno72_activity_id = i.id )/ig.number AS goodsSend
 		FROM
 			inno72_interact i
 			LEFT JOIN inno72_game gm ON gm.id = i.game_id
-			where i.is_delete = 0 
-			<if test="keyword !=null and keyword !='' ">
-			
-			</if>
-			ORDER BY i.update_time DESC
+			LEFT JOIN (
+			SELECT m.interact_id,Min(mt.start_time) AS min_time FROM inno72_interact_machine m
+			LEFT JOIN inno72_interact_machine_time mt ON m.id=mt.interact_machine_id
+			GROUP BY m.machine_id
+		) it on it.interact_id =i.id
+		LEFT JOIN (
+			SELECT m.interact_id,sum(mg.number) AS number,COUNT(mg.goods_id) AS goods_num FROM inno72_interact_machine m
+			LEFT JOIN inno72_interact_machine_goods mg ON m.id=mg.interact_machine_id
+			GROUP BY m.interact_id
+		) ig on ig.interact_id =i.id
+		where i.is_delete = 0 
+		<if test="keyword !=null and keyword !='' ">
+			and ( i.name LIKE '%${keyword}%' 
+		  	or gm.name LIKE '%${keyword}%'
+		 	or i.manager LIKE '%${keyword}%'
+			)
+		</if>
+		<if test="status ==0"> and i.status=0 </if>
+		<if test="status ==1"> and i.status=1 and 1 > DATEDIFF(NOW(),it.min_time) </if>
+		<if test="status ==2"> and i.status=1 and (day='max' or (day != 'max' and day >= DATEDIFF(NOW(),it.min_time) )) </if>
+		<if test="status ==3"> and i.status=2 </if>
+		<if test="status ==4"> and i.status=1 and DATEDIFF(NOW(),it.min_time) > day </if>
+		
+		<if test="orderBy !=null and orderBy !='' ">
+			ORDER BY ${orderBy}
+		</if>
   </select>
   
   
