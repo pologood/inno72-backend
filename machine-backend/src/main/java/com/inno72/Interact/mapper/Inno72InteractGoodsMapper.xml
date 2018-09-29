@@ -20,6 +20,8 @@
     <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
     <result column="user_day_number" jdbcType="INTEGER" property="userDayNumber" />
     <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
+    <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
     
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="code" jdbcType="VARCHAR" property="code" />
@@ -57,8 +59,8 @@
 			g.id,
 			g.`code`,
 			g.`name`,
-			s.shop_name AS shop_id,
-			m.merchant_name AS seller_id,
+			s.shop_name AS shop_name,
+			m.merchant_name AS merchant_name,
 			ig.user_day_number,
 			ig.type 
 		FROM

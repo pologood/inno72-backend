@@ -17,7 +17,6 @@ import com.inno72.Interact.vo.InteractShopsVo;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
-import com.inno72.project.model.Inno72Shops;
 
 import tk.mybatis.mapper.entity.Condition;
 
@@ -54,8 +53,8 @@ public class InteractShopsController {
 	}
 
 	@RequestMapping(value = "/getList", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72Shops>> getList(String merchantId) {
-		List<Inno72Shops> list = interactShopsService.getList(merchantId);
+	public Result<List<InteractShopsVo>> getList(String merchantId) {
+		List<InteractShopsVo> list = interactShopsService.getList(merchantId);
 		return ResultGenerator.genSuccessResult(list);
 	}
 

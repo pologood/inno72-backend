@@ -13,6 +13,9 @@ public class InteractGoodsVo extends Inno72Goods {
 
 	private Integer type;
 
+	private String shopName;
+	private String merchantName;
+
 	public String getInteractId() {
 		return interactId;
 	}
@@ -35,6 +38,22 @@ public class InteractGoodsVo extends Inno72Goods {
 
 	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+	public String getMerchantName() {
+		return merchantName;
+	}
+
+	public void setMerchantName(String merchantName) {
+		this.merchantName = merchantName;
 	}
 
 }
