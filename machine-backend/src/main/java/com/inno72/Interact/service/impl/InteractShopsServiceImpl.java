@@ -29,8 +29,6 @@ import com.inno72.project.mapper.Inno72ShopsMapper;
 import com.inno72.project.model.Inno72Shops;
 import com.inno72.system.model.Inno72User;
 
-import tk.mybatis.mapper.entity.Condition;
-
 /**
  * Created by CodeGenerator on 2018/09/19.
  */
@@ -150,13 +148,10 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 	public List<Inno72Shops> getList(String merchantId) {
 		logger.info("---------------------获取商户下店铺列表-------------------");
 
-		Inno72Shops inno72Shops = new Inno72Shops();
-		inno72Shops.setIsDelete(0);
-		inno72Shops.setSellerId(merchantId);
-		Condition condition = new Condition(Inno72Shops.class);
-		condition.createCriteria().andEqualTo(inno72Shops);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("sellerId", merchantId);
 
-		List<Inno72Shops> inno72ShopsList = inno72ShopsMapper.selectByCondition(condition);
+		List<Inno72Shops> inno72ShopsList = inno72ShopsMapper.selectMerchantShops(params);
 
 		return inno72ShopsList;
 

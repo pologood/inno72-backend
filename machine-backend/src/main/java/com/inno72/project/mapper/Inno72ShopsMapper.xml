@@ -62,6 +62,7 @@
   <select id="selectMerchantShops" parameterType="java.util.Map" resultMap="BaseResultMap">
 	 	SELECT
 			s.id,
+			m.merchant_name AS seller_id,
 			CONCAT(IFNULL( m.merchant_name,''), '-', IFNULL( s.shop_name,'') ) AS shop_name,
 			s.shop_code
 		FROM
