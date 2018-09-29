@@ -70,6 +70,7 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			}
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			model.setId(StringUtil.getUUID());
+			model.setStatus(0);
 			model.setCreateId(mUserId);
 			model.setUpdateId(mUserId);
 			model.setCreateTime(LocalDateTime.now());
