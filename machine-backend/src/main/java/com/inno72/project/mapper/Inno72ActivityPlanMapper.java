@@ -23,6 +23,8 @@ public interface Inno72ActivityPlanMapper extends Mapper<Inno72ActivityPlan> {
 
 	List<Inno72MachineVo> selectPlanedMachine(Map<String, Object> params);
 
+	List<Inno72MachineVo> selectInteractMachine(Map<String, Object> params);
+
 	Inno72ActivityPlanVo selectPlanDetail(@Param("id") String id);
 
 	int selectPlanIsState(@Param("id") String id);

@@ -167,6 +167,23 @@
 			and ( <![CDATA[ap.start_time <= #{endTime} AND ap.end_time >= #{startTime} ]]>)
 		</if>
 	</select>
+	
+	<select id="selectInteractMachine" parameterType="java.util.Map"
+		resultMap="machinesResult">
+		SELECT
+			im.machine_id
+		FROM
+			inno72_interact_machine_time imt
+			LEFT JOIN inno72_interact_machine im ON im.id = imt.interact_machine_id
+			LEFT JOIN inno72_interact i ON i.id = im.interact_id
+			WHERE i.is_delete =0 AND i.`status` != 2  
+		<if test="interactId !=null and interactId !='' ">and im.interact_id = #{interactId}  </if>
+		<if test="noInteractId !=null and noInteractId !='' ">and im.interact_id != #{noInteractId}  </if>
+		<if test="startTime !=null and startTime !='' ">
+			and ( <![CDATA[imt.start_time <= #{endTime} AND imt.end_time >= #{startTime} ]]>)
+		</if>
+	</select>
+	
 
 	<!-- 查询时间段内没有排期的机器 -->
 	<select id="selectNoPlanedMachine" parameterType="String"
