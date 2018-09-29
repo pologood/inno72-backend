@@ -106,8 +106,8 @@
 				LEFT JOIN inno72_interact_machine im ON im.interact_id = i.id 
 				WHERE i.is_delete=0 AND i.status != 2
 				AND im.machine_id NOT IN (
-					SELECT machine_id FROM inno72_interact_machine_time  m
-					LEFT JOIN inno72_interact_machine mt ON mt.id=m.interact_machine_id
+					SELECT machine_id FROM inno72_interact_machine_time  mt
+					LEFT JOIN inno72_interact_machine m ON mt.interact_machine_id=m.id
 				WHERE <![CDATA[(mt.start_time > #{endTime} OR mt.end_time < #{startTime})]]>)
 			) mm
 		) aa on m.id=aa.machine_id
@@ -133,7 +133,6 @@
 		inno72_machine m
 		LEFT JOIN inno72_locale locale ON m.locale_id = locale.id
 		LEFT JOIN inno72_admin_area area ON area.CODE = locale.area_code
-		LEFT JOIN ( select distinct apm.machine_id from inno72_activity_plan app
 		LEFT JOIN ( 
 			SELECT DISTINCT machine_id FROM (
 				SELECT  apm.machine_id FROM inno72_activity_plan app
@@ -148,13 +147,13 @@
 				LEFT JOIN inno72_interact_machine im ON im.interact_id = i.id 
 				WHERE i.is_delete=0 AND i.status != 2
 				AND im.machine_id NOT IN (
-					SELECT machine_id FROM inno72_interact_machine_time  m
-					LEFT JOIN inno72_interact_machine mt ON mt.id=m.interact_machine_id
+					SELECT machine_id FROM inno72_interact_machine_time  mt
+					LEFT JOIN inno72_interact_machine m ON mt.interact_machine_id=m.id
 				WHERE <![CDATA[(mt.start_time > #{endTime} OR mt.end_time < #{startTime})]]>)
 			) mm
 		) aa on m.id=aa.machine_id
-		WHERE LEFT(locale.area_code,#{num}) =#{code}
-		and m.machine_status ='4'
+		WHERE m.machine_status ='4' and LEFT(locale.area_code,#{num}) =#{code}
+		 
 	</select>
 	<!-- 查询时间段内排期的机器 -->
 	<select id="selectPlanedMachine" parameterType="java.util.Map"
