@@ -121,7 +121,9 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			model.setUpdateId(mUserId);
 			model.setUpdateTime(LocalDateTime.now());
 
-			if (type == 1) {
+			if (type == 0) {
+				inno72InteractMapper.updateByPrimaryKeySelective(model);
+			} else if (type == 1) {
 				// 下一步
 				if (StringUtil.isBlank(model.getName())) {
 					logger.info("请填写互派名称");
@@ -136,13 +138,17 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 					logger.info("请填写负责人");
 					return Results.failure("请填写负责人");
 				}
-
+				inno72InteractMapper.updateByPrimaryKeySelective(model);
+			} else if (type == 2) {
+				Inno72Interact old = new Inno72Interact();
+				old.setId(model.getId());
+				old = inno72InteractMapper.selectOne(old);
+				old.setStatus(2);
+				inno72InteractMapper.updateByPrimaryKeySelective(old);
 			} else if (null == type) {
 				logger.info("参数错误");
 				return Results.failure("参数错误");
 			}
-
-			inno72InteractMapper.updateByPrimaryKeySelective(model);
 
 			return Results.warn("操作成功", 0, model.getId());
 
