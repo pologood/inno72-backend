@@ -151,7 +151,8 @@
 					ELSE null
 				END state,
 				date_format( mt.start_time, '%Y-%m-%d %H:%i:%s' ) AS start_time,
-				date_format( mt.end_time, '%Y-%m-%d %H:%i:%s' ) AS end_time
+				date_format( mt.end_time, '%Y-%m-%d %H:%i:%s' ) AS end_time,
+				l.area_code
 			FROM
 				inno72_machine m
 				LEFT JOIN inno72_locale l ON l.id = m.locale_id
