@@ -141,9 +141,9 @@
 		resultMap="Vo1ResultMap">
 		select * from (
 			SELECT
+				m.id,
+				m.machine_code,
 		  		CONCAT( area.province, area.city, area.district, IFNULL( l.mall, "" ), IFNULL( l.NAME, "" ) ) AS local_desc,
-				m.id AS machine_id,
-				m.machine_code AS machine_code,
 				mt.name AS activity_name,
 				CASE
 					WHEN mt.start_time &gt; NOW() THEN '1'
