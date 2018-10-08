@@ -45,7 +45,7 @@
 			i.manager,
 			i.create_time,
 			CASE 
-			WHEN i.status=1 and 0 >= DATEDIFF(NOW(),it.min_time) THEN 1
+			WHEN i.status=1 and 0 > DATEDIFF(NOW(),it.min_time) THEN 1
 			WHEN i.status=1 and ((day='max' and DATEDIFF(NOW(),it.min_time)>=0)or (day != 'max' and day >= DATEDIFF(NOW(),it.min_time) )) THEN 2
 			WHEN i.status=2 THEN 3
 			WHEN i.status=1 and DATEDIFF(NOW(),it.min_time) > day THEN 4
