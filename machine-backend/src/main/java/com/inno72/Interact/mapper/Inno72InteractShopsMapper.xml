@@ -49,10 +49,12 @@
 			s.*,
 			m.merchant_name 
 		FROM
-			inno72_shops s
+			inno72_interact_shops isp
+			LEFT JOIN inno72_shops s ON s.id = isp.shops_id
 			LEFT JOIN inno72_merchant m ON m.id = s.seller_id 
 		WHERE s.is_delete=0
 		<if test="sellerId !=null and sellerId !='' ">and s.seller_id = #{sellerId}</if>
+		<if test="interactId !=null and interactId !='' ">and isp.interact_id = #{interactId}</if>
   </select>
   
   <resultMap id="InteractShopsTreeResultMap" type="com.inno72.Interact.vo.TreeVo">

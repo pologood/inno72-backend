@@ -53,8 +53,8 @@ public class InteractShopsController {
 	}
 
 	@RequestMapping(value = "/getList", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<InteractShopsVo>> getList(String merchantId) {
-		List<InteractShopsVo> list = interactShopsService.getList(merchantId);
+	public Result<List<InteractShopsVo>> getList(String interactId, String merchantId) {
+		List<InteractShopsVo> list = interactShopsService.getList(interactId, merchantId);
 		return ResultGenerator.genSuccessResult(list);
 	}
 

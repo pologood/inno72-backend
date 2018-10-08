@@ -107,9 +107,19 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 				interactMachine.setState(machineTime.getState());
 				insetInteractMachineList.add(interactMachine);
 				List<Map<String, String>> planTime = machineTime.getPlanTime();
-				if (null == planTime || planTime.size() < 1) {
+
+				if ((null == planTime || planTime.size() < 1) && interactMachine.getState() == 0) {
 					logger.info("请确认机器时间");
 					return Results.failure("请确认机器时间");
+				}
+				if (interactMachine.getState() == 1) {
+					Inno72InteractMachineTime interactMachineTime = new Inno72InteractMachineTime();
+					interactMachineTime.setId(StringUtil.getUUID());
+					interactMachineTime.setStartTime(interactMachine.getQueryStartTime().minusDays(-1));
+					interactMachineTime.setEndTime(interactMachine.getQueryStartTime().minusYears(-50));
+					interactMachineTime.setInteractMachineId(interactMachine.getId());
+
+					insetInteractMachineTimeList.add(interactMachineTime);
 				}
 				for (Map<String, String> map : planTime) {
 					String startTime = map.get("startTime");
@@ -157,7 +167,7 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 			List<Inno72InteractMachineTime> insetInteractMachineTimeList = new ArrayList<>();
 			for (MachineTime machineTime : machines) {
 				List<Map<String, String>> planTime = machineTime.getPlanTime();
-				if (null == planTime || planTime.size() < 1) {
+				if ((null == planTime || planTime.size() < 1) && machineTime.getState() == 0) {
 					logger.info("请确认机器时间");
 					return Results.failure("请确认机器时间");
 				}
@@ -172,6 +182,16 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 				interactMachine.setQueryStartTime(DateUtil.toDateTime(model.getQueryStartTime(), DateUtil.DF_FULL_S1));
 				interactMachine.setQueryEndTime(DateUtil.toDateTime(model.getQueryEndTime(), DateUtil.DF_FULL_S1));
 				interactMachine.setState(machineTime.getState());
+
+				if (interactMachine.getState() == 1) {
+					Inno72InteractMachineTime interactMachineTime = new Inno72InteractMachineTime();
+					interactMachineTime.setId(StringUtil.getUUID());
+					interactMachineTime.setStartTime(interactMachine.getQueryStartTime().minusDays(-1));
+					interactMachineTime.setEndTime(interactMachine.getQueryStartTime().minusYears(-50));
+					interactMachineTime.setInteractMachineId(interactMachine.getId());
+
+					insetInteractMachineTimeList.add(interactMachineTime);
+				}
 
 				for (Map<String, String> map : planTime) {
 					String startTime = map.get("startTime");
