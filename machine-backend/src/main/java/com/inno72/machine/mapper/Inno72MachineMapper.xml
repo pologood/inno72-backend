@@ -147,8 +147,13 @@
 		m.machine_status ='4'
 		<if test="code !=null and code !='' ">and LEFT(l.area_code,#{num})='${code}'</if>
 		<if test="machineCode !=null and machineCode !=''">
-			AND m.machine_code LIKE '%${machineCode}%'
+		AND ( m.machine_code LIKE '%${machineCode}%'
+			or a.name LIKE '%${machineCode}%' 
+			
+			)
 		</if>
+		<if test="state =='1' ">and ap.start_time &gt; NOW()</if>
+		<if test="state =='2' ">and ap.start_time &lt; NOW() and ap.end_time &gt; NOW()</if>
 		and 9=9
 		) o order by area_code
 	</select>
