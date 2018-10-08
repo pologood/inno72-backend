@@ -282,7 +282,7 @@
         GROUP BY
         goods.id
     </select>
-    <select id="selectPaiyangLockGoodsList" resultMap="com.inno72.model.GoodsBean">
+    <select id="selectPaiyangLockGoodsList" resultType="com.inno72.model.GoodsBean">
         SELECT
         sum( sc.goods_count ) totalCount,
         goods.NAME goodsName,
