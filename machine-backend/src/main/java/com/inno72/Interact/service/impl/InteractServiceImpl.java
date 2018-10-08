@@ -373,7 +373,7 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 
 			for (TreeVo second : secondList) {
 				Map<String, Object> p = new HashMap<String, Object>();
-				params.put("shopsId", second.getKey());
+				p.put("shopsId", second.getKey());
 				List<TreeVo> thirdList = inno72InteractGoodsMapper.selectGoodsTree(p);
 				second.setChildren(thirdList);
 			}
