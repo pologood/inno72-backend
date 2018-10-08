@@ -89,7 +89,7 @@ public class Inno72Machine {
      * 报警开启状态
      */
     @Column(name="open_status")
-    private int openStatus;
+    private Integer openStatus;
 
     @Column(name="monitor_start")
     private String monitorStart;
@@ -101,11 +101,11 @@ public class Inno72Machine {
 
     private String areaCode;
 
-    public int getOpenStatus() {
+    public Integer getOpenStatus() {
         return openStatus;
     }
 
-    public void setOpenStatus(int openStatus) {
+    public void setOpenStatus(Integer openStatus) {
         this.openStatus = openStatus;
     }
 

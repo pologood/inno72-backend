@@ -14,6 +14,8 @@ public interface Inno72GameMapper extends Mapper<Inno72Game> {
 
 	int selectIsUseing(String id);
 
+	List<String> selectPlanIdByGame(String id);
+
 	List<Inno72GameVo> selectByPage(Map<String, Object> params);
 
 	void deleteMachineGameByMachineId(@Param("mIds") List<String> mIds);

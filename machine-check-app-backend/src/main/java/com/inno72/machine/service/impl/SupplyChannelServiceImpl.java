@@ -471,7 +471,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			order.setMachineId(machineId);
 			order.setType(1);
 			order.setUserId(checkUser.getId());
-			StringBuffer detail = new StringBuffer("用户"+checkUser.getName());
+			StringBuffer detail = new StringBuffer("");
 			inno72SupplyChannelOrderMapper.insertSelective(order);
 			supplyChannelList.forEach(supplyChannel -> {
 				String supplyChannelId = supplyChannel.getId();
@@ -494,7 +494,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 						supplyChannel.setGoodsCount(afterGoodsCount);
 						supplyChannel.setIsDelete(0);
 						inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
-						detail.append("为"+supplyChannel.getCode()+"货道补货，补货数量为"+afterGoodsCount+"；");
+						if((beforeGoodsCount !=0 || afterGoodsCount != 0) && beforeGoodsCount != afterGoodsCount ){
+							detail.append("为"+supplyChannel.getCode()+"货道补货，补货数量为"+afterGoodsCount+"；");
+						}
 						Condition condition = new Condition(Inno72SupplyChannelGoods.class);
 						condition.createCriteria().andEqualTo("supplyChannelId", supplyChannel.getId());
 						inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
@@ -520,8 +522,12 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				});
 
 			});
-			StringUtil.logger(CommonConstants.LOG_TYPE_MACHINE_SUPPLY,machine.getMachineCode(),detail.toString());
-
+			String detailStr = detail.toString();
+			logger.info("补货添加日志：{}",detailStr);
+			if(!detailStr.equals("")){
+				logger.info("补货添加日志：{}","用户"+checkUser.getName()+detailStr);
+				StringUtil.logger(CommonConstants.LOG_TYPE_MACHINE_SUPPLY,machine.getMachineCode(),"用户"+checkUser.getName()+detailStr);
+			}
 		}
 		return ResultGenerator.genSuccessResult();
 	}

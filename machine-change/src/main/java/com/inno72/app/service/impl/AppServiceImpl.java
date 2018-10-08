@@ -18,7 +18,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.inno72.app.mapper.Inno72AppMapper;
 import com.inno72.app.model.Inno72App;
+import com.inno72.app.model.Inno72Machine;
 import com.inno72.app.service.AppService;
+import com.inno72.app.service.MachineService;
 import com.inno72.common.AbstractService;
 import com.inno72.common.MachineChangeProperties;
 import com.inno72.common.Result;
@@ -41,6 +43,9 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 	@Resource
 	private Inno72AppMapper inno72AppMapper;
 
+	@Resource
+	private MachineService machineService;
+
 	@Autowired
 	private MongoOperations mongoTpl;
 
@@ -52,7 +57,8 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 	}
 
 	@Override
-	public Result<List<Inno72App>> getAppList(String machineId) {
+	public Result<Map<String,Object>> getAppList(String machineId) {
+		Map<String,Object> map = new HashMap<>();
 		Query query = new Query();
 		query.addCriteria(Criteria.where("machineId").is(machineId));
 		List<Inno72App> appList = null;
@@ -83,7 +89,14 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 				}
 			}
 		}
-		return ResultGenerator.genSuccessResult(resultList);
+		Inno72Machine machine = machineService.getMachineByCode(machineId);
+		int netStatus = 0;
+		if(machine != null){
+			netStatus = machine.getNetStatus();
+		}
+		map.put("netStatus",netStatus);
+		map.put("resultList",resultList);
+		return ResultGenerator.genSuccessResult(map);
 	}
 
 	@Override
@@ -128,10 +141,6 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 	}
 
 	private Result<String> sendMsg(String machineCode, SendMessageBean... beans) {
-//		String url = "http://pre_test.72solo.com:30130/sendMsgToClient/sendMsg";
-//		String url = "http://pre_test.72solo.com:9080/sendMsgToClient/sendMsg";//测试
-//		String url = "http://api.monitor.inner.inno72.com:9080/sendMsgToClient/sendMsg";//正式
-//		String url ="http://api.monitor.inner.inno72.com:9080/sendMsgToClient/sendMsg";//预发
 		String url = machineChangeProperties.getProps().get("sendAppMsgUrl");
 		try {
 			String result = HttpClient.post(url, JSON.toJSONString(beans));
@@ -140,15 +149,15 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 				if ($_result.getInteger("code") == 0) {
 					String r = $_result.getJSONObject("data").getString(machineCode);
 					if (!"发送成功".equals(r)) {
-						return Results.failure(r);
+						return Results.failure("切换APP失败，请检查机器网络");
 					}
 				} else {
-					return Results.failure($_result.getString("msg"));
+					return Results.failure("切换APP失败，请检查机器网络");
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Results.failure("发送失败");
+			return Results.failure("切换APP失败，请检查机器网络");
 		}
 		return Results.success();
 	}
