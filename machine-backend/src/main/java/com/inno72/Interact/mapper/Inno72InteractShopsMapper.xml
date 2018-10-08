@@ -55,6 +55,22 @@
 		<if test="sellerId !=null and sellerId !='' ">and s.seller_id = #{sellerId}</if>
   </select>
   
+  <resultMap id="InteractShopsTreeResultMap" type="com.inno72.Interact.vo.TreeVo">
+    <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+   
+  </resultMap>
+  
+  <select id="selectMerchantShopsTree" parameterType="java.util.Map" resultMap="InteractShopsTreeResultMap">
+	 	SELECT
+	 		s.id,
+			s.shop_name AS name
+		FROM
+			inno72_shops s
+		WHERE s.is_delete=0
+		<if test="sellerId !=null and sellerId !='' ">and s.seller_id = #{sellerId}</if>
+  </select>
+  
   
   
   

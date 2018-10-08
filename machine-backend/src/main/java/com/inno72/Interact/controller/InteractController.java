@@ -16,6 +16,7 @@ import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.service.InteractService;
 import com.inno72.Interact.vo.InteractListVo;
 import com.inno72.Interact.vo.InteractRuleVo;
+import com.inno72.Interact.vo.TreeVo;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
@@ -69,6 +70,18 @@ public class InteractController {
 	public Result<String> next(@RequestParam String interactId, @RequestParam String type) {
 		interactService.next(interactId, type);
 		return ResultGenerator.genSuccessResult();
+	}
+
+	@RequestMapping(value = "/merchantTree", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<TreeVo>> merchantTree(@RequestParam String interactId) {
+		List<TreeVo> list = interactService.merchantTree(interactId);
+		return ResultGenerator.genSuccessResult(list);
+	}
+
+	@RequestMapping(value = "/machineTree", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<TreeVo>> machineTree(@RequestParam String interactId) {
+		List<TreeVo> list = interactService.machineTree(interactId);
+		return ResultGenerator.genSuccessResult(list);
 	}
 
 }

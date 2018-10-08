@@ -74,6 +74,21 @@
 				
   </select>
   
+  <resultMap id="GoodsTreeResultMap" type="com.inno72.Interact.vo.TreeVo">
+    <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  
+  <select id="selectGoodsTree" parameterType="java.util.Map" resultMap="GoodsTreeResultMap">
+	 	SELECT
+	 		g.id,
+			g.name
+		FROM
+			inno72_goods g
+		WHERE g.is_delete=0
+		<if test="shopsId !=null and shopsId !='' ">and g.shop_id = #{shopsId}</if>
+  </select>
+  
 
   
   
