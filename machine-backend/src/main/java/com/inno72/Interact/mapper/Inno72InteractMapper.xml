@@ -81,7 +81,7 @@
 		</if>
 		<if test="status ==0"> and i.status=0 </if>
 		<if test="status ==1"> and i.status=1 and 1 > DATEDIFF(NOW(),it.min_time) </if>
-		<if test="status ==2"> i.status=1 and ((day='max' and DATEDIFF(NOW(),it.min_time)>=0)or (day != 'max' and day >= DATEDIFF(NOW(),it.min_time) )) </if>
+		<if test="status ==2"> and i.status=1 and ((day='max' and DATEDIFF(NOW(),it.min_time)>=0)or (day != 'max' and day >= DATEDIFF(NOW(),it.min_time) )) </if>
 		<if test="status ==3"> and i.status=2 </if>
 		<if test="status ==4"> and i.status=1 and DATEDIFF(NOW(),it.min_time) > day </if>
 		) t
