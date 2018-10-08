@@ -110,7 +110,7 @@
 				CONCAT( area.province,area.city,area.district,IFNULL(l.mall,""),IFNULL(l.name,"") ) AS local_desc,
 				date_format(ap.start_time,'%Y-%m-%d %H:%i:%s') AS start_time,
 				date_format(ap.end_time,'%Y-%m-%d %H:%i:%s') AS end_time,
-				a.name AS activityName,
+				a.name AS activity_name,
 				CASE
 					WHEN ap.start_time &gt; NOW() THEN '1'
 					WHEN ap.start_time &lt; NOW() and ap.end_time &gt; NOW() THEN '2'

@@ -75,8 +75,8 @@
   </select>
   
   <resultMap id="GoodsTreeResultMap" type="com.inno72.Interact.vo.TreeVo">
-    <result column="id" jdbcType="VARCHAR" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="id" jdbcType="VARCHAR" property="key" />
+    <result column="name" jdbcType="VARCHAR" property="title" />
   </resultMap>
   
   <select id="selectGoodsTree" parameterType="java.util.Map" resultMap="GoodsTreeResultMap">

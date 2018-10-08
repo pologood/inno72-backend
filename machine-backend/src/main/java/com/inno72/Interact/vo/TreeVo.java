@@ -4,34 +4,34 @@ import java.util.List;
 
 public class TreeVo {
 
-	private String id;
+	private String key;
 
-	private String name;
+	private String title;
 
-	private List<TreeVo> childList;
+	private List<TreeVo> children;
 
-	public String getId() {
-		return id;
+	public String getKey() {
+		return key;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setKey(String key) {
+		this.key = key;
 	}
 
-	public String getName() {
-		return name;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	public List<TreeVo> getChildList() {
-		return childList;
+	public List<TreeVo> getChildren() {
+		return children;
 	}
 
-	public void setChildList(List<TreeVo> childList) {
-		this.childList = childList;
+	public void setChildren(List<TreeVo> children) {
+		this.children = children;
 	}
 
 }

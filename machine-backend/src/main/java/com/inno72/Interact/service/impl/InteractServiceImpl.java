@@ -332,8 +332,8 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 		for (MachineVo machine : machineList) {
 
 			TreeVo first = new TreeVo();
-			first.setId(machine.getMachineId());
-			first.setName(machine.getLocalDesc() + "(" + machine.getMachineCode() + ")");
+			first.setKey(machine.getMachineId());
+			first.setTitle(machine.getLocalDesc() + "(" + machine.getMachineCode() + ")");
 			Map<String, Object> params = new HashMap<>();
 			pm.put("interactId", interactId);
 			pm.put("machineId", machine.getMachineId());
@@ -341,11 +341,11 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			List<Inno72InteractMachineGoodsVo> list = inno72InteractMachineGoodsMapper.selectMachineGoods(params);
 			for (Inno72InteractMachineGoodsVo goodsVo : list) {
 				TreeVo second = new TreeVo();
-				second.setId(goodsVo.getGoodsId());
-				second.setName(goodsVo.getGoodsName());
+				second.setKey(goodsVo.getGoodsId());
+				second.setTitle(goodsVo.getGoodsName());
 				secondList.add(second);
 			}
-			first.setChildList(secondList);
+			first.setChildren(secondList);
 
 			firstList.add(first);
 
@@ -364,18 +364,18 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 		for (InteractMerchantVo interactMerchantVo : merchantList) {
 
 			TreeVo first = new TreeVo();
-			first.setId(interactMerchantVo.getId());
-			first.setName(interactMerchantVo.getMerchantName());
+			first.setKey(interactMerchantVo.getId());
+			first.setTitle(interactMerchantVo.getMerchantName());
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("sellerId", interactMerchantVo.getId());
 			List<TreeVo> secondList = inno72InteractShopsMapper.selectMerchantShopsTree(params);
-			first.setChildList(secondList);
+			first.setChildren(secondList);
 
 			for (TreeVo second : secondList) {
 				Map<String, Object> p = new HashMap<String, Object>();
-				params.put("shopsId", second.getId());
+				params.put("shopsId", second.getKey());
 				List<TreeVo> thirdList = inno72InteractGoodsMapper.selectGoodsTree(p);
-				second.setChildList(thirdList);
+				second.setChildren(thirdList);
 			}
 			firstList.add(first);
 
