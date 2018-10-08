@@ -91,6 +91,20 @@
   </select>
   
   
+  <resultMap id="DetailResultMap" type="com.inno72.Interact.vo.Inno72InteractVo" extends="BaseResultMap">
+    <result column="game_name" jdbcType="VARCHAR" property="gameName" />
+  </resultMap>
+  
+  <select id="selectInteractDetail" parameterType="String" resultMap="DetailResultMap">
+		SELECT
+			i.*,gm.name AS game_name
+		FROM
+			inno72_interact i
+			LEFT JOIN inno72_game gm ON gm.id = i.game_id
+		where i.id = #{id}
+  </select>
+  
+  
   
   
   

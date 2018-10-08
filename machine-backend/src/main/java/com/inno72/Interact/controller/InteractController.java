@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.service.InteractService;
+import com.inno72.Interact.vo.Inno72InteractVo;
 import com.inno72.Interact.vo.InteractListVo;
 import com.inno72.Interact.vo.InteractRuleVo;
 import com.inno72.Interact.vo.TreeVo;
@@ -55,8 +56,8 @@ public class InteractController {
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<Inno72Interact> detail(@RequestParam String id) {
-		Inno72Interact interact = interactService.findById(id);
+	public Result<Inno72InteractVo> detail(@RequestParam String id) {
+		Inno72InteractVo interact = interactService.findDetailById(id);
 		return ResultGenerator.genSuccessResult(interact);
 	}
 

@@ -25,6 +25,7 @@ import com.inno72.Interact.model.Inno72InteractGoods;
 import com.inno72.Interact.model.Inno72InteractMachine;
 import com.inno72.Interact.service.InteractService;
 import com.inno72.Interact.vo.Inno72InteractMachineGoodsVo;
+import com.inno72.Interact.vo.Inno72InteractVo;
 import com.inno72.Interact.vo.InteractListVo;
 import com.inno72.Interact.vo.InteractMerchantVo;
 import com.inno72.Interact.vo.InteractRuleVo;
@@ -382,6 +383,11 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 		}
 
 		return firstList;
+	}
+
+	@Override
+	public Inno72InteractVo findDetailById(String id) {
+		return inno72InteractMapper.selectInteractDetail(id);
 	}
 
 }
