@@ -20,6 +20,7 @@ import com.inno72.Interact.model.Inno72InteractMachineGoods;
 import com.inno72.Interact.service.InteractGoodsService;
 import com.inno72.Interact.vo.InteractGoodsVo;
 import com.inno72.common.AbstractService;
+import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
@@ -93,10 +94,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					logger.info("请填写商品数量");
 					return Results.failure("请填写商品数量");
 				}
-				if (null == model.getNumber()) {
-					logger.info("请输入商品价格");
-					return Results.failure("请输入商品价格");
-				}
+
 				model.setId(StringUtil.getUUID());
 				model.setIsDelete(0);
 				model.setCreateId(mUserId);
@@ -157,8 +155,11 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 			Inno72InteractGoods interactGoods = new Inno72InteractGoods();
 			interactGoods.setGoodsId(model.getId());
 			interactGoods = inno72InteractGoodsMapper.selectOne(interactGoods);
-
-			if (0 == interactGoods.getType()) {
+			if (null == model.getType()) {
+				logger.info("请选择商品类型");
+				return Results.failure("请选择商品类型");
+			}
+			if (0 == model.getType()) {
 				if (StringUtil.isBlank(model.getSellerId())) {
 					logger.info("请选择商家");
 					return Results.failure("请选择商家");
@@ -175,18 +176,12 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					logger.info("请填写商品编码");
 					return Results.failure("请填写商品编码");
 				}
-				if (null == model.getImg()) {
-					logger.info("请上传图片");
-					return Results.failure("请上传图片");
-				}
+
 				if (null == model.getNumber()) {
 					logger.info("请填写商品数量");
 					return Results.failure("请填写商品数量");
 				}
-				if (null == model.getNumber()) {
-					logger.info("请输入商品价格");
-					return Results.failure("请输入商品价格");
-				}
+
 				model.setUpdateId(mUserId);
 				model.setUpdateTime(LocalDateTime.now());
 
@@ -214,7 +209,6 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 				inno72CouponMapper.updateByPrimaryKeySelective(coupon);
 			}
 
-			inno72InteractGoodsMapper.updateByPrimaryKeySelective(interactGoods);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.info(e.getMessage());
@@ -225,7 +219,14 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 
 	@Override
 	public InteractGoodsVo findGoodsById(String id) {
-		return inno72InteractGoodsMapper.selectInteractGoodsById(id);
+		InteractGoodsVo goods = inno72InteractGoodsMapper.selectInteractGoodsById(id);
+		if (StringUtil.isNotBlank(goods.getImg())) {
+			goods.setImg(CommonConstants.ALI_OSS + goods.getImg());
+		}
+		if (StringUtil.isNotBlank(goods.getBanner())) {
+			goods.setBanner(CommonConstants.ALI_OSS + goods.getBanner());
+		}
+		return goods;
 	}
 
 	@Override

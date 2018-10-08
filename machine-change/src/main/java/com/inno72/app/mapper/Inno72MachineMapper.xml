@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.app.mapper.Inno72MachineMapper">
+	<resultMap id="BaseResultMap" type="com.inno72.app.model.Inno72Machine">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+		<result column="machine_name" jdbcType="VARCHAR" property="machineName" />
+		<result column="locale_id" jdbcType="VARCHAR" property="localeId" />
+		<result column="tag" jdbcType="VARCHAR" property="tag" />
+		<result column="create_id" jdbcType="VARCHAR" property="createId" />
+		<result column="update_id" jdbcType="VARCHAR" property="updateId" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+		<result column="machine_status" jdbcType="INTEGER" property="machineStatus" />
+		<result column="net_status" jdbcType="INTEGER" property="netStatus" />
+		<result column="device_id" jdbcType="VARCHAR" property="deviceId" />
+        <result column="inside_time" jdbcType="TIMESTAMP" property="insideTime"/>
+		<result column="address" jdbcType="VARCHAR" property="address" />
+		<result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
+	</resultMap>
+
+    <select id="selectByCode" resultMap="BaseResultMap">
+        select * from inno72_machine where machine_code=#{machineCode}
+    </select>
+</mapper>

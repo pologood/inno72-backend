@@ -11,6 +11,8 @@ public class InteractShopsVo extends Inno72Shops {
 
 	private Integer isVip;
 
+	private String merchantName;
+
 	public String getInteractId() {
 		return interactId;
 	}
@@ -25,6 +27,14 @@ public class InteractShopsVo extends Inno72Shops {
 
 	public void setIsVip(Integer isVip) {
 		this.isVip = isVip;
+	}
+
+	public String getMerchantName() {
+		return merchantName;
+	}
+
+	public void setMerchantName(String merchantName) {
+		this.merchantName = merchantName;
 	}
 
 }

@@ -583,8 +583,7 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			logger.info("计划更新数据开始——————————————————————————————");
 			inno72ActivityPlanMapper.updateByPrimaryKeySelective(activityPlan);
 			logger.info("计划更新完成");
-
-			redisUtil.del(CommonConstants.REDIS_ACTIVITY_PLAN_CACHE_KEY + activityPlan.getId() + "*");
+			redisUtil.deleteByPrex(CommonConstants.REDIS_ACTIVITY_PLAN_CACHE_KEY + activityPlan.getId() + "*");
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 			return Results.failure("操作失败！");

@@ -20,6 +20,8 @@
     <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
     <result column="user_day_number" jdbcType="INTEGER" property="userDayNumber" />
     <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
+    <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
     
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="code" jdbcType="VARCHAR" property="code" />
@@ -56,14 +58,35 @@
 		SELECT
 			g.id,
 			g.`code`,
-			g.`name`
+			g.`name`,
+			s.shop_name AS shop_name,
+			m.merchant_name AS merchant_name,
+			ig.user_day_number,
+			ig.type 
 		FROM
 			inno72_interact_goods ig 
 			LEFT JOIN inno72_goods g ON g.id = ig.goods_id 
+			LEFT JOIN inno72_shops s ON s.id = g.shop_id 
+			LEFT JOIN inno72_merchant m ON m.id = g.seller_id 
 		WHERE 1=1 
 		<if test="interactId !=null and interactId !='' ">and ig.interact_id = #{interactId} </if>
 		<if test="shopsId !=null and shopsId !='' ">and g.shop_id = #{shopsId} </if>
 				
+  </select>
+  
+  <resultMap id="GoodsTreeResultMap" type="com.inno72.Interact.vo.TreeVo">
+    <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  
+  <select id="selectGoodsTree" parameterType="java.util.Map" resultMap="GoodsTreeResultMap">
+	 	SELECT
+	 		g.id,
+			g.name
+		FROM
+			inno72_goods g
+		WHERE g.is_delete=0
+		<if test="shopsId !=null and shopsId !='' ">and g.shop_id = #{shopsId}</if>
   </select>
   
 

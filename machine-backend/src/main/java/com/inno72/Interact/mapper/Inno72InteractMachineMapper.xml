@@ -8,6 +8,10 @@
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="interact_id" jdbcType="VARCHAR" property="interactId" />
     <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
+    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+    <result column="query_start_time" jdbcType="TIMESTAMP" property="queryStartTime" />
+    <result column="query_end_time" jdbcType="TIMESTAMP" property="queryEndTime" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
   </resultMap>
   
   <resultMap id="MachineResultMap" type="com.inno72.Interact.vo.MachineVo">
@@ -124,10 +128,10 @@
   
   
   <insert id="insertInteractMachineList" parameterType="java.util.List">
-        insert into inno72_interact_machine (id, interact_id,machine_id,query_start_time,query_end_time,state)
+        insert into inno72_interact_machine (id, interact_id,machine_id,machine_code,query_start_time,query_end_time,state)
         values
         <foreach collection="list" item="t" index="index" separator=",">
-            (#{t.id}, #{t.interactId},#{t.machineId},#{t.queryStartTime},#{t.queryEndTime},#{t.state})
+            (#{t.id}, #{t.interactId},#{t.machineId},#{t.machine_code},#{t.queryStartTime},#{t.queryEndTime},#{t.state})
         </foreach>
     </insert>
     

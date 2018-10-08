@@ -665,7 +665,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		msg.setData(machineCode);
 		String m = "用户{0}，在erp系统中修改机器编号，修改前{1}，修改后{2}";
 		String mm = MessageFormat.format(m, mUser.getName(), machine.getMachineCode(), machineCode);
-		LogUtil.logger(LogType.UPDATE_MACHINECODE.getCode(), machine.getMachineCode(), mm);
+		LogUtil.logger(LogType.UPDATE_MACHINECODE.getCode(), machineCode, mm);
 		return sendMsg(machine.getMachineCode(), msg);
 	}
 

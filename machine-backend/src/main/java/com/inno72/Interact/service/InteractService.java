@@ -5,6 +5,7 @@ import java.util.List;
 import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.vo.InteractListVo;
 import com.inno72.Interact.vo.InteractRuleVo;
+import com.inno72.Interact.vo.TreeVo;
 import com.inno72.common.Result;
 import com.inno72.common.Service;
 
@@ -22,5 +23,9 @@ public interface InteractService extends Service<Inno72Interact> {
 	Result<String> next(String interactId, String type);
 
 	Result<Object> updateRule(InteractRuleVo interactRule);
+
+	List<TreeVo> machineTree(String interactId);
+
+	List<TreeVo> merchantTree(String interactId);
 
 }
