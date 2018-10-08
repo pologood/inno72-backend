@@ -17,4 +17,6 @@ public interface InteractMachineGoodsService extends Service<Inno72InteractMachi
 
 	List<Inno72InteractMachineGoodsVo> selectMachineGoods(String interactId, String merchantId);
 
+	Result<String> deleteById(String interactId, String machineId, String goodsId);
+
 }

@@ -103,4 +103,27 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 		return list;
 	}
 
+	@Override
+	public Result<String> deleteById(String interactId, String machineId, String goodsId) {
+
+		try {
+			Inno72InteractMachine interactMachine = new Inno72InteractMachine();
+			interactMachine.setInteractId(interactId);
+			interactMachine.setMachineId(machineId);
+			Inno72InteractMachine base = inno72InteractMachineMapper.selectOne(interactMachine);
+
+			Inno72InteractMachineGoods del = new Inno72InteractMachineGoods();
+			del.setInteractMachineId(base.getId());
+			del.setGoodsId(goodsId);
+			// 先删除之前活动机器上绑定的商品
+			inno72InteractMachineGoodsMapper.delete(del);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+		return Results.success("操作成功");
+	}
+
 }
