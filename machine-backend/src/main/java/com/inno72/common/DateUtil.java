@@ -30,11 +30,12 @@ public class DateUtil {
 			return null;
 		}
 	}
-	
+
 	public static LocalDateTime toDateTime(String str, DateTimeFormatter dateTimeFormatter) {
 		try {
 			return LocalDateTime.parse(str, dateTimeFormatter);
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			return null;
 		}
 	}
@@ -59,23 +60,24 @@ public class DateUtil {
 		return simpleDateFormat.format(date);
 	}
 
-	public static String nowStr(){
-		return toTimeStr(LocalDateTime.now(),DF_FULL_S1);
+	public static String nowStr() {
+		return toTimeStr(LocalDateTime.now(), DF_FULL_S1);
 	}
-	
+
 	/**
-     * 在原日期的基础上增加天数
-     * @param date
-     * @param i
-     * @return
-     */
-    public static Date addDayOfDate(Date date,int i){
-	    Calendar c = Calendar.getInstance();
-	    c.setTime(date);
-	    c.add(Calendar.DATE, i);
-	    Date newDate = c.getTime();
-	    
-	    return newDate;
-    }
+	 * 在原日期的基础上增加天数
+	 * 
+	 * @param date
+	 * @param i
+	 * @return
+	 */
+	public static Date addDayOfDate(Date date, int i) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		c.add(Calendar.DATE, i);
+		Date newDate = c.getTime();
+
+		return newDate;
+	}
 
 }

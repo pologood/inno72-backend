@@ -131,7 +131,7 @@
         insert into inno72_interact_machine (id, interact_id,machine_id,machine_code,query_start_time,query_end_time,state)
         values
         <foreach collection="list" item="t" index="index" separator=",">
-            (#{t.id}, #{t.interactId},#{t.machineId},#{t.machine_code},#{t.queryStartTime},#{t.queryEndTime},#{t.state})
+            (#{t.id}, #{t.interactId},#{t.machineId},#{t.machineCode},#{t.queryStartTime},#{t.queryEndTime},#{t.state})
         </foreach>
     </insert>
     
