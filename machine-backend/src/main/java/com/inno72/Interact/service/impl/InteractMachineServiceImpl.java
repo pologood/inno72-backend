@@ -92,11 +92,19 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 				logger.info("请选择机器");
 				return Results.failure("请选择机器");
 			}
-			List<String> useredMachine = new ArrayList<>();
+			Map<String, Object> selectParam = new HashMap<String, Object>();
+			selectParam.put("id", interactId);
+			List<String> selectMachines = inno72InteractMachineMapper.selectInteractUseredMachine(selectParam);
+
+			// List<String> useredMachine = new ArrayList<>();
 			List<Inno72InteractMachine> insetInteractMachineList = new ArrayList<>();
 			List<Inno72InteractMachineTime> insetInteractMachineTimeList = new ArrayList<>();
 			for (MachineTime machineTime : machines) {
 				String machineId = machineTime.getMachineId();
+				if (selectMachines.contains(machineId)) {
+					logger.info("此活动下重复选择机器");
+					return Results.failure("此活动下重复选择机器，机器编号：" + machineTime.getMachineCode());
+				}
 
 				Inno72InteractMachine interactMachine = new Inno72InteractMachine();
 				interactMachine.setId(StringUtil.getUUID());
@@ -135,7 +143,7 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 
 				}
 				// 校验时间内机器是否占用
-				for (Inno72InteractMachineTime time : insetInteractMachineTimeList) {
+				/*for (Inno72InteractMachineTime time : insetInteractMachineTimeList) {
 					Map<String, Object> isUseredParam = new HashMap<String, Object>();
 					isUseredParam.put("startTime", DateUtil.toTimeStr(time.getStartTime(), DateUtil.DF_FULL_S1));
 					isUseredParam.put("endTime", DateUtil.toTimeStr(time.getEndTime(), DateUtil.DF_FULL_S1));
@@ -147,7 +155,7 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 				if (useredMachine.contains(machineId)) {
 					logger.info("所选时间内机器已占用");
 					return Results.failure("所选时间内机器已占用，机器编号：" + machineTime.getMachineCode());
-				}
+				}*/
 
 			}
 			inno72InteractMachineMapper.insertInteractMachineList(insetInteractMachineList);

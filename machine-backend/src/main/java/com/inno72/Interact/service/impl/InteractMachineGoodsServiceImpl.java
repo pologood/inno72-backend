@@ -72,10 +72,19 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 				Inno72InteractMachine base = inno72InteractMachineMapper.selectOne(interactMachine);
 
 				for (Inno72InteractMachineGoodsVo machineGoods : goods) {
+					if (StringUtil.isBlank(machineGoods.getStartTimeStr())
+							|| (machineGoods.getState() != 1 && StringUtil.isBlank(machineGoods.getEndTimeStr()))) {
+						logger.info("请确认商品时间");
+						return Results.failure("请确认商品时间");
+					}
 					machineGoods.setId(StringUtil.getUUID());
 					machineGoods.setInteractMachineId(base.getId());
 					machineGoods.setStartTime(DateUtil.toDateTime(machineGoods.getStartTimeStr(), DateUtil.DF_FULL_S1));
-					machineGoods.setEndTime(DateUtil.toDateTime(machineGoods.getEndTimeStr(), DateUtil.DF_FULL_S1));
+					if (machineGoods.getState() == 1) {
+						machineGoods.setEndTime(DateUtil.toDateTime("2028-12-31 23:59:59", DateUtil.DF_FULL_S1));
+					} else {
+						machineGoods.setEndTime(DateUtil.toDateTime(machineGoods.getEndTimeStr(), DateUtil.DF_FULL_S1));
+					}
 				}
 				Inno72InteractMachineGoods del = new Inno72InteractMachineGoods();
 				del.setInteractMachineId(base.getId());
