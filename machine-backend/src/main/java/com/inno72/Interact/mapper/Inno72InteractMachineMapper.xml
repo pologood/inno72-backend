@@ -160,6 +160,34 @@
 				)
 		</if>
   	</select>
+  	
+  	<select id="selectInteractUseredMachine" parameterType="java.util.Map" resultType="String">
+		SELECT
+			im.machine_id
+		FROM
+			inno72_interact_machine_time imt
+			LEFT JOIN inno72_interact_machine im ON im.id = imt.interact_machine_id
+			LEFT JOIN inno72_interact i ON i.id = im.interact_id
+			WHERE i.is_delete =0 AND i.`status` != 2  
+		<if test="id !=null and id !='' ">and im.interact_id = #{id}  </if>
+		<if test="noId !=null and noId !='' ">and im.interact_id != #{noId}  </if>
+		<if test="startTime !=null and startTime !='' ">
+			and ( <![CDATA[imt.start_time <= #{endTime} AND imt.end_time >= #{startTime} ]]>)
+		</if>
+	</select>
+	
+	<select id="selectPlanUseredMachine" parameterType="java.util.Map" resultType="String">
+		SELECT 
+			machine_id 
+		FROM inno72_activity_plan ap
+		LEFT JOIN inno72_activity_plan_machine apm ON apm.activity_plan_id = ap.id
+		where is_delete =0
+		<if test="id !=null and id !='' ">and ap.id = #{id}  </if>
+		<if test="noId !=null and noId !='' ">and ap.id != #{noId}  </if>
+		<if test="startTime !=null and startTime !='' ">
+			and ( <![CDATA[ap.start_time <= #{endTime} AND ap.end_time >= #{startTime} ]]>)
+		</if>
+	</select>
   
   
 </mapper>

@@ -92,6 +92,7 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 				logger.info("请选择机器");
 				return Results.failure("请选择机器");
 			}
+			List<String> useredMachine = new ArrayList<>();
 			List<Inno72InteractMachine> insetInteractMachineList = new ArrayList<>();
 			List<Inno72InteractMachineTime> insetInteractMachineTimeList = new ArrayList<>();
 			for (MachineTime machineTime : machines) {
@@ -131,7 +132,23 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 					interactMachineTime.setInteractMachineId(interactMachine.getId());
 
 					insetInteractMachineTimeList.add(interactMachineTime);
+
 				}
+				// 校验时间内机器是否占用
+				for (Inno72InteractMachineTime time : insetInteractMachineTimeList) {
+					Map<String, Object> isUseredParam = new HashMap<String, Object>();
+					isUseredParam.put("startTime", DateUtil.toTimeStr(time.getStartTime(), DateUtil.DF_FULL_S1));
+					isUseredParam.put("endTime", DateUtil.toTimeStr(time.getEndTime(), DateUtil.DF_FULL_S1));
+					List<String> usered1 = inno72InteractMachineMapper.selectInteractUseredMachine(isUseredParam);
+					List<String> usered2 = inno72InteractMachineMapper.selectPlanUseredMachine(isUseredParam);
+					useredMachine.addAll(usered1);
+					useredMachine.addAll(usered2);
+				}
+				if (useredMachine.contains(machineId)) {
+					logger.info("所选时间内机器已占用");
+					return Results.failure("所选时间内机器已占用，机器编号：" + machineTime.getMachineCode());
+				}
+
 			}
 			inno72InteractMachineMapper.insertInteractMachineList(insetInteractMachineList);
 			inno72InteractMachineTimeMapper.insertInteractMachineTimeList(insetInteractMachineTimeList);
@@ -164,6 +181,8 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 				logger.info("请选择机器");
 				return Results.failure("请选择机器");
 			}
+
+			List<String> useredMachine = new ArrayList<>();
 			List<Inno72InteractMachineTime> insetInteractMachineTimeList = new ArrayList<>();
 			for (MachineTime machineTime : machines) {
 				List<Map<String, String>> planTime = machineTime.getPlanTime();
@@ -204,6 +223,23 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 
 					insetInteractMachineTimeList.add(interactMachineTime);
 				}
+
+				// 校验时间内机器是否占用
+				for (Inno72InteractMachineTime time : insetInteractMachineTimeList) {
+					Map<String, Object> isUseredParam = new HashMap<String, Object>();
+					isUseredParam.put("startTime", DateUtil.toTimeStr(time.getStartTime(), DateUtil.DF_FULL_S1));
+					isUseredParam.put("endTime", DateUtil.toTimeStr(time.getEndTime(), DateUtil.DF_FULL_S1));
+					isUseredParam.put("noId", machineId);
+					List<String> usered1 = inno72InteractMachineMapper.selectInteractUseredMachine(isUseredParam);
+					List<String> usered2 = inno72InteractMachineMapper.selectPlanUseredMachine(isUseredParam);
+					useredMachine.addAll(usered1);
+					useredMachine.addAll(usered2);
+				}
+				if (useredMachine.contains(machineId)) {
+					logger.info("所选时间内机器已占用");
+					return Results.failure("所选时间内机器已占用，机器编号：" + machineTime.getMachineCode());
+				}
+
 				inno72InteractMachineMapper.updateByPrimaryKeySelective(interactMachine);
 				Inno72InteractMachineTime delTime = new Inno72InteractMachineTime();
 				delTime.setInteractMachineId(interactMachine.getId());

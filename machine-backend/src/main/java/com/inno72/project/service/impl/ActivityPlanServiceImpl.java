@@ -123,6 +123,8 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			}
 
 			List<Inno72MachineVo> planings = inno72ActivityPlanMapper.selectPlanedMachine(planedParam);
+			List<Inno72MachineVo> interactPlanings = inno72ActivityPlanMapper.selectInteractMachine(planedParam);
+			planings.addAll(interactPlanings);
 
 			// 组合计划机器关系
 			List<Inno72MachineVo> machines = activityPlan.getMachines();
@@ -406,6 +408,8 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 			planedParam.put("noPlanId", activityPlan.getId());
 			// 不包含此次排期的 所有已排期的机器
 			List<Inno72MachineVo> allPlanings = inno72ActivityPlanMapper.selectPlanedMachine(planedParam);
+			List<Inno72MachineVo> interactPlanings = inno72ActivityPlanMapper.selectInteractMachine(planedParam);
+			allPlanings.addAll(interactPlanings);
 
 			// 当前计划已排期的机器
 			planedParam.clear();
