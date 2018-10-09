@@ -117,7 +117,7 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 					Inno72InteractMachineTime interactMachineTime = new Inno72InteractMachineTime();
 					interactMachineTime.setId(StringUtil.getUUID());
 					interactMachineTime.setStartTime(interactMachine.getQueryEndTime().minusSeconds(-1));
-					interactMachineTime.setEndTime(interactMachine.getQueryEndTime().minusYears(-50));
+					interactMachineTime.setEndTime(DateUtil.toDateTime("2028-12-31 23:59:59", DateUtil.DF_FULL_S1));
 					interactMachineTime.setInteractMachineId(interactMachine.getId());
 
 					insetInteractMachineTimeList.add(interactMachineTime);
@@ -206,7 +206,7 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 					Inno72InteractMachineTime interactMachineTime = new Inno72InteractMachineTime();
 					interactMachineTime.setId(StringUtil.getUUID());
 					interactMachineTime.setStartTime(interactMachine.getQueryEndTime().minusSeconds(-1));
-					interactMachineTime.setEndTime(interactMachine.getQueryEndTime().minusYears(-50));
+					interactMachineTime.setEndTime(DateUtil.toDateTime("2028-12-31 23:59:59", DateUtil.DF_FULL_S1));
 					interactMachineTime.setInteractMachineId(interactMachine.getId());
 
 					insetInteractMachineTimeList.add(interactMachineTime);
