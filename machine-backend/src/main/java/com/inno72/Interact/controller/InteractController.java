@@ -44,9 +44,8 @@ public class InteractController {
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> update(Inno72Interact interact, Integer type) {
-		interactService.update(interact, type);
-		return ResultGenerator.genSuccessResult();
+	public Result<Object> update(Inno72Interact interact, Integer type) {
+		return interactService.update(interact, type);
 	}
 
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })
@@ -62,15 +61,13 @@ public class InteractController {
 	}
 
 	@RequestMapping(value = "/rule", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> updateRule(@RequestBody InteractRuleVo interactRule) {
-		interactService.updateRule(interactRule);
-		return ResultGenerator.genSuccessResult();
+	public Result<Object> updateRule(@RequestBody InteractRuleVo interactRule) {
+		return interactService.updateRule(interactRule);
 	}
 
 	@RequestMapping(value = "/next", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> next(@RequestParam String interactId, @RequestParam String type) {
-		interactService.next(interactId, type);
-		return ResultGenerator.genSuccessResult();
+		return interactService.next(interactId, type);
 	}
 
 	@RequestMapping(value = "/merchantTree", method = { RequestMethod.POST, RequestMethod.GET })

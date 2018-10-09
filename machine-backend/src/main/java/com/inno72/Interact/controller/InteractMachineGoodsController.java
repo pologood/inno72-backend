@@ -30,8 +30,7 @@ public class InteractMachineGoodsController {
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> add(@RequestBody InteractMachineGoods interactMachineGoods) {
-		interactMachineGoodsService.save(interactMachineGoods);
-		return ResultGenerator.genSuccessResult();
+		return interactMachineGoodsService.save(interactMachineGoods);
 	}
 
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })

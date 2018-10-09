@@ -28,14 +28,12 @@ public class InteractMerchantController {
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> add(InteractMerchantVo interactMerchant) {
-		interactMerchantService.save(interactMerchant);
-		return ResultGenerator.genSuccessResult();
+		return interactMerchantService.save(interactMerchant);
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> update(InteractMerchantVo interactMerchant) {
-		interactMerchantService.update(interactMerchant);
-		return ResultGenerator.genSuccessResult();
+		return interactMerchantService.update(interactMerchant);
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })

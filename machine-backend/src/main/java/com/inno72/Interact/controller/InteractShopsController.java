@@ -42,8 +42,7 @@ public class InteractShopsController {
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> update(InteractShopsVo interactShops) {
-		interactShopsService.update(interactShops);
-		return ResultGenerator.genSuccessResult();
+		return interactShopsService.update(interactShops);
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
