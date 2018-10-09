@@ -13,9 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inno72.Interact.mapper.Inno72InteractMachineGoodsMapper;
 import com.inno72.Interact.mapper.Inno72InteractMachineMapper;
 import com.inno72.Interact.mapper.Inno72InteractMachineTimeMapper;
 import com.inno72.Interact.model.Inno72InteractMachine;
+import com.inno72.Interact.model.Inno72InteractMachineGoods;
 import com.inno72.Interact.model.Inno72InteractMachineTime;
 import com.inno72.Interact.service.InteractMachineService;
 import com.inno72.Interact.vo.InteractMachineTime;
@@ -43,6 +45,8 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 
 	@Resource
 	private Inno72InteractMachineTimeMapper inno72InteractMachineTimeMapper;
+	@Resource
+	private Inno72InteractMachineGoodsMapper inno72InteractMachineGoodsMapper;
 
 	@Override
 	public List<MachineVo> getList(String keyword, String startTime, String endTime) {
@@ -143,19 +147,25 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 
 				}
 				// 校验时间内机器是否占用
-				/*for (Inno72InteractMachineTime time : insetInteractMachineTimeList) {
-					Map<String, Object> isUseredParam = new HashMap<String, Object>();
-					isUseredParam.put("startTime", DateUtil.toTimeStr(time.getStartTime(), DateUtil.DF_FULL_S1));
-					isUseredParam.put("endTime", DateUtil.toTimeStr(time.getEndTime(), DateUtil.DF_FULL_S1));
-					List<String> usered1 = inno72InteractMachineMapper.selectInteractUseredMachine(isUseredParam);
-					List<String> usered2 = inno72InteractMachineMapper.selectPlanUseredMachine(isUseredParam);
-					useredMachine.addAll(usered1);
-					useredMachine.addAll(usered2);
-				}
-				if (useredMachine.contains(machineId)) {
-					logger.info("所选时间内机器已占用");
-					return Results.failure("所选时间内机器已占用，机器编号：" + machineTime.getMachineCode());
-				}*/
+				/*
+				 * for (Inno72InteractMachineTime time :
+				 * insetInteractMachineTimeList) { Map<String, Object>
+				 * isUseredParam = new HashMap<String, Object>();
+				 * isUseredParam.put("startTime",
+				 * DateUtil.toTimeStr(time.getStartTime(),
+				 * DateUtil.DF_FULL_S1)); isUseredParam.put("endTime",
+				 * DateUtil.toTimeStr(time.getEndTime(), DateUtil.DF_FULL_S1));
+				 * List<String> usered1 =
+				 * inno72InteractMachineMapper.selectInteractUseredMachine(
+				 * isUseredParam); List<String> usered2 =
+				 * inno72InteractMachineMapper.selectPlanUseredMachine(
+				 * isUseredParam); useredMachine.addAll(usered1);
+				 * useredMachine.addAll(usered2); } if
+				 * (useredMachine.contains(machineId)) {
+				 * logger.info("所选时间内机器已占用"); return
+				 * Results.failure("所选时间内机器已占用，机器编号：" +
+				 * machineTime.getMachineCode()); }
+				 */
 
 			}
 			inno72InteractMachineMapper.insertInteractMachineList(insetInteractMachineList);
@@ -291,6 +301,34 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 		}
 
 		return interactMachines;
+	}
+
+	@Override
+	public Result<String> deleteById(String interactId, String machineId) {
+
+		try {
+			Inno72InteractMachine interactMachine = new Inno72InteractMachine();
+			interactMachine.setInteractId(interactId);
+			interactMachine.setMachineId(machineId);
+			Inno72InteractMachine base = inno72InteractMachineMapper.selectOne(interactMachine);
+
+			// 活动机器上绑定的商品
+			Inno72InteractMachineGoods delGoods = new Inno72InteractMachineGoods();
+			delGoods.setInteractMachineId(base.getId());
+			// 活动机器时间
+			Inno72InteractMachineTime delTime = new Inno72InteractMachineTime();
+			delTime.setInteractMachineId(base.getId());
+
+			inno72InteractMachineMapper.delete(interactMachine);
+			inno72InteractMachineGoodsMapper.delete(delGoods);
+			inno72InteractMachineTimeMapper.delete(delTime);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+		return Results.success("操作成功");
 	}
 
 }
