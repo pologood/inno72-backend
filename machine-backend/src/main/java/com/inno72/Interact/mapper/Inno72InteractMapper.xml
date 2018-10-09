@@ -65,7 +65,7 @@
 			LEFT JOIN (
 			SELECT m.interact_id,Min(mt.start_time) AS min_time FROM inno72_interact_machine m
 			LEFT JOIN inno72_interact_machine_time mt ON m.id=mt.interact_machine_id
-			GROUP BY m.machine_id
+			GROUP BY m.interact_id
 		) it on it.interact_id =i.id
 		LEFT JOIN (
 			SELECT m.interact_id,sum(mg.number) AS number,COUNT(mg.goods_id) AS goods_num FROM inno72_interact_machine m
