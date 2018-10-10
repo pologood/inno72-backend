@@ -335,11 +335,9 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			TreeVo first = new TreeVo();
 			first.setKey(machine.getMachineId());
 			first.setTitle(machine.getLocalDesc() + "(" + machine.getMachineCode() + ")");
-			Map<String, Object> params = new HashMap<>();
-			pm.put("interactId", interactId);
 			pm.put("machineId", machine.getMachineId());
 			List<TreeVo> secondList = new ArrayList<>();
-			List<Inno72InteractMachineGoodsVo> list = inno72InteractMachineGoodsMapper.selectMachineGoods(params);
+			List<Inno72InteractMachineGoodsVo> list = inno72InteractMachineGoodsMapper.selectMachineGoods(pm);
 			for (Inno72InteractMachineGoodsVo goodsVo : list) {
 				TreeVo second = new TreeVo();
 				second.setKey(goodsVo.getGoodsId());
