@@ -67,10 +67,10 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 					machine.setState(1);
 				}
 				machine.getMachineActivity().addAll(planMachines.get(index).getMachineActivity());
-				planMachines.remove(index);
+				// planMachines.remove(index);
 			}
 		}
-		interactMachines.addAll(planMachines);
+		// interactMachines.addAll(planMachines);
 
 		return interactMachines;
 	}
