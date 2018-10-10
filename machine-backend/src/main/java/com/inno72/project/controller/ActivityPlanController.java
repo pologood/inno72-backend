@@ -80,12 +80,14 @@ public class ActivityPlanController {
 	}
 
 	@RequestMapping(value = "/selectAreaMachines", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72AdminAreaVo>> selectMachines(String code, String level, String startTime, String endTime) {
+	public Result<List<Inno72AdminAreaVo>> selectMachines(String code, String level, String startTime, String endTime,
+			String machineCode) {
 		// 联动查询
 		if (StringUtil.isBlank(startTime) || StringUtil.isBlank(endTime)) {
 			return Results.failure("请选择计划时间");
 		}
-		List<Inno72AdminAreaVo> list = activityPlanService.selectAreaMachineList(code, level, startTime, endTime);
+		List<Inno72AdminAreaVo> list = activityPlanService.selectAreaMachineList(code, level, startTime, endTime,
+				machineCode);
 		return ResultGenerator.genSuccessResult(list);
 	}
 
