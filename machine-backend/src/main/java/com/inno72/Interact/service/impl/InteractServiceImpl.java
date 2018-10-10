@@ -150,6 +150,10 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 					return Results.failure("请填写互派名称");
 				}
 
+				if (StringUtil.isBlank(model.getPlanCode())) {
+					logger.info("请填写游戏编码");
+					return Results.failure("请填写游戏编码");
+				}
 				if (StringUtil.isBlank(model.getGameId())) {
 					logger.info("请选择游戏");
 					return Results.failure("请选择游戏");
@@ -209,10 +213,6 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 				if (null == interactRule.getNumber()) {
 					logger.info("填写同一用户获得商品次数");
 					return Results.failure("填写同一用户获得商品次数");
-				}
-				if (null == interactRule.getDayNumber()) {
-					logger.info("填写同一用户每天得商品次数");
-					return Results.failure("填写同一用户每天得商品次数");
 				}
 				interact.setTimes(interactRule.getTimes());
 				interact.setDayTimes(interactRule.getDayTimes());
