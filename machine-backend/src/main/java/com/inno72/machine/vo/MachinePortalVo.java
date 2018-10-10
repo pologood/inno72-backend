@@ -1,22 +1,14 @@
 package com.inno72.machine.vo;
 
 public class MachinePortalVo {
-	private Integer online; // 在线机器
 	private Integer offline;// 离线机器
-	private Integer exception;// 机器异常
+	private Integer channelException;// 货道故障
+	private Integer dropGoodsSwitchException;// 掉货开关异常
 	private Integer stockout;// 机器缺货
 	private Integer waitOrder;// 待接单
 	private Integer processed;// 处理中
 	private Integer waitConfirm;// 待确认
-	private Integer paiActivityCount;//派样活动
-
-	public Integer getOnline() {
-		return online;
-	}
-
-	public void setOnline(Integer online) {
-		this.online = online;
-	}
+	private Integer paiActivityCount;// 派样活动
 
 	public Integer getOffline() {
 		return offline;
@@ -26,12 +18,20 @@ public class MachinePortalVo {
 		this.offline = offline;
 	}
 
-	public Integer getException() {
-		return exception;
+	public Integer getChannelException() {
+		return channelException;
 	}
 
-	public void setException(Integer exception) {
-		this.exception = exception;
+	public void setChannelException(Integer channelException) {
+		this.channelException = channelException;
+	}
+
+	public Integer getDropGoodsSwitchException() {
+		return dropGoodsSwitchException;
+	}
+
+	public void setDropGoodsSwitchException(Integer dropGoodsSwitchException) {
+		this.dropGoodsSwitchException = dropGoodsSwitchException;
 	}
 
 	public Integer getStockout() {

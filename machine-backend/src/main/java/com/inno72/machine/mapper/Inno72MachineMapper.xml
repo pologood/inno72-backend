@@ -197,10 +197,10 @@
 		<result column="local" jdbcType="VARCHAR" property="local" />
 	</resultMap>
 
-	<select id="findMachines" resultMap="ExceptionVoResultMap">
+	<select id="findMachines" resultMap="ExceptionVoResultMap" >
 		select m.id,m.machine_code
-		,if(aa.province=aa.city,CONCAT_WS('-',aa.province,aa.district,l.mall),
-		CONCAT_WS('-',aa.province,aa.city,aa.district,l.mall))
+		,CONCAT(aa.province,
+		aa.city, aa.district,IFNULL( l.mall,""),IFNULL( l.name,""))
 		local from
 		inno72_machine m
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
@@ -208,7 +208,8 @@
 		JOIN inno72_admin_area
 		aa on aa.code=l.area_code
 		where
-		m.machine_status=4
+		m.machine_status=4 
+		<if test="type =='1' ">and m.net_status=0</if>
 	</select>
 
 	<resultMap id="StockoutInfoResultMap" type="com.inno72.machine.vo.MachineStockOutInfo">
