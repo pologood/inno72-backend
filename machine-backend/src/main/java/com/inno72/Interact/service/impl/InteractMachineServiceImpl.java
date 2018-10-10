@@ -100,7 +100,7 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 			selectParam.put("id", interactId);
 			List<String> selectMachines = inno72InteractMachineMapper.selectInteractUseredMachine(selectParam);
 
-			// List<String> useredMachine = new ArrayList<>();
+			List<String> useredMachine = new ArrayList<>();
 			List<Inno72InteractMachine> insetInteractMachineList = new ArrayList<>();
 			List<Inno72InteractMachineTime> insetInteractMachineTimeList = new ArrayList<>();
 			for (MachineTime machineTime : machines) {
@@ -147,25 +147,19 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 
 				}
 				// 校验时间内机器是否占用
-				/*
-				 * for (Inno72InteractMachineTime time :
-				 * insetInteractMachineTimeList) { Map<String, Object>
-				 * isUseredParam = new HashMap<String, Object>();
-				 * isUseredParam.put("startTime",
-				 * DateUtil.toTimeStr(time.getStartTime(),
-				 * DateUtil.DF_FULL_S1)); isUseredParam.put("endTime",
-				 * DateUtil.toTimeStr(time.getEndTime(), DateUtil.DF_FULL_S1));
-				 * List<String> usered1 =
-				 * inno72InteractMachineMapper.selectInteractUseredMachine(
-				 * isUseredParam); List<String> usered2 =
-				 * inno72InteractMachineMapper.selectPlanUseredMachine(
-				 * isUseredParam); useredMachine.addAll(usered1);
-				 * useredMachine.addAll(usered2); } if
-				 * (useredMachine.contains(machineId)) {
-				 * logger.info("所选时间内机器已占用"); return
-				 * Results.failure("所选时间内机器已占用，机器编号：" +
-				 * machineTime.getMachineCode()); }
-				 */
+				for (Inno72InteractMachineTime time : insetInteractMachineTimeList) {
+					Map<String, Object> isUseredParam = new HashMap<String, Object>();
+					isUseredParam.put("startTime", DateUtil.toTimeStr(time.getStartTime(), DateUtil.DF_FULL_S1));
+					isUseredParam.put("endTime", DateUtil.toTimeStr(time.getEndTime(), DateUtil.DF_FULL_S1));
+					List<String> usered1 = inno72InteractMachineMapper.selectInteractUseredMachine(isUseredParam);
+					List<String> usered2 = inno72InteractMachineMapper.selectPlanUseredMachine(isUseredParam);
+					useredMachine.addAll(usered1);
+					useredMachine.addAll(usered2);
+				}
+				if (useredMachine.contains(machineId)) {
+					logger.info("所选时间内机器已占用");
+					return Results.failure("所选时间内机器已占用，机器编号：" + machineTime.getMachineCode());
+				}
 
 			}
 			inno72InteractMachineMapper.insertInteractMachineList(insetInteractMachineList);
