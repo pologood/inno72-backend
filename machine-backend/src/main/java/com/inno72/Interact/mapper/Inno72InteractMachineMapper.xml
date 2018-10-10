@@ -60,6 +60,7 @@
 			or area.province LIKE '%${keyword}%' 
 			or area.city LIKE '%${keyword}%' 
 			or area.district LIKE '%${keyword}%' 
+			or m.machine_code LIKE '%${keyword}%'
 			)
 		</if>
   </select>
@@ -95,6 +96,7 @@
 			or area.province LIKE '%${keyword}%' 
 			or area.city LIKE '%${keyword}%' 
 			or area.district LIKE '%${keyword}%' 
+			or m.machine_code LIKE '%${keyword}%'
 			)
 		</if>
 			
