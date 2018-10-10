@@ -6,6 +6,7 @@ import com.inno72.common.Result;
 import com.inno72.common.Service;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Tag;
+import com.inno72.machine.vo.BatchLocaleVo;
 import com.inno72.machine.vo.Inno72LocaleVo;
 import com.inno72.machine.vo.MachineLocaleInfo;
 
@@ -32,5 +33,7 @@ public interface LocaleService extends Service<Inno72Locale> {
 	List<Inno72Tag> findTagsByPage(String keyword);
 
 	List<Inno72Tag> getTaglist(String keyword);
+
+	Result<String> updateBatch(BatchLocaleVo locale);
 
 }
