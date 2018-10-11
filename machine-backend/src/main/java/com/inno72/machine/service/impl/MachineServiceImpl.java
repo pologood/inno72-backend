@@ -456,9 +456,11 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		condition1.createCriteria().andEqualTo("machineStatus", 4).andEqualTo("netStatus", 0);
 		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition1);
 		vo.setOffline(machines.size());
-		// vo.setChannelException(findExceptionMachine(4).getData().size());
-		vo.setChannelException(1111);
 		vo.setDropGoodsSwitchException(findExceptionMachine(2).getData().size());
+		vo.setChannelException(0);
+
+		vo.setChannelException(findExceptionMachine(4).getData().size());
+
 		List<MachineExceptionVo> stockOutVos = inno72MachineMapper.findStockOutMachines();
 		vo.setStockout(stockOutVos == null ? 0 : stockOutVos.size());
 		Condition condition = new Condition(Inno72CheckFault.class);
@@ -496,8 +498,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<List<MachineExceptionVo>> findExceptionMachine(Integer type) {
-		Map<String, Object> param = new HashMap<>();
 		if (type == 1) {
+			Map<String, Object> param = new HashMap<>();
+
 			List<MachineLogInfo> netList = mongoTpl.find(new Query(), MachineLogInfo.class, "MachineLogInfo");
 			Map<String, String> machines = new HashMap<>();
 			for (MachineLogInfo machineLogInfo : netList) {
@@ -520,7 +523,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 					exception.put(machineStatus.getMachineId(), machineStatus);
 				}
 			}
-			List<MachineExceptionVo> exceptionVos1 = inno72MachineMapper.findMachines(param);
+			List<MachineExceptionVo> exceptionVos1 = inno72MachineMapper.findMachines(null);
 			Iterator<MachineExceptionVo> it1 = exceptionVos1.iterator();
 			while (it1.hasNext()) {
 				MachineExceptionVo vo = it1.next();
@@ -547,7 +550,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 				}
 
 			}
-			List<MachineExceptionVo> exceptionVos1 = inno72MachineMapper.findMachines(param);
+			List<MachineExceptionVo> exceptionVos1 = inno72MachineMapper.findMachines(null);
 			Iterator<MachineExceptionVo> it1 = exceptionVos1.iterator();
 			while (it1.hasNext()) {
 				MachineExceptionVo vo = it1.next();
