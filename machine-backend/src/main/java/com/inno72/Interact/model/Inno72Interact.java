@@ -25,6 +25,11 @@ public class Inno72Interact {
 	private String name;
 
 	/**
+	 * 派样类型：0普通派样，1新零售
+	 */
+	private Integer paiyangType;
+
+	/**
 	 * 关联游戏
 	 */
 	private String gameId;
@@ -130,6 +135,14 @@ public class Inno72Interact {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Integer getPaiyangType() {
+		return paiyangType;
+	}
+
+	public void setPaiyangType(Integer paiyangType) {
+		this.paiyangType = paiyangType;
 	}
 
 	/**

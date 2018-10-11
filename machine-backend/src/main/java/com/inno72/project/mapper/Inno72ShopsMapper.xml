@@ -10,6 +10,7 @@
     <result column="shop_code" jdbcType="VARCHAR" property="shopCode" />
     <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
     <result column="session_key" jdbcType="VARCHAR" property="sessionKey" />
+    <result column="sell_session_key" jdbcType="VARCHAR" property="sellSessionKey" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
@@ -25,6 +26,7 @@
 			s.shop_code,
 			m.merchant_name as seller_id,
 			s.session_key,
+			s.sell_session_key,
 			s.is_delete,
 			s.remark,
 			s.create_id,
