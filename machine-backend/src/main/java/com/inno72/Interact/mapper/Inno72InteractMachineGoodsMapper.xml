@@ -37,7 +37,18 @@
 			inno72_interact_machine_goods img
 			LEFT JOIN inno72_interact_machine im ON im.id = img.interact_machine_id
 			LEFT JOIN inno72_goods g ON g.id = img.goods_id
-		where 1=1
+		where img.type =0
+		<if test="interactId !=null and interactId !='' ">and im.interact_id = #{interactId} </if>
+		<if test="machineId !=null and machineId !='' ">and im.machine_id = #{machineId} </if>
+		UNION
+		SELECT
+			img.*,
+			CONCAT(c.`name`,'（券）') AS goods_name
+		FROM
+			inno72_interact_machine_goods img
+			LEFT JOIN inno72_interact_machine im ON im.id = img.interact_machine_id
+			LEFT JOIN inno72_coupon c ON c.id=img.goods_id
+		where img.type =1
 		<if test="interactId !=null and interactId !='' ">and im.interact_id = #{interactId} </if>
 		<if test="machineId !=null and machineId !='' ">and im.machine_id = #{machineId} </if>
   </select>		
