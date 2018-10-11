@@ -77,16 +77,15 @@
   <resultMap id="GoodsTreeResultMap" type="com.inno72.Interact.vo.TreeVo">
     <result column="id" jdbcType="VARCHAR" property="key" />
     <result column="name" jdbcType="VARCHAR" property="title" />
+    <result column="type" jdbcType="INTEGER" property="type" />
   </resultMap>
   
   <select id="selectGoodsTree" parameterType="java.util.Map" resultMap="GoodsTreeResultMap">
-	 	SELECT
-	 		g.id,
-			g.name
-		FROM
-			inno72_goods g
-		WHERE g.is_delete=0
+	 	SELECT g.id,g.name,0 as type FROM inno72_goods g WHERE g.is_delete=0
 		<if test="shopsId !=null and shopsId !='' ">and g.shop_id = #{shopsId}</if>
+		UNION
+		SELECT c.id,c.`name`,1 as type FROM inno72_coupon c WHERE c.is_delete=0
+		<if test="shopsId !=null and shopsId !='' ">and c.shops_id = #{shopsId}</if>
   </select>
   
 
