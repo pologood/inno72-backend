@@ -46,8 +46,8 @@ public class InteractGoodsController {
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<InteractGoodsVo> detail(@RequestParam String id) {
-		InteractGoodsVo interactGoods = interactGoodsService.findGoodsById(id);
+	public Result<InteractGoodsVo> detail(@RequestParam String id, @RequestParam Integer type) {
+		InteractGoodsVo interactGoods = interactGoodsService.findGoodsById(id, type);
 		return ResultGenerator.genSuccessResult(interactGoods);
 	}
 

@@ -48,9 +48,11 @@
 			inno72_interact_goods ig
 			LEFT JOIN inno72_goods g ON g.id = ig.goods_id 
 		WHERE ig.type =0 and ig.goods_id = #{id}
-		UNION
+  </select>
+  
+  <select id="selectInteractCouponById" parameterType="String" resultMap="InteractGoodsVoResultMap">
 		SELECT
-			c.id,c.`code`,CONCAT(c.`name`,'（券）') AS name ,ig.type 
+			c.*,ig.interact_id,ig.user_day_number,ig.type 
 		FROM
 			inno72_interact_goods ig 
 			LEFT JOIN inno72_coupon c ON c.id = ig.goods_id
