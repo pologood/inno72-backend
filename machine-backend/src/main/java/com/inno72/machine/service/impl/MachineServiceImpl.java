@@ -531,7 +531,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 					vo.setUpdateTime(DateUtil.toTimeStr(status.getCreateTime(), DateUtil.DF_FULL_S1));
 				}
 			}
-			logger.info("==================" + exceptionVos1.size());
+			logger.info("==================" + JSON.toJSONString(exceptionVos1));
 			return Results.success(exceptionVos1);
 		} else if (type == 3) {
 			List<MachineExceptionVo> stockOutVos = inno72MachineMapper.findStockOutMachines();
