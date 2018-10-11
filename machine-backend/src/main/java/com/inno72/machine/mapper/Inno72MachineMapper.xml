@@ -210,7 +210,7 @@
 		aa on aa.code=l.area_code
 		where
 		m.machine_status=4 
-		<if test="type =='1' ">and m.net_status=0</if>
+		<if test="type ==1">and m.net_status=0</if>
 	</select>
 
 	<resultMap id="StockoutInfoResultMap" type="com.inno72.machine.vo.MachineStockOutInfo">
