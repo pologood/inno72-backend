@@ -498,8 +498,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<List<MachineExceptionVo>> findExceptionMachine(Integer type) {
+		Map<String, Object> param = new HashMap<>();
+
 		if (type == 1) {
-			Map<String, Object> param = new HashMap<>();
 
 			List<MachineLogInfo> netList = mongoTpl.find(new Query(), MachineLogInfo.class, "MachineLogInfo");
 			Map<String, String> machines = new HashMap<>();
@@ -516,6 +517,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			}
 			return Results.success(exceptionVos);
 		} else if (type == 2) {
+			param.put("type", 2);
+
 			List<MachineStatus> statusList = mongoTpl.find(new Query(), MachineStatus.class, "MachineStatus");
 			Map<String, MachineStatus> exception = new HashMap<>();
 			for (MachineStatus machineStatus : statusList) {
@@ -523,24 +526,25 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 					exception.put(machineStatus.getMachineId(), machineStatus);
 				}
 			}
-			List<MachineExceptionVo> exceptionVos2 = inno72MachineMapper.findMachines(null);
-			Iterator<MachineExceptionVo> it2 = exceptionVos2.iterator();
+			List<MachineExceptionVo> exceptionVos = inno72MachineMapper.findMachines(param);
+			List<MachineExceptionVo> result = new ArrayList<>();
+			Iterator<MachineExceptionVo> it2 = exceptionVos.iterator();
 			while (it2.hasNext()) {
 				MachineExceptionVo vo = it2.next();
-				if (!exception.containsKey(vo.getMachineCode())) {
-					it2.remove();
-				} else {
+				if (exception.containsKey(vo.getMachineCode())) {
 					MachineStatus status = exception.get(vo.getMachineCode());
 					vo.setDropGoodsSwitch(status.getDropGoodsSwitch());
 					vo.setUpdateTime(DateUtil.toTimeStr(status.getCreateTime(), DateUtil.DF_FULL_S1));
+					result.add(vo);
 				}
 			}
-			logger.info("==================" + JSON.toJSONString(exceptionVos2));
-			return Results.success(exceptionVos2);
+			return Results.success(result);
 		} else if (type == 3) {
 			List<MachineExceptionVo> stockOutVos = inno72MachineMapper.findStockOutMachines();
 			return Results.success(stockOutVos);
 		} else if (type == 4) {
+			param.put("type", 4);
+
 			List<MachineStatus> statusList = mongoTpl.find(new Query(), MachineStatus.class, "MachineStatus");
 			Map<String, MachineStatus> exception = new HashMap<>();
 			for (MachineStatus machineStatus : statusList) {
@@ -550,21 +554,21 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 				}
 
 			}
-			List<MachineExceptionVo> exceptionVos1 = inno72MachineMapper.findMachines(null);
-			Iterator<MachineExceptionVo> it1 = exceptionVos1.iterator();
+			List<MachineExceptionVo> exceptionVos = inno72MachineMapper.findMachines(param);
+			List<MachineExceptionVo> result = new ArrayList<>();
+			Iterator<MachineExceptionVo> it1 = exceptionVos.iterator();
 			while (it1.hasNext()) {
 				MachineExceptionVo vo = it1.next();
-				if (!exception.containsKey(vo.getMachineCode())) {
-					it1.remove();
-				} else {
+				if (exception.containsKey(vo.getMachineCode())) {
 					MachineStatus status = exception.get(vo.getMachineCode());
 					String channelStatus = Optional.ofNullable(status.getGoodsChannelStatus())
 							.map(a -> a.replace("[]", "")).orElse("");
 					vo.setGoodsChannelStatus(channelStatus);
 					vo.setUpdateTime(DateUtil.toTimeStr(status.getCreateTime(), DateUtil.DF_FULL_S1));
+					result.add(vo);
 				}
 			}
-			return Results.success(exceptionVos1);
+			return Results.success(result);
 		} else {
 			return Results.failure("参数传入错误");
 		}
