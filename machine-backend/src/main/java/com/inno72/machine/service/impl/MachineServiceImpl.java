@@ -456,7 +456,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		condition1.createCriteria().andEqualTo("machineStatus", 4).andEqualTo("netStatus", 0);
 		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition1);
 		vo.setOffline(machines.size());
-		vo.setChannelException(findExceptionMachine(4).getData().size());
+		// vo.setChannelException(findExceptionMachine(4).getData().size());
+		vo.setChannelException(1111);
 		vo.setDropGoodsSwitchException(findExceptionMachine(2).getData().size());
 		List<MachineExceptionVo> stockOutVos = inno72MachineMapper.findStockOutMachines();
 		vo.setStockout(stockOutVos == null ? 0 : stockOutVos.size());
