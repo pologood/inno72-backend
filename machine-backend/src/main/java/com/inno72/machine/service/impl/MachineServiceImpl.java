@@ -523,20 +523,20 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 					exception.put(machineStatus.getMachineId(), machineStatus);
 				}
 			}
-			List<MachineExceptionVo> exceptionVos1 = inno72MachineMapper.findMachines(null);
-			Iterator<MachineExceptionVo> it1 = exceptionVos1.iterator();
-			while (it1.hasNext()) {
-				MachineExceptionVo vo = it1.next();
+			List<MachineExceptionVo> exceptionVos2 = inno72MachineMapper.findMachines(null);
+			Iterator<MachineExceptionVo> it2 = exceptionVos2.iterator();
+			while (it2.hasNext()) {
+				MachineExceptionVo vo = it2.next();
 				if (!exception.containsKey(vo.getMachineCode())) {
-					it1.remove();
+					it2.remove();
 				} else {
 					MachineStatus status = exception.get(vo.getMachineCode());
 					vo.setDropGoodsSwitch(status.getDropGoodsSwitch());
 					vo.setUpdateTime(DateUtil.toTimeStr(status.getCreateTime(), DateUtil.DF_FULL_S1));
 				}
 			}
-			logger.info("==================" + JSON.toJSONString(exceptionVos1));
-			return Results.success(exceptionVos1);
+			logger.info("==================" + JSON.toJSONString(exceptionVos2));
+			return Results.success(exceptionVos2);
 		} else if (type == 3) {
 			List<MachineExceptionVo> stockOutVos = inno72MachineMapper.findStockOutMachines();
 			return Results.success(stockOutVos);
