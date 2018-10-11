@@ -149,13 +149,13 @@
 		<if test="machineCode !=null and machineCode !=''">
 		AND ( m.machine_code LIKE '%${machineCode}%'
 			or a.name LIKE '%${machineCode}%' 
-			
 			)
 		</if>
-		<if test="state =='1' ">and ap.start_time &gt; NOW()</if>
-		<if test="state =='2' ">and ap.start_time &lt; NOW() and ap.end_time &gt; NOW()</if>
 		and 9=9
-		) o order by area_code
+		) o where 1=1 
+		<if test="state ==1 ">and o.state =1</if>
+		<if test="state ==2 ">and o.state =2</if>
+		order by area_code
 	</select>
 
 
