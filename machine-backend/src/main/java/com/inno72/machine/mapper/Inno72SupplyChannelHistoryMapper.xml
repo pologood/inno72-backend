@@ -41,6 +41,7 @@
     inner join inno72_goods goods on hi.goods_id=goods.id
     where hi.batch_no=#{batchNo}
     and hi.after_count>0
+    and hi.after_count != hi.before_count
   </select>
 
 </mapper>
