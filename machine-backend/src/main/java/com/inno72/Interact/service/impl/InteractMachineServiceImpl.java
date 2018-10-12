@@ -241,7 +241,7 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 					Map<String, Object> isUseredParam = new HashMap<String, Object>();
 					isUseredParam.put("startTime", DateUtil.toTimeStr(time.getStartTime(), DateUtil.DF_FULL_S1));
 					isUseredParam.put("endTime", DateUtil.toTimeStr(time.getEndTime(), DateUtil.DF_FULL_S1));
-					isUseredParam.put("noId", machineId);
+					isUseredParam.put("noId", interactId);
 					List<String> usered1 = inno72InteractMachineMapper.selectInteractUseredMachine(isUseredParam);
 					List<String> usered2 = inno72InteractMachineMapper.selectPlanUseredMachine(isUseredParam);
 					useredMachine.addAll(usered1);
