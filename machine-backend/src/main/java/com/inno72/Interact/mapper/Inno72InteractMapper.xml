@@ -56,9 +56,9 @@
 			ig.goods_num AS goods_num,
 			IF(0>DATEDIFF(NOW(),it.min_time),0,DATEDIFF(NOW(),it.min_time)) AS real_day,
 			i.day AS day,
-			( SELECT count( 1 ) FROM inno72_order r WHERE r.inno72_activity_id = i.id ) AS real_num,
+			( SELECT count( 1 ) FROM inno72_order r WHERE r.inno72_activity_id = i.id and goods_type=1) AS real_num,
 			ig.number AS number,
-			( SELECT count( 1 ) FROM inno72_order r WHERE r.inno72_activity_id = i.id )/ig.number AS goodsSend
+			( SELECT count( 1 ) FROM inno72_order r WHERE r.inno72_activity_id = i.id and goods_type=1)/ig.number AS goodsSend
 		FROM
 			inno72_interact i
 			LEFT JOIN inno72_game gm ON gm.id = i.game_id
@@ -69,7 +69,7 @@
 		) it on it.interact_id =i.id
 		LEFT JOIN (
 			SELECT m.interact_id,sum(mg.number) AS number,COUNT(DISTINCT mg.goods_id) AS goods_num FROM inno72_interact_machine m
-			LEFT JOIN inno72_interact_machine_goods mg ON m.id=mg.interact_machine_id
+			LEFT JOIN inno72_interact_machine_goods mg ON m.id=mg.interact_machine_id and mg.type=0
 			GROUP BY m.interact_id
 		) ig on ig.interact_id =i.id
 		where i.is_delete = 0 
