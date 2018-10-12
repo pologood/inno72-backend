@@ -51,12 +51,6 @@ public class Inno72Shops {
 	private String sessionKey;
 
 	/**
-	 * 新零售sessionKey
-	 */
-	@Column(name = "sell_session_key")
-	private String sellSessionKey;
-
-	/**
 	 * 状态：0正常，1停止
 	 */
 	@Column(name = "is_delete")
