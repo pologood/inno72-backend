@@ -90,10 +90,6 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					logger.info("请上传图片");
 					return Results.failure("请上传图片");
 				}
-				if (null == model.getNumber()) {
-					logger.info("请填写商品数量");
-					return Results.failure("请填写商品数量");
-				}
 
 				model.setId(StringUtil.getUUID());
 				model.setIsDelete(0);
