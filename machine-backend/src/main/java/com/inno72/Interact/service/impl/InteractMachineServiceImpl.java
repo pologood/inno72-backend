@@ -261,11 +261,11 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 				Inno72InteractMachineTime delTime = new Inno72InteractMachineTime();
 				delTime.setInteractMachineId(interactMachine.getId());
 				inno72InteractMachineTimeMapper.delete(delTime);
-				// 更新删除机器端资源缓存
-				logger.info("更新删除机器端资源缓存");
-				redisUtil.deleteByPrex(CommonConstants.REDIS_ACTIVITY_PLAN_CACHE_KEY + interactId + ":" + machineId);
 			}
 
+			// 更新删除机器端资源缓存
+			logger.info("更新删除机器端资源缓存");
+			redisUtil.deleteByPrex(CommonConstants.REDIS_ACTIVITY_PLAN_CACHE_KEY + interactId + "*");
 			inno72InteractMachineTimeMapper.insertInteractMachineTimeList(insetInteractMachineTimeList);
 		} catch (Exception e) {
 			e.printStackTrace();
