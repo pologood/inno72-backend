@@ -10,6 +10,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.inno72.machine.mapper.Inno72MachineBatchDetailMapper;
+import com.inno72.machine.model.Inno72MachineBatchDetail;
 import com.inno72.machine.vo.SupplyRequestVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +90,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	@Resource
 	private Inno72SupplyChannelOrderMapper inno72SupplyChannelOrderMapper;
 
+	@Resource
+	private Inno72MachineBatchDetailMapper inno72MachineBatchDetailMapper;
+
 	@Override
 	public Result<String> merge(Inno72SupplyChannel supplyChannel) {
 		String code = supplyChannel.getCode();
@@ -98,10 +103,8 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		Inno72Machine machine = inno72MachineMapper.getMachineById(machineId);
 		String machineCode = machine.getMachineCode();
 		Integer codeInt = Integer.parseInt(code);
-		String subString = machineCode.substring(0,2);
-		if (subString.equals("18") && codeInt > 30) {
-			return Results.failure("当前货道不能合并");
-		}else if(subString.equals("19") && codeInt >40){
+		Inno72MachineBatchDetail batchDetail = getBatchDetail(machineCode,codeInt);
+		if(batchDetail == null || batchDetail.getType() != 2){
 			return Results.failure("当前货道不能合并");
 		}
 		Map<String, Object> map = new HashMap<>();
@@ -161,6 +164,11 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		map.put("code", code);
 		supplyChannel = inno72SupplyChannelMapper.selectByParam(map);
 		if (supplyChannel != null) {
+			String machineCode = supplyChannel.getMachineCode();
+			Inno72MachineBatchDetail batchDetail = getBatchDetail(machineCode,codeInteger);
+			if(batchDetail == null || batchDetail.getType() != 2){
+				return Results.failure("当前货道不能拆分");
+			}
 			Integer newCode = codeInteger + 1;
 			map.put("code", newCode.toString());
 			Inno72SupplyChannel childChannel = inno72SupplyChannelMapper.selectByParam(map);
@@ -176,12 +184,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			childChannel = new Inno72SupplyChannel();
 			childChannel.setId(StringUtil.getUUID());
 
-			int volumeCount = 50;
-			if (newCode < 20) {
-				volumeCount = 11;
-			} else if (newCode > 20 && newCode < 30) {
-				volumeCount = 5;
-			}
+			int volumeCount = batchDetail.getVolumeCount();
 			childChannel.setVolumeCount(volumeCount);
 			childChannel.setCode(newCode.toString());
 			childChannel.setCreateTime(LocalDateTime.now());
@@ -200,6 +203,18 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		} else {
 			return ResultGenerator.genFailResult("操作货道有误");
 		}
+	}
+
+
+	public Inno72MachineBatchDetail getBatchDetail(String machineCode,int codeInteger){
+		Map<String,Object> detailMap = new HashMap<>();
+		detailMap.put("machineCode",machineCode);
+		int rowNo = 0;
+		rowNo=codeInteger/10;
+		rowNo++;
+		detailMap.put("rowNo",rowNo);
+		Inno72MachineBatchDetail batchDetail = inno72MachineBatchDetailMapper.selectByParam(detailMap);
+		return batchDetail;
 	}
 
 	/**
