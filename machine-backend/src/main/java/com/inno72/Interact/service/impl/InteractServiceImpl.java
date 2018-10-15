@@ -32,11 +32,13 @@ import com.inno72.Interact.vo.InteractRuleVo;
 import com.inno72.Interact.vo.MachineVo;
 import com.inno72.Interact.vo.TreeVo;
 import com.inno72.common.AbstractService;
+import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.redis.IRedisUtil;
 import com.inno72.system.model.Inno72User;
 
 import tk.mybatis.mapper.entity.Condition;
@@ -48,6 +50,9 @@ import tk.mybatis.mapper.entity.Condition;
 @Transactional
 public class InteractServiceImpl extends AbstractService<Inno72Interact> implements InteractService {
 	private static Logger logger = LoggerFactory.getLogger(InteractServiceImpl.class);
+
+	@Resource
+	private IRedisUtil redisUtil;
 	@Resource
 	private Inno72InteractMapper inno72InteractMapper;
 
@@ -168,6 +173,9 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 				old.setId(model.getId());
 				old = inno72InteractMapper.selectOne(old);
 				old.setStatus(2);
+				// 更新删除机器端资源缓存
+				logger.info("更新删除机器端资源缓存");
+				redisUtil.deleteByPrex(CommonConstants.REDIS_ACTIVITY_PLAN_CACHE_KEY + model.getId() + "*");
 				inno72InteractMapper.updateByPrimaryKeySelective(old);
 			} else if (null == type) {
 				logger.info("参数错误");

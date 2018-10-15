@@ -24,12 +24,14 @@ import com.inno72.Interact.vo.InteractMachineTime;
 import com.inno72.Interact.vo.MachineTime;
 import com.inno72.Interact.vo.MachineVo;
 import com.inno72.common.AbstractService;
+import com.inno72.common.CommonConstants;
 import com.inno72.common.DateUtil;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.redis.IRedisUtil;
 import com.inno72.system.model.Inno72User;
 
 /**
@@ -40,6 +42,9 @@ import com.inno72.system.model.Inno72User;
 public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMachine>
 		implements InteractMachineService {
 	private static Logger logger = LoggerFactory.getLogger(InteractMachineServiceImpl.class);
+	@Resource
+	private IRedisUtil redisUtil;
+
 	@Resource
 	private Inno72InteractMachineMapper inno72InteractMachineMapper;
 
@@ -256,6 +261,9 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 				Inno72InteractMachineTime delTime = new Inno72InteractMachineTime();
 				delTime.setInteractMachineId(interactMachine.getId());
 				inno72InteractMachineTimeMapper.delete(delTime);
+				// 更新删除机器端资源缓存
+				logger.info("更新删除机器端资源缓存");
+				redisUtil.deleteByPrex(CommonConstants.REDIS_ACTIVITY_PLAN_CACHE_KEY + interactId + ":" + machineId);
 			}
 
 			inno72InteractMachineTimeMapper.insertInteractMachineTimeList(insetInteractMachineTimeList);
@@ -312,6 +320,10 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 			// 活动机器时间
 			Inno72InteractMachineTime delTime = new Inno72InteractMachineTime();
 			delTime.setInteractMachineId(base.getId());
+
+			// 更新删除机器端资源缓存
+			logger.info("更新删除机器端资源缓存");
+			redisUtil.deleteByPrex(CommonConstants.REDIS_ACTIVITY_PLAN_CACHE_KEY + interactId + ":" + machineId);
 
 			inno72InteractMachineMapper.delete(interactMachine);
 			inno72InteractMachineGoodsMapper.delete(delGoods);
