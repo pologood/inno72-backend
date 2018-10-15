@@ -124,21 +124,14 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 				interactMachine.setQueryEndTime(DateUtil.toDateTime(model.getQueryEndTime(), DateUtil.DF_FULL_S1));
 				interactMachine.setState(machineTime.getState());
 				insetInteractMachineList.add(interactMachine);
+
 				List<Map<String, String>> planTime = machineTime.getPlanTime();
 
 				if ((null == planTime || planTime.size() < 1) && interactMachine.getState() == 0) {
 					logger.info("请确认机器时间");
 					return Results.failure("请确认机器时间");
 				}
-				if (interactMachine.getState() == 1) {
-					Inno72InteractMachineTime interactMachineTime = new Inno72InteractMachineTime();
-					interactMachineTime.setId(StringUtil.getUUID());
-					interactMachineTime.setStartTime(interactMachine.getQueryEndTime().minusSeconds(-1));
-					interactMachineTime.setEndTime(DateUtil.toDateTime("2028-12-31 23:59:59", DateUtil.DF_FULL_S1));
-					interactMachineTime.setInteractMachineId(interactMachine.getId());
 
-					insetInteractMachineTimeList.add(interactMachineTime);
-				}
 				for (Map<String, String> map : planTime) {
 					String startTime = map.get("startTime");
 					String endTime = map.get("endTime");
@@ -150,6 +143,16 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 
 					insetInteractMachineTimeList.add(interactMachineTime);
 
+				}
+
+				if (interactMachine.getState() == 1) {
+					Inno72InteractMachineTime interactMachineTime = new Inno72InteractMachineTime();
+					interactMachineTime.setId(StringUtil.getUUID());
+					interactMachineTime.setStartTime(interactMachine.getQueryEndTime().minusSeconds(-1));
+					interactMachineTime.setEndTime(DateUtil.toDateTime("2028-12-31 23:59:59", DateUtil.DF_FULL_S1));
+					interactMachineTime.setInteractMachineId(interactMachine.getId());
+
+					insetInteractMachineTimeList.add(interactMachineTime);
 				}
 				// 校验时间内机器是否占用
 				for (Inno72InteractMachineTime time : insetInteractMachineTimeList) {
@@ -219,16 +222,6 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 				interactMachine.setQueryEndTime(DateUtil.toDateTime(model.getQueryEndTime(), DateUtil.DF_FULL_S1));
 				interactMachine.setState(machineTime.getState());
 
-				if (interactMachine.getState() == 1) {
-					Inno72InteractMachineTime interactMachineTime = new Inno72InteractMachineTime();
-					interactMachineTime.setId(StringUtil.getUUID());
-					interactMachineTime.setStartTime(interactMachine.getQueryEndTime().minusSeconds(-1));
-					interactMachineTime.setEndTime(DateUtil.toDateTime("2028-12-31 23:59:59", DateUtil.DF_FULL_S1));
-					interactMachineTime.setInteractMachineId(interactMachine.getId());
-
-					insetInteractMachineTimeList.add(interactMachineTime);
-				}
-
 				for (Map<String, String> map : planTime) {
 					String startTime = map.get("startTime");
 					String endTime = map.get("endTime");
@@ -236,6 +229,15 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 					interactMachineTime.setId(StringUtil.getUUID());
 					interactMachineTime.setStartTime(DateUtil.toDateTime(startTime, DateUtil.DF_FULL_S1));
 					interactMachineTime.setEndTime(DateUtil.toDateTime(endTime, DateUtil.DF_FULL_S1));
+					interactMachineTime.setInteractMachineId(interactMachine.getId());
+
+					insetInteractMachineTimeList.add(interactMachineTime);
+				}
+				if (interactMachine.getState() == 1) {
+					Inno72InteractMachineTime interactMachineTime = new Inno72InteractMachineTime();
+					interactMachineTime.setId(StringUtil.getUUID());
+					interactMachineTime.setStartTime(interactMachine.getQueryEndTime().minusSeconds(-1));
+					interactMachineTime.setEndTime(DateUtil.toDateTime("2028-12-31 23:59:59", DateUtil.DF_FULL_S1));
 					interactMachineTime.setInteractMachineId(interactMachine.getId());
 
 					insetInteractMachineTimeList.add(interactMachineTime);
