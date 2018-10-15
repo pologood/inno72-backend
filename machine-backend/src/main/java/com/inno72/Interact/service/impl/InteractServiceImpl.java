@@ -330,10 +330,12 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 	}
 
 	@Override
-	public List<TreeVo> machineTree(String interactId) {
+	public List<TreeVo> machineTree(String interactId, String keyword) {
 
 		Map<String, Object> pm = new HashMap<>();
+		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		pm.put("interactId", interactId);
+		pm.put("keyword", keyword);
 		List<MachineVo> machineList = inno72InteractMachineMapper.getHavingMachines(pm);
 
 		List<TreeVo> firstList = new ArrayList<>();
@@ -350,6 +352,7 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 				TreeVo second = new TreeVo();
 				second.setKey(goodsVo.getGoodsId());
 				second.setTitle(goodsVo.getGoodsName());
+				second.setNum(goodsVo.getNumber());
 				secondList.add(second);
 			}
 			first.setChildren(secondList);

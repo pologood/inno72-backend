@@ -1,5 +1,7 @@
 package com.inno72.Interact.service.impl;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +23,7 @@ import com.inno72.Interact.model.Inno72InteractMachineGoods;
 import com.inno72.Interact.model.Inno72InteractMachineTime;
 import com.inno72.Interact.service.InteractMachineService;
 import com.inno72.Interact.vo.InteractMachineTime;
+import com.inno72.Interact.vo.MachineActivityVo;
 import com.inno72.Interact.vo.MachineTime;
 import com.inno72.Interact.vo.MachineVo;
 import com.inno72.common.AbstractService;
@@ -299,12 +302,43 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 
 		MachineVo interactMachines = inno72InteractMachineMapper.selectMachineTimeDetail(pm);
 		List<MachineVo> planMachines = inno72InteractMachineMapper.selectPlanMachines(pm);
+		for (MachineVo machineVo : planMachines) {
+			List<MachineActivityVo> aList = this.getContinuTime(machineVo);
+			machineVo.setMachineActivity(aList);
+		}
 
 		if (planMachines.contains(interactMachines)) {
 			interactMachines.getMachineActivity().addAll(planMachines.get(0).getMachineActivity());
 		}
 
 		return interactMachines;
+	}
+
+	public List<MachineActivityVo> getContinuTime(MachineVo machineVo) {
+		logger.info("---------------------机器活动连续时间拆分-------------------");
+
+		List<MachineActivityVo> aList = machineVo.getMachineActivity();
+		List<MachineActivityVo> newList = new ArrayList<>();
+
+		for (MachineActivityVo activity : aList) {
+
+			LocalDateTime sTime = DateUtil.toDateTime(activity.getStartTime(), DateUtil.DF_FULL_S1);
+			LocalDateTime eTime = DateUtil.toDateTime(activity.getEndTime(), DateUtil.DF_FULL_S1);
+			long betweenDay = Duration.between(sTime, eTime).toDays();
+			if (betweenDay != 0) {
+				for (int i = 0; i <= betweenDay; i++) {
+					MachineActivityVo newAct = new MachineActivityVo();
+					newAct.setActivityId(activity.getActivityId());
+					newAct.setActivityName(activity.getActivityName());
+					newAct.setStartTime(DateUtil.toTimeStr(sTime.plusDays(i), DateUtil.DF_FULL_S1));
+					newAct.setEndTime(DateUtil.toTimeStr(sTime.plusDays(i + 1).plusSeconds(-1), DateUtil.DF_FULL_S1));
+					newList.add(newAct);
+				}
+
+			}
+
+		}
+		return newList;
 	}
 
 	@Override

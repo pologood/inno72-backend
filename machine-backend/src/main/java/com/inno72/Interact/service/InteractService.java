@@ -25,7 +25,7 @@ public interface InteractService extends Service<Inno72Interact> {
 
 	Result<Object> updateRule(InteractRuleVo interactRule);
 
-	List<TreeVo> machineTree(String interactId);
+	List<TreeVo> machineTree(String interactId, String keyword);
 
 	List<TreeVo> merchantTree(String interactId);
 

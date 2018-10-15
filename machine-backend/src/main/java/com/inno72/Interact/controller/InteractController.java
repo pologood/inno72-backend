@@ -77,8 +77,9 @@ public class InteractController {
 	}
 
 	@RequestMapping(value = "/machineTree", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<TreeVo>> machineTree(@RequestParam String interactId) {
-		List<TreeVo> list = interactService.machineTree(interactId);
+	public Result<List<TreeVo>> machineTree(@RequestParam String interactId,
+			@RequestParam(required = false) String keyword) {
+		List<TreeVo> list = interactService.machineTree(interactId, keyword);
 		return ResultGenerator.genSuccessResult(list);
 	}
 

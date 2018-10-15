@@ -10,6 +10,8 @@ public class TreeVo {
 
 	private Integer type;
 
+	private Integer num;
+
 	private List<TreeVo> children;
 
 	public String getKey() {
@@ -34,6 +36,14 @@ public class TreeVo {
 
 	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public Integer getNum() {
+		return num;
+	}
+
+	public void setNum(Integer num) {
+		this.num = num;
 	}
 
 	public List<TreeVo> getChildren() {
