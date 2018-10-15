@@ -48,7 +48,7 @@ public class InteractMachineController {
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<MachineVo> detail(@RequestParam String interactId, @RequestParam String machineId) {
+	public Result<MachineVo> detail(@RequestParam(required = false) String interactId, @RequestParam String machineId) {
 		MachineVo detail = interactMachineService.findById(interactId, machineId);
 		return ResultGenerator.genSuccessResult(detail);
 	}
