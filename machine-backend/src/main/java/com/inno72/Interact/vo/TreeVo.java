@@ -8,6 +8,8 @@ public class TreeVo {
 
 	private String title;
 
+	private String machineCode;
+
 	private Integer type;
 
 	private Integer num;
@@ -24,6 +26,14 @@ public class TreeVo {
 
 	public String getTitle() {
 		return title;
+	}
+
+	public String getMachineCode() {
+		return machineCode;
+	}
+
+	public void setMachineCode(String machineCode) {
+		this.machineCode = machineCode;
 	}
 
 	public void setTitle(String title) {
