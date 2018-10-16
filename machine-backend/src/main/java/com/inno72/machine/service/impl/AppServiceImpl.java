@@ -94,6 +94,7 @@ public class AppServiceImpl extends AbstractService<Inno72App> implements AppSer
 		mongoTpl.save(appVersion, "AppVersion");
 		history.setCreateId(mUser.getId());
 		history.setCreateUser(mUser.getName());
+		history.setId(StringUtil.getUUID());
 		history.setCreateTime(
 				LocalDateTimeUtil.transfer(LocalDateTime.now(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		mongoTpl.save(history, "AppVersionHistory");

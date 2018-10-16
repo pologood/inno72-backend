@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotBlank;
 
 public class AppVersionHistory {
+	private String id;
 	@NotBlank(message = "app名称为空")
 	private String appName;
 	@NotBlank(message = "app包名为空")
@@ -91,6 +92,14 @@ public class AppVersionHistory {
 
 	public void setCreateUser(String createUser) {
 		this.createUser = createUser;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }
