@@ -85,7 +85,7 @@
       </if>
       <if test="keyword != null">
         and (t6.machine_code like CONCAT('%','${keyword}','%')
-        or t2.activity_name like CONCAT('%','${keyword}','%')
+        or ac.name like CONCAT('%','${keyword}','%')
         or t1.order_num like CONCAT('%','${keyword}','%'))
       </if>
     </where>
