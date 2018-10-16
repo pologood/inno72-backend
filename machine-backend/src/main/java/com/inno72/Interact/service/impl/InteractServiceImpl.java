@@ -72,12 +72,13 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 	private Inno72InteractMachineGoodsMapper inno72InteractMachineGoodsMapper;
 
 	@Override
-	public List<InteractListVo> findByPage(String keyword, Integer status) {
+	public List<InteractListVo> findByPage(String keyword, Integer status, String orderBy) {
 		logger.info("---------------------活动分页列表查询-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		params.put("keyword", keyword);
 		params.put("status", status);
+		params.put("orderBy", orderBy);
 
 		return inno72InteractMapper.selectByPage(params);
 	}

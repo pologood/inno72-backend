@@ -33,8 +33,8 @@ public class InteractController {
 	private InteractService interactService;
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list(String keyword, Integer status) {
-		List<InteractListVo> list = interactService.findByPage(keyword, status);
+	public ModelAndView list(String keyword, Integer status, String orderBy) {
+		List<InteractListVo> list = interactService.findByPage(keyword, status, orderBy);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 

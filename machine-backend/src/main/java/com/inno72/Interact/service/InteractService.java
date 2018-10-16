@@ -15,7 +15,7 @@ import com.inno72.common.Service;
  */
 public interface InteractService extends Service<Inno72Interact> {
 
-	List<InteractListVo> findByPage(String keyword, Integer status);
+	List<InteractListVo> findByPage(String keyword, Integer status, String orderBy);
 
 	Result<Object> save(Inno72Interact model, Integer type);
 
