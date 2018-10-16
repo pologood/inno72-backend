@@ -147,7 +147,8 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 					insetInteractMachineTimeList.add(interactMachineTime);
 
 				}
-
+				// 合并连续时间
+				insetInteractMachineTimeList = this.mergeContinuTime(insetInteractMachineTimeList);
 				if (interactMachine.getState() == 1) {
 					Inno72InteractMachineTime interactMachineTime = new Inno72InteractMachineTime();
 					interactMachineTime.setId(StringUtil.getUUID());
@@ -236,6 +237,9 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 
 					insetInteractMachineTimeList.add(interactMachineTime);
 				}
+				// 合并连续时间
+				insetInteractMachineTimeList = this.mergeContinuTime(insetInteractMachineTimeList);
+
 				if (interactMachine.getState() == 1) {
 					Inno72InteractMachineTime interactMachineTime = new Inno72InteractMachineTime();
 					interactMachineTime.setId(StringUtil.getUUID());
@@ -278,6 +282,23 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 			return Results.failure("操作失败");
 		}
 		return Results.success("操作成功");
+	}
+
+	public List<Inno72InteractMachineTime> mergeContinuTime(List<Inno72InteractMachineTime> timeList) {
+		logger.info("---------------------机器活动连续时间合并-------------------");
+
+		timeList.sort((Inno72InteractMachineTime t1, Inno72InteractMachineTime t2) -> t1.getStartTime()
+				.compareTo(t2.getStartTime()));
+
+		List<Inno72InteractMachineTime> removeList = new ArrayList<>();
+		for (int i = 0; i < timeList.size() - 1; i++) {
+			if (timeList.get(i).getEndTime().plusSeconds(1).isEqual(timeList.get(i + 1).getStartTime())) {
+				timeList.get(i + 1).setStartTime(timeList.get(i).getStartTime());
+				removeList.add(timeList.get(i));
+			}
+		}
+		timeList.removeAll(removeList);
+		return timeList;
 	}
 
 	@Override
