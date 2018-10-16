@@ -119,13 +119,12 @@
 		inno72_machine m
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
 		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
-		LEFT JOIN inno72_interact_machine im ON im.machine_id = m.id AND im.interact_id='c2dce2231d0742448004496e430cc76f'
+		LEFT JOIN inno72_interact_machine im ON im.machine_id = m.id AND im.interact_id = #{interactId}
 		LEFT JOIN inno72_interact_machine imt ON imt.machine_id = m.id 
 		LEFT JOIN inno72_interact_machine_time mt ON mt.interact_machine_id = imt.id AND mt.end_time != '2028-12-31 23:59:59'
 		LEFT JOIN inno72_interact t ON t.id = imt.interact_id AND t.is_delete = 0
 	WHERE m.machine_status = '4'
 		<if test="machineId !=null and machineId !='' ">AND m.id = #{machineId}</if>
-		<if test="interactId !=null and interactId !='' ">AND im.interact_id = #{interactId}</if>
   </select>
   
   
