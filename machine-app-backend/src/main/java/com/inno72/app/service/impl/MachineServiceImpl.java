@@ -16,8 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
+import com.inno72.app.mapper.Inno72LocaleMapper;
 import com.inno72.app.mapper.Inno72MachineBatchMapper;
 import com.inno72.app.mapper.Inno72MachineMapper;
+import com.inno72.app.model.Inno72Locale;
 import com.inno72.app.model.Inno72Machine;
 import com.inno72.app.model.Inno72MachineBatch;
 import com.inno72.app.model.Inno72SupplyChannel;
@@ -49,6 +51,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Autowired
 	private Inno72MachineBatchMapper inno72MachineBatchMapper;
+
+	@Autowired
+	private Inno72LocaleMapper inno72LocaleMapper;
 
 	@Resource
 	private MachineAppBackendProperties machineAppBackendProperties;
@@ -223,11 +228,33 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	@Override
 	public Result<String> getMachineLocale(Map<String, Object> msg) {
 		String machineCode = (String) Optional.of(msg).map(a -> a.get("machineCode")).orElse("");
+		Integer type = (Integer) Optional.of(msg).map(a -> a.get("type")).orElse("");
+
 		if (StringUtil.isEmpty(machineCode)) {
 			return Results.failure("machineCode传入为空");
 		}
-		String locale = inno72MachineMapper.selectMachineLocale(machineCode);
-		return Results.success(locale);
+		if (type == null || type == 0) {
+			// 不需要验证机器状态
+			String locale = inno72MachineMapper.selectMachineLocale(machineCode);
+			return Results.success(locale);
+		} else {
+			Condition condition = new Condition(Inno72Machine.class);
+			condition.createCriteria().andEqualTo("machineCode", machineCode);
+			List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition);
+			if (machines == null || machines.size() != 1) {
+				return Results.failure("machineCode传入错误");
+			}
+			Inno72Machine machine = machines.get(0);
+			if (machine.getMachineStatus() != 4 && machine.getMachineStatus() != 9) {
+				return Results.failure("机器状态异常");
+			}
+			Inno72Locale local = inno72LocaleMapper.selectByPrimaryKey(machine.getLocaleId());
+			if (local == null || local.getType() != 2) {
+				return Results.failure("机器点位异常");
+			}
+			String locale = inno72MachineMapper.selectMachineLocale(machineCode);
+			return Results.success(locale);
+		}
 	}
 
 	@Override
@@ -317,6 +344,30 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (updateResult.getCode() != Result.SUCCESS) {
 			return updateResult;
 		}
+		return Results.success();
+	}
+
+	@Override
+	public Result<String> resetTuMachine(Map<String, Object> msg) {
+		String machineCode = (String) Optional.of(msg).map(a -> a.get("machineCode")).orElse("");
+		if (StringUtil.isEmpty(machineCode)) {
+			return Results.failure("machineCode传入为空");
+		}
+		String deviceId = (String) Optional.of(msg).map(a -> a.get("deviceId")).orElse("");
+		if (StringUtil.isEmpty(deviceId)) {
+			return Results.failure("deviceId传入为空");
+		}
+		Condition condition = new Condition(Inno72Machine.class);
+		condition.createCriteria().andEqualTo("machineCode", machineCode);
+		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition);
+		if (machines == null || machines.size() != 1) {
+			return Results.failure("machineCode传入错误");
+		}
+		Inno72Machine machine = machines.get(0);
+		machine.setDeviceId(deviceId);
+		machine.setMachineStatus(9);
+		machine.setUpdateTime(LocalDateTime.now());
+		inno72MachineMapper.updateByPrimaryKeySelective(machine);
 		return Results.success();
 	}
 
