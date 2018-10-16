@@ -54,8 +54,8 @@
     select t1.id,t1.order_num,t1.user_id,t1.channel_id,t1.machine_id,
     t1.order_time,t1.order_price,t1.order_type,t1.pay_status,t1.pay_time,
     t1.shops_id,t1.shops_name,t1.goods_status,
-    t2.game_user_id,t2.nick_name,t2.mer_point_address,t2.machine_code,
-    t2.activity_name,
+    t2.game_user_id,t2.nick_name,t2.mer_point_address,t6.machine_code,
+    ac.name activity_name,
     t4.name gameName,
     t5.goods_type goodsType,
     t5.goods_id goodsId,
@@ -64,10 +64,12 @@
     t5.goods_price goodsPrice,
     t5.status orderGoodsStatus
     from inno72_order t1
+    left join inno72_machine t6 on t6.id = t1.machine_id
     left join inno72_game_user_life t2 on t1.id=t2.order_id
     left join inno72_activity_plan t3 on t1.inno72_activity_plan_id=t3.id
     left join inno72_game t4 on t3.game_id= t4.id
     left join inno72_order_goods t5 on t5.order_num=t1.order_num
+    left join inno72_activity ac on t1.inno72_activity_id = ac.id
     <where>
       <if test="machineId != null">
         and t1.machine_id = #{machineId}
@@ -82,7 +84,7 @@
         and t1.order_type = #{orderType}
       </if>
       <if test="keyword != null">
-        and (t2.machine_code like CONCAT('%','${keyword}','%')
+        and (t6.machine_code like CONCAT('%','${keyword}','%')
         or t2.activity_name like CONCAT('%','${keyword}','%')
         or t1.order_num like CONCAT('%','${keyword}','%'))
       </if>
