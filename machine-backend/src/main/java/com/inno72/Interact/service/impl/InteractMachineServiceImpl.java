@@ -322,12 +322,9 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 		pm.put("machineId", machineId);
 
 		MachineVo interactMachines = inno72InteractMachineMapper.selectMachineTimeDetail(pm);
+		List<MachineActivityVo> aList = this.getContinuTime(interactId, interactMachines);
+		interactMachines.setMachineActivity(aList);
 		List<MachineVo> planMachines = inno72InteractMachineMapper.selectPlanMachines(pm);
-		for (MachineVo machineVo : planMachines) {
-			List<MachineActivityVo> aList = this.getContinuTime(machineVo);
-			machineVo.setMachineActivity(aList);
-		}
-
 		if (planMachines.contains(interactMachines)) {
 			interactMachines.getMachineActivity().addAll(planMachines.get(0).getMachineActivity());
 		}
@@ -335,7 +332,7 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 		return interactMachines;
 	}
 
-	public List<MachineActivityVo> getContinuTime(MachineVo machineVo) {
+	public List<MachineActivityVo> getContinuTime(String interactId, MachineVo machineVo) {
 		logger.info("---------------------机器活动连续时间拆分-------------------");
 
 		List<MachineActivityVo> aList = machineVo.getMachineActivity();
@@ -346,7 +343,7 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 			LocalDateTime sTime = DateUtil.toDateTime(activity.getStartTime(), DateUtil.DF_FULL_S1);
 			LocalDateTime eTime = DateUtil.toDateTime(activity.getEndTime(), DateUtil.DF_FULL_S1);
 			long betweenDay = Duration.between(sTime, eTime).toDays();
-			if (betweenDay != 0) {
+			if (betweenDay != 0 && activity.getActivityId().equals(interactId)) {
 				for (int i = 0; i <= betweenDay; i++) {
 					MachineActivityVo newAct = new MachineActivityVo();
 					newAct.setActivityId(activity.getActivityId());
@@ -356,6 +353,8 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 					newList.add(newAct);
 				}
 
+			} else {
+				newList.add(activity);
 			}
 
 		}
