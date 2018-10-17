@@ -100,7 +100,7 @@ public class SocketIOStartHandler {
 						.orElse("");
 				log.info("收到机器{}发送的远程图片", machineId);
 				String machinKey = CommonConstants.REDIS_REMOTE_MACHINE_SESSION_PATH + machineId;
-				redisUtil.setex(machinKey, 60, key);
+				redisUtil.setex(machinKey, 60 * 60, key);
 				String rbindKey = CommonConstants.REDIS_REMOTE_RBIND_PATH + machineId;
 				Set<Object> clients = redisUtil.smembers(rbindKey);
 				if (clients != null) {
@@ -167,12 +167,12 @@ public class SocketIOStartHandler {
 						String bindKey = CommonConstants.REDIS_REMOTE_BIND_PATH + deviceId;
 
 						if (clients != null && clients.size() == 1) {
-							log.info("客户端{}关闭，只关闭机器端{}", deviceId, machineId);
+							log.info("客户端{}关闭，关闭机所有机器端{}", deviceId, machineId);
 							SocketHolder.close(sessionId);
 							redisUtil.expire(bindKey, 1);
 							setUtil.delete(rbindKey);
 						} else {
-							log.info("客户端{}关闭，关闭机所有机器器端{}", deviceId, machineId);
+							log.info("客户端{}关闭，不关闭机器{}", deviceId, machineId);
 							redisUtil.expire(bindKey, 1);
 							redisUtil.srem(rbindKey, deviceId);
 						}
