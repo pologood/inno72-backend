@@ -175,9 +175,9 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 					useredMachine.addAll(usered1);
 					useredMachine.addAll(usered2);
 
-					if (time.getStartTime().isBefore(runTime)) {
+					if (null == runTime) {
 						runTime = time.getStartTime();
-					} else if (null == runTime) {
+					} else if (time.getStartTime().isBefore(runTime)) {
 						runTime = time.getStartTime();
 					}
 				}
