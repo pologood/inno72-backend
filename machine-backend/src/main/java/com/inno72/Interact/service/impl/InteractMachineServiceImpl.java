@@ -251,8 +251,10 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 					interactMachineTime.setStartTime(DateUtil.toDateTime(startTime, DateUtil.DF_FULL_S1));
 					interactMachineTime.setEndTime(DateUtil.toDateTime(endTime, DateUtil.DF_FULL_S1));
 					interactMachineTime.setInteractMachineId(interactMachine.getId());
-
-					insetInteractMachineTimeList.add(interactMachineTime);
+					if (!interactMachineTime.getEndTime()
+							.isEqual(DateUtil.toDateTime("2028-12-31 23:59:59", DateUtil.DF_FULL_S1))) {
+						insetInteractMachineTimeList.add(interactMachineTime);
+					}
 				}
 				// 合并连续时间
 				insetInteractMachineTimeList = this.mergeContinuTime(insetInteractMachineTimeList);
