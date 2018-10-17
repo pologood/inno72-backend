@@ -61,7 +61,7 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 			}
 			List<Inno72InteractMachineGoodsVo> goods = model.getGoods();
 
-			if (null == machines || machines.size() < 1) {
+			if (null == goods || goods.size() < 1) {
 				logger.info("请选择商品");
 				return Results.failure("请选择商品");
 			}
