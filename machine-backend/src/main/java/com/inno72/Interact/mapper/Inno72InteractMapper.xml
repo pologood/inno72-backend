@@ -46,11 +46,12 @@
 			i.name,
 			i.manager,
 			date_format(i.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
-			CASE 
-			WHEN i.status=1 and 1 > DATEDIFF(NOW(),i.run_time) THEN 1
-			WHEN i.status=1 and ((day='max' and DATEDIFF(NOW(),i.run_time)>=0)or (day != 'max' and day >= DATEDIFF(NOW(),i.run_time) )) THEN 2
+			
+			CASE
+			WHEN i.status=1 and <![CDATA[CURRENT_TIMESTAMP < i.run_time]]> THEN 1
+			WHEN i.status=1 and <![CDATA[(i.`day`='max' or i.`day` >= DATEDIFF(NOW(),i.run_time)) ]]>THEN 2
 			WHEN i.status=2 THEN 3
-			WHEN i.status=1 and DATEDIFF(NOW(),i.run_time) > day THEN 4
+			WHEN i.status=1 and i.`day`!='max' and <![CDATA[i.`day`< DATEDIFF(NOW(),i.run_time)]]> THEN 4
 			ELSE 0
 			END As status,
 			gm.name AS game_name,
@@ -97,10 +98,10 @@
 			)
 		</if>
 		<if test="status ==0"> and i.status=0 </if>
-		<if test="status ==1"> and i.status=1 and 1 > DATEDIFF(NOW(),i.run_time) </if>
-		<if test="status ==2"> and i.status=1 and ((day='max' and DATEDIFF(NOW(),i.run_time)>=0)or (day != 'max' and day >= DATEDIFF(NOW(),i.run_time) )) </if>
+		<if test="status ==1"> and i.status=1 and <![CDATA[CURRENT_TIMESTAMP < i.run_time]]> </if>
+		<if test="status ==2"> and i.status=1 and <![CDATA[(i.`day`='max' or i.`day` >= DATEDIFF(NOW(),i.run_time)) ]]> </if>
 		<if test="status ==3"> and i.status=2 </if>
-		<if test="status ==4"> and i.status=1 and DATEDIFF(NOW(),i.run_time) > day </if>
+		<if test="status ==4"> and i.status=1 and i.`day`!='max' and <![CDATA[i.`day`< DATEDIFF(NOW(),i.run_time)]]>  </if>
 		) t
 		<if test="orderBy !=null and orderBy !='' ">
 			ORDER BY ${orderBy}
