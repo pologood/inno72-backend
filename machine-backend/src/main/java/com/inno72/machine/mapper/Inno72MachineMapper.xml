@@ -70,7 +70,7 @@
 			'%${machineCode}%' or l.name LIKE '%${machineCode}%')
 		</if>
 		<if test="machineType !=null and machineType !='' ">and l.type=#{machineType}</if>
-		<if test="machineStatus !=null and machineStatus !=4 ">and m.machine_status=#{machineStatus}</if>
+		<if test="machineStatus !=null and machineStatus !='' and machineStatus !=4 ">and m.machine_status=#{machineStatus}</if>
 		<if test="machineStatus !=null and machineStatus ==4 ">and m.machine_status in (4,9)</if>
 		
 		<if test="startTime !=null and startTime !='' ">
