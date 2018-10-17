@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.inno72.Interact.mapper.Inno72InteractMachineGoodsMapper;
 import com.inno72.Interact.mapper.Inno72InteractMachineMapper;
 import com.inno72.Interact.mapper.Inno72InteractMachineTimeMapper;
+import com.inno72.Interact.mapper.Inno72InteractMapper;
+import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.model.Inno72InteractMachine;
 import com.inno72.Interact.model.Inno72InteractMachineGoods;
 import com.inno72.Interact.model.Inno72InteractMachineTime;
@@ -48,6 +50,8 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 	@Resource
 	private IRedisUtil redisUtil;
 
+	@Resource
+	private Inno72InteractMapper inno72InteractMapper;
 	@Resource
 	private Inno72InteractMachineMapper inno72InteractMachineMapper;
 
@@ -94,6 +98,8 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 				return Results.failure("未找到用户登录信息");
 			}
 			String interactId = model.getInteractId();
+			Inno72Interact interact = inno72InteractMapper.selectByPrimaryKey(interactId);
+			LocalDateTime runTime = interact.getRunTime();
 
 			List<MachineTime> machines = model.getMachines();
 			if (StringUtil.isBlank(model.getQueryStartTime()) || StringUtil.isBlank(model.getQueryStartTime())) {
@@ -111,6 +117,7 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 			List<String> useredMachine = new ArrayList<>();
 			List<Inno72InteractMachine> insetInteractMachineList = new ArrayList<>();
 			List<Inno72InteractMachineTime> insetInteractMachineTimeList = new ArrayList<>();
+
 			for (MachineTime machineTime : machines) {
 				String machineId = machineTime.getMachineId();
 				if (selectMachines.contains(machineId)) {
@@ -167,6 +174,12 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 					List<String> usered2 = inno72InteractMachineMapper.selectPlanUseredMachine(isUseredParam);
 					useredMachine.addAll(usered1);
 					useredMachine.addAll(usered2);
+
+					if (time.getStartTime().isBefore(runTime)) {
+						runTime = time.getStartTime();
+					} else if (null == runTime) {
+						runTime = time.getStartTime();
+					}
 				}
 				if (useredMachine.contains(machineId)) {
 					logger.info("所选时间内机器已占用");
@@ -174,6 +187,9 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 				}
 
 			}
+
+			interact.setRunTime(runTime);
+			inno72InteractMapper.updateByPrimaryKeySelective(interact);
 			inno72InteractMachineMapper.insertInteractMachineList(insetInteractMachineList);
 			inno72InteractMachineTimeMapper.insertInteractMachineTimeList(insetInteractMachineTimeList);
 		} catch (Exception e) {
@@ -195,7 +211,8 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 				return Results.failure("未找到用户登录信息");
 			}
 			String interactId = model.getInteractId();
-
+			Inno72Interact interact = inno72InteractMapper.selectByPrimaryKey(interactId);
+			LocalDateTime runTime = interact.getRunTime();
 			List<MachineTime> machines = model.getMachines();
 			if (StringUtil.isBlank(model.getQueryStartTime()) || StringUtil.isBlank(model.getQueryStartTime())) {
 				logger.info("缺少查询日期参数");
@@ -248,6 +265,7 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 					interactMachineTime.setInteractMachineId(interactMachine.getId());
 
 					insetInteractMachineTimeList.add(interactMachineTime);
+
 				}
 
 				// 校验时间内机器是否占用
@@ -260,11 +278,17 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 					List<String> usered2 = inno72InteractMachineMapper.selectPlanUseredMachine(isUseredParam);
 					useredMachine.addAll(usered1);
 					useredMachine.addAll(usered2);
+
+					if (time.getStartTime().isBefore(runTime)) {
+						runTime = time.getStartTime();
+					}
 				}
 				if (useredMachine.contains(machineId)) {
 					logger.info("所选时间内机器已占用");
 					return Results.failure("所选时间内机器已占用，机器编号：" + machineTime.getMachineCode());
 				}
+				interact.setRunTime(runTime);
+				inno72InteractMapper.updateByPrimaryKeySelective(interact);
 
 				inno72InteractMachineMapper.updateByPrimaryKeySelective(interactMachine);
 				Inno72InteractMachineTime delTime = new Inno72InteractMachineTime();

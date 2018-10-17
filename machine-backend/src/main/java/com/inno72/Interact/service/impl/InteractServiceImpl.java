@@ -267,7 +267,9 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 
 				}
 			}
-
+			if (interact.getStatus() == 0 && interact.getRunTime().isBefore(LocalDateTime.now())) {
+				interact.setRunTime(LocalDateTime.now());
+			}
 			inno72InteractMapper.updateByPrimaryKeySelective(interact);
 
 			return Results.success();

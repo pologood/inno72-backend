@@ -77,6 +77,14 @@ public class Inno72Interact {
 	private Integer dayNumber;
 
 	/**
+	 * 更新时间
+	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Column(name = "run_time")
+	private LocalDateTime runTime;
+
+	/**
 	 * 创建人
 	 */
 	@Column(name = "create_id")
@@ -303,6 +311,14 @@ public class Inno72Interact {
 	 */
 	public void setDayNumber(Integer dayNumber) {
 		this.dayNumber = dayNumber;
+	}
+
+	public LocalDateTime getRunTime() {
+		return runTime;
+	}
+
+	public void setRunTime(LocalDateTime runTime) {
+		this.runTime = runTime;
 	}
 
 	/**
