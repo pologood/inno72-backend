@@ -156,11 +156,12 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 				}
 				// 合并连续时间
 				insetInteractMachineTimeList = this.mergeContinuTime(insetInteractMachineTimeList);
+				// 选择长期
 				if (interactMachine.getState() == 1) {
 					Inno72InteractMachineTime interactMachineTime = new Inno72InteractMachineTime();
 					interactMachineTime.setId(StringUtil.getUUID());
 					interactMachineTime.setStartTime(interactMachine.getQueryEndTime().minusSeconds(-1));
-					interactMachineTime.setEndTime(DateUtil.toDateTime("2028-12-31 23:59:59", DateUtil.DF_FULL_S1));
+					interactMachineTime.setEndTime(DateUtil.toDateTime("2028-12-30 23:59:59", DateUtil.DF_FULL_S1));
 					interactMachineTime.setInteractMachineId(interactMachine.getId());
 
 					insetInteractMachineTimeList.add(interactMachineTime);
@@ -252,18 +253,18 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 					interactMachineTime.setEndTime(DateUtil.toDateTime(endTime, DateUtil.DF_FULL_S1));
 					interactMachineTime.setInteractMachineId(interactMachine.getId());
 					if (!interactMachineTime.getEndTime()
-							.isEqual(DateUtil.toDateTime("2028-12-31 23:59:59", DateUtil.DF_FULL_S1))) {
+							.isEqual(DateUtil.toDateTime("2028-12-30 23:59:59", DateUtil.DF_FULL_S1))) {
 						insetInteractMachineTimeList.add(interactMachineTime);
 					}
 				}
 				// 合并连续时间
 				insetInteractMachineTimeList = this.mergeContinuTime(insetInteractMachineTimeList);
-
+				// 选择长期
 				if (interactMachine.getState() == 1) {
 					Inno72InteractMachineTime interactMachineTime = new Inno72InteractMachineTime();
 					interactMachineTime.setId(StringUtil.getUUID());
 					interactMachineTime.setStartTime(interactMachine.getQueryEndTime().minusSeconds(-1));
-					interactMachineTime.setEndTime(DateUtil.toDateTime("2028-12-31 23:59:59", DateUtil.DF_FULL_S1));
+					interactMachineTime.setEndTime(DateUtil.toDateTime("2028-12-30 23:59:59", DateUtil.DF_FULL_S1));
 					interactMachineTime.setInteractMachineId(interactMachine.getId());
 
 					insetInteractMachineTimeList.add(interactMachineTime);
@@ -369,7 +370,8 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 			LocalDateTime sTime = DateUtil.toDateTime(activity.getStartTime(), DateUtil.DF_FULL_S1);
 			LocalDateTime eTime = DateUtil.toDateTime(activity.getEndTime(), DateUtil.DF_FULL_S1);
 			long betweenDay = Duration.between(sTime, eTime).toDays();
-			if (betweenDay != 0 && activity.getActivityId().equals(interactId)) {
+			if (betweenDay != 0 && activity.getActivityId().equals(interactId)
+					&& !eTime.isEqual(DateUtil.toDateTime("2028-12-30 23:59:59", DateUtil.DF_FULL_S1))) {
 				for (int i = 0; i <= betweenDay; i++) {
 					MachineActivityVo newAct = new MachineActivityVo();
 					newAct.setActivityId(activity.getActivityId());
