@@ -73,6 +73,17 @@
 			SELECT ig.interact_id,GROUP_CONCAT( g.`name` ) AS goods_name,GROUP_CONCAT( g.`code` ) AS goods_code FROM inno72_interact_goods ig 
 			LEFT JOIN inno72_goods g ON g.id = ig.goods_id AND g.is_delete = 0 GROUP BY ig.interact_id
 		) g on g.interact_id=i.id
+		LEFT JOIN (
+			SELECT im.interact_id,GROUP_CONCAT( CONCAT(l.mall,l.`name`) ) AS locale,GROUP_CONCAT( CONCAT(area.province,area.city,area.district) ) AS area
+			FROM
+				inno72_interact_machine im
+				LEFT JOIN inno72_interact_machine_time mt ON im.id = mt.interact_machine_id
+				LEFT JOIN inno72_machine m ON m.id = im.machine_id
+				LEFT JOIN inno72_locale l ON l.id = m.locale_id
+				LEFT JOIN inno72_admin_area area ON area.`code` = l.area_code 
+			GROUP BY im.interact_id
+		) area on area.interact_id=i.id
+		
 		where i.is_delete = 0 
 		<if test="keyword !=null and keyword !='' ">
 			and ( i.name LIKE '%${keyword}%' 
@@ -81,6 +92,8 @@
 		 	or ig.machine_code LIKE '%${keyword}%'
 		 	or g.goods_name LIKE '%${keyword}%'
 		 	or g.goods_code LIKE '%${keyword}%'
+		 	or area.locale LIKE '%${keyword}%'
+		 	or area.area LIKE '%${keyword}%'
 			)
 		</if>
 		<if test="status ==0"> and i.status=0 </if>
