@@ -127,7 +127,7 @@
 		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
 		LEFT JOIN inno72_interact_machine im ON im.machine_id = m.id AND im.interact_id = #{interactId}
 		LEFT JOIN inno72_interact_machine imt ON imt.machine_id = m.id 
-		LEFT JOIN inno72_interact_machine_time mt ON mt.interact_machine_id = imt.id AND mt.end_time != '2028-12-31 23:59:59'
+		LEFT JOIN inno72_interact_machine_time mt ON mt.interact_machine_id = imt.id
 		LEFT JOIN inno72_interact t ON t.id = imt.interact_id AND t.is_delete = 0
 		LEFT JOIN (
 		    SELECT mm.machine_id,MAX(mm.time) AS max_time from (
