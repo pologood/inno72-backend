@@ -41,6 +41,7 @@ import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.common.datetime.LocalDateUtil;
 import com.inno72.machine.mapper.Inno72AppScreenShotMapper;
+import com.inno72.machine.mapper.Inno72LocaleMapper;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72App;
 import com.inno72.machine.model.Inno72AppLog;
@@ -52,6 +53,7 @@ import com.inno72.machine.service.MachineService;
 import com.inno72.machine.service.SupplyChannelService;
 import com.inno72.machine.vo.AppStatus;
 import com.inno72.machine.vo.ChannelListVo;
+import com.inno72.machine.vo.Inno72LocaleVo;
 import com.inno72.machine.vo.MachineAppStatus;
 import com.inno72.machine.vo.MachineExceptionVo;
 import com.inno72.machine.vo.MachineInstallAppBean;
@@ -87,6 +89,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Resource
 	private Inno72MachineMapper inno72MachineMapper;
+	@Resource
+	private Inno72LocaleMapper inno72LocaleMapper;
 	@Autowired
 	private SupplyChannelService supplyChannelService;
 	@Autowired
@@ -824,6 +828,13 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 		Map<String, String> params = new HashMap<>();
 		params.put("msg", JSON.toJSONString(param));
+
+		Inno72LocaleVo local = inno72LocaleMapper.selectById(machine.getLocaleId());
+		if (local != null && local.getType() == 2) {
+			msgUtil.sendPush("push_android_tm_transmission_common", params, machine.getMachineCode(),
+					"machine-backend--grabLog", "获取日志", "获取日志");
+			return Results.success();
+		}
 		msgUtil.sendPush("push_android_transmission_common", params, machine.getMachineCode(),
 				"machine-backend--grabLog", "获取日志", "获取日志");
 		return Results.success();
