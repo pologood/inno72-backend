@@ -330,12 +330,26 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		msg.setSubEventType(updateStatus);
 		msg.setMachineId(machine.getMachineCode());
 		if (updateStatus == 2) {
-			List<String> names = new ArrayList<String>();
-			List<Inno72App> appAll = appService.findAll();
-			for (Inno72App app : appAll) {
-				names.add(app.getAppPackageName());
+			Inno72LocaleVo local = inno72LocaleMapper.selectById(machine.getLocaleId());
+			if (local != null && local.getType() == 2) {
+				List<String> names = new ArrayList<String>();
+				Condition condition = new Condition(Inno72App.class);
+				condition.createCriteria().andEqualTo("appBelong", 6);
+				List<Inno72App> appAll = appService.findByCondition(condition);
+				for (Inno72App app : appAll) {
+					names.add(app.getAppPackageName());
+				}
+				msg.setData(names);
+			} else {
+				List<String> names = new ArrayList<String>();
+				Condition condition = new Condition(Inno72App.class);
+				condition.createCriteria().andNotEqualTo("appBelong", 6);
+				List<Inno72App> appAll = appService.findByCondition(condition);
+				for (Inno72App app : appAll) {
+					names.add(app.getAppPackageName());
+				}
+				msg.setData(names);
 			}
-			msg.setData(names);
 		}
 		return sendMsg(machine.getMachineCode(), msg);
 	}
