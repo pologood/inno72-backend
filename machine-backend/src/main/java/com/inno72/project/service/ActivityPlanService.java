@@ -17,7 +17,8 @@ public interface ActivityPlanService extends Service<Inno72ActivityPlan> {
 
 	Result<String> saveActPlan(Inno72ActivityPlanVo activityPlan);
 
-	List<Inno72AdminAreaVo> selectAreaMachineList(String code, String level, String startTime, String endTime);
+	List<Inno72AdminAreaVo> selectAreaMachineList(String code, String level, String startTime, String endTime,
+			String machineCode);
 
 	List<Inno72ActivityPlanVo> selectPlanList(String code, String status, String type, String startTime,
 			String endTime);

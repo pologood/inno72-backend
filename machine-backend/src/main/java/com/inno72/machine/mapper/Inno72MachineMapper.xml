@@ -38,7 +38,7 @@
 		<result column="inside_time" jdbcType="TIMESTAMP" property="insideTime" />
 		<association property="planTime" resultMap="planTimeResult" />
 	</resultMap>
-	
+
 	<resultMap id="Vo1ResultMap" type="com.inno72.machine.vo.MachineListVo1">
 		<result column="id" jdbcType="VARCHAR" property="id" />
 		<result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
@@ -58,7 +58,8 @@
 		aa.city, aa.district,IFNULL( l.mall,""),IFNULL( l.name,""))
 		local_desc,
 		m.net_status,l.type as machine_type,m.inside_time
-		from inno72_machine m
+		from
+		inno72_machine m
 		left join inno72_locale l on
 		m.locale_id=l.id
 		left join
@@ -72,7 +73,8 @@
 		<if test="machineType !=null and machineType !='' ">and l.type=#{machineType}</if>
 		<if test="machineStatus !=null and machineStatus !='' ">and m.machine_status=#{machineStatus}</if>
 		<if test="startTime !=null and startTime !='' ">
-			<![CDATA[AND ( #{startTime} <= m.inside_time AND #{endTime} >= m.inside_time ) ]]>
+			<![CDATA[AND (STR_TO_DATE(#{startTime}, '%Y-%m-%d')  <=STR_TO_DATE(DATE_FORMAT(m.inside_time,"%Y-%m-%d") ,'%Y-%m-%d')
+			 AND STR_TO_DATE(#{endTime}, '%Y-%m-%d') >= STR_TO_DATE(DATE_FORMAT(m.inside_time,"%Y-%m-%d") ,'%Y-%m-%d') ) ]]>
 		</if>
 		and 9=9
 		order by m.update_time desc
@@ -104,75 +106,101 @@
 	</resultMap>
 	<select id="findMachinePlan" parameterType="java.util.Map"
 		resultMap="Vo1ResultMap">
-		select * from (
-			SELECT
-				m.id,m.machine_code,
-				CONCAT( area.province,area.city,area.district,IFNULL(l.mall,""),IFNULL(l.name,"") ) AS local_desc,
-				date_format(ap.start_time,'%Y-%m-%d %H:%i:%s') AS start_time,
-				date_format(ap.end_time,'%Y-%m-%d %H:%i:%s') AS end_time,
-				a.name AS activityName,
-				CASE
-					WHEN ap.start_time &gt; NOW() THEN '1'
-					WHEN ap.start_time &lt; NOW() and ap.end_time &gt; NOW() THEN '2'
-					ELSE null
-				END state,
-				l.area_code
-			FROM
-			inno72_machine m
-			LEFT JOIN inno72_locale l ON l.id = m.locale_id 
-			LEFT JOIN inno72_admin_area area on area.code=l.area_code
-			LEFT JOIN inno72_activity_plan_machine apm on apm.machine_id = m.id
-			LEFT JOIN inno72_activity_plan ap ON ap.id = apm.activity_plan_id and ap.is_delete = 0 and NOW() &lt; ap.end_time
-			<if test="startTime !=null and startTime !='' ">
-				<![CDATA[AND ( #{startTime} <= ap.end_time AND #{endTime} >= ap.start_time ) ]]>
-			</if>
-			LEFT JOIN
-			inno72_activity a ON a.id = ap.activity_id
-			where m.machine_status ='4'
-			<if test="code !=null and code !='' ">and LEFT(l.area_code,#{num})='${code}'</if>
-			<if test="machineCode !=null and machineCode !=''">
-				AND m.machine_code LIKE '%${machineCode}%'
-			</if>
-			and 9=9
-		) o order by area_code
+		SELECT
+		m.id,
+		m.machine_code,
+		CONCAT( area.province,
+		area.city,
+		area.district,IFNULL(
+		l.mall,""),IFNULL(
+		l.name,"") ) AS
+		local_desc,
+		date_format(ap.start_time,'%Y-%m-%d %H:%i:%s') AS
+		start_time,
+		date_format(ap.end_time,'%Y-%m-%d %H:%i:%s') AS end_time,
+		a.name AS
+		activityName,
+		CASE
+		WHEN ap.start_time &gt; NOW() THEN '1'
+		WHEN
+		ap.start_time &lt; NOW() and ap.end_time &gt; NOW() THEN '2'
+		ELSE null
+		END state,
+		l.area_code
+		FROM
+		inno72_machine m
+		LEFT JOIN inno72_locale
+		l ON
+		l.id = m.locale_id
+		LEFT JOIN inno72_admin_area area on
+		area.code=l.area_code
+		LEFT JOIN
+		inno72_activity_plan_machine apm on
+		apm.machine_id = m.id
+		LEFT JOIN
+		inno72_activity_plan ap ON ap.id =
+		apm.activity_plan_id and ap.is_delete = 0 and NOW() &lt; ap.end_time
+		<if test="startTime !=null and startTime !='' ">
+			<![CDATA[AND ( #{startTime} <= ap.end_time AND #{endTime} >= ap.start_time ) ]]>
+		</if>
+		LEFT JOIN
+		inno72_activity a ON a.id = ap.activity_id
+		where
+		m.machine_status ='4'
+		<if test="code !=null and code !='' ">and LEFT(l.area_code,#{num})='${code}'</if>
+		<if test="machineCode !=null and machineCode !=''">
+			AND ( m.machine_code LIKE '%${machineCode}%'
+			or a.name LIKE
+			'%${machineCode}%'
+			)
+		</if>
+		and 9=9
+		) o where 1=1
+		<if test="state ==1 ">and o.state =1</if>
+		<if test="state ==2 ">and o.state =2</if>
+		order by area_code
 	</select>
-	
+
 	<select id="findMachineInteract" parameterType="java.util.Map"
 		resultMap="Vo1ResultMap">
 		select * from (
-			SELECT
-				m.id,
-				m.machine_code,
-		  		CONCAT( area.province, area.city, area.district, IFNULL( l.mall, "" ), IFNULL( l.NAME, "" ) ) AS local_desc,
-				mt.name AS activityName,
-				CASE
-					WHEN mt.start_time &gt; NOW() THEN '1'
-					WHEN mt.start_time &lt; NOW() and mt.end_time &gt; NOW() THEN '2'
-					ELSE null
-				END state,
-				date_format( mt.start_time, '%Y-%m-%d %H:%i:%s' ) AS start_time,
-				date_format( mt.end_time, '%Y-%m-%d %H:%i:%s' ) AS end_time,
-				l.area_code
-			FROM
-				inno72_machine m
-				LEFT JOIN inno72_locale l ON l.id = m.locale_id
-				LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
-				LEFT JOIN (
-					SELECT t.`name`,im.machine_id,mt.start_time,mt.end_time FROM inno72_interact t
-					LEFT JOIN inno72_interact_machine im ON im.interact_id = t.id
-					LEFT JOIN inno72_interact_machine_time mt ON mt.interact_machine_id = im.id 
-					WHERE	t.is_delete = 0
-				) mt ON mt.machine_id=m.id and NOW() &lt; mt.end_time
-				<if test="startTime !=null and startTime !='' ">
+		SELECT
+		m.id,
+		m.machine_code,
+		CONCAT( area.province, area.city, area.district, IFNULL( l.mall, "" ),
+		IFNULL( l.NAME, "" ) ) AS local_desc,
+		mt.name AS activityName,
+		CASE
+		WHEN mt.start_time &gt; NOW() THEN '1'
+		WHEN mt.start_time &lt; NOW() and mt.end_time &gt; NOW() THEN '2'
+		ELSE null
+		END state,
+		date_format( mt.start_time, '%Y-%m-%d %H:%i:%s' ) AS start_time,
+		date_format( mt.end_time, '%Y-%m-%d %H:%i:%s' ) AS end_time,
+		l.area_code
+		FROM
+		inno72_machine m
+		LEFT JOIN inno72_locale l ON l.id = m.locale_id
+		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
+		LEFT JOIN (
+		SELECT t.`name`,im.machine_id,mt.start_time,mt.end_time FROM inno72_interact
+		t
+		LEFT JOIN inno72_interact_machine im ON im.interact_id = t.id
+		LEFT JOIN inno72_interact_machine_time mt ON mt.interact_machine_id =
+		im.id
+		WHERE t.is_delete = 0
+		) mt ON mt.machine_id=m.id and NOW() &lt; mt.end_time
+		<if test="startTime !=null and startTime !='' ">
 					<![CDATA[AND ( #{startTime} <= mt.end_time AND #{endTime} >= mt.start_time ) ]]>
-				</if>
-				WHERE m.machine_status = '4' 
-			<if test="code !=null and code !='' ">and LEFT(l.area_code,#{num})='${code}'</if>
-			<if test="machineCode !=null and machineCode !=''">
-				AND m.machine_code LIKE '%${machineCode}%'
-			</if>
-			and 9=9
-		) o order by area_code
+		</if>
+		WHERE m.machine_status = '4'
+		<if test="code !=null and code !='' ">and LEFT(l.area_code,#{num})='${code}'</if>
+		<if test="machineCode !=null and machineCode !=''">
+			AND m.machine_code LIKE '%${machineCode}%'
+		</if>
+		and 9=9
+		) o <if test="state ==1 ">and o.state =1</if>
+		<if test="state ==2 ">and o.state =2</if> order by area_code
 	</select>
 
 
@@ -216,8 +244,9 @@
 
 	<select id="findMachines" resultMap="ExceptionVoResultMap">
 		select m.id,m.machine_code
-		,if(aa.province=aa.city,CONCAT_WS('-',aa.province,aa.district,l.mall),
-		CONCAT_WS('-',aa.province,aa.city,aa.district,l.mall))
+		,CONCAT(aa.province,
+		aa.city,
+		aa.district,IFNULL( l.mall,""),IFNULL( l.name,""))
 		local from
 		inno72_machine m
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
@@ -226,6 +255,7 @@
 		aa on aa.code=l.area_code
 		where
 		m.machine_status=4
+		<if test="type ==1">and m.net_status=0</if>
 	</select>
 
 	<resultMap id="StockoutInfoResultMap" type="com.inno72.machine.vo.MachineStockOutInfo">

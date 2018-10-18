@@ -20,6 +20,7 @@ import com.inno72.common.ResultPages;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Tag;
 import com.inno72.machine.service.LocaleService;
+import com.inno72.machine.vo.BatchLocaleVo;
 import com.inno72.machine.vo.Inno72LocaleVo;
 import com.inno72.machine.vo.MachineLocaleInfo;
 
@@ -101,6 +102,11 @@ public class LocaleController {
 	public Result<List<Inno72Tag>> getTaglist(@RequestParam(required = false) String keyword) {
 		List<Inno72Tag> list = localeService.getTaglist(keyword);
 		return ResultGenerator.genSuccessResult(list);
+	}
+
+	@RequestMapping(value = "/updateBatch", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> add(@RequestBody BatchLocaleVo locale) {
+		return localeService.updateBatch(locale);
 	}
 
 }

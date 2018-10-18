@@ -655,9 +655,11 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	}
 
 	@Override
-	public List<Inno72AdminAreaVo> selectAreaMachineList(String code, String level, String startTime, String endTime) {
+	public List<Inno72AdminAreaVo> selectAreaMachineList(String code, String level, String startTime, String endTime,
+			String machineCode) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("code", code);
+		params.put("machineCode", machineCode);
 		boolean b1 = Pattern.matches(timeRegex, startTime);
 		boolean b2 = Pattern.matches(timeRegex, endTime);
 		if (!b1 || !b2) {

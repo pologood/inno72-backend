@@ -112,6 +112,7 @@
 		WHERE 1=1
 		<if test="code !=null and code !='' ">and a.parent_code = #{code}  </if>
 		<if test="level !=null and level !='' ">and a.LEVEL = #{level}  </if>
+		<if test="machineCode !=null and machineCode !='' ">and m.machine_code LIKE '%${machineCode}%'</if>
 
 	</select>
 	<select id="selectMachineList" parameterType="java.util.Map"
@@ -148,8 +149,9 @@
 				WHERE i.is_delete = 0 AND i.status != 2 and  <![CDATA[(mt.start_time <= #{endTime} and mt.end_time >= #{startTime})]]>
 			) mm
 		) aa on m.id=aa.machine_id
-		WHERE m.machine_status ='4' and LEFT(locale.area_code,#{num}) =#{code}
-		 
+		WHERE LEFT(locale.area_code,#{num}) =#{code}
+		and m.machine_status ='4'
+		<if test="machineCode !=null and machineCode !='' ">and m.machine_code LIKE '%${machineCode}%'</if>
 	</select>
 	<!-- 查询时间段内排期的机器 -->
 	<select id="selectPlanedMachine" parameterType="java.util.Map"

@@ -167,9 +167,9 @@ public class MachineController {
 	 */
 	@RequestMapping(value = "/planList", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<List<MachineListVo1>> planList(@RequestParam(required = false) String machineCode,
-			@RequestParam(required = false) String localCode, @RequestParam(required = false) String startTime,
-			@RequestParam(required = false) String endTime) {
-		List<MachineListVo1> list = machineService.findMachinePlan(machineCode, localCode, startTime, endTime);
+			@RequestParam(required = false) String status, @RequestParam(required = false) String localCode,
+			@RequestParam(required = false) String startTime, @RequestParam(required = false) String endTime) {
+		List<MachineListVo1> list = machineService.findMachinePlan(machineCode, status, localCode, startTime, endTime);
 		return ResultGenerator.genSuccessResult(list);
 	}
 
