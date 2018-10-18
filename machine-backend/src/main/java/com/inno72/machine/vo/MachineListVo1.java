@@ -96,4 +96,17 @@ public class MachineListVo1 {
 		this.detail = detail;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof MachineListVo1) {
+			MachineListVo1 result = (MachineListVo1) obj;
+			if (this.getId().equals(result.getId())) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}
+
 }

@@ -85,28 +85,29 @@
 	<select id="selectAreaMachineList" parameterType="java.util.Map"
 		resultMap="ResultAreaMachineMap">
 		SELECT
-		a.*,
-		m.id AS machine_id,
-		m.machine_code AS machine_code,
-		CASE WHEN aa.machine_id is not null THEN '1' ELSE null END AS state
-		FROM
-		inno72_admin_area a
+			a.*,m.id AS machine_id,m.machine_code AS machine_code,
+			CASE WHEN aa.machine_id is not null THEN '1' ELSE null END AS state
+		FROM inno72_admin_area a
 		LEFT JOIN (
-		SELECT m.machine_code, m.id, locale.area_code FROM inno72_machine m
-		LEFT JOIN inno72_locale locale ON locale.id = m.locale_id WHERE
-		m.machine_status ='4'
+			SELECT m.machine_code, m.id, locale.area_code FROM inno72_machine m
+			LEFT JOIN inno72_locale locale ON locale.id = m.locale_id WHERE m.machine_status ='4'
 		) m ON LEFT ( m.area_code,#{num}) = LEFT ( a.CODE,#{num})
-		LEFT JOIN ( select distinct apm.machine_id from inno72_activity_plan app
-		left join inno72_activity_plan_machine apm on
-		app.id=apm.activity_plan_id
-		where app.id not in (
-		select id from inno72_activity_plan ap where 
-				<![CDATA[(
-				ap.start_time > #{endTime}
-				OR ap.end_time < #{startTime})]]>and
-		is_delete=0) and
-		app.is_delete=0 and apm.machine_id is not null and length(apm.machine_id)>0 and
-		app.start_time is not null
+		LEFT JOIN ( 
+			SELECT DISTINCT machine_id FROM (
+				SELECT  apm.machine_id FROM inno72_activity_plan app
+				LEFT JOIN inno72_activity_plan_machine apm ON app.id = apm.activity_plan_id 
+				WHERE app.is_delete = 0  
+				AND app.id NOT IN (
+					SELECT id FROM inno72_activity_plan ap WHERE 
+					<![CDATA[(ap.start_time > #{endTime} OR ap.end_time < #{startTime})]]>
+					and is_delete = 0 ) 
+			UNION
+				SELECT DISTINCT m.machine_id
+				FROM inno72_interact_machine_time mt
+				LEFT JOIN inno72_interact_machine m ON mt.interact_machine_id = m.id
+				LEFT JOIN inno72_interact i ON m.interact_id = i.id
+				WHERE i.is_delete = 0 AND i.status != 2 and  <![CDATA[(mt.start_time > #{endTime} OR mt.end_time < #{startTime})]]>
+			) mm
 		) aa on m.id=aa.machine_id
 		WHERE 1=1
 		<if test="code !=null and code !='' ">and a.parent_code = #{code}  </if>
@@ -131,17 +132,22 @@
 		inno72_machine m
 		LEFT JOIN inno72_locale locale ON m.locale_id = locale.id
 		LEFT JOIN inno72_admin_area area ON area.CODE = locale.area_code
-		LEFT JOIN ( select distinct apm.machine_id from inno72_activity_plan app
-		left join inno72_activity_plan_machine apm on
-		app.id=apm.activity_plan_id
-		where app.id not in (
-		select id from inno72_activity_plan ap where 
-				 <![CDATA[(
-				ap.start_time > #{endTime}
-				OR ap.end_time < #{startTime})]]>and
-		is_delete=0) and
-		app.is_delete=0 and apm.machine_id is not null and length(apm.machine_id)>0 and
-		app.start_time is not null
+		LEFT JOIN ( 
+			SELECT DISTINCT machine_id FROM (
+				SELECT  apm.machine_id FROM inno72_activity_plan app
+				LEFT JOIN inno72_activity_plan_machine apm ON app.id = apm.activity_plan_id 
+				WHERE app.is_delete = 0  
+				AND app.id NOT IN (
+					SELECT id FROM inno72_activity_plan ap WHERE 
+					<![CDATA[(ap.start_time > #{endTime} OR ap.end_time < #{startTime})]]>
+					and is_delete = 0 ) 
+			UNION
+				SELECT DISTINCT m.machine_id
+				FROM inno72_interact_machine_time mt
+				LEFT JOIN inno72_interact_machine m ON mt.interact_machine_id = m.id
+				LEFT JOIN inno72_interact i ON m.interact_id = i.id
+				WHERE i.is_delete = 0 AND i.status != 2 and  <![CDATA[(mt.start_time <= #{endTime} and mt.end_time >= #{startTime})]]>
+			) mm
 		) aa on m.id=aa.machine_id
 		WHERE LEFT(locale.area_code,#{num}) =#{code}
 		and m.machine_status ='4'
@@ -159,6 +165,23 @@
 			and ( <![CDATA[ap.start_time <= #{endTime} AND ap.end_time >= #{startTime} ]]>)
 		</if>
 	</select>
+	
+	<select id="selectInteractMachine" parameterType="java.util.Map"
+		resultMap="machinesResult">
+		SELECT
+			im.machine_id
+		FROM
+			inno72_interact_machine_time imt
+			LEFT JOIN inno72_interact_machine im ON im.id = imt.interact_machine_id
+			LEFT JOIN inno72_interact i ON i.id = im.interact_id
+			WHERE i.is_delete =0 AND i.`status` != 2  
+		<if test="interactId !=null and interactId !='' ">and im.interact_id = #{interactId}  </if>
+		<if test="noInteractId !=null and noInteractId !='' ">and im.interact_id != #{noInteractId}  </if>
+		<if test="startTime !=null and startTime !='' ">
+			and ( <![CDATA[imt.start_time <= #{endTime} AND imt.end_time >= #{startTime} ]]>)
+		</if>
+	</select>
+	
 
 	<!-- 查询时间段内没有排期的机器 -->
 	<select id="selectNoPlanedMachine" parameterType="String"

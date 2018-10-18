@@ -58,6 +58,7 @@ import com.inno72.machine.vo.MachineAppStatus;
 import com.inno72.machine.vo.MachineExceptionVo;
 import com.inno72.machine.vo.MachineInstallAppBean;
 import com.inno72.machine.vo.MachineListVo;
+import com.inno72.machine.vo.MachineListVo1;
 import com.inno72.machine.vo.MachineLogInfo;
 import com.inno72.machine.vo.MachineNetInfo;
 import com.inno72.machine.vo.MachinePortalVo;
@@ -133,7 +134,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	}
 
 	@Override
-	public List<MachineListVo> findMachinePlan(String machineCode, String state, String localCode, String startTime,
+	public List<MachineListVo1> findMachinePlan(String machineCode, String state, String localCode, String startTime,
 			String endTime) {
 		Map<String, Object> param = new HashMap<>();
 		if (StringUtil.isNotEmpty(localCode)) {
@@ -150,7 +151,15 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			param.put("endTime", endTime + " 23:59:59");
 		}
 
-		List<MachineListVo> machines = inno72MachineMapper.findMachinePlan(param);
+		List<MachineListVo1> machines = inno72MachineMapper.findMachinePlan(param);
+		List<MachineListVo1> interactMachines = inno72MachineMapper.findMachineInteract(param);
+
+		for (MachineListVo1 machine : machines) {
+			if (interactMachines.contains(machine)) {
+				int index = interactMachines.indexOf(machine);
+				machine.getPlanTime().addAll(interactMachines.get(index).getPlanTime());
+			}
+		}
 		return machines;
 	}
 

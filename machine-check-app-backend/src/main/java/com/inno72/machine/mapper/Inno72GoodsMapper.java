@@ -14,4 +14,6 @@ public interface Inno72GoodsMapper extends Mapper<Inno72Goods> {
 	List<Inno72Goods> getLackGoods(String checkUserId);
 
 	List<Inno72Goods> selectByMachineId(String machineId);
+
+	List<Inno72Goods> selectPaiyangByMachineId(String machineId);
 }

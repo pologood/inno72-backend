@@ -11,10 +11,10 @@ import com.inno72.project.vo.Inno72MerchantVo;
 
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72MerchantMapper extends Mapper<Inno72Merchant> {
-	
+
 	List<Inno72MerchantVo> selectByPage(Map<String, Object> params);
-	
+
 	int selectIsUseing(String id);
-	
+
 	int getCount(@Param("code") String code);
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.Interact.mapper.Inno72InteractMachineTimeMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.Interact.model.Inno72InteractMachineTime">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="interact_machine_id" jdbcType="VARCHAR" property="interactMachineId" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+  </resultMap>
+  
+  <insert id="insertInteractMachineTimeList" parameterType="java.util.List">
+        insert into inno72_interact_machine_time (id,interact_machine_id,start_time,end_time)
+        values
+        <foreach collection="list" item="t" index="index" separator=",">
+            (#{t.id}, #{t.interactMachineId},#{t.startTime},#{t.endTime})
+        </foreach>
+    </insert>
+  
+  
+</mapper>

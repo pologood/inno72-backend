@@ -14,6 +14,7 @@
     <result column="shop_id" jdbcType="VARCHAR" property="shopId" />
     <result column="img" jdbcType="VARCHAR" property="img" />
     <result column="banner" jdbcType="VARCHAR" property="banner" />
+    <result column="use_type" jdbcType="INTEGER" property="useType" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="spec_remark" jdbcType="VARCHAR" property="specRemark" />

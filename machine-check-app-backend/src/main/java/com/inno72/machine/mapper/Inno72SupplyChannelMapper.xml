@@ -1,231 +1,310 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.inno72.machine.mapper.Inno72SupplyChannelMapper">
-  <resultMap id="BaseResultMap" type="com.inno72.machine.model.Inno72SupplyChannel">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="code" jdbcType="VARCHAR" property="code" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="status" jdbcType="INTEGER" property="status" />
-    <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
-    <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
-    <result column="volume_count" jdbcType="INTEGER" property="volumeCount" />
-    <result column="goods_count" jdbcType="INTEGER" property="goodsCount" />
-    <result column="create_id" jdbcType="VARCHAR" property="createId" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="is_delete" jdbcType="INTEGER" property="isDelete"/>
-    <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
-    <result column="goodsCode" jdbcType="VARCHAR" property="goodsCode"/>
-    <result column="goodsId" jdbcType="VARCHAR" property="goodsId"/>
-    <result column="goodsStatus" jdbcType="INTEGER" property="goodsStatus"/>
-    <result column="machineCode" jdbcType="VARCHAR" property="machineCode"/>
-    <result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
-    <association property="checkUserList" resultMap="CheckUserList"/>
-  </resultMap>
+    <resultMap id="BaseResultMap" type="com.inno72.machine.model.Inno72SupplyChannel">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="machine_id" jdbcType="VARCHAR" property="machineId"/>
+        <result column="parent_code" jdbcType="VARCHAR" property="parentCode"/>
+        <result column="volume_count" jdbcType="INTEGER" property="volumeCount"/>
+        <result column="goods_count" jdbcType="INTEGER" property="goodsCount"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_id" jdbcType="VARCHAR" property="updateId"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="is_delete" jdbcType="INTEGER" property="isDelete"/>
+        <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
+        <result column="goodsCode" jdbcType="VARCHAR" property="goodsCode"/>
+        <result column="goodsId" jdbcType="VARCHAR" property="goodsId"/>
+        <result column="goodsStatus" jdbcType="INTEGER" property="goodsStatus"/>
+        <result column="machineCode" jdbcType="VARCHAR" property="machineCode"/>
+        <result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
+        <association property="checkUserList" resultMap="CheckUserList"/>
+    </resultMap>
 
-  <resultMap id="CheckUserList" type="com.inno72.check.model.Inno72CheckUser">
-    <result column="checkUserId" jdbcType="VARCHAR" property="id"/>
-    <result column="checkUserName" jdbcType="VARCHAR" property="name"/>
-    <result column="checkUserPhone" jdbcType="VARCHAR" property="phone"/>
-  </resultMap>
-
-
-  <update id="subCount">
-    update inno72_supply_channel set goods_count = goods_count-1,
-    update_time=#{updateTime}
-    where machine_id=#{machineId} and code=#{code}
-  </update>
+    <resultMap id="CheckUserList" type="com.inno72.check.model.Inno72CheckUser">
+        <result column="checkUserId" jdbcType="VARCHAR" property="id"/>
+        <result column="checkUserName" jdbcType="VARCHAR" property="name"/>
+        <result column="checkUserPhone" jdbcType="VARCHAR" property="phone"/>
+    </resultMap>
 
 
-  <sql id="Column_List">
-      t1.id,t1.code,t1.name,t1.status,t1.machine_id,t1.parent_code,t1.volume_count,t1.is_delete,
-      t1.goods_count,t1.create_id,t1.create_time,t1.update_id,t1.update_time,
-      t2.goods_id goodsId,
-      t2.is_delete goodsStatus,
-      t3.name goodsName,t3.code goodsCode
-  </sql>
-
-  <sql id="Column_Get">
-    id,code,name,status,machine_id,parent_code,volume_count,is_delete,goods_count,create_id,create_time,update_id,update_time
-  </sql>
+    <update id="subCount">
+        update inno72_supply_channel set goods_count = goods_count-1,
+        update_time=#{updateTime}
+        where machine_id=#{machineId} and code=#{code}
+    </update>
 
 
-  <select id="selectByParam" resultMap="BaseResultMap">
-    select <include refid="Column_List"/>
-    from inno72_supply_channel t1 left join inno72_supply_channel_goods t2
-    on t1.id=t2.supply_channel_id left join inno72_goods t3
-    on t2.goods_id=t3.id
-    <where>
-      <if test="code != null">
-        and t1.code = #{code}
-      </if>
-      <if test="machineId != null">
-        and t1.machine_id = #{machineId}
-      </if>
-      <if test="parentCode != null">
-        and t1.parent_code = #{parentCode}
-      </if>
-      and t1.is_delete=0
-    </where>
-    limit 1
-  </select>
+    <sql id="Column_List">
+        t1.id,t1.code,t1.name,t1.status,t1.machine_id,t1.parent_code,t1.volume_count,t1.is_delete,
+        t1.goods_count,t1.create_id,t1.create_time,t1.update_id,t1.update_time,
+        t2.goods_id goodsId,t2.is_delete goodsStatus,
+        t3.name goodsName,t3.code goodsCode
+    </sql>
 
-  <select id="selectListByParam" resultMap="BaseResultMap">
-    select <include refid="Column_List"/>
-    from inno72_supply_channel t1 left join inno72_supply_channel_goods t2
-    on t1.id=t2.supply_channel_id left join inno72_goods t3
-    on t2.goods_id=t3.id
-    <where>
-      <if test="code != null">
-        and t1.code = #{code}
-      </if>
-      <if test="machineId != null">
-        and t1.machine_id = #{machineId}
-      </if>
-      <if test="goodsCodes != null">
-        and
-        <foreach collection="goodsCodes" index="index" item="item" separator="or" open="(" close=")">
-          t2.goods_id =#{item,jdbcType=VARCHAR}
+    <sql id="Column_Get">
+        id,code,name,status,machine_id,parent_code,volume_count,is_delete,goods_count,create_id,create_time,update_id,update_time
+    </sql>
+
+
+    <select id="selectByParam" resultMap="BaseResultMap">
+        select
+        <include refid="Column_List"/>
+        from inno72_supply_channel t1 left join inno72_supply_channel_goods t2
+        on t1.id=t2.supply_channel_id left join inno72_goods t3
+        on t2.goods_id=t3.id
+        <where>
+            <if test="code != null">
+                and t1.code = #{code}
+            </if>
+            <if test="machineId != null">
+                and t1.machine_id = #{machineId}
+            </if>
+            <if test="parentCode != null">
+                and t1.parent_code = #{parentCode}
+            </if>
+            and t1.is_delete=0
+        </where>
+        limit 1
+    </select>
+
+    <select id="selectListByParam" resultMap="BaseResultMap">
+        select
+        <include refid="Column_List"/>
+        from inno72_supply_channel t1 left join inno72_supply_channel_goods t2
+        on t1.id=t2.supply_channel_id left join inno72_goods t3
+        on t2.goods_id=t3.id
+        <where>
+            <if test="code != null">
+                and t1.code = #{code}
+            </if>
+            <if test="machineId != null">
+                and t1.machine_id = #{machineId}
+            </if>
+            <if test="goodsCodes != null">
+                and
+                <foreach collection="goodsCodes" index="index" item="item" separator="or" open="(" close=")">
+                    t2.goods_id =#{item,jdbcType=VARCHAR}
+                </foreach>
+            </if>
+            <if test="codes != null">
+                and
+                <foreach collection="codes" item="item" separator="or" open="(" close=")">
+                    t1.code = #{item,jdbcType=VARCHAR}
+                </foreach>
+            </if>
+            <if test="status != null">
+                and t1.status = #{status}
+            </if>
+        </where>
+        order by t1.code * 1
+    </select>
+
+
+    <update id="updateByParam">
+        update inno72_supply_channel
+        <set>
+            <if test="name != null">
+                name=#{name},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="parentCode != null">
+                parent_code = #{parentCode},
+            </if>
+            <if test="volumeCount != null">
+                volume_count = #{volumeCount},
+            </if>
+            <if test="goodsCount != null">
+                goods_count = #{goodsCount},
+            </if>
+            <if test="updateId != null">
+                update_id = #{updateId},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where machine_id=#{machineId} and code=#{code}
+    </update>
+
+
+    <update id="updateListByParam">
+        update inno72_supply_channel
+        <set>
+            <if test="name != null">
+                name=#{name},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="parentCode != null">
+                parent_code = #{parentCode},
+            </if>
+            <if test="volumeCount != null">
+                volume_count = #{volumeCount},
+            </if>
+            <if test="goodsCount != null">
+                goods_count = #{goodsCount},
+            </if>
+            <if test="updateId != null">
+                update_id = #{updateId},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where machine_id=#{machineId} and
+        <foreach collection="codes" index="index" item="item" separator="or" open="(" close=")">
+            code =#{item,jdbcType=VARCHAR}
         </foreach>
-      </if>
-      <if test="codes != null">
-        and
-        <foreach collection="codes" item="item" separator="or" open="(" close=")">
-          t1.code = #{item,jdbcType=VARCHAR}
-        </foreach>
-      </if>
-      <if test="status != null">
-        and t1.status = #{status}
-      </if>
-    </where>
-    order by t1.code * 1
-  </select>
+    </update>
+
+    <select id="selectTask" resultMap="BaseResultMap">
+        SELECT
+        sum(sc.goods_count) goods_count,
+        goods.name goodsName,
+        m.machine_code machineCode,
+        CONCAT(
+            aa.province,
+            aa.city,
+            aa.district,
+            IF(aa.circle = '其他' OR aa.circle IS NULL,'',aa.circle),
+            IFNULL( l.mall, '' ),
+            IFNULL( l.NAME, '' )
+        ) AS localeStr,
+        ap.start_time,
+        ap.end_time
+        FROM
+        inno72_supply_channel_goods scg
+        LEFT JOIN inno72_supply_channel sc ON scg.supply_channel_id = sc.id
+        LEFT JOIN inno72_goods goods ON scg.goods_id = goods.id
+        LEFT JOIN inno72_machine m ON sc.machine_id = m.id
+        LEFT JOIN inno72_locale l ON l.id = m.locale_id
+        LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code
+        LEFT JOIN inno72_activity_plan_machine apm ON m.id = apm.machine_id
+        LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id
+        WHERE
+        m.machine_status = 4
+        AND now( ) BETWEEN ap.start_time
+        AND ap.end_time
+        AND sc.is_delete = 0
+        GROUP BY
+        m.machine_code,
+        scg.goods_id,
+        ap.id
+    </select>
+    <select id="selectLockGoods" resultMap="BaseResultMap">
+        SELECT
+        sum( sc.goods_count ) goods_count,
+        goods.name goodsName,
+        m.machine_code machineCode,
+        CONCAT(
+            aa.province,
+            aa.city,
+            aa.district,
+            IF(aa.circle = '其他' OR aa.circle IS NULL,'',aa.circle),
+            IFNULL(l.mall,""),
+            IFNULL(l.name,"")
+        ) AS localeStr
+        FROM
+        inno72_supply_channel sc
+        INNER JOIN inno72_supply_channel_goods scg ON sc.id = scg.supply_channel_id
+        INNER JOIN inno72_goods goods ON scg.goods_id = goods.id
+        LEFT JOIN inno72_machine m ON sc.machine_id = m.id
+        LEFT JOIN inno72_locale l ON l.id = m.locale_id
+        LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code
+        LEFT JOIN inno72_activity_plan_machine apm ON m.id = apm.machine_id
+        LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id
+        WHERE
+        m.machine_status = 4
+        AND now( ) BETWEEN ap.start_time
+        AND ap.end_time
+        AND scg.goods_id = #{goodsId}
+        AND sc.is_delete = 0
+        AND sc.machine_id = #{machineId}
+    </select>
 
 
-  <update id="updateByParam">
-    update inno72_supply_channel
-    <set>
-      <if test="name != null">
-        name=#{name},
-      </if>
-      <if test="status != null">
-        status = #{status},
-      </if>
-      <if test="parentCode != null">
-        parent_code = #{parentCode},
-      </if>
-      <if test="volumeCount != null">
-        volume_count = #{volumeCount},
-      </if>
-      <if test="goodsCount != null">
-        goods_count = #{goodsCount},
-      </if>
-      <if test="updateId != null">
-        update_id = #{updateId},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime},
-      </if>
-    </set>
-    where machine_id=#{machineId} and code=#{code}
-  </update>
-
-
-  <update id="updateListByParam">
-    update inno72_supply_channel
-    <set>
-      <if test="name != null">
-        name=#{name},
-      </if>
-      <if test="status != null">
-        status = #{status},
-      </if>
-      <if test="parentCode != null">
-        parent_code = #{parentCode},
-      </if>
-      <if test="volumeCount != null">
-        volume_count = #{volumeCount},
-      </if>
-      <if test="goodsCount != null">
-        goods_count = #{goodsCount},
-      </if>
-      <if test="updateId != null">
-        update_id = #{updateId},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime},
-      </if>
-    </set>
-    where machine_id=#{machineId} and
-    <foreach collection="codes" index="index" item="item" separator="or" open="(" close=")">
-      code =#{item,jdbcType=VARCHAR}
-    </foreach>
-  </update>
-
-  <select id="selectTask" resultMap="BaseResultMap">
-    select sum(t2.goods_count) goods_count,
-    t3.name goodsName,
-    t4.machine_code machineCode,
-    CONCAT(
-		t6.province,
-		t6.city,
-		t6.district,
-		if(t6.circle='其他' or t6.circle is null,'',t6.circle),IFNULL(t5.mall,""),IFNULL( t5.name,'')
-		) AS localeStr,t8.start_time,t8.end_time
-    from inno72_supply_channel_goods t1
-    left join inno72_supply_channel t2 on t1.supply_channel_id=t2.id
-    left join inno72_goods t3 on t1.goods_id=t3.id
-    left join inno72_machine t4 on t2.machine_id=t4.id
-    LEFT JOIN inno72_locale t5 ON t5.id = t4.locale_id
-	LEFT JOIN inno72_admin_area t6 ON t6.CODE = t5.area_code
-	left join inno72_activity_plan_machine t7 on t4.id=t7.machine_id
-	left join inno72_activity_plan t8 on t7.activity_plan_id=t8.id
-    where t4.machine_status=4 and now() BETWEEN t8.start_time and t8.end_time
-    and t2.is_delete=0
- group by t4.machine_code,t1.goods_id,t8.id
-  </select>
-
-  <select id="selectLockGoods" resultMap="BaseResultMap">
-    select sum(t1.goods_count) goods_count,
-    t3.name goodsName,
-    t4.machine_code machineCode,
-    CONCAT(
-		t6.province,
-		t6.city,
-		t6.district,
-		if(t6.circle='其他' or t6.circle is null,'',t6.circle),IFNULL(t5.mall,""),IFNULL( t5.name,'')
-		) AS localeStr
-    from inno72_supply_channel t1
-    inner join inno72_supply_channel_goods t2 on t1.id=t2.supply_channel_id
-    inner join inno72_goods t3 on t2.goods_id=t3.id
-    left join inno72_machine t4 on t1.machine_id=t4.id
-    LEFT JOIN inno72_locale t5 ON t5.id = t4.locale_id
-	LEFT JOIN inno72_admin_area t6 ON t6.CODE = t5.area_code
-	left join inno72_activity_plan_machine t7 on t4.id=t7.machine_id
-	left join inno72_activity_plan t8 on t7.activity_plan_id=t8.id
-    where
-    t4.machine_status=4 and now() BETWEEN t8.start_time and t8.end_time
-    and t2.goods_id=#{goodsId} and t1.is_delete=0 and t1.machine_id=#{machineId}
-  </select>
-
+    <select id="selectPaiyangLockGoods" resultMap="BaseResultMap">
+        SELECT
+        sum(sc.goods_count) goods_count,
+        goods.name goodsName,
+        m.machine_code machineCode,
+        CONCAT(
+        aa.province,
+        aa.city,
+        aa.district,
+        if(aa.circle='其他' or aa.circle is null,'',aa.circle),IFNULL(l.mall,''),IFNULL( l.name,'')
+        ) AS localeStr
+        from inno72_supply_channel sc
+        INNER JOIN inno72_supply_channel_goods scg ON sc.id = scg.supply_channel_id
+        INNER JOIN inno72_goods goods ON scg.goods_id = goods.id
+        INNER JOIN inno72_machine m ON sc.machine_id = m.id
+        INNER JOIN inno72_interact_machine im ON m.id = im.machine_id
+        INNER JOIN inno72_interact_machine_time imt ON im.id = imt.interact_machine_id AND now( ) BETWEEN imt.start_time AND imt.end_time
+        INNER JOIN inno72_interact_machine_goods img ON goods.id = img.goods_id AND now( ) BETWEEN img.start_time AND img.end_time
+        LEFT JOIN inno72_locale l ON l.id = m.locale_id
+        LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code
+        WHERE
+	    m.machine_status = 4
+	    AND scg.goods_id = #{goodsId}
+	    AND sc.is_delete=0
+	    AND sc.machine_id=#{machineId}
+    </select>
 
 
     <select id="selectLockGoodsList" resultType="com.inno72.model.GoodsBean">
-        select sum(t1.goods_count) totalCount,
-        t3.name goodsName,t3.id goodsId
-        from inno72_supply_channel t1
-        inner join inno72_supply_channel_goods t2 on t1.id=t2.supply_channel_id
-        inner join inno72_goods t3 on t2.goods_id=t3.id
-        left join inno72_machine t4 on t1.machine_id=t4.id
-        left join inno72_activity_plan_machine t7 on t4.id=t7.machine_id
-        left join inno72_activity_plan t8 on t7.activity_plan_id=t8.id
-        where
-        t4.machine_status=4 and now() BETWEEN t8.start_time and t8.end_time
-        and t1.machine_id=#{machineId} and t1.is_delete=0
-        group by t3.id
+        SELECT
+        sum( sc.goods_count ) totalCount,
+        goods.NAME goodsName,
+        goods.id goodsId
+        FROM
+        inno72_supply_channel sc
+        INNER JOIN inno72_supply_channel_goods scg ON sc.id = scg.supply_channel_id
+        INNER JOIN inno72_goods goods ON scg.goods_id = goods.id
+        LEFT JOIN inno72_machine m ON sc.machine_id = m.id
+        LEFT JOIN inno72_activity_plan_machine apm ON m.id = apm.machine_id
+        LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id
+        WHERE
+        m.machine_status = 4
+        AND now( ) BETWEEN ap.start_time
+        AND ap.end_time
+        AND sc.machine_id = #{machineId}
+        AND sc.is_delete = 0
+        GROUP BY
+        goods.id
+    </select>
+    <select id="selectPaiyangLockGoodsList" resultType="com.inno72.model.GoodsBean">
+        SELECT
+        sum( sc.goods_count ) totalCount,
+        goods.NAME goodsName,
+        goods.id goodsId
+        FROM
+        inno72_supply_channel sc
+        INNER JOIN inno72_supply_channel_goods scg ON sc.id = scg.supply_channel_id
+        INNER JOIN inno72_goods goods ON scg.goods_id = goods.id
+        INNER JOIN inno72_machine m ON sc.machine_id = m.id
+        INNER JOIN inno72_interact_machine im ON m.id = im.machine_id
+        INNER JOIN inno72_interact_machine_time imt ON im.id = imt.interact_machine_id
+        AND now( ) BETWEEN imt.start_time
+        AND imt.end_time
+        INNER JOIN inno72_interact_machine_goods img ON goods.id = img.goods_id
+        AND now( ) BETWEEN img.start_time
+        AND img.end_time
+        WHERE
+        m.machine_status = 4
+        AND now( )
+        AND sc.machine_id = #{machineId}
+        AND sc.is_delete=0
+        GROUP BY
+        goods.id
     </select>
 </mapper>

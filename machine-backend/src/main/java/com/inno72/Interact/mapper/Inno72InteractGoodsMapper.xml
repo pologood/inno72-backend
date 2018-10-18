@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.Interact.mapper.Inno72InteractGoodsMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.Interact.model.Inno72InteractGoods">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="interact_id" jdbcType="VARCHAR" property="interactId" />
+    <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
+    <result column="user_day_number" jdbcType="INTEGER" property="userDayNumber" />
+  </resultMap>
+  
+  <resultMap id="InteractGoodsVoResultMap" type="com.inno72.Interact.vo.InteractGoodsVo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="interact_id" jdbcType="VARCHAR" property="interactId" />
+    <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
+    <result column="user_day_number" jdbcType="INTEGER" property="userDayNumber" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
+    <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
+    
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
+    <result column="shop_id" jdbcType="VARCHAR" property="shopId" />
+    <result column="img" jdbcType="VARCHAR" property="img" />
+    <result column="banner" jdbcType="VARCHAR" property="banner" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="spec_remark" jdbcType="VARCHAR" property="specRemark" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  <select id="selectInteractGoodsById" parameterType="String" resultMap="InteractGoodsVoResultMap">
+		SELECT
+			g.*,ig.interact_id,ig.user_day_number,ig.type 
+		FROM
+			inno72_interact_goods ig
+			LEFT JOIN inno72_goods g ON g.id = ig.goods_id 
+		WHERE ig.type =0 and ig.goods_id = #{id}
+  </select>
+  
+  <select id="selectInteractCouponById" parameterType="String" resultMap="InteractGoodsVoResultMap">
+		SELECT
+			c.*,ig.interact_id,ig.user_day_number,ig.type 
+		FROM
+			inno72_interact_goods ig 
+			LEFT JOIN inno72_coupon c ON c.id = ig.goods_id
+		WHERE  ig.type =1 and ig.goods_id = #{id}
+  </select>
+  
+  <select id="selectGoods" parameterType="java.util.Map" resultMap="InteractGoodsVoResultMap">
+		SELECT
+			g.id,g.`code`,g.`name`,s.shop_name AS shop_name,m.merchant_name AS merchant_name,ig.user_day_number,ig.type 
+		FROM
+			inno72_interact_goods ig 
+			LEFT JOIN inno72_goods g ON g.id = ig.goods_id 
+			LEFT JOIN inno72_shops s ON s.id = g.shop_id 
+			LEFT JOIN inno72_merchant m ON m.id = g.seller_id 
+		WHERE ig.type =0 AND g.id is not null
+		<if test="interactId !=null and interactId !='' ">and ig.interact_id = #{interactId} </if>
+		<if test="shopsId !=null and shopsId !='' ">and g.shop_id = #{shopsId} </if>
+		UNION
+		SELECT
+			c.id,c.`code`,CONCAT(c.`name`,'（券）') AS name ,s.shop_name AS shop_name,m.merchant_name AS merchant_name,ig.user_day_number,ig.type 
+		FROM
+			inno72_interact_goods ig 
+			LEFT JOIN inno72_coupon c ON c.id = ig.goods_id 
+			LEFT JOIN inno72_shops s ON s.id = c.shops_id 
+			LEFT JOIN inno72_merchant m ON m.id = s.seller_id 
+		WHERE ig.type =1 AND c.id is not null
+		<if test="interactId !=null and interactId !='' ">and ig.interact_id = #{interactId} </if>
+		<if test="shopsId !=null and shopsId !='' ">and c.shops_id = #{shopsId} </if>
+				
+  </select>
+  
+  <resultMap id="GoodsTreeResultMap" type="com.inno72.Interact.vo.TreeVo">
+    <result column="id" jdbcType="VARCHAR" property="key" />
+    <result column="name" jdbcType="VARCHAR" property="title" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+  </resultMap>
+  
+  <select id="selectGoodsTree" parameterType="java.util.Map" resultMap="GoodsTreeResultMap">
+	 	SELECT g.id,g.name,0 as type FROM inno72_goods g WHERE g.is_delete=0
+		<if test="shopsId !=null and shopsId !='' ">and g.shop_id = #{shopsId}</if>
+		UNION
+		SELECT c.id,CONCAT(c.`name`,'（券）') AS name ,1 as type FROM inno72_coupon c WHERE c.is_delete=0
+		<if test="shopsId !=null and shopsId !='' ">and c.shops_id = #{shopsId}</if>
+  </select>
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+</mapper>

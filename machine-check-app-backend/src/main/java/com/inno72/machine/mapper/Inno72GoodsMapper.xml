@@ -58,4 +58,13 @@
         where t5.id=#{machineId}
         and now() BETWEEN t3.start_time and t3.end_time
     </select>
+
+    <select id="selectPaiyangByMachineId" resultMap="BaseResultMap">
+        select goods.*
+        from inno72_interact_machine_goods mg
+        inner join inno72_goods goods on goods.id=mg.goods_id
+        inner join inno72_interact_machine im on mg.interact_machine_id=im.id
+        inner join inno72_interact_machine_time mt on im.id=mt.interact_machine_id and now() BETWEEN mt.start_time AND mt.end_time
+        where im.machine_id=#{machineId} and now() BETWEEN mg.start_time and mg.end_time
+    </select>
 </mapper>

@@ -378,7 +378,10 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		if (StringUtil.isEmpty(machineId)) {
 			return Results.failure("参数不能为空");
 		}
-		List<Inno72Goods> list = inno72GoodsMapper.selectByMachineId(machineId);
+		List<Inno72Goods> list = inno72GoodsMapper.selectPaiyangByMachineId(machineId);
+		if(list == null || list.size()==0){
+			list = inno72GoodsMapper.selectByMachineId(machineId);
+		}
 		return ResultGenerator.genSuccessResult(list);
 	}
 
@@ -617,27 +620,41 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		Map<String,Object> map = new HashMap<>();
 		map.put("goodsId",goodsId);
 		map.put("machineId",machineId);
-		Inno72SupplyChannel supplyChannel = inno72SupplyChannelMapper.selectLockGoods(map);
+		Inno72SupplyChannel supplyChannel = inno72SupplyChannelMapper.selectPaiyangLockGoods(map);
 		if(supplyChannel != null){
-			int totalCount = supplyChannel.getGoodsCount();
-			logger.info("查询出商品货道信息{}",JSON.toJSON(supplyChannel));
-			if(totalCount == 20 || totalCount == 10 || totalCount == 5){
-				ChannelGoodsAlarmBean alarmBean = new ChannelGoodsAlarmBean();
-				alarmBean.setGoodsName(supplyChannel.getGoodsName());
-				alarmBean.setMachineCode(supplyChannel.getMachineCode());
-				alarmBean.setSurPlusNum(totalCount);
-				alarmBean.setLocaleStr(supplyChannel.getLocaleStr());
-				List<GoodsBean> goodsBeanList = inno72SupplyChannelMapper.selectLockGoodsList(machineId);
-				alarmBean.setGoodsBeanList(goodsBeanList);
-				AlarmMessageBean alarmMessageBean = new AlarmMessageBean();
-				alarmMessageBean.setSystem("machineLackGoods");
-				alarmMessageBean.setType("machineLackGoodsException");
-				alarmMessageBean.setData(alarmBean);
-				logger.info("货道缺货发送push{}", JSONObject.toJSONString(alarmMessageBean));
-				redisUtil.publish("moniterAlarm", JSONObject.toJSONString(alarmMessageBean));
+			this.sendLockToAlarm(supplyChannel,machineId,1);
+		}else{
+			supplyChannel = inno72SupplyChannelMapper.selectLockGoods(map);
+			if(supplyChannel != null){
+				this.sendLockToAlarm(supplyChannel,machineId,2);
 			}
 		}
 
+	}
+
+	public void sendLockToAlarm(Inno72SupplyChannel supplyChannel,String machineId,int type){
+		List<GoodsBean> goodsBeanList = null;
+		if(type == 1){
+			goodsBeanList = inno72SupplyChannelMapper.selectPaiyangLockGoodsList(machineId);
+		}else if(type==2){
+			goodsBeanList = inno72SupplyChannelMapper.selectLockGoodsList(machineId);
+		}
+		int totalCount = supplyChannel.getGoodsCount();
+		logger.info("查询出商品货道信息{}",JSON.toJSON(supplyChannel));
+		if(totalCount == 20 || totalCount == 10 || totalCount == 5){
+			ChannelGoodsAlarmBean alarmBean = new ChannelGoodsAlarmBean();
+			alarmBean.setGoodsName(supplyChannel.getGoodsName());
+			alarmBean.setMachineCode(supplyChannel.getMachineCode());
+			alarmBean.setSurPlusNum(totalCount);
+			alarmBean.setLocaleStr(supplyChannel.getLocaleStr());
+			alarmBean.setGoodsBeanList(goodsBeanList);
+			AlarmMessageBean alarmMessageBean = new AlarmMessageBean();
+			alarmMessageBean.setSystem("machineLackGoods");
+			alarmMessageBean.setType("machineLackGoodsException");
+			alarmMessageBean.setData(alarmBean);
+			logger.info("货道缺货发送push{}", JSONObject.toJSONString(alarmMessageBean));
+			redisUtil.publish("moniterAlarm", JSONObject.toJSONString(alarmMessageBean));
+		}
 	}
 
 	@Override

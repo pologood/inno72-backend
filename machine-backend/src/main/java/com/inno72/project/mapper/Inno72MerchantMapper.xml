@@ -11,6 +11,7 @@
     <result column="origin_flag" jdbcType="VARCHAR" property="originFlag" />
     <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
     <result column="channel_id" jdbcType="VARCHAR" property="channelId" />
+    <result column="sell_session_key" jdbcType="VARCHAR" property="sellSessionKey" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
@@ -26,6 +27,7 @@
 			m.brand_name,
 			m.origin_flag,
 			c.channel_name as channel_id,
+			m.sell_session_key,
 			m.is_delete,
 			m.create_time,
 			m.update_time

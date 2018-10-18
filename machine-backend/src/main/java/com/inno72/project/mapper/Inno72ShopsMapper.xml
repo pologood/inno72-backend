@@ -9,6 +9,7 @@
     <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
     <result column="shop_code" jdbcType="VARCHAR" property="shopCode" />
     <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
+    <result column="session_key" jdbcType="VARCHAR" property="sessionKey" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
@@ -23,6 +24,7 @@
 			s.shop_name,
 			s.shop_code,
 			m.merchant_name as seller_id,
+			s.session_key,
 			s.is_delete,
 			s.remark,
 			s.create_id,
@@ -60,6 +62,7 @@
   <select id="selectMerchantShops" parameterType="java.util.Map" resultMap="BaseResultMap">
 	 	SELECT
 			s.id,
+			m.merchant_name AS seller_id,
 			CONCAT(IFNULL( m.merchant_name,''), '-', IFNULL( s.shop_name,'') ) AS shop_name,
 			s.shop_code
 		FROM
