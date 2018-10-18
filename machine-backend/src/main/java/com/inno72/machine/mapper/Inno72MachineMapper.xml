@@ -106,6 +106,7 @@
 	</resultMap>
 	<select id="findMachinePlan" parameterType="java.util.Map"
 		resultMap="Vo1ResultMap">
+		select * from (
 		SELECT
 		m.id,
 		m.machine_code,
