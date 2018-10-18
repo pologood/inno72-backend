@@ -341,15 +341,14 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (updateStatus == 2) {
 			Inno72LocaleVo local = inno72LocaleMapper.selectById(machine.getLocaleId());
 			if (local != null && local.getType() == 2) {
-				// List<String> names = new ArrayList<String>();
-				// Condition condition = new Condition(Inno72App.class);
-				// condition.createCriteria().andEqualTo("appBelong", 6);
-				// List<Inno72App> appAll =
-				// appService.findByCondition(condition);
-				// for (Inno72App app : appAll) {
-				// names.add(app.getAppPackageName());
-				// }
-				// msg.setData(names);
+				List<String> names = new ArrayList<String>();
+				Condition condition = new Condition(Inno72App.class);
+				condition.createCriteria().andEqualTo("appBelong", 6);
+				List<Inno72App> appAll = appService.findByCondition(condition);
+				for (Inno72App app : appAll) {
+					names.add(app.getAppPackageName());
+				}
+				msg.setData(names);
 			} else {
 				List<String> names = new ArrayList<String>();
 				Condition condition = new Condition(Inno72App.class);
