@@ -92,6 +92,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 				}
 
 				model.setId(StringUtil.getUUID());
+				model.setUseType(1);
 				model.setIsDelete(0);
 				model.setCreateId(mUserId);
 				model.setUpdateId(mUserId);
