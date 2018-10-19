@@ -104,7 +104,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
 		if (machine != null) {
 
-			if (status == 0) {
+			if (status == 1) {
 				String m = "用户{0}，在erp系统中启用货道{1}";
 				String mm = MessageFormat.format(m, mUser.getName(), code);
 				LogUtil.logger(LogType.ENABLE_CHANNEL.getCode(), machine.getMachineCode(), mm);
