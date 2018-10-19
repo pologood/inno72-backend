@@ -850,7 +850,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		Map<String, String> params = new HashMap<>();
 		params.put("msg", JSON.toJSONString(param));
 
-		if (machine.getMachineStatus() == 2) {
+		if (machine.getMachineStatus() == 9) {
 			msgUtil.sendPush("push_android_tm_transmission_common", params, machine.getMachineCode(),
 					"machine-backend--grabLog", "获取日志", "获取日志");
 			return Results.success();
