@@ -41,6 +41,7 @@ import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.common.datetime.LocalDateUtil;
 import com.inno72.machine.mapper.Inno72AppScreenShotMapper;
+import com.inno72.machine.mapper.Inno72LocaleMapper;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72App;
 import com.inno72.machine.model.Inno72AppLog;
@@ -88,6 +89,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Resource
 	private Inno72MachineMapper inno72MachineMapper;
+	@Resource
+	private Inno72LocaleMapper inno72LocaleMapper;
 	@Autowired
 	private SupplyChannelService supplyChannelService;
 	@Autowired
@@ -335,12 +338,25 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		msg.setSubEventType(updateStatus);
 		msg.setMachineId(machine.getMachineCode());
 		if (updateStatus == 2) {
-			List<String> names = new ArrayList<String>();
-			List<Inno72App> appAll = appService.findAll();
-			for (Inno72App app : appAll) {
-				names.add(app.getAppPackageName());
+			if (machine.getMachineStatus() == 9) {
+				List<String> names = new ArrayList<String>();
+				Condition condition = new Condition(Inno72App.class);
+				condition.createCriteria().andEqualTo("appBelong", 6);
+				List<Inno72App> appAll = appService.findByCondition(condition);
+				for (Inno72App app : appAll) {
+					names.add(app.getAppPackageName());
+				}
+				msg.setData(names);
+			} else {
+				List<String> names = new ArrayList<String>();
+				Condition condition = new Condition(Inno72App.class);
+				condition.createCriteria().andNotEqualTo("appBelong", 6);
+				List<Inno72App> appAll = appService.findByCondition(condition);
+				for (Inno72App app : appAll) {
+					names.add(app.getAppPackageName());
+				}
+				msg.setData(names);
 			}
-			msg.setData(names);
 		}
 		return sendMsg(machine.getMachineCode(), msg);
 	}
@@ -833,6 +849,12 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 		Map<String, String> params = new HashMap<>();
 		params.put("msg", JSON.toJSONString(param));
+
+		if (machine.getMachineStatus() == 9) {
+			msgUtil.sendPush("push_android_tm_transmission_common", params, machine.getMachineCode(),
+					"machine-backend--grabLog", "获取日志", "获取日志");
+			return Results.success();
+		}
 		msgUtil.sendPush("push_android_transmission_common", params, machine.getMachineCode(),
 				"machine-backend--grabLog", "获取日志", "获取日志");
 		return Results.success();
