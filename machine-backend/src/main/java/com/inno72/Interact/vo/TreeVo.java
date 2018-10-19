@@ -4,34 +4,64 @@ import java.util.List;
 
 public class TreeVo {
 
-	private String id;
+	private String key;
 
-	private String name;
+	private String title;
 
-	private List<TreeVo> childList;
+	private String machineCode;
 
-	public String getId() {
-		return id;
+	private Integer type;
+
+	private Integer num;
+
+	private List<TreeVo> children;
+
+	public String getKey() {
+		return key;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setKey(String key) {
+		this.key = key;
 	}
 
-	public String getName() {
-		return name;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public String getMachineCode() {
+		return machineCode;
 	}
 
-	public List<TreeVo> getChildList() {
-		return childList;
+	public void setMachineCode(String machineCode) {
+		this.machineCode = machineCode;
 	}
 
-	public void setChildList(List<TreeVo> childList) {
-		this.childList = childList;
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public Integer getNum() {
+		return num;
+	}
+
+	public void setNum(Integer num) {
+		this.num = num;
+	}
+
+	public List<TreeVo> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<TreeVo> children) {
+		this.children = children;
 	}
 
 }

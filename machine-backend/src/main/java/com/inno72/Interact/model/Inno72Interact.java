@@ -25,6 +25,11 @@ public class Inno72Interact {
 	private String name;
 
 	/**
+	 * 派样类型：0普通派样，1新零售
+	 */
+	private Integer paiyangType;
+
+	/**
 	 * 关联游戏
 	 */
 	private String gameId;
@@ -70,6 +75,14 @@ public class Inno72Interact {
 	 */
 	@Column(name = "day_number")
 	private Integer dayNumber;
+
+	/**
+	 * 更新时间
+	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Column(name = "run_time")
+	private LocalDateTime runTime;
 
 	/**
 	 * 创建人
@@ -130,6 +143,14 @@ public class Inno72Interact {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Integer getPaiyangType() {
+		return paiyangType;
+	}
+
+	public void setPaiyangType(Integer paiyangType) {
+		this.paiyangType = paiyangType;
 	}
 
 	/**
@@ -290,6 +311,14 @@ public class Inno72Interact {
 	 */
 	public void setDayNumber(Integer dayNumber) {
 		this.dayNumber = dayNumber;
+	}
+
+	public LocalDateTime getRunTime() {
+		return runTime;
+	}
+
+	public void setRunTime(LocalDateTime runTime) {
+		this.runTime = runTime;
 	}
 
 	/**

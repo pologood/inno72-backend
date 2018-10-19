@@ -23,7 +23,7 @@ public interface Inno72MachineMapper extends Mapper<Inno72Machine> {
 
 	List<MachineExceptionVo> findStockOutMachines();
 
-	List<MachineExceptionVo> findMachines();
+	List<MachineExceptionVo> findMachines(Map<String, Object> param);
 
 	List<MachineStockOutInfo> findMachineStockoutInfo(String machineId);
 

@@ -38,9 +38,8 @@ public class InteractMachineController {
 	}
 
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> delete(@RequestParam String id) {
-		interactMachineService.deleteById(id);
-		return ResultGenerator.genSuccessResult();
+	public Result<String> delete(@RequestParam String interactId, @RequestParam String machineId) {
+		return interactMachineService.deleteById(interactId, machineId);
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
@@ -49,7 +48,7 @@ public class InteractMachineController {
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<MachineVo> detail(@RequestParam String interactId, @RequestParam String machineId) {
+	public Result<MachineVo> detail(@RequestParam(required = false) String interactId, @RequestParam String machineId) {
 		MachineVo detail = interactMachineService.findById(interactId, machineId);
 		return ResultGenerator.genSuccessResult(detail);
 	}

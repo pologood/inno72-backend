@@ -27,6 +27,7 @@ import com.inno72.machine.mapper.Inno72TagMapper;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Tag;
 import com.inno72.machine.service.LocaleService;
+import com.inno72.machine.vo.BatchLocaleVo;
 import com.inno72.machine.vo.Inno72LocaleVo;
 import com.inno72.machine.vo.MachineLocaleInfo;
 import com.inno72.share.mapper.Inno72AdminAreaMapper;
@@ -272,6 +273,43 @@ public class LocaleServiceImpl extends AbstractService<Inno72Locale> implements 
 		List<Inno72Tag> list = inno72TagMapper.selectTagList(params);
 
 		return list;
+	}
+
+	@Override
+	public Result<String> updateBatch(BatchLocaleVo locale) {
+
+		try {
+
+			Integer monitor = locale.getMonitor();
+			String monitorStart = locale.getMonitorStart();
+			String monitorEnd = locale.getMonitorEnd();
+			List<String> ids = locale.getIds();
+			if (null == monitor) {
+				logger.info("请设置监控开关");
+				return Results.failure("请设置监控开关");
+			}
+			if (0 == monitor && (StringUtil.isBlank(monitorStart) || StringUtil.isBlank(monitorEnd))) {
+				logger.info("请设置监控时间");
+				return Results.failure("请设置监控时间");
+			}
+
+			for (String id : ids) {
+				Inno72Locale l = inno72LocaleMapper.selectByPrimaryKey(id);
+				if (null != l) {
+					l.setMonitor(monitor);
+					l.setMonitorStart(monitorStart);
+					l.setMonitorEnd(monitorEnd);
+					inno72LocaleMapper.updateByPrimaryKeySelective(l);
+				}
+
+			}
+			return ResultGenerator.genSuccessResult();
+
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+
 	}
 
 }

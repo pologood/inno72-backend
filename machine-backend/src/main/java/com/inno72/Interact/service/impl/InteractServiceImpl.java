@@ -25,17 +25,20 @@ import com.inno72.Interact.model.Inno72InteractGoods;
 import com.inno72.Interact.model.Inno72InteractMachine;
 import com.inno72.Interact.service.InteractService;
 import com.inno72.Interact.vo.Inno72InteractMachineGoodsVo;
+import com.inno72.Interact.vo.Inno72InteractVo;
 import com.inno72.Interact.vo.InteractListVo;
 import com.inno72.Interact.vo.InteractMerchantVo;
 import com.inno72.Interact.vo.InteractRuleVo;
 import com.inno72.Interact.vo.MachineVo;
 import com.inno72.Interact.vo.TreeVo;
 import com.inno72.common.AbstractService;
+import com.inno72.common.CommonConstants;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.redis.IRedisUtil;
 import com.inno72.system.model.Inno72User;
 
 import tk.mybatis.mapper.entity.Condition;
@@ -47,6 +50,9 @@ import tk.mybatis.mapper.entity.Condition;
 @Transactional
 public class InteractServiceImpl extends AbstractService<Inno72Interact> implements InteractService {
 	private static Logger logger = LoggerFactory.getLogger(InteractServiceImpl.class);
+
+	@Resource
+	private IRedisUtil redisUtil;
 	@Resource
 	private Inno72InteractMapper inno72InteractMapper;
 
@@ -66,12 +72,13 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 	private Inno72InteractMachineGoodsMapper inno72InteractMachineGoodsMapper;
 
 	@Override
-	public List<InteractListVo> findByPage(String keyword, Integer status) {
+	public List<InteractListVo> findByPage(String keyword, Integer status, String orderBy) {
 		logger.info("---------------------活动分页列表查询-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		params.put("keyword", keyword);
 		params.put("status", status);
+		params.put("orderBy", orderBy);
 
 		return inno72InteractMapper.selectByPage(params);
 	}
@@ -149,6 +156,10 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 					return Results.failure("请填写互派名称");
 				}
 
+				if (StringUtil.isBlank(model.getPlanCode())) {
+					logger.info("请填写游戏编码");
+					return Results.failure("请填写游戏编码");
+				}
 				if (StringUtil.isBlank(model.getGameId())) {
 					logger.info("请选择游戏");
 					return Results.failure("请选择游戏");
@@ -163,6 +174,9 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 				old.setId(model.getId());
 				old = inno72InteractMapper.selectOne(old);
 				old.setStatus(2);
+				// 更新删除机器端资源缓存
+				logger.info("更新删除机器端资源缓存");
+				redisUtil.deleteByPrex(CommonConstants.REDIS_ACTIVITY_PLAN_CACHE_KEY + model.getId() + "*");
 				inno72InteractMapper.updateByPrimaryKeySelective(old);
 			} else if (null == type) {
 				logger.info("参数错误");
@@ -209,10 +223,6 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 					logger.info("填写同一用户获得商品次数");
 					return Results.failure("填写同一用户获得商品次数");
 				}
-				if (null == interactRule.getDayNumber()) {
-					logger.info("填写同一用户每天得商品次数");
-					return Results.failure("填写同一用户每天得商品次数");
-				}
 				interact.setTimes(interactRule.getTimes());
 				interact.setDayTimes(interactRule.getDayTimes());
 				interact.setNumber(interactRule.getNumber());
@@ -257,7 +267,9 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 
 				}
 			}
-
+			if (interact.getStatus() == 0 && interact.getRunTime().isBefore(LocalDateTime.now())) {
+				interact.setRunTime(LocalDateTime.now());
+			}
 			inno72InteractMapper.updateByPrimaryKeySelective(interact);
 
 			return Results.success();
@@ -321,10 +333,12 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 	}
 
 	@Override
-	public List<TreeVo> machineTree(String interactId) {
+	public List<TreeVo> machineTree(String interactId, String keyword) {
 
 		Map<String, Object> pm = new HashMap<>();
+		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		pm.put("interactId", interactId);
+		pm.put("keyword", keyword);
 		List<MachineVo> machineList = inno72InteractMachineMapper.getHavingMachines(pm);
 
 		List<TreeVo> firstList = new ArrayList<>();
@@ -332,20 +346,20 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 		for (MachineVo machine : machineList) {
 
 			TreeVo first = new TreeVo();
-			first.setId(machine.getMachineId());
-			first.setName(machine.getLocalDesc() + "(" + machine.getMachineCode() + ")");
-			Map<String, Object> params = new HashMap<>();
-			pm.put("interactId", interactId);
+			first.setKey(machine.getMachineId());
+			first.setTitle(machine.getLocalDesc() + "(" + machine.getMachineCode() + ")");
+			first.setMachineCode(machine.getMachineCode());
 			pm.put("machineId", machine.getMachineId());
 			List<TreeVo> secondList = new ArrayList<>();
-			List<Inno72InteractMachineGoodsVo> list = inno72InteractMachineGoodsMapper.selectMachineGoods(params);
+			List<Inno72InteractMachineGoodsVo> list = inno72InteractMachineGoodsMapper.selectMachineGoods(pm);
 			for (Inno72InteractMachineGoodsVo goodsVo : list) {
 				TreeVo second = new TreeVo();
-				second.setId(goodsVo.getGoodsId());
-				second.setName(goodsVo.getGoodsName());
+				second.setKey(goodsVo.getGoodsId());
+				second.setTitle(goodsVo.getGoodsName());
+				second.setNum(goodsVo.getNumber());
 				secondList.add(second);
 			}
-			first.setChildList(secondList);
+			first.setChildren(secondList);
 
 			firstList.add(first);
 
@@ -364,24 +378,29 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 		for (InteractMerchantVo interactMerchantVo : merchantList) {
 
 			TreeVo first = new TreeVo();
-			first.setId(interactMerchantVo.getId());
-			first.setName(interactMerchantVo.getMerchantName());
+			first.setKey(interactMerchantVo.getId());
+			first.setTitle(interactMerchantVo.getMerchantName());
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("sellerId", interactMerchantVo.getId());
 			List<TreeVo> secondList = inno72InteractShopsMapper.selectMerchantShopsTree(params);
-			first.setChildList(secondList);
+			first.setChildren(secondList);
 
 			for (TreeVo second : secondList) {
 				Map<String, Object> p = new HashMap<String, Object>();
-				params.put("shopsId", second.getId());
+				p.put("shopsId", second.getKey());
 				List<TreeVo> thirdList = inno72InteractGoodsMapper.selectGoodsTree(p);
-				second.setChildList(thirdList);
+				second.setChildren(thirdList);
 			}
 			firstList.add(first);
 
 		}
 
 		return firstList;
+	}
+
+	@Override
+	public Inno72InteractVo findDetailById(String id) {
+		return inno72InteractMapper.selectInteractDetail(id);
 	}
 
 }

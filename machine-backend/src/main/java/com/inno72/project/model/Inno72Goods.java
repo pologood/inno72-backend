@@ -92,6 +92,12 @@ public class Inno72Goods {
 	private String specRemark;
 
 	/**
+	 * 使用类型：0老活动，1新互派
+	 */
+	@Column(name = "use_type")
+	private Integer useType;
+
+	/**
 	 * 创建人
 	 */
 	@Column(name = "create_id")
@@ -253,6 +259,14 @@ public class Inno72Goods {
 
 	public void setBanner(String banner) {
 		this.banner = banner;
+	}
+
+	public Integer getUseType() {
+		return useType;
+	}
+
+	public void setUseType(Integer useType) {
+		this.useType = useType;
 	}
 
 	/**

@@ -23,10 +23,10 @@
   
   
   <insert id="insertInteractMachineGoodsList" parameterType="java.util.List">
-        insert into inno72_interact_machine_goods (id,interact_machine_id,goods_id,number,seq,state,start_time,end_time)
+        insert into inno72_interact_machine_goods (id,interact_machine_id,goods_id,number,seq,state,type,start_time,end_time)
         values
         <foreach collection="list" item="t" index="index" separator=",">
-            (#{t.id}, #{t.interactMachineId},#{t.goodsId},#{t.number},#{t.seq},#{t.state},#{t.startTime},#{t.endTime})
+            (#{t.id}, #{t.interactMachineId},#{t.goodsId},#{t.number},#{t.seq},#{t.state},#{t.type},#{t.startTime},#{t.endTime})
         </foreach>
   </insert>
   <select id="selectMachineGoods" parameterType="java.util.Map" resultMap="BaseVoResultMap">
@@ -37,7 +37,18 @@
 			inno72_interact_machine_goods img
 			LEFT JOIN inno72_interact_machine im ON im.id = img.interact_machine_id
 			LEFT JOIN inno72_goods g ON g.id = img.goods_id
-		where 1=1
+		where img.type =0
+		<if test="interactId !=null and interactId !='' ">and im.interact_id = #{interactId} </if>
+		<if test="machineId !=null and machineId !='' ">and im.machine_id = #{machineId} </if>
+		UNION
+		SELECT
+			img.*,
+			CONCAT(c.`name`,'（券）') AS goods_name
+		FROM
+			inno72_interact_machine_goods img
+			LEFT JOIN inno72_interact_machine im ON im.id = img.interact_machine_id
+			LEFT JOIN inno72_coupon c ON c.id=img.goods_id
+		where img.type =1
 		<if test="interactId !=null and interactId !='' ">and im.interact_id = #{interactId} </if>
 		<if test="machineId !=null and machineId !='' ">and im.machine_id = #{machineId} </if>
   </select>		

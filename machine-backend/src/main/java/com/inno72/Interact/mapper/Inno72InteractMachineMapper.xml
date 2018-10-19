@@ -41,14 +41,19 @@
 		a.name AS activity_name,
 		date_format( ap.start_time, '%Y-%m-%d %H:%i:%s' ) AS start_time,
 		date_format( ap.end_time, '%Y-%m-%d %H:%i:%s' ) AS end_time,
-		CASE WHEN <![CDATA[ap.end_time >=#{endTime}]]> THEN 1 ELSE 0 END state
+		CASE WHEN <![CDATA[apt.max_time >=#{endTime}]]> THEN 1 ELSE 0 END state
 	FROM
 		inno72_machine m
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
 		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
 		LEFT JOIN inno72_activity_plan_machine apm ON apm.machine_id = m.id
-		LEFT JOIN inno72_activity_plan ap ON ap.id = apm.activity_plan_id 
-		AND ap.is_delete = 0 
+		LEFT JOIN inno72_activity_plan ap ON ap.id = apm.activity_plan_id AND ap.is_delete = 0 
+		LEFT JOIN (
+			SELECT apt.machine_id,MAX(ap.end_time) AS max_time FROM inno72_activity_plan ap
+			LEFT JOIN inno72_activity_plan_machine apt ON apt.activity_plan_id=ap.id
+			WHERE ap.is_delete =0
+			GROUP BY apt.machine_id
+		) apt on m.id=apt.machine_id
 		LEFT JOIN inno72_activity a ON a.id = ap.activity_id and a.is_delete = 0 
 		WHERE
 			m.machine_status = '4' 
@@ -60,6 +65,7 @@
 			or area.province LIKE '%${keyword}%' 
 			or area.city LIKE '%${keyword}%' 
 			or area.district LIKE '%${keyword}%' 
+			or m.machine_code LIKE '%${keyword}%'
 			)
 		</if>
   </select>
@@ -84,6 +90,8 @@
 		LEFT JOIN (
 			SELECT machine_id,MAX(mt.end_time) AS max_time FROM inno72_interact_machine m
 			LEFT JOIN inno72_interact_machine_time mt ON m.id=mt.interact_machine_id
+			LEFT JOIN inno72_interact t ON t.id = m.interact_id 
+			WHERE  t.is_delete = 0 AND t.`status`!=2
 			GROUP BY m.machine_id
 		) mm on m.id=mm.machine_id
 		WHERE
@@ -95,6 +103,7 @@
 			or area.province LIKE '%${keyword}%' 
 			or area.city LIKE '%${keyword}%' 
 			or area.district LIKE '%${keyword}%' 
+			or m.machine_code LIKE '%${keyword}%'
 			)
 		</if>
 			
@@ -105,25 +114,38 @@
   		CONCAT( area.province, area.city, area.district, IFNULL( l.mall, "" ), IFNULL( l.NAME, "" ) ) AS local_desc,
 		m.id AS machine_id,
 		m.machine_code AS machine_code,
-		im.state,
 		im.query_start_time,
 		im.query_end_time,
 		t.id AS activity_id,
 		t.name AS activity_name,
 		date_format( mt.start_time, '%Y-%m-%d %H:%i:%s' ) AS start_time,
-		date_format( mt.end_time, '%Y-%m-%d %H:%i:%s' ) AS end_time
-		
+		date_format( mt.end_time, '%Y-%m-%d %H:%i:%s' ) AS end_time,
+		CASE WHEN <![CDATA[mm.max_time >=im.query_end_time]]> and im.state =0 THEN -1 ELSE im.state END state
 	FROM
 		inno72_machine m
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
 		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
-		LEFT JOIN inno72_interact_machine im ON im.machine_id = m.id
-		LEFT JOIN inno72_interact_machine_time mt ON mt.interact_machine_id = im.id
-		LEFT JOIN inno72_interact t ON t.id = im.interact_id and t.is_delete = 0 
-		WHERE
-			m.machine_status = '4' 
+		LEFT JOIN inno72_interact_machine im ON im.machine_id = m.id AND im.interact_id = #{interactId}
+		LEFT JOIN inno72_interact_machine imt ON imt.machine_id = m.id 
+		LEFT JOIN inno72_interact_machine_time mt ON mt.interact_machine_id = imt.id
+		LEFT JOIN inno72_interact t ON t.id = imt.interact_id AND t.is_delete = 0
+		LEFT JOIN (
+		    SELECT mm.machine_id,MAX(mm.time) AS max_time from (
+				SELECT machine_id,MAX(mt.end_time) AS time FROM inno72_interact_machine m
+				LEFT JOIN inno72_interact_machine_time mt ON m.id=mt.interact_machine_id
+				LEFT JOIN inno72_interact t ON t.id = m.interact_id 
+				WHERE  t.is_delete = 0 AND t.`status`!=2 and m.machine_id is not NULL and m.interact_id !=#{interactId}
+				GROUP BY m.machine_id 
+				UNION
+				SELECT apt.machine_id,MAX(ap.end_time) AS time FROM inno72_activity_plan ap
+				LEFT JOIN inno72_activity_plan_machine apt ON apt.activity_plan_id=ap.id
+				WHERE ap.is_delete =0 and apt.machine_id is not NULL
+				GROUP BY apt.machine_id
+			) mm GROUP BY machine_id
+		) mm on m.id=mm.machine_id
+		
+	WHERE m.machine_status = '4'
 		<if test="machineId !=null and machineId !='' ">AND m.id = #{machineId}</if>
-		<if test="interactId !=null and interactId !='' ">AND im.interact_id = #{interactId}</if>
   </select>
   
   
@@ -131,7 +153,7 @@
         insert into inno72_interact_machine (id, interact_id,machine_id,machine_code,query_start_time,query_end_time,state)
         values
         <foreach collection="list" item="t" index="index" separator=",">
-            (#{t.id}, #{t.interactId},#{t.machineId},#{t.machine_code},#{t.queryStartTime},#{t.queryEndTime},#{t.state})
+            (#{t.id}, #{t.interactId},#{t.machineId},#{t.machineCode},#{t.queryStartTime},#{t.queryEndTime},#{t.state})
         </foreach>
     </insert>
     
@@ -160,6 +182,34 @@
 				)
 		</if>
   	</select>
+  	
+  	<select id="selectInteractUseredMachine" parameterType="java.util.Map" resultType="String">
+		SELECT
+			im.machine_id
+		FROM
+			inno72_interact_machine_time imt
+			LEFT JOIN inno72_interact_machine im ON im.id = imt.interact_machine_id
+			LEFT JOIN inno72_interact i ON i.id = im.interact_id
+			WHERE i.is_delete =0 AND i.`status` != 2  
+		<if test="id !=null and id !='' ">and im.interact_id = #{id}  </if>
+		<if test="noId !=null and noId !='' ">and im.interact_id != #{noId}  </if>
+		<if test="startTime !=null and startTime !='' ">
+			and ( <![CDATA[imt.start_time <= #{endTime} AND imt.end_time >= #{startTime} ]]>)
+		</if>
+	</select>
+	
+	<select id="selectPlanUseredMachine" parameterType="java.util.Map" resultType="String">
+		SELECT 
+			machine_id 
+		FROM inno72_activity_plan ap
+		LEFT JOIN inno72_activity_plan_machine apm ON apm.activity_plan_id = ap.id
+		where is_delete =0
+		<if test="id !=null and id !='' ">and ap.id = #{id}  </if>
+		<if test="noId !=null and noId !='' ">and ap.id != #{noId}  </if>
+		<if test="startTime !=null and startTime !='' ">
+			and ( <![CDATA[ap.start_time <= #{endTime} AND ap.end_time >= #{startTime} ]]>)
+		</if>
+	</select>
   
   
 </mapper>

@@ -22,4 +22,8 @@ public interface Inno72InteractMachineMapper extends Mapper<Inno72InteractMachin
 
 	int insertInteractMachineList(@Param("list") List<Inno72InteractMachine> list);
 
+	List<String> selectInteractUseredMachine(Map<String, Object> pm);
+
+	List<String> selectPlanUseredMachine(Map<String, Object> pm);
+
 }

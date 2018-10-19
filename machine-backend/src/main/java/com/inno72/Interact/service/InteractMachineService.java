@@ -23,4 +23,6 @@ public interface InteractMachineService extends Service<Inno72InteractMachine> {
 
 	MachineVo findById(String interactId, String machineId);
 
+	Result<String> deleteById(String interactId, String machineId);
+
 }

@@ -18,6 +18,7 @@ import com.inno72.common.utils.StringUtil;
 import com.inno72.mapper.Inno72AppMsgMapper;
 import com.inno72.model.Inno72AppMsg;
 import com.inno72.redis.IRedisUtil;
+import com.inno72.redis.SetUtil;
 import com.inno72.socketio.core.SocketHolder;
 import com.inno72.socketio.core.SocketServer;
 import com.inno72.socketio.core.SocketServerHandler;
@@ -33,6 +34,8 @@ public class SocketIOStartHandler {
 
 	@Resource
 	private Inno72AppMsgMapper inno72AppMsgMapper;
+	@Resource
+	private SetUtil setUtil;
 
 	private SocketServerHandler socketServerHandler() {
 
@@ -97,7 +100,7 @@ public class SocketIOStartHandler {
 						.orElse("");
 				log.info("收到机器{}发送的远程图片", machineId);
 				String machinKey = CommonConstants.REDIS_REMOTE_MACHINE_SESSION_PATH + machineId;
-				redisUtil.setex(machinKey, 60, key);
+				redisUtil.setex(machinKey, 60 * 60, key);
 				String rbindKey = CommonConstants.REDIS_REMOTE_RBIND_PATH + machineId;
 				Set<Object> clients = redisUtil.smembers(rbindKey);
 				if (clients != null) {
@@ -157,6 +160,24 @@ public class SocketIOStartHandler {
 					log.info("keyEvent转发客户端deviceId:{}发送的指令:{}--->机器id:{}", deviceId, data, machineId);
 					String machinKey = CommonConstants.REDIS_REMOTE_MACHINE_SESSION_PATH + machineId;
 					String sessionId = redisUtil.get(machinKey);
+					String close = "{\"eventType\":11111}";
+					if (data.equals(close)) {
+						String rbindKey = CommonConstants.REDIS_REMOTE_RBIND_PATH + machineId;
+						Set<Object> clients = redisUtil.smembers(rbindKey);
+						String bindKey = CommonConstants.REDIS_REMOTE_BIND_PATH + deviceId;
+
+						if (clients != null && clients.size() == 1) {
+							log.info("客户端{}关闭，关闭机所有机器端{}", deviceId, machineId);
+							SocketHolder.close(sessionId);
+							redisUtil.expire(bindKey, 1);
+							setUtil.delete(rbindKey);
+						} else {
+							log.info("客户端{}关闭，不关闭机器{}", deviceId, machineId);
+							redisUtil.expire(bindKey, 1);
+							redisUtil.srem(rbindKey, deviceId);
+						}
+						return;
+					}
 					String result = GZIPUtil.compress(AesUtils.encrypt(data));
 					SocketHolder.send(sessionId, "keyEvent", result);
 				}

@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.service.InteractService;
+import com.inno72.Interact.vo.Inno72InteractVo;
 import com.inno72.Interact.vo.InteractListVo;
 import com.inno72.Interact.vo.InteractRuleVo;
 import com.inno72.Interact.vo.TreeVo;
@@ -32,8 +33,8 @@ public class InteractController {
 	private InteractService interactService;
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list(String keyword, Integer status) {
-		List<InteractListVo> list = interactService.findByPage(keyword, status);
+	public ModelAndView list(String keyword, Integer status, String orderBy) {
+		List<InteractListVo> list = interactService.findByPage(keyword, status, orderBy);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 
@@ -43,9 +44,8 @@ public class InteractController {
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> update(Inno72Interact interact, Integer type) {
-		interactService.update(interact, type);
-		return ResultGenerator.genSuccessResult();
+	public Result<Object> update(Inno72Interact interact, Integer type) {
+		return interactService.update(interact, type);
 	}
 
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })
@@ -55,21 +55,19 @@ public class InteractController {
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<Inno72Interact> detail(@RequestParam String id) {
-		Inno72Interact interact = interactService.findById(id);
+	public Result<Inno72InteractVo> detail(@RequestParam String id) {
+		Inno72InteractVo interact = interactService.findDetailById(id);
 		return ResultGenerator.genSuccessResult(interact);
 	}
 
 	@RequestMapping(value = "/rule", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> updateRule(@RequestBody InteractRuleVo interactRule) {
-		interactService.updateRule(interactRule);
-		return ResultGenerator.genSuccessResult();
+	public Result<Object> updateRule(@RequestBody InteractRuleVo interactRule) {
+		return interactService.updateRule(interactRule);
 	}
 
 	@RequestMapping(value = "/next", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> next(@RequestParam String interactId, @RequestParam String type) {
-		interactService.next(interactId, type);
-		return ResultGenerator.genSuccessResult();
+		return interactService.next(interactId, type);
 	}
 
 	@RequestMapping(value = "/merchantTree", method = { RequestMethod.POST, RequestMethod.GET })
@@ -79,8 +77,9 @@ public class InteractController {
 	}
 
 	@RequestMapping(value = "/machineTree", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<TreeVo>> machineTree(@RequestParam String interactId) {
-		List<TreeVo> list = interactService.machineTree(interactId);
+	public Result<List<TreeVo>> machineTree(@RequestParam String interactId,
+			@RequestParam(required = false) String keyword) {
+		List<TreeVo> list = interactService.machineTree(interactId, keyword);
 		return ResultGenerator.genSuccessResult(list);
 	}
 

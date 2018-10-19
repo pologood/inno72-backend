@@ -145,11 +145,12 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 	}
 
 	@Override
-	public List<InteractShopsVo> getList(String merchantId) {
+	public List<InteractShopsVo> getList(String interactId, String merchantId) {
 		logger.info("---------------------获取商户下店铺列表-------------------");
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("sellerId", merchantId);
+		params.put("interactId", interactId);
 
 		List<InteractShopsVo> inno72ShopsList = inno72InteractShopsMapper.selectMerchantShops(params);
 

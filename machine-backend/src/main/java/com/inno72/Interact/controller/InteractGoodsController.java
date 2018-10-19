@@ -42,13 +42,12 @@ public class InteractGoodsController {
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> update(InteractGoodsVo interactGoods) {
-		interactGoodsService.update(interactGoods);
-		return ResultGenerator.genSuccessResult();
+		return interactGoodsService.update(interactGoods);
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<InteractGoodsVo> detail(@RequestParam String id) {
-		InteractGoodsVo interactGoods = interactGoodsService.findGoodsById(id);
+	public Result<InteractGoodsVo> detail(@RequestParam String id, @RequestParam Integer type) {
+		InteractGoodsVo interactGoods = interactGoodsService.findGoodsById(id, type);
 		return ResultGenerator.genSuccessResult(interactGoods);
 	}
 

@@ -49,7 +49,8 @@ public interface MachineService extends Service<Inno72Machine> {
 
 	Result<List<String>> findMachineByMachineStatus(int id);
 
-	List<MachineListVo1> findMachinePlan(String machineCode, String localCode, String startTime, String endTime);
+	List<MachineListVo1> findMachinePlan(String machineCode, String state, String localCode, String startTime,
+			String endTime);
 
 	Result<MachinePortalVo> findMachinePortalData();
 
