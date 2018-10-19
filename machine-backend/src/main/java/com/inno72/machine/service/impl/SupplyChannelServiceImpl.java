@@ -109,7 +109,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				String mm = MessageFormat.format(m, mUser.getName(), code);
 				LogUtil.logger(LogType.ENABLE_CHANNEL.getCode(), machine.getMachineCode(), mm);
 			} else {
-				String m = "用户{0}，在erp系统中停用货道{1}";
+				String m = "用户{0}，在erp系统中启用货道{1}";
 				String mm = MessageFormat.format(m, mUser.getName(), code);
 				LogUtil.logger(LogType.DELETE_CHANNEL.getCode(), machine.getMachineCode(), mm);
 			}
