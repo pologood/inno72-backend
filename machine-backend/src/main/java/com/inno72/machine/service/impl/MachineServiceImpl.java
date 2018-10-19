@@ -700,12 +700,16 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (machine == null) {
 			return Results.failure("机器id不存在");
 		}
+		String key = "com.inno72.monitorapp/.services.DetectionService";
+		if (machine.getMachineStatus() == 9) {
+			key = "com.inno72.monitorapp.tmall/.services.DetectionService";
+		}
 		if (status == 1) {
 			Map<String, Object> map = new HashMap<>();
 			map.put("machineCode", machine.getMachineCode());
 			Map<String, Object> pmap = new HashMap<>();
 			pmap.put("type", 1);
-			pmap.put("data", "am stopservice -n com.inno72.monitorapp/.services.DetectionService");
+			pmap.put("data", "am stopservice -n " + key);
 			map.put("msg", pmap);
 			sendMsgStr(machine.getMachineCode(), JSON.toJSONString(map));
 			pmap.put("data", "input keyevent 3");
@@ -716,7 +720,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			map.put("machineCode", machine.getMachineCode());
 			Map<String, Object> pmap = new HashMap<>();
 			pmap.put("type", 1);
-			pmap.put("data", "am startservice -n com.inno72.monitorapp/.services.DetectionService");
+			pmap.put("data", "am startservice -n " + key);
 			map.put("msg", pmap);
 			return sendMsgStr(machine.getMachineCode(), JSON.toJSONString(map));
 		}
