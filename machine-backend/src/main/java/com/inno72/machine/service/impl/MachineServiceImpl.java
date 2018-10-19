@@ -179,7 +179,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		}
 		machine.setLocaleId(localeId);
 		machine.setAddress(address);
-		machine.setMachineStatus(4);
+		if (machine.getMachineStatus() != 9) {
+			machine.setMachineStatus(4);
+		}
 		machine.setUpdateId(mUser.getId());
 		machine.setUpdateTime(LocalDateTime.now());
 		machine.setInsideTime(LocalDateTime.now());
