@@ -53,7 +53,6 @@ import com.inno72.machine.service.MachineService;
 import com.inno72.machine.service.SupplyChannelService;
 import com.inno72.machine.vo.AppStatus;
 import com.inno72.machine.vo.ChannelListVo;
-import com.inno72.machine.vo.Inno72LocaleVo;
 import com.inno72.machine.vo.MachineAppStatus;
 import com.inno72.machine.vo.MachineExceptionVo;
 import com.inno72.machine.vo.MachineInstallAppBean;
@@ -339,8 +338,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		msg.setSubEventType(updateStatus);
 		msg.setMachineId(machine.getMachineCode());
 		if (updateStatus == 2) {
-			Inno72LocaleVo local = inno72LocaleMapper.selectById(machine.getLocaleId());
-			if (local != null && local.getType() == 2) {
+			if (machine.getMachineStatus() == 9) {
 				List<String> names = new ArrayList<String>();
 				Condition condition = new Condition(Inno72App.class);
 				condition.createCriteria().andEqualTo("appBelong", 6);
@@ -852,8 +850,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		Map<String, String> params = new HashMap<>();
 		params.put("msg", JSON.toJSONString(param));
 
-		Inno72LocaleVo local = inno72LocaleMapper.selectById(machine.getLocaleId());
-		if (local != null && local.getType() == 2) {
+		if (machine.getMachineStatus() == 2) {
 			msgUtil.sendPush("push_android_tm_transmission_common", params, machine.getMachineCode(),
 					"machine-backend--grabLog", "获取日志", "获取日志");
 			return Results.success();

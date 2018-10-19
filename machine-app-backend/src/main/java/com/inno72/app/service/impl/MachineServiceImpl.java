@@ -16,10 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
-import com.inno72.app.mapper.Inno72LocaleMapper;
 import com.inno72.app.mapper.Inno72MachineBatchMapper;
 import com.inno72.app.mapper.Inno72MachineMapper;
-import com.inno72.app.model.Inno72Locale;
 import com.inno72.app.model.Inno72Machine;
 import com.inno72.app.model.Inno72MachineBatch;
 import com.inno72.app.model.Inno72SupplyChannel;
@@ -51,9 +49,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Autowired
 	private Inno72MachineBatchMapper inno72MachineBatchMapper;
-
-	@Autowired
-	private Inno72LocaleMapper inno72LocaleMapper;
 
 	@Resource
 	private MachineAppBackendProperties machineAppBackendProperties;
@@ -247,10 +242,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			Inno72Machine machine = machines.get(0);
 			if (machine.getMachineStatus() != 4 && machine.getMachineStatus() != 9) {
 				return Results.failure("机器状态异常");
-			}
-			Inno72Locale local = inno72LocaleMapper.selectByPrimaryKey(machine.getLocaleId());
-			if (local == null || local.getType() != 2) {
-				return Results.failure("机器点位异常");
 			}
 			String locale = inno72MachineMapper.selectMachineLocale(machineCode);
 			return Results.success(locale);
