@@ -29,6 +29,7 @@ import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.StringUtil;
 import com.inno72.plugin.http.HttpClient;
+import com.inno72.util.MapUtil;
 
 import tk.mybatis.mapper.entity.Condition;
 
@@ -222,8 +223,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<String> getMachineLocale(Map<String, Object> msg) {
-		String machineCode = (String) Optional.of(msg).map(a -> a.get("machineCode")).orElse("");
-		Integer type = (Integer) Optional.of(msg).map(a -> a.get("type")).orElse("");
+		Integer type = MapUtil.getParam(msg, "type", Integer.class);
+		String machineCode = MapUtil.getParam(msg, "machineCode", String.class);
 
 		if (StringUtil.isEmpty(machineCode)) {
 			return Results.failure("machineCode传入为空");
