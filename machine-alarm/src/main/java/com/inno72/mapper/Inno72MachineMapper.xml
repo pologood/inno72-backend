@@ -88,7 +88,7 @@
 		from inno72_machine m
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
 		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
-		where m.machine_status=4
+		where (m.machine_status=4 or m.machine_status=9)
         and l.monitor=0
 
     </select>

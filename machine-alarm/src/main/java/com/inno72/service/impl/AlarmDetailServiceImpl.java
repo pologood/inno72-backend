@@ -166,6 +166,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
                 String localeStr = bean.getLocaleStr();
                 String machineCode = bean.getMachineCode();
                 Inno72Machine machine = machineService.findByCode(machineCode);
+                int machineStatus = machine.getMachineStatus();
                 String areaCode = machine.getAreaCode();
                 if(StringUtil.isNotEmpty(areaCode)){
 					Inno72AlarmGroup group = alarmGroupService.selectByParam(machine.getAreaCode());
@@ -182,7 +183,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 							pageInfo = "，页面停留在"+pageInfo;
 						}
 					}
-					if(type == 1){
+					if(type == 1 && machineStatus==4){
 						if(level == 1){
 							text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续1分钟"+pageInfo+"，请及时联系巡检人员。";
 						}else if(level == 2){

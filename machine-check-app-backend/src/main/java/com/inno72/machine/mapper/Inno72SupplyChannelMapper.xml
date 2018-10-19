@@ -168,6 +168,7 @@
     </update>
 
     <select id="selectTask" resultMap="BaseResultMap">
+        select * from (
         SELECT
         sum(sc.goods_count) goods_count,
         goods.name goodsName,
@@ -200,8 +201,10 @@
         m.machine_code,
         scg.goods_id,
         ap.id
+        ) a where a.goods_count is not null
     </select>
     <select id="selectLockGoods" resultMap="BaseResultMap">
+        select * from (
         SELECT
         sum( sc.goods_count ) goods_count,
         goods.name goodsName,
@@ -230,10 +233,12 @@
         AND scg.goods_id = #{goodsId}
         AND sc.is_delete = 0
         AND sc.machine_id = #{machineId}
+        ) a where a.goods_count is not null
     </select>
 
 
     <select id="selectPaiyangLockGoods" resultMap="BaseResultMap">
+        select * from (
         SELECT
         sum(sc.goods_count) goods_count,
         goods.name goodsName,
@@ -250,7 +255,7 @@
         INNER JOIN inno72_machine m ON sc.machine_id = m.id
         INNER JOIN inno72_interact_machine im ON m.id = im.machine_id
         INNER JOIN inno72_interact_machine_time imt ON im.id = imt.interact_machine_id AND now( ) BETWEEN imt.start_time AND imt.end_time
-        INNER JOIN inno72_interact_machine_goods img ON goods.id = img.goods_id AND now( ) BETWEEN img.start_time AND img.end_time
+        INNER JOIN inno72_interact_machine_goods img ON goods.id = img.goods_id and img.interact_machine_id=im.id AND now( ) BETWEEN img.start_time AND img.end_time
         LEFT JOIN inno72_locale l ON l.id = m.locale_id
         LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code
         WHERE
@@ -258,10 +263,12 @@
 	    AND scg.goods_id = #{goodsId}
 	    AND sc.is_delete=0
 	    AND sc.machine_id=#{machineId}
+	    ) a where a.goods_count is not null
     </select>
 
 
     <select id="selectLockGoodsList" resultType="com.inno72.model.GoodsBean">
+        select * from (
         SELECT
         sum( sc.goods_count ) totalCount,
         goods.NAME goodsName,
@@ -281,8 +288,10 @@
         AND sc.is_delete = 0
         GROUP BY
         goods.id
+        ) a where a.totalCount is not null
     </select>
     <select id="selectPaiyangLockGoodsList" resultType="com.inno72.model.GoodsBean">
+        select * from (
         SELECT
         sum( sc.goods_count ) totalCount,
         goods.NAME goodsName,
@@ -297,6 +306,7 @@
         AND now( ) BETWEEN imt.start_time
         AND imt.end_time
         INNER JOIN inno72_interact_machine_goods img ON goods.id = img.goods_id
+        and img.interact_machine_id=im.id
         AND now( ) BETWEEN img.start_time
         AND img.end_time
         WHERE
@@ -306,5 +316,6 @@
         AND sc.is_delete=0
         GROUP BY
         goods.id
+        ) a where a.totalCount is not null
     </select>
 </mapper>
