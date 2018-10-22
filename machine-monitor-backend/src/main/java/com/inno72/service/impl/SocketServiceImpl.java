@@ -142,7 +142,7 @@ public class SocketServiceImpl implements SocketService {
 					}
 				}
 			}
-			if (!il.isEmpty() && verisonCode >= 5) {
+			if (!il.isEmpty() && (verisonCode >= 5 || verisonCode == 0)) {
 				SendMessageBean msg = new SendMessageBean();
 				msg.setEventType(2);
 				msg.setSubEventType(2);

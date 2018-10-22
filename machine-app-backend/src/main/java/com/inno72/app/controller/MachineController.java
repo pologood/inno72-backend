@@ -146,6 +146,17 @@ public class MachineController {
 		return machineService.updateMachineChannels(msg);
 	}
 
+	/**
+	 * 设置机器为天猫合作机器
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	@RequestMapping(value = "/resetTuMachine", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> resetTuMachine(@RequestBody Map<String, Object> msg) {
+		return machineService.resetTuMachine(msg);
+	}
+
 	@PostMapping("encrypt")
 	public String encrypt(HttpServletRequest request) throws IOException {
 		byte[] encryptRequestBodyBytes = StreamUtils.copyToByteArray(request.getInputStream());

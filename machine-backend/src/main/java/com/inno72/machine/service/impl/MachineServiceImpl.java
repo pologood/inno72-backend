@@ -41,6 +41,7 @@ import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.common.datetime.LocalDateUtil;
 import com.inno72.machine.mapper.Inno72AppScreenShotMapper;
+import com.inno72.machine.mapper.Inno72LocaleMapper;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72App;
 import com.inno72.machine.model.Inno72AppLog;
@@ -56,6 +57,7 @@ import com.inno72.machine.vo.MachineAppStatus;
 import com.inno72.machine.vo.MachineExceptionVo;
 import com.inno72.machine.vo.MachineInstallAppBean;
 import com.inno72.machine.vo.MachineListVo;
+import com.inno72.machine.vo.MachineListVo1;
 import com.inno72.machine.vo.MachineLogInfo;
 import com.inno72.machine.vo.MachineNetInfo;
 import com.inno72.machine.vo.MachinePortalVo;
@@ -87,6 +89,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Resource
 	private Inno72MachineMapper inno72MachineMapper;
+	@Resource
+	private Inno72LocaleMapper inno72LocaleMapper;
 	@Autowired
 	private SupplyChannelService supplyChannelService;
 	@Autowired
@@ -129,7 +133,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	}
 
 	@Override
-	public List<MachineListVo> findMachinePlan(String machineCode, String state, String localCode, String startTime,
+	public List<MachineListVo1> findMachinePlan(String machineCode, String state, String localCode, String startTime,
 			String endTime) {
 		Map<String, Object> param = new HashMap<>();
 		if (StringUtil.isNotEmpty(localCode)) {
@@ -146,7 +150,15 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			param.put("endTime", endTime + " 23:59:59");
 		}
 
-		List<MachineListVo> machines = inno72MachineMapper.findMachinePlan(param);
+		List<MachineListVo1> machines = inno72MachineMapper.findMachinePlan(param);
+		List<MachineListVo1> interactMachines = inno72MachineMapper.findMachineInteract(param);
+
+		for (MachineListVo1 machine : machines) {
+			if (interactMachines.contains(machine)) {
+				int index = interactMachines.indexOf(machine);
+				machine.getPlanTime().addAll(interactMachines.get(index).getPlanTime());
+			}
+		}
 		return machines;
 	}
 
@@ -167,7 +179,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		}
 		machine.setLocaleId(localeId);
 		machine.setAddress(address);
-		machine.setMachineStatus(4);
+		if (machine.getMachineStatus() != 9) {
+			machine.setMachineStatus(4);
+		}
 		machine.setUpdateId(mUser.getId());
 		machine.setUpdateTime(LocalDateTime.now());
 		machine.setInsideTime(LocalDateTime.now());
@@ -326,12 +340,25 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		msg.setSubEventType(updateStatus);
 		msg.setMachineId(machine.getMachineCode());
 		if (updateStatus == 2) {
-			List<String> names = new ArrayList<String>();
-			List<Inno72App> appAll = appService.findAll();
-			for (Inno72App app : appAll) {
-				names.add(app.getAppPackageName());
+			if (machine.getMachineStatus() == 9) {
+				List<String> names = new ArrayList<String>();
+				Condition condition = new Condition(Inno72App.class);
+				condition.createCriteria().andEqualTo("appBelong", 6);
+				List<Inno72App> appAll = appService.findByCondition(condition);
+				for (Inno72App app : appAll) {
+					names.add(app.getAppPackageName());
+				}
+				msg.setData(names);
+			} else {
+				List<String> names = new ArrayList<String>();
+				Condition condition = new Condition(Inno72App.class);
+				condition.createCriteria().andNotEqualTo("appBelong", 6);
+				List<Inno72App> appAll = appService.findByCondition(condition);
+				for (Inno72App app : appAll) {
+					names.add(app.getAppPackageName());
+				}
+				msg.setData(names);
 			}
-			msg.setData(names);
 		}
 		return sendMsg(machine.getMachineCode(), msg);
 	}
@@ -673,12 +700,16 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (machine == null) {
 			return Results.failure("机器id不存在");
 		}
+		String key = "com.inno72.monitorapp/.services.DetectionService";
+		if (machine.getMachineStatus() == 9) {
+			key = "com.inno72.monitorapp.tmall/.services.DetectionService";
+		}
 		if (status == 1) {
 			Map<String, Object> map = new HashMap<>();
 			map.put("machineCode", machine.getMachineCode());
 			Map<String, Object> pmap = new HashMap<>();
 			pmap.put("type", 1);
-			pmap.put("data", "am stopservice -n com.inno72.monitorapp/.services.DetectionService");
+			pmap.put("data", "am stopservice -n " + key);
 			map.put("msg", pmap);
 			sendMsgStr(machine.getMachineCode(), JSON.toJSONString(map));
 			pmap.put("data", "input keyevent 3");
@@ -689,7 +720,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			map.put("machineCode", machine.getMachineCode());
 			Map<String, Object> pmap = new HashMap<>();
 			pmap.put("type", 1);
-			pmap.put("data", "am startservice -n com.inno72.monitorapp/.services.DetectionService");
+			pmap.put("data", "am startservice -n " + key);
 			map.put("msg", pmap);
 			return sendMsgStr(machine.getMachineCode(), JSON.toJSONString(map));
 		}
@@ -824,6 +855,12 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 		Map<String, String> params = new HashMap<>();
 		params.put("msg", JSON.toJSONString(param));
+
+		if (machine.getMachineStatus() == 9) {
+			msgUtil.sendPush("push_android_tm_transmission_common", params, machine.getMachineCode(),
+					"machine-backend--grabLog", "获取日志", "获取日志");
+			return Results.success();
+		}
 		msgUtil.sendPush("push_android_transmission_common", params, machine.getMachineCode(),
 				"machine-backend--grabLog", "获取日志", "获取日志");
 		return Results.success();

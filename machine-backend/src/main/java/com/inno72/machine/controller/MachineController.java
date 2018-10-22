@@ -31,6 +31,7 @@ import com.inno72.machine.vo.ChannelListVo;
 import com.inno72.machine.vo.MachineAppStatus;
 import com.inno72.machine.vo.MachineExceptionVo;
 import com.inno72.machine.vo.MachineListVo;
+import com.inno72.machine.vo.MachineListVo1;
 import com.inno72.machine.vo.MachineNetInfo;
 import com.inno72.machine.vo.MachinePortalVo;
 import com.inno72.machine.vo.MachineStatusVo;
@@ -165,10 +166,10 @@ public class MachineController {
 	 * @return
 	 */
 	@RequestMapping(value = "/planList", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<MachineListVo>> planList(@RequestParam(required = false) String machineCode,
+	public Result<List<MachineListVo1>> planList(@RequestParam(required = false) String machineCode,
 			@RequestParam(required = false) String status, @RequestParam(required = false) String localCode,
 			@RequestParam(required = false) String startTime, @RequestParam(required = false) String endTime) {
-		List<MachineListVo> list = machineService.findMachinePlan(machineCode, status, localCode, startTime, endTime);
+		List<MachineListVo1> list = machineService.findMachinePlan(machineCode, status, localCode, startTime, endTime);
 		return ResultGenerator.genSuccessResult(list);
 	}
 

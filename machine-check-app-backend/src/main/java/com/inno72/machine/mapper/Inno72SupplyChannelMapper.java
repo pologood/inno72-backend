@@ -21,9 +21,13 @@ public interface Inno72SupplyChannelMapper extends Mapper<Inno72SupplyChannel> {
 
 	int updateListByParam(Inno72SupplyChannel supplyChannel);
 
-    List<Inno72SupplyChannel> selectTask();
+	List<Inno72SupplyChannel> selectTask();
 
-	Inno72SupplyChannel selectLockGoods(Map<String,Object> map);
+	Inno72SupplyChannel selectLockGoods(Map<String, Object> map);
+
+	Inno72SupplyChannel selectPaiyangLockGoods(Map<String, Object> map);
 
 	List<GoodsBean> selectLockGoodsList(String machineId);
+
+	List<GoodsBean> selectPaiyangLockGoodsList(String machineId);
 }

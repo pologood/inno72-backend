@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.Interact.mapper.Inno72InteractMachineGoodsMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.Interact.model.Inno72InteractMachineGoods">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="interact_machine_id" jdbcType="VARCHAR" property="interactMachineId" />
+    <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="seq" jdbcType="INTEGER" property="seq" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+  </resultMap>
+  
+  <resultMap id="BaseVoResultMap" type="com.inno72.Interact.vo.Inno72InteractMachineGoodsVo" extends="BaseResultMap">
+    <result column="goods_name" jdbcType="TIMESTAMP" property="goodsName" />
+  </resultMap>
+  
+  
+  
+  <insert id="insertInteractMachineGoodsList" parameterType="java.util.List">
+        insert into inno72_interact_machine_goods (id,interact_machine_id,goods_id,number,seq,state,type,start_time,end_time)
+        values
+        <foreach collection="list" item="t" index="index" separator=",">
+            (#{t.id}, #{t.interactMachineId},#{t.goodsId},#{t.number},#{t.seq},#{t.state},#{t.type},#{t.startTime},#{t.endTime})
+        </foreach>
+  </insert>
+  <select id="selectMachineGoods" parameterType="java.util.Map" resultMap="BaseVoResultMap">
+		SELECT
+			img.*,
+			g.NAME AS goods_name
+		FROM
+			inno72_interact_machine_goods img
+			LEFT JOIN inno72_interact_machine im ON im.id = img.interact_machine_id
+			LEFT JOIN inno72_goods g ON g.id = img.goods_id
+		where img.type =0
+		<if test="interactId !=null and interactId !='' ">and im.interact_id = #{interactId} </if>
+		<if test="machineId !=null and machineId !='' ">and im.machine_id = #{machineId} </if>
+		UNION
+		SELECT
+			img.*,
+			CONCAT(c.`name`,'（券）') AS goods_name
+		FROM
+			inno72_interact_machine_goods img
+			LEFT JOIN inno72_interact_machine im ON im.id = img.interact_machine_id
+			LEFT JOIN inno72_coupon c ON c.id=img.goods_id
+		where img.type =1
+		<if test="interactId !=null and interactId !='' ">and im.interact_id = #{interactId} </if>
+		<if test="machineId !=null and machineId !='' ">and im.machine_id = #{machineId} </if>
+  </select>		
+    
+    
+</mapper>

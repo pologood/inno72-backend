@@ -56,6 +56,12 @@ public class Inno72Merchant {
 	private String channelId;
 
 	/**
+	 * 新零售sessionKey
+	 */
+	@Column(name = "sell_session_key")
+	private String sellSessionKey;
+
+	/**
 	 * 商户可用状态0:可用，1:不可用
 	 */
 	@Column(name = "is_delete")
@@ -174,6 +180,14 @@ public class Inno72Merchant {
 	 */
 	public void setChannelId(String channelId) {
 		this.channelId = channelId;
+	}
+
+	public String getSellSessionKey() {
+		return sellSessionKey;
+	}
+
+	public void setSellSessionKey(String sellSessionKey) {
+		this.sellSessionKey = sellSessionKey;
 	}
 
 	/**
