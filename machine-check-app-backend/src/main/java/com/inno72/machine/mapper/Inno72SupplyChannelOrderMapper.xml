@@ -22,7 +22,13 @@
     <result column="machine_code" jdbcType="VARCHAR" property="machineCode"/>
     <result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    <collection property="historyList" resultMap="historyList"></collection>
   </resultMap>
+
+    <resultMap id="historyList" type="com.inno72.machine.model.Inno72SupplyChannelHistory">
+        <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
+        <result column="subCount" jdbcType="INTEGER" property="subCount"/>
+    </resultMap>
 
   <select id="selectByPage" resultMap="WorkOrderVoList">
     select t1.id batchNo,t1.machine_id,t1.create_time,t2.machine_code,
@@ -50,4 +56,37 @@
     order by t1.create_time desc
   </select>
 
+    <select id="selectOrderByMonth" resultMap="WorkOrderVoList">
+        select co.create_time,co.machine_id,m.machine_code
+        from inno72_supply_channel_order co
+        left join inno72_machine m on co.machine_id=m.id
+        left join inno72_check_user_machine cum on m.id=cum.machine_id
+        where co.user_id=#{checkUserId}
+        <if test="machineId != null">
+            and m.id = #{machineId}
+        </if>
+        <if test="findTime != null">
+            and DATE_FORMAT(co.create_time,'%Y%M') = DATE_FORMAT(#{findTime},'%Y%M')
+        </if>
+        <if test="findTime == null">
+            and DATE_FORMAT(co.create_time,'%Y%M') = DATE_FORMAT(CURRENT_DATE,'%Y%M')
+        </if>
+        group by DATE_FORMAT(co.create_time,'%Y%M%D')
+        order by co.create_time
+    </select>
+
+
+    <select id="selectWorkOrderDetail" resultMap="WorkOrderVoList">
+        select co.id batchNo,goods.name goodsName,sum((sch.after_count-sch.before_count)) subCount
+        from inno72_supply_channel_order co
+        left join inno72_supply_channel_history sch on co.id=sch.batch_no
+        inner join inno72_goods goods on sch.goods_id=goods.id
+        where
+        co.user_id=#{checkUserId}
+        and co.machine_id=#{machineId}
+        and sch.after_count != sch.before_count
+        and DATE_FORMAT(co.create_time,'%Y%M%D') = DATE_FORMAT(#{findTime},'%Y%M%D')
+        group by co.id,goods.id
+        order by co.create_time
+    </select>
 </mapper>

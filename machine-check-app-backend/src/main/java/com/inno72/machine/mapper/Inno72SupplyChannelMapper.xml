@@ -318,4 +318,16 @@
         goods.id
         ) a where a.totalCount is not null
     </select>
+
+    <select id="selectExceptionList" resultMap="BaseResultMap">
+        select * from inno72_supply_channel
+        where is_delete = 1
+    </select>
+
+    <update id="updateOpen">
+        update inno72_supply_channel
+        set is_delete=0
+        where machine_id=#{machineId}
+        and code = #{code}
+    </update>
 </mapper>

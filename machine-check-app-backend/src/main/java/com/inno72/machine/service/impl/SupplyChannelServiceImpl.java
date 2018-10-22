@@ -549,45 +549,20 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	}
 
 	@Override
-	public Result<WorkOrderVo> workOrderDetail(String machineId, String batchNo) {
-		if (StringUtil.isEmpty(batchNo)) {
-			return Results.failure("参数不能为空");
+	public Result<List<WorkOrderVo>> workOrderDetail(SupplyRequestVo vo) {
+		Inno72CheckUser checkUser = UserUtil.getUser();
+		String checkUserId = checkUser.getId();
+		Map<String,Object> map = new HashMap<>();
+		String machineId = vo.getMachineId();
+		String findTime = vo.getFindTime();
+		if(StringUtil.isEmpty(machineId) || StringUtil.isEmpty(findTime)){
+			return Results.failure("参数缺失");
 		}
-		Map<String, Object> map = new HashMap<>();
-		map.put("batchNo", batchNo);
-		WorkOrderVo workOrderVo = new WorkOrderVo();
-		List<Inno72SupplyChannelHistory> historyList = inno72SupplyChannelHistoryMapper.getWorkOrderGoods(map);
-		List<Inno72SupplyChannelHistory> resultList = new ArrayList<>();
-		if (historyList != null && historyList.size() > 0) {
-			workOrderVo.setBatchNo(batchNo);
-			workOrderVo.setMachineCode(historyList.get(0).getMachineCode());
-			workOrderVo.setCreateTime(historyList.get(0).getCreateTime());
-			workOrderVo.setLocaleStr(historyList.get(0).getLocaleStr());
-			workOrderVo.setMachineId(machineId);
-			Set<String> set = new HashSet<>();
-
-			for (Inno72SupplyChannelHistory history : historyList) {
-				String goodsName = history.getGoodsName();
-				if (!set.contains(goodsName)) {
-					set.add(goodsName);
-					int count = 0;
-					for (Inno72SupplyChannelHistory his : historyList) {
-						String name = his.getGoodsName();
-						if (name.equals(goodsName)) {
-							count += his.getSubCount();
-						}
-					}
-					if (count > 0) {
-						history.setSubCount(count);
-						resultList.add(history);
-					}
-
-				}
-
-			}
-			workOrderVo.setHistoryList(resultList);
-		}
-		return ResultGenerator.genSuccessResult(workOrderVo);
+		map.put("checkUserId",checkUserId);
+		map.put("machineId",machineId);
+		map.put("findTime",findTime);
+		List<WorkOrderVo> list = inno72SupplyChannelOrderMapper.selectWorkOrderDetail(map);
+		return ResultGenerator.genSuccessResult(list);
 	}
 
 	@Override
@@ -657,6 +632,10 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		}
 	}
 
+	/**
+	 * 发送掉货异常报警
+	 * @param vo
+	 */
 	@Override
 	public void setDropGoods(SupplyRequestVo vo) {
 		String machineCode = vo.getMachineCode();
@@ -669,6 +648,43 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		alarmMessageBean.setType("machineDropGoodsException");
 		alarmMessageBean.setData(machineDropGoodsBean);
 		redisUtil.publish("moniterAlarm",JSONObject.toJSONString(alarmMessageBean));
+	}
+
+	@Override
+	public Result<List<WorkOrderVo>> findOrderByMonth(SupplyRequestVo vo) {
+		Inno72CheckUser checkUser = UserUtil.getUser();
+		String checkUserId = checkUser.getId();
+		String machineId = vo.getMachineId();
+		String findTime = vo.getFindTime();
+		if(StringUtil.isEmpty(machineId) || StringUtil.isEmpty(findTime)){
+			return Results.failure("参数缺失");
+		}
+		Map<String,Object> map = new HashMap<>();
+		map.put("checkUserId",checkUserId);
+		map.put("machineId",machineId);
+		map.put("findTime",findTime);
+		List<WorkOrderVo> list = inno72SupplyChannelOrderMapper.selectOrderByMonth(map);
+		return ResultGenerator.genSuccessResult(list);
+	}
+
+	@Override
+	public Result<List<Inno72SupplyChannel>> exceptionList(SupplyRequestVo vo) {
+		List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectExceptionList(vo.getMachineId());
+		return ResultGenerator.genSuccessResult(list);
+	}
+
+	@Override
+	public Result<String> openSupplyChannel(SupplyRequestVo vo) {
+		String supplyCode = vo.getSupplyCode();
+		String machineId = vo.getMachineId();
+		if(StringUtil.isEmpty(supplyCode) || StringUtil.isEmpty(machineId)){
+			return Results.failure("参数缺失");
+		}
+		Map<String,Object> map = new HashMap<>();
+		map.put("machineId",machineId);
+		map.put("code",supplyCode);
+		inno72SupplyChannelMapper.updateOpen(map);
+		return ResultGenerator.genSuccessResult();
 	}
 
 	public void addSupplyChannelToMongo(Inno72SupplyChannel supplyChannel) {

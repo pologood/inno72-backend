@@ -43,11 +43,17 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
 	List<WorkOrderVo> findByPage(String keyword,String findTime);
 
-    Result<WorkOrderVo> workOrderDetail(String machineId, String batchNo);
+    Result<List<WorkOrderVo>> workOrderDetail(SupplyRequestVo vo);
 
     void findAndPushByTaskParam();
 
     void findLockGoodsPush(SupplyRequestVo vo);
 
 	void setDropGoods(SupplyRequestVo vo);
+
+	Result<List<WorkOrderVo>> findOrderByMonth(SupplyRequestVo vo);
+
+	Result<List<Inno72SupplyChannel>> exceptionList(SupplyRequestVo vo);
+
+	Result<String> openSupplyChannel(SupplyRequestVo vo);
 }
