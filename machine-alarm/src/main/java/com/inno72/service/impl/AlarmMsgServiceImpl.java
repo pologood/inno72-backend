@@ -42,7 +42,7 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 			inno72AlarmMsg.setTitle("您好，您负责的机器已缺货，请及时补货");
 			inno72AlarmMsg.setType(3);
 			inno72AlarmMsg.setDetail(localStr + "," + machineCode + "," + "缺货" + lackNum + "个，请及时处理");
-		} else if (CommonConstants.SYS_MACHINE_NET.equals(type)){
+		} else if (CommonConstants.MACHINE_NET_EXCEPTION.equals(type)){
 			inno72AlarmMsg.setTitle("您好，您负责的机器出现网络异常，请及时处理");
 			inno72AlarmMsg.setType(4);
 			inno72AlarmMsg.setDetail("您好，"+localStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时联系巡检人员。");
