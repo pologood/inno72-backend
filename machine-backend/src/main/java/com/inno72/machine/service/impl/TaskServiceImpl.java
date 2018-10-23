@@ -100,7 +100,7 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 
 				task.setApp(app.getAppPackageName());
 				task.setAppUrl(appVersion.getDownloadUrl());
-				task.setAppVersion(appVersion.getAppVersion());
+				task.setAppVersion(appVersion.getAppVersionCode() + "");
 
 			}
 			if (2 == type) {
@@ -215,11 +215,11 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 				Inno72App app = inno72AppMapper.selectByPrimaryKey(task.getAppId());
 				Query query = new Query();
 				query.addCriteria(Criteria.where("appPackageName").is(app.getAppPackageName()));
-				AppVersion appVersion = mongoTpl.findOne(query, AppVersion.class);
+				AppVersion appVersion = mongoTpl.findOne(query, AppVersion.class, "AppVersion");
 
 				task.setApp(app.getAppPackageName());
 				task.setAppUrl(appVersion.getDownloadUrl());
-				task.setAppVersion(appVersion.getAppVersion());
+				task.setAppVersion(appVersion.getAppVersionCode() + "");
 			}
 			if (2 == type) {
 				if (StringUtil.isBlank(task.getAppId())) {
