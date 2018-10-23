@@ -94,7 +94,7 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 				Query query = new Query();
 				query.addCriteria(Criteria.where("appPackageName").is(app.getAppPackageName()));
 				logger.info("mogo获取版本信息开始");
-				AppVersion appVersion = mongoTpl.findOne(query, AppVersion.class);
+				AppVersion appVersion = mongoTpl.findOne(query, AppVersion.class, "AppVersion");
 				logger.info("mogo获取版本信息结束");
 				logger.info(appVersion.getAppName());
 
