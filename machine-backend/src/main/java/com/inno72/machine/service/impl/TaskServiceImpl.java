@@ -93,7 +93,10 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 				Inno72App app = inno72AppMapper.selectByPrimaryKey(task.getAppId());
 				Query query = new Query();
 				query.addCriteria(Criteria.where("appPackageName").is(app.getAppPackageName()));
+				logger.info("mogo获取版本信息开始");
 				AppVersion appVersion = mongoTpl.findOne(query, AppVersion.class);
+				logger.info("mogo获取版本信息结束");
+				logger.info(appVersion.getAppName());
 
 				task.setApp(app.getAppPackageName());
 				task.setAppUrl(appVersion.getDownloadUrl());
@@ -209,16 +212,14 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 					logger.info("请选择APP");
 					return Results.failure("请选择APP");
 				}
-				if (StringUtil.isBlank(task.getAppVersion())) {
-					logger.info("请填写升级版本");
-					return Results.failure("请填写升级版本");
-				}
-				if (StringUtil.isBlank(task.getAppUrl())) {
-					logger.info("请填写升级链接");
-					return Results.failure("请填写升级链接");
-				}
 				Inno72App app = inno72AppMapper.selectByPrimaryKey(task.getAppId());
+				Query query = new Query();
+				query.addCriteria(Criteria.where("appPackageName").is(app.getAppPackageName()));
+				AppVersion appVersion = mongoTpl.findOne(query, AppVersion.class);
+
 				task.setApp(app.getAppPackageName());
+				task.setAppUrl(appVersion.getDownloadUrl());
+				task.setAppVersion(appVersion.getAppVersion());
 			}
 			if (2 == type) {
 				if (StringUtil.isBlank(task.getAppId())) {
