@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inno72.Interact.controller.GameServiceFeignClient;
 import com.inno72.Interact.mapper.Inno72InteractMachineGoodsMapper;
 import com.inno72.Interact.mapper.Inno72InteractMachineMapper;
 import com.inno72.Interact.model.Inno72InteractMachine;
@@ -44,6 +45,9 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 
 	@Resource
 	private Inno72InteractMachineMapper inno72InteractMachineMapper;
+
+	@Resource
+	private GameServiceFeignClient gameServiceFeignClient;
 
 	@Override
 	public Result<String> save(InteractMachineGoods model) {
