@@ -40,6 +40,7 @@ import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.vo.PointLog;
 import com.inno72.msg.MsgUtil;
+import com.inno72.redis.IRedisUtil;
 
 import tk.mybatis.mapper.entity.Condition;
 
@@ -69,6 +70,9 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 
 	@Resource
 	private MongoOperations mongoTpl;
+
+	@Resource
+	private IRedisUtil redisUtil;
 
 	@Override
 	public Result<String> addCheckFault(Inno72CheckFault checkFault) {
@@ -142,7 +146,6 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			if (machines != null && machines.size() > 0) {
 				String title = "您负责的机器出现故障";
 				String appName = "machine_check_app_backend";
-				String pushCode = "push_check_app_fault";
 				String smsCode = "sms_check_app_fault";
 				String faultType = checkFaultType.getName();
 
@@ -165,7 +168,15 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 							String phone = user.getPhone();
 							if (StringUtil.isNotEmpty(phone)) {
 								userIdList.add(user.getId());
-								msgUtil.sendPush(pushCode, params, phone, appName, title, messgeInfo);
+								String userPhoneKey = CommonConstants.CHECK_LOGIN_TYPE_KEY_PREF + phone;
+								String loginType = redisUtil.get(userPhoneKey);
+								if(StringUtil.isNotEmpty(loginType)){
+									if(loginType.equals("android")){
+										msgUtil.sendPush("push_android_check_app", params, phone, appName, title, messgeInfo);
+									}else if(loginType.equals("ios")){
+										msgUtil.sendPush("push_ios_check_app", params, phone, appName, title, messgeInfo);
+									}
+								}
 								msgUtil.sendSMS(smsCode, params, phone, appName);
 							}
 						}

@@ -22,6 +22,8 @@ public class CommonConstants {
 
 	public static final String SUPPLY_CHANNEL_LACK_GOODS_PREF = "machine-check-app-backend:lack_goods:";
 
+	public static final String CHECK_LOGIN_TYPE_KEY_PREF = "machine-check-app-backend:phone:";
+
 	/** 用户sessionData有效期 **/
 	public static final int SESSION_DATA_EXP = 3600 * 24*100;
 
