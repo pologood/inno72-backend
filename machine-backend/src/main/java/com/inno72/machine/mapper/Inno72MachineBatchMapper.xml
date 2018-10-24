@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.machine.mapper.Inno72MachineBatchMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.machine.model.Inno72MachineBatch">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="batch_name" jdbcType="VARCHAR" property="batchName" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <collection property="detailList" resultMap="detailList"/>
+  </resultMap>
+  <resultMap id="detailList" type="com.inno72.machine.model.Inno72MachineBatchDetail">
+    <result column="row_no" jdbcType="INTEGER" property="rowNo" />
+    <result column="count" jdbcType="INTEGER" property="count" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="volume_count" jdbcType="INTEGER" property="volumeCount" />
+  </resultMap>
+  <select id="findByPage" resultMap="BaseResultMap">
+      select * from inno72_machine_batch
+      <where>
+          <if test="keyword != null and keyword != ''">
+              and (id like '%${keyword}%'
+              or batch_name like '%${keyword}%')
+          </if>
+      </where>
+      order by update_time desc
+  </select>
+
+  <select id="selectDetailById" resultMap="BaseResultMap">
+      select
+      ba.*,
+      de.row_no,
+      de.count,
+      de.type,
+      de.volume_count
+      from inno72_machine_batch ba
+      left join inno72_machine_batch_detail de on ba.id=de.batch_id
+      where ba.id=#{id}
+      order by de.row_no
+  </select>
+</mapper>
