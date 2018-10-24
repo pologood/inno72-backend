@@ -1,5 +1,6 @@
 package com.inno72.Interact.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import com.inno72.Interact.model.Inno72InteractMachineGoods;
 import com.inno72.Interact.service.InteractMachineGoodsService;
 import com.inno72.Interact.vo.Inno72InteractMachineGoodsVo;
 import com.inno72.Interact.vo.InteractMachineGoods;
+import com.inno72.Interact.vo.MachineGoods;
 import com.inno72.common.AbstractService;
 import com.inno72.common.DateUtil;
 import com.inno72.common.Result;
@@ -65,6 +67,8 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 				logger.info("请选择商品");
 				return Results.failure("请选择商品");
 			}
+			List<MachineGoods> machineGoodsList = new ArrayList<>();
+
 			for (String machineId : machines) {
 				Inno72InteractMachine interactMachine = new Inno72InteractMachine();
 				interactMachine.setInteractId(interactId);
@@ -93,7 +97,20 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 						}
 					}
 
+					MachineGoods mG = new MachineGoods();
+					mG.setMachineCode(interactMachine.getMachineCode());
+					mG.setGoodsId(machineGoods.getGoodsId());
+
+					machineGoodsList.add(mG);
+
 				}
+
+				// 调用汗青接口
+				Result<String> r = gameServiceFeignClient.saveMachine(machineGoodsList);
+				if (r.getCode() != 0) {
+					return r;
+				}
+
 				Inno72InteractMachineGoods del = new Inno72InteractMachineGoods();
 				del.setInteractMachineId(base.getId());
 				// 先删除之前活动机器上绑定的商品
