@@ -60,6 +60,11 @@ public class CommonConstants {
     /**网络连接时间Redis前缀*/
     public final static String MACHINE_ALARM_CONNECT_TIME_BEF = "machine-alarm:connect-time:";
 
+	/***
+	 * 手机号token前缀
+	 */
+	public static final String CHECK_LOGIN_TYPE_KEY_PREF = "machine-check-app-backend:phone:";
+
     /**日志：缺货*/
     public final static String LOG_TYPE_LACKGOODS = "61";
 

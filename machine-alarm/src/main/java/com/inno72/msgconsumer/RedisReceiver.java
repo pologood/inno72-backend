@@ -240,7 +240,7 @@ public class RedisReceiver {
 			}
 			//保存接口
 			int lackNum = 0;
-			alarmMsgService.saveAlarmMsg(type, system, machineCode, lackNum, localStr);
+			alarmMsgService.saveAlarmMsg(type, system, machineCode, lackNum, localStr,inno72CheckUserPhones);
         }
     }
 

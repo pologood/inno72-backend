@@ -215,7 +215,8 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 							StringUtil.logger(CommonConstants.LOG_TYPE_HEART,machineCode,text);
 						}
 					}else if(type == 2){
-							if(level == 1){
+						if(level == 1){
+							List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
 							if (StringUtil.senSmsActive(active)) {
 								text = "10分钟";
 								param.put("text",text);
@@ -226,9 +227,9 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 									}
 									param.put("localStr",address);
 								}
-								this.sendSms(param,machineCode,"sms_alarm_connect");
+								this.sendSms(param,machineCode,"sms_alarm_connect",inno72CheckUserPhones);
 							}
-							alarmMsgService.saveAlarmMsg(CommonConstants.MACHINE_NET_EXCEPTION,CommonConstants.SYS_MACHINE_NET,machineCode,0,localeStr);
+							alarmMsgService.saveAlarmMsg(CommonConstants.MACHINE_NET_EXCEPTION,CommonConstants.SYS_MACHINE_NET,machineCode,0,localeStr,inno72CheckUserPhones);
 							text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时联系巡检人员。";
 						}else if(level == 2){
 							text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续30分钟未连接成功，请及时联系巡检人员。";
@@ -377,8 +378,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 		redisUtil.del(connectTimeKey);
 	}
 
-	public void sendSms(Map<String,String> params,String machineCode,String channel){
-		List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
+	public void sendSms(Map<String,String> params,String machineCode,String channel,List<Inno72CheckUserPhone> inno72CheckUserPhones){
 		for(Inno72CheckUserPhone userPhone :inno72CheckUserPhones){
 			msgUtil.sendSMS(channel, params, userPhone.getPhone(), "machineAlarm-AlarmDetailService");
 		}
