@@ -10,6 +10,7 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="parent_name" jdbcType="VARCHAR" property="parentName" />
     <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="submit_type" jdbcType="INTEGER" property="submitType" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
@@ -20,6 +21,7 @@
 		SELECT t.`code`,t.`name`,
 		group_concat(tt.`name`) AS parent_name,
 		t.create_time,
+		t.submit_type,
 		u.`name` AS create_id
 		from
 		inno72_check_fault_type t
@@ -61,6 +63,7 @@
 	<select id="selectTypeDetail" parameterType="String" resultMap="ResultTypeDetailMap">
 		SELECT 
 			t.`code`,t.`name`,
+			t.submit_type,
 			tt.code AS child_code,
 			tt.name AS child_name
 		from

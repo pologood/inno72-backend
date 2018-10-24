@@ -52,10 +52,11 @@
   
   <select id="selectInteractCouponById" parameterType="String" resultMap="InteractGoodsVoResultMap">
 		SELECT
-			c.*,ig.interact_id,ig.user_day_number,ig.type 
+			c.*,c.shops_id AS shop_id,s.seller_id,ig.interact_id,ig.user_day_number,ig.type 
 		FROM
 			inno72_interact_goods ig 
 			LEFT JOIN inno72_coupon c ON c.id = ig.goods_id
+			LEFT JOIN inno72_shops s ON s.id = c.shops_id 
 		WHERE  ig.type =1 and ig.goods_id = #{id}
   </select>
   

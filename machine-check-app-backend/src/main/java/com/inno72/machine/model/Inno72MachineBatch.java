@@ -1,4 +1,4 @@
-package com.inno72.app.model;
+package com.inno72.machine.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
