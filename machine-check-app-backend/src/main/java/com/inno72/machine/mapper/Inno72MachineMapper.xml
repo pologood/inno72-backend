@@ -18,6 +18,7 @@
         <result column="inside_time" jdbcType="TIMESTAMP" property="insideTime"/>
 		<result column="address" jdbcType="VARCHAR" property="address" />
 		<result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
+        <result column="wifi_pwd" jdbcType="VARCHAR" property="wifiPwd"/>
 		<association property="supplyChannelVoList" resultMap="supplyChannelVoList"/>
 		<association property="checkUserVoList" resultMap="checkUserVoList"/>
 		<association property="faultVoList" resultMap="faultVoList"/>

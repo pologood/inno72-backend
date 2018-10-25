@@ -102,9 +102,9 @@ public class CheckFaultH5Controller {
      * 查询故障类型
      */
     @RequestMapping(value = "/typeList", method = {RequestMethod.GET})
-    public Result<List<Inno72CheckFaultType>> typeList(Inno72CheckFault inno72CheckFault){
-        logger.info("查询故障类型H5接口参数：{}",JSON.toJSON(inno72CheckFault));
-        Result<List<Inno72CheckFaultType>> result = checkFaultService.getTypeList(inno72CheckFault.getType());
+    public Result<List<Inno72CheckFaultType>> typeList(Inno72CheckFaultType inno72CheckFaultType){
+        logger.info("查询故障类型H5接口参数：{}",JSON.toJSON(inno72CheckFaultType));
+        Result<List<Inno72CheckFaultType>> result = checkFaultService.getTypeList(inno72CheckFaultType);
         logger.info("查询故障类型H5接口结果：{}",JSON.toJSON(result));
         return result;
     }

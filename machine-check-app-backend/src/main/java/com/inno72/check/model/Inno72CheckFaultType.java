@@ -45,6 +45,15 @@ public class Inno72CheckFaultType {
     @Column(name="update_time")
     private LocalDateTime updateTime;
 
+	/**
+	 * 上报方式0非直接上报1直接上报
+	 */
+	@Column(name = "submit_type")
+    private Integer submitType;
+
+	@Transient
+	private String type;
+
     public String getCode() {
         return code;
     }
@@ -116,4 +125,20 @@ public class Inno72CheckFaultType {
     public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
     }
+
+	public Integer getSubmitType() {
+		return submitType;
+	}
+
+	public void setSubmitType(Integer submitType) {
+		this.submitType = submitType;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 }

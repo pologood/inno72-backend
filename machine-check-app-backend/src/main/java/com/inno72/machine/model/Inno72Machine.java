@@ -100,6 +100,8 @@ public class Inno72Machine {
 	@Column(name = "inside_time")
 	private LocalDateTime insideTime;
 
+	@Column(name = "wifi_pwd")
+	private String wifiPwd;
 
 	@Transient
 	private String address;
@@ -461,5 +463,13 @@ public class Inno72Machine {
 
 	public void setTotalGoodsCount(int totalGoodsCount) {
 		this.totalGoodsCount = totalGoodsCount;
+	}
+
+	public String getWifiPwd() {
+		return wifiPwd;
+	}
+
+	public void setWifiPwd(String wifiPwd) {
+		this.wifiPwd = wifiPwd;
 	}
 }
