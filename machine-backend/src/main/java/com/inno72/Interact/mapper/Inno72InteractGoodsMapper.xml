@@ -20,6 +20,7 @@
     <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
     <result column="user_day_number" jdbcType="INTEGER" property="userDayNumber" />
     <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="is_alone" jdbcType="INTEGER" property="isAlone" />
     <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
     <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
     
@@ -52,7 +53,7 @@
   
   <select id="selectInteractCouponById" parameterType="String" resultMap="InteractGoodsVoResultMap">
 		SELECT
-			c.*,c.shops_id AS shop_id,s.seller_id,ig.interact_id,ig.user_day_number,ig.type 
+			c.*,c.shops_id AS shop_id,s.seller_id,ig.interact_id,ig.user_day_number,ig.type ,ig.is_alone 
 		FROM
 			inno72_interact_goods ig 
 			LEFT JOIN inno72_coupon c ON c.id = ig.goods_id
