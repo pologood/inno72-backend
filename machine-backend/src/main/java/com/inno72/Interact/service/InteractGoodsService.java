@@ -19,7 +19,7 @@ public interface InteractGoodsService extends Service<Inno72InteractGoods> {
 
 	Result<String> update(InteractGoodsVo model);
 
-	List<InteractGoodsVo> getList(String interactId, String shopsId);
+	List<InteractGoodsVo> getList(String interactId, String shopsId, Integer isAlone);
 
 	Result<String> deleteById(String interactId, String goodsId);
 

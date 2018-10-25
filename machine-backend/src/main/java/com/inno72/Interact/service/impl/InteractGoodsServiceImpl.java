@@ -320,12 +320,13 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 	}
 
 	@Override
-	public List<InteractGoodsVo> getList(String interactId, String shopsId) {
+	public List<InteractGoodsVo> getList(String interactId, String shopsId, Integer isAlone) {
 		logger.info("---------------------获取活动下商品列表-------------------");
 
 		Map<String, Object> pm = new HashMap<>();
 		pm.put("interactId", interactId);
 		pm.put("shopsId", shopsId);
+		pm.put("isAlone", isAlone);
 		return inno72InteractGoodsMapper.selectGoods(pm);
 
 	}

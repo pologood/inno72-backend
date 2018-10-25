@@ -54,8 +54,9 @@ public class InteractGoodsController {
 	}
 
 	@RequestMapping(value = "/getList", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<InteractGoodsVo>> getList(String interactId, String shopsId) {
-		List<InteractGoodsVo> list = interactGoodsService.getList(interactId, shopsId);
+	public Result<List<InteractGoodsVo>> getList(String interactId, String shopsId,
+			@RequestParam(required = false) Integer isAlone) {
+		List<InteractGoodsVo> list = interactGoodsService.getList(interactId, shopsId, isAlone);
 		return ResultGenerator.genSuccessResult(list);
 	}
 
