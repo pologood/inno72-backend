@@ -79,7 +79,7 @@
 			LEFT JOIN inno72_coupon c ON c.id = ig.goods_id 
 			LEFT JOIN inno72_shops s ON s.id = c.shops_id 
 			LEFT JOIN inno72_merchant m ON m.id = s.seller_id 
-		WHERE ig.type =1 AND c.id is not null
+		WHERE ig.type =1 AND ig.is_alone=0 AND c.id is not null
 		<if test="interactId !=null and interactId !='' ">and ig.interact_id = #{interactId} </if>
 		<if test="shopsId !=null and shopsId !='' ">and c.shops_id = #{shopsId} </if>
 				
