@@ -161,6 +161,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 				}
 
 				interactGoods.setGoodsId(coupon.getId());
+				interactGoods.setIsAlone(model.getIsAlone());
 			}
 
 			inno72InteractGoodsMapper.insert(interactGoods);
@@ -262,7 +263,14 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 				coupon.setBanner(model.getBanner());
 				coupon.setShopsId(model.getShopId());
 				coupon.setUpdateId(mUserId);
-				// 清空原来关联的商品
+				// 修改自身是否关联商品发放
+				Inno72InteractGoods baseg = new Inno72InteractGoods();
+				baseg.setGoodsId(model.getId());
+				baseg = inno72InteractGoodsMapper.selectOne(baseg);
+				baseg.setIsAlone(model.getIsAlone());
+				inno72InteractGoodsMapper.updateByPrimaryKeySelective(baseg);
+
+				// 清空优惠券原来关联的商品
 				Inno72InteractGoods old = new Inno72InteractGoods();
 				old.setCoupon(coupon.getId());
 				List<Inno72InteractGoods> oldList = inno72InteractGoodsMapper.select(old);
@@ -270,7 +278,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					oldGoods.setCoupon("");
 					inno72InteractGoodsMapper.updateByPrimaryKeySelective(oldGoods);
 				}
-
+				// 更新优惠券新关联的商品
 				for (Map<String, String> map : goodsList) {
 					Inno72InteractGoods gg = new Inno72InteractGoods();
 					gg.setGoodsId(map.get("goodsId"));

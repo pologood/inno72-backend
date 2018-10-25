@@ -43,6 +43,12 @@ public class Inno72InteractGoods {
 	private String coupon;
 
 	/**
+	 * 优惠券是否单独发放
+	 */
+	@Column(name = "is_alone")
+	private Integer isAlone;
+
+	/**
 	 * @return id
 	 */
 	public String getId() {
@@ -127,6 +133,14 @@ public class Inno72InteractGoods {
 
 	public void setCoupon(String coupon) {
 		this.coupon = coupon;
+	}
+
+	public Integer getIsAlone() {
+		return isAlone;
+	}
+
+	public void setIsAlone(Integer isAlone) {
+		this.isAlone = isAlone;
 	}
 
 }
