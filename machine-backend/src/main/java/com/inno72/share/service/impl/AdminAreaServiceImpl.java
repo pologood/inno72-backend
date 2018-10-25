@@ -32,6 +32,7 @@ public class AdminAreaServiceImpl extends AbstractService<Inno72AdminArea> imple
 	@Override
 	public List<Inno72AdminArea> getLiset(String code) {
 		Condition condition = new Condition(Inno72AdminArea.class);
+		condition.createCriteria();
 		if (StringUtil.isEmpty(code)) {
 			condition.createCriteria().andCondition("level = 1");
 		} else {
@@ -89,13 +90,13 @@ public class AdminAreaServiceImpl extends AbstractService<Inno72AdminArea> imple
 		if (StringUtil.isEmpty(code) || StringUtil.isEmpty(name)) {
 			return Results.failure("参数有误");
 		}
-		Map<String,Object> map = new HashMap<>();
-		map.put("code",code);
-		map.put("name",name);
+		Map<String, Object> map = new HashMap<>();
+		map.put("code", code);
+		map.put("name", name);
 		List<Inno72AdminArea> adminAreaList = inno72AdminAreaMapper.findByParam(map);
-		if(adminAreaList != null && adminAreaList.size()>0){
+		if (adminAreaList != null && adminAreaList.size() > 0) {
 			return Results.failure("已存在此区域");
-		}else{
+		} else {
 			Inno72AdminArea area = new Inno72AdminArea();
 			area.setCode(code);
 			area.setName(name);

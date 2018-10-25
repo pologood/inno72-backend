@@ -1,10 +1,12 @@
 package com.inno72.Interact.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,7 +33,7 @@ public class InteractGoodsController {
 	private InteractGoodsService interactGoodsService;
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> add(InteractGoodsVo interactGoods) {
+	public Result<String> add(@RequestBody InteractGoodsVo interactGoods) {
 		return interactGoodsService.save(interactGoods);
 	}
 
@@ -41,7 +43,7 @@ public class InteractGoodsController {
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> update(InteractGoodsVo interactGoods) {
+	public Result<String> update(@RequestBody InteractGoodsVo interactGoods) {
 		return interactGoodsService.update(interactGoods);
 	}
 
@@ -62,5 +64,11 @@ public class InteractGoodsController {
 		Condition condition = new Condition(Inno72InteractGoods.class);
 		List<Inno72InteractGoods> list = interactGoodsService.findByPage(condition);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
+	}
+
+	@RequestMapping(value = "/couponGetList", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Map<String, Object>>> couponGetList(String interactId, String shopsId) {
+		List<Map<String, Object>> list = interactGoodsService.couponGetList(interactId, shopsId);
+		return ResultGenerator.genSuccessResult(list);
 	}
 }

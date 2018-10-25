@@ -17,6 +17,8 @@ public interface Inno72InteractGoodsMapper extends Mapper<Inno72InteractGoods> {
 
 	List<InteractGoodsVo> selectGoods(Map<String, Object> pm);
 
+	List<Map<String, Object>> selectCouponGetList(Map<String, Object> pm);
+
 	List<TreeVo> selectGoodsTree(Map<String, Object> pm);
 
 }

@@ -37,6 +37,12 @@ public class Inno72InteractGoods {
 	private Integer type;
 
 	/**
+	 * 商品关联的优惠券
+	 */
+	@Column(name = "coupon")
+	private String coupon;
+
+	/**
 	 * @return id
 	 */
 	public String getId() {
@@ -113,6 +119,14 @@ public class Inno72InteractGoods {
 
 	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public String getCoupon() {
+		return coupon;
+	}
+
+	public void setCoupon(String coupon) {
+		this.coupon = coupon;
 	}
 
 }

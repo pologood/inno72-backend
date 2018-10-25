@@ -85,6 +85,19 @@
 				
   </select>
   
+  <select id="selectCouponGetList" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT 
+			ig.goods_id AS id,
+			g.`name` AS name,
+			IF(LENGTH(ig.coupon)>1,1,0) AS isCheck,
+			IFNULL(ig.coupon,"") couponId
+		FROM inno72_interact_goods ig
+		LEFT JOIN inno72_goods g ON g.id=ig.goods_id
+		WHERE ig.type=0
+		<if test="interactId !=null and interactId !='' ">and ig.interact_id = #{interactId} </if>
+		<if test="shopsId !=null and shopsId !='' ">and g.shop_id = #{shopsId} </if>
+  </select>
+  
   <resultMap id="GoodsTreeResultMap" type="com.inno72.Interact.vo.TreeVo">
     <result column="id" jdbcType="VARCHAR" property="key" />
     <result column="name" jdbcType="VARCHAR" property="title" />

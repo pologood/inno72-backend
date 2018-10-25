@@ -115,16 +115,51 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					logger.info("请选择店铺");
 					return Results.failure("请选择店铺");
 				}
+				if (null == model.getIsAlone()) {
+					logger.info("请选择是否关联商品");
+					return Results.failure("请选择是否关联商品");
+				}
+				List<Map<String, String>> goodsList = model.getGoodsList();
+				if (model.getIsAlone() == 0) {
+					if (null == model.getImg()) {
+						logger.info("请上传图片");
+						return Results.failure("请上传图片");
+					}
+					if (null == model.getBanner()) {
+						logger.info("请上传宣传图片");
+						return Results.failure("请上传宣传图片");
+					}
+				} else {
+
+					if (model.getIsAlone() == 1) {
+						if (null == goodsList || goodsList.size() < 1) {
+							logger.info("选择要关联的商品");
+							return Results.failure("选择要关联的商品");
+						}
+					}
+				}
+
 				Inno72Coupon coupon = new Inno72Coupon();
 				coupon.setId(StringUtil.getUUID());
 				coupon.setIsDelete(0);
 				coupon.setName(model.getName());
 				coupon.setCode(model.getCode());
+				coupon.setImg(model.getImg());
+				coupon.setBanner(model.getBanner());
 				coupon.setActivityPlanId(model.getInteractId());
 				coupon.setShopsId(model.getShopId());
 				coupon.setCreateId(mUserId);
 				coupon.setUpdateId(mUserId);
 				inno72CouponMapper.insert(coupon);
+
+				for (Map<String, String> map : goodsList) {
+					Inno72InteractGoods gg = new Inno72InteractGoods();
+					gg.setGoodsId(map.get("goodsId"));
+					gg = inno72InteractGoodsMapper.selectOne(gg);
+					gg.setCoupon(coupon.getId());
+					inno72InteractGoodsMapper.updateByPrimaryKeySelective(gg);
+				}
+
 				interactGoods.setGoodsId(coupon.getId());
 			}
 
@@ -197,12 +232,53 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					logger.info("请选择店铺");
 					return Results.failure("请选择店铺");
 				}
+				if (null == model.getIsAlone()) {
+					logger.info("请选择是否关联商品");
+					return Results.failure("请选择是否关联商品");
+				}
+				List<Map<String, String>> goodsList = model.getGoodsList();
+				if (model.getIsAlone() == 0) {
+					if (null == model.getImg()) {
+						logger.info("请上传图片");
+						return Results.failure("请上传图片");
+					}
+					if (null == model.getBanner()) {
+						logger.info("请上传宣传图片");
+						return Results.failure("请上传宣传图片");
+					}
+				} else {
+					if (model.getIsAlone() == 1) {
+						if (null == goodsList || goodsList.size() < 1) {
+							logger.info("选择要关联的商品");
+							return Results.failure("选择要关联的商品");
+						}
+					}
+				}
 				Inno72Coupon coupon = new Inno72Coupon();
 				coupon.setId(model.getId());
 				coupon.setName(model.getName());
 				coupon.setCode(model.getCode());
+				coupon.setImg(model.getImg());
+				coupon.setBanner(model.getBanner());
 				coupon.setShopsId(model.getShopId());
 				coupon.setUpdateId(mUserId);
+				// 清空原来关联的商品
+				Inno72InteractGoods old = new Inno72InteractGoods();
+				old.setCoupon(coupon.getId());
+				List<Inno72InteractGoods> oldList = inno72InteractGoodsMapper.select(old);
+				for (Inno72InteractGoods oldGoods : oldList) {
+					oldGoods.setCoupon("");
+					inno72InteractGoodsMapper.updateByPrimaryKeySelective(oldGoods);
+				}
+
+				for (Map<String, String> map : goodsList) {
+					Inno72InteractGoods gg = new Inno72InteractGoods();
+					gg.setGoodsId(map.get("goodsId"));
+					gg = inno72InteractGoodsMapper.selectOne(gg);
+					gg.setCoupon(coupon.getId());
+					inno72InteractGoodsMapper.updateByPrimaryKeySelective(gg);
+				}
+
 				inno72CouponMapper.updateByPrimaryKeySelective(coupon);
 			}
 
@@ -239,6 +315,17 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 		pm.put("interactId", interactId);
 		pm.put("shopsId", shopsId);
 		return inno72InteractGoodsMapper.selectGoods(pm);
+
+	}
+
+	@Override
+	public List<Map<String, Object>> couponGetList(String interactId, String shopsId) {
+		logger.info("---------------------获取优惠券关联商品列表-------------------");
+
+		Map<String, Object> pm = new HashMap<>();
+		pm.put("interactId", interactId);
+		pm.put("shopsId", shopsId);
+		return inno72InteractGoodsMapper.selectCouponGetList(pm);
 
 	}
 
