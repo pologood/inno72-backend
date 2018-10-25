@@ -307,14 +307,14 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 		InteractGoodsVo goods = null;
 		if (type == 0) {
 			goods = inno72InteractGoodsMapper.selectInteractGoodsById(id);
-			if (StringUtil.isNotBlank(goods.getImg())) {
-				goods.setImg(CommonConstants.ALI_OSS + goods.getImg());
-			}
-			if (StringUtil.isNotBlank(goods.getBanner())) {
-				goods.setBanner(CommonConstants.ALI_OSS + goods.getBanner());
-			}
 		} else if (type == 1) {
 			goods = inno72InteractGoodsMapper.selectInteractCouponById(id);
+		}
+		if (StringUtil.isNotBlank(goods.getImg())) {
+			goods.setImg(CommonConstants.ALI_OSS + goods.getImg());
+		}
+		if (StringUtil.isNotBlank(goods.getBanner())) {
+			goods.setBanner(CommonConstants.ALI_OSS + goods.getBanner());
 		}
 		return goods;
 	}
