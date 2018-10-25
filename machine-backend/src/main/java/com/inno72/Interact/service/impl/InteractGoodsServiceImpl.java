@@ -152,12 +152,14 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 				coupon.setUpdateId(mUserId);
 				inno72CouponMapper.insert(coupon);
 
-				for (Map<String, String> map : goodsList) {
-					Inno72InteractGoods gg = new Inno72InteractGoods();
-					gg.setGoodsId(map.get("goodsId"));
-					gg = inno72InteractGoodsMapper.selectOne(gg);
-					gg.setCoupon(coupon.getId());
-					inno72InteractGoodsMapper.updateByPrimaryKeySelective(gg);
+				if (null != goodsList && goodsList.size() > 0) {
+					for (Map<String, String> map : goodsList) {
+						Inno72InteractGoods gg = new Inno72InteractGoods();
+						gg.setGoodsId(map.get("goodsId"));
+						gg = inno72InteractGoodsMapper.selectOne(gg);
+						gg.setCoupon(coupon.getId());
+						inno72InteractGoodsMapper.updateByPrimaryKeySelective(gg);
+					}
 				}
 
 				interactGoods.setGoodsId(coupon.getId());
@@ -279,12 +281,14 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					inno72InteractGoodsMapper.updateByPrimaryKeySelective(oldGoods);
 				}
 				// 更新优惠券新关联的商品
-				for (Map<String, String> map : goodsList) {
-					Inno72InteractGoods gg = new Inno72InteractGoods();
-					gg.setGoodsId(map.get("goodsId"));
-					gg = inno72InteractGoodsMapper.selectOne(gg);
-					gg.setCoupon(coupon.getId());
-					inno72InteractGoodsMapper.updateByPrimaryKeySelective(gg);
+				if (null != goodsList && goodsList.size() > 0) {
+					for (Map<String, String> map : goodsList) {
+						Inno72InteractGoods gg = new Inno72InteractGoods();
+						gg.setGoodsId(map.get("goodsId"));
+						gg = inno72InteractGoodsMapper.selectOne(gg);
+						gg.setCoupon(coupon.getId());
+						inno72InteractGoodsMapper.updateByPrimaryKeySelective(gg);
+					}
 				}
 
 				inno72CouponMapper.updateByPrimaryKeySelective(coupon);
