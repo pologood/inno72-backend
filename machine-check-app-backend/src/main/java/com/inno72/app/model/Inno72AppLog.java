@@ -44,6 +44,12 @@ public class Inno72AppLog {
 	private String endTime;
 
 	/**
+	 * 来源（1.默认，2.巡检）
+	 */
+	@Column(name = "source")
+	private Integer source;
+
+	/**
 	 * @return id
 	 */
 	public String getId() {
@@ -149,4 +155,11 @@ public class Inno72AppLog {
 		this.endTime = endTime;
 	}
 
+	public Integer getSource() {
+		return source;
+	}
+
+	public void setSource(Integer source) {
+		this.source = source;
+	}
 }

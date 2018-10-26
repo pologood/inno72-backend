@@ -34,6 +34,7 @@ public class AppLogServiceImpl extends AbstractService<Inno72AppLog> implements 
 		if(StringUtil.isNotEmpty(logUrl)){
 			logUrl = ImageUtil.getLackImageUrl(logUrl);
 		}
+		log.setSource(2);
 		log.setLogUrl(logUrl);
 		log.setId(StringUtil.getUUID());
 		log.setStatus(1);

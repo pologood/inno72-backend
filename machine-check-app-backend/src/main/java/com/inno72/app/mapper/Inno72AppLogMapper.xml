@@ -12,6 +12,6 @@
 		<result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
 		<result column="start_time" jdbcType="VARCHAR" property="startTime" />
 		<result column="end_time" jdbcType="VARCHAR" property="endTime" />
-
+        <result column="source" jdbcType="INTEGER" property="source"/>
 	</resultMap>
 </mapper>
