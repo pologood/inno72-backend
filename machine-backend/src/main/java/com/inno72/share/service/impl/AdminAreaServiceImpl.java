@@ -32,7 +32,6 @@ public class AdminAreaServiceImpl extends AbstractService<Inno72AdminArea> imple
 	@Override
 	public List<Inno72AdminArea> getLiset(String code) {
 		Condition condition = new Condition(Inno72AdminArea.class);
-		condition.createCriteria();
 		if (StringUtil.isEmpty(code)) {
 			condition.createCriteria().andCondition("level = 1");
 		} else {
