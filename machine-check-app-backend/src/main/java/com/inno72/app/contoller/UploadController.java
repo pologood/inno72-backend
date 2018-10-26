@@ -36,8 +36,8 @@ public class UploadController {
 	 * @param req
 	 * @return
 	 */
-	@RequestMapping(value = "/upload", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> upload(@RequestParam(value = "file", required = false) MultipartFile file,
+	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> add(@RequestParam(value = "file", required = false) MultipartFile file,
 			HttpServletRequest req) {
 		String fileName = file.getOriginalFilename();
 		logger.info("上传文件，文件名：{}", fileName);
