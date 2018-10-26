@@ -221,4 +221,16 @@ public class SupplyChannelController {
 		return result;
 	}
 
+
+	/**
+	 * 同步货道
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping(value = "updateSupplyChannel")
+	public Result<String> updateSupplyChannel(@RequestBody Map<String,Object> map){
+		Result<String> result = supplyChannelService.updateSupplyChannel(map);
+		return result;
+	}
+
 }

@@ -100,9 +100,9 @@ public class SupplyChannelH5Controller {
 	 * 工单详情
 	 */
 	@RequestMapping(value="workOrderDetail",method = {RequestMethod.GET})
-	public Result<WorkOrderVo> workOrderDetail(SupplyRequestVo vo){
+	public Result<List<WorkOrderVo>> workOrderDetail(SupplyRequestVo vo){
 		logger.info("查询工单详情H5接口参数：{}",JSON.toJSON(vo));
-        return supplyChannelService.workOrderDetail(vo.getMachineId(),vo.getBatchNo());
+        return supplyChannelService.workOrderDetail(vo);
 	}
 
 }

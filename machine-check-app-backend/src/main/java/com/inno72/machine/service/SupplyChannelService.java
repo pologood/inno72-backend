@@ -56,4 +56,6 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 	Result<List<Inno72SupplyChannel>> exceptionList(SupplyRequestVo vo);
 
 	Result<String> openSupplyChannel(SupplyRequestVo vo);
+
+	Result<String> updateSupplyChannel(Map<String,Object> map);
 }

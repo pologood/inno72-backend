@@ -92,6 +92,9 @@
       <if test="status != null">
         and ch.status = #{status}
       </if>
+      <if test="machineCode != null">
+          and m.machine_code = #{machineCode}
+      </if>
     </where>
     order by ch.code * 1
   </select>

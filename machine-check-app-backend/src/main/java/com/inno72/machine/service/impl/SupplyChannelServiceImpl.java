@@ -702,6 +702,58 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		return ResultGenerator.genSuccessResult();
 	}
 
+	@Override
+	public Result<String> updateSupplyChannel(Map<String, Object> map) {
+		Inno72CheckUser checkUser = UserUtil.getUser();
+		String machineCode = (String) map.get("machineCode");
+		Inno72Machine machine = inno72MachineMapper.getMachineByCode(machineCode);
+		List<String> paramList = (List<String>) map.get("list");
+		Map<String, Object> param = new HashMap<>();
+		param.put("machineCode", machineCode);
+		List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectListByParam(param);
+		if(!list.isEmpty()){
+			Map<String,Inno72SupplyChannel> supplyChannelMap = new HashMap<>();
+			for(Inno72SupplyChannel sc:list){
+				supplyChannelMap.put(sc.getCode(),sc);
+			}
+			for(String supplyCode :paramList){
+				if(!supplyChannelMap.containsKey(supplyCode)){
+					int codeInt = Integer.parseInt(supplyCode);
+					int rowNo = codeInt/10;
+					rowNo++;
+					Map<String,Object> detailMap = new HashMap<>();
+					detailMap.put("rowNo",rowNo);
+					detailMap.put("machineCode",machineCode);
+					Inno72MachineBatchDetail batchDetail = inno72MachineBatchDetailMapper.selectByParam(detailMap);
+					if(batchDetail != null){
+						Inno72SupplyChannel supplyChannel = new Inno72SupplyChannel();
+						supplyChannel.setId(StringUtil.getUUID());
+						supplyChannel.setMachineId(machine.getId());
+						supplyChannel.setCode(supplyCode);
+						supplyChannel.setName("货道"+supplyCode);
+						supplyChannel.setStatus(0);
+						supplyChannel.setVolumeCount(batchDetail.getVolumeCount());
+						supplyChannel.setCreateId(checkUser.getId());
+						supplyChannel.setCreateTime(LocalDateTime.now());
+						supplyChannel.setUpdateId(checkUser.getId());
+						supplyChannel.setUpdateTime(LocalDateTime.now());
+						supplyChannel.setIsDelete(0);
+						supplyChannel.setWorkStatus(0);
+						inno72SupplyChannelMapper.insertSelective(supplyChannel);
+					}
+				}
+			}
+			for(String key:supplyChannelMap.keySet()){
+				if(!paramList.contains(key)){
+					Condition condition = new Condition(Inno72SupplyChannel.class);
+					condition.createCriteria().andEqualTo("machineId",machine.getId()).andEqualTo("code",key);
+					inno72SupplyChannelMapper.deleteByCondition(condition);
+				}
+			}
+		}
+		return ResultGenerator.genSuccessResult();
+	}
+
 	public void addSupplyChannelToMongo(Inno72SupplyChannel supplyChannel) {
 		DBCollection dbCollection = mongoTpl.getCollection("supplyChannel");
 		if (dbCollection == null) {
