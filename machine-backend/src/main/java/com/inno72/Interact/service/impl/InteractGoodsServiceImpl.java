@@ -212,11 +212,6 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					return Results.failure("请填写商品编码");
 				}
 
-				if (null == model.getNumber()) {
-					logger.info("请填写商品数量");
-					return Results.failure("请填写商品数量");
-				}
-
 				model.setUpdateId(mUserId);
 				model.setUpdateTime(LocalDateTime.now());
 
@@ -240,21 +235,11 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					return Results.failure("请选择是否关联商品");
 				}
 				List<Map<String, String>> goodsList = model.getGoodsList();
-				if (model.getIsAlone() == 0) {
-					if (null == model.getImg()) {
-						logger.info("请上传图片");
-						return Results.failure("请上传图片");
-					}
-					if (null == model.getBanner()) {
-						logger.info("请上传宣传图片");
-						return Results.failure("请上传宣传图片");
-					}
-				} else {
-					if (model.getIsAlone() == 1) {
-						if (null == goodsList || goodsList.size() < 1) {
-							logger.info("选择要关联的商品");
-							return Results.failure("选择要关联的商品");
-						}
+
+				if (model.getIsAlone() == 1) {
+					if (null == goodsList || goodsList.size() < 1) {
+						logger.info("选择要关联的商品");
+						return Results.failure("选择要关联的商品");
 					}
 				}
 				Inno72Coupon coupon = new Inno72Coupon();
