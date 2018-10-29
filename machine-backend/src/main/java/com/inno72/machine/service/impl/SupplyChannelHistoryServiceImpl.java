@@ -91,4 +91,73 @@ public class SupplyChannelHistoryServiceImpl extends AbstractService<Inno72Suppl
 		}
 		return ResultGenerator.genSuccessResult(resultList);
 	}
+
+	@Override
+	public List<Map<String, Object>> dayGoodsCount(SupplyOrderVo supplyOrderVo) {
+		Map<String, Object> map = new HashMap<>();
+		String areaCode = supplyOrderVo.getAreaCode();
+		String beginTime = supplyOrderVo.getBeginTime();
+		String endTime = supplyOrderVo.getEndTime();
+		String keyword = supplyOrderVo.getKeyword();
+
+		if (StringUtil.isNotEmpty(areaCode.trim())) {
+			int num = StringUtil.getAreaCodeNum(areaCode);
+			String likeCode = areaCode.substring(0, num);
+			map.put("code", likeCode);
+			map.put("num", num);
+		}
+
+		if (StringUtil.isNotEmpty(beginTime) && StringUtil.isNotEmpty(beginTime.trim())) {
+			map.put("beginTime", beginTime.trim() + " 00:00:00");
+		}
+		if (StringUtil.isNotEmpty(endTime) && StringUtil.isNotEmpty(endTime.trim())) {
+			map.put("endTime", endTime.trim() + " 23:59:59");
+		}
+		if (StringUtil.isNotEmpty(keyword) && StringUtil.isNotEmpty(keyword.trim())) {
+			map.put("keyword", keyword.trim());
+		}
+		List<Map<String, Object>> list = inno72SupplyChannelHistoryMapper.selectDayGoodsCount(map);
+		return list;
+	}
+
+	@Override
+	public List<Map<String, Object>> dayGoodsList(SupplyOrderVo supplyOrderVo) {
+		Map<String, Object> map = new HashMap<>();
+		String areaCode = supplyOrderVo.getAreaCode();
+		String beginTime = supplyOrderVo.getBeginTime();
+		String endTime = supplyOrderVo.getEndTime();
+		String keyword = supplyOrderVo.getKeyword();
+
+		if (StringUtil.isNotEmpty(areaCode.trim())) {
+			int num = StringUtil.getAreaCodeNum(areaCode);
+			String likeCode = areaCode.substring(0, num);
+			map.put("code", likeCode);
+			map.put("num", num);
+		}
+
+		if (StringUtil.isNotEmpty(beginTime) && StringUtil.isNotEmpty(beginTime.trim())) {
+			map.put("beginTime", beginTime.trim() + " 00:00:00");
+		}
+		if (StringUtil.isNotEmpty(endTime) && StringUtil.isNotEmpty(endTime.trim())) {
+			map.put("endTime", endTime.trim() + " 23:59:59");
+		}
+		if (StringUtil.isNotEmpty(keyword) && StringUtil.isNotEmpty(keyword.trim())) {
+			map.put("keyword", keyword.trim());
+		}
+		List<Map<String, Object>> list = inno72SupplyChannelHistoryMapper.selectDayGoodsList(map);
+		return list;
+	}
+
+	@Override
+	public List<Map<String, Object>> dayGoodsDetail(String machineId, String dateTime) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("machineId", machineId);
+		if (StringUtil.isNotEmpty(dateTime) && StringUtil.isNotEmpty(dateTime.trim())) {
+			map.put("beginTime", dateTime.trim() + " 00:00:00");
+			map.put("endTime", dateTime.trim() + " 23:59:59");
+		}
+
+		return inno72SupplyChannelHistoryMapper.selectDayGoodsDetail(map);
+	}
+
 }

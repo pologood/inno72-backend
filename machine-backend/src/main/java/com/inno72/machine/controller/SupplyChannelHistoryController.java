@@ -1,6 +1,7 @@
 package com.inno72.machine.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -50,27 +51,27 @@ public class SupplyChannelHistoryController {
 	/**
 	 * 商品统计
 	 */
-	@RequestMapping(value = "/dateGoodsCount")
+	@RequestMapping(value = "/dayGoodsCount")
 	public ModelAndView dateGoodsCount(@RequestBody SupplyOrderVo supplyOrderVo) {
-		List<SupplyOrderVo> list = supplyChannelHistoryService.findListByPage(supplyOrderVo);
+		List<Map<String, Object>> list = supplyChannelHistoryService.dayGoodsCount(supplyOrderVo);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 
 	/**
 	 * 新——补货记录
 	 */
-	@RequestMapping(value = "/dateList")
-	public ModelAndView dateList(@RequestBody SupplyOrderVo supplyOrderVo) {
-		List<SupplyOrderVo> list = supplyChannelHistoryService.findListByPage(supplyOrderVo);
+	@RequestMapping(value = "/dayGoodsList")
+	public ModelAndView dateGoodsList(SupplyOrderVo supplyOrderVo) {
+		List<Map<String, Object>> list = supplyChannelHistoryService.dayGoodsList(supplyOrderVo);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 
 	/**
 	 * 新——补货记录详情
 	 */
-	@RequestMapping(value = "/dateListDetail", method = { RequestMethod.GET })
-	public Result<List<Inno72SupplyChannelHistory>> listDetail(SupplyRequestVo vo) {
-		logger.info("查询补货记录详情接口参数：{}", JSON.toJSON(vo));
-		return supplyChannelHistoryService.detail(vo);
+	@RequestMapping(value = "/dayGoodsDetail", method = { RequestMethod.GET })
+	public Result<List<Map<String, Object>>> dateGoodsDetail(String machineId, String dateTime) {
+		List<Map<String, Object>> list = supplyChannelHistoryService.dayGoodsDetail(machineId, dateTime);
+		return ResultGenerator.genSuccessResult(list);
 	}
 }
