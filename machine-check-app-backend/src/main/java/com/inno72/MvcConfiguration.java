@@ -84,20 +84,20 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 	/**
 	 * 拦截器
 	 */
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new PageListAttrHandlerInterceptor()).addPathPatterns("/**");
-		LogInterceptor logInterceptor = new LogInterceptor();
-		logInterceptor.setRedisUtil(redisUtil);
-		registry.addInterceptor(logInterceptor).addPathPatterns("/**");
-	}
-
-	@Bean
-	public FilterRegistrationBean someFilterRegistration() {
-		FilterRegistrationBean registration = new FilterRegistrationBean();
-		registration.setFilter(new ProcessDataFilter());
-		registration.addUrlPatterns("/*");
-		return registration;
-	}
+//	@Override
+//	public void addInterceptors(InterceptorRegistry registry) {
+//		registry.addInterceptor(new PageListAttrHandlerInterceptor()).addPathPatterns("/**");
+//		LogInterceptor logInterceptor = new LogInterceptor();
+//		logInterceptor.setRedisUtil(redisUtil);
+//		registry.addInterceptor(logInterceptor).addPathPatterns("/**");
+//	}
+//
+//	@Bean
+//	public FilterRegistrationBean someFilterRegistration() {
+//		FilterRegistrationBean registration = new FilterRegistrationBean();
+//		registration.setFilter(new ProcessDataFilter());
+//		registration.addUrlPatterns("/*");
+//		return registration;
+//	}
 
 }
