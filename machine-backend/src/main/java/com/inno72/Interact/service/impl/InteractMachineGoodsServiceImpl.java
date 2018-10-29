@@ -90,15 +90,11 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 					machineGoods.setId(StringUtil.getUUID());
 					machineGoods.setInteractMachineId(base.getId());
 					// 商品设置时间
-					if (machineGoods.getType() == 0) {
-						machineGoods
-								.setStartTime(DateUtil.toDateTime(machineGoods.getStartTimeStr(), DateUtil.DF_FULL_S1));
-						if (machineGoods.getState() == 1) {
-							machineGoods.setEndTime(DateUtil.toDateTime("2028-12-30 23:59:59", DateUtil.DF_FULL_S1));
-						} else {
-							machineGoods
-									.setEndTime(DateUtil.toDateTime(machineGoods.getEndTimeStr(), DateUtil.DF_FULL_S1));
-						}
+					machineGoods.setStartTime(DateUtil.toDateTime(machineGoods.getStartTimeStr(), DateUtil.DF_FULL_S1));
+					if (machineGoods.getState() == 1) {
+						machineGoods.setEndTime(DateUtil.toDateTime("2028-12-30 23:59:59", DateUtil.DF_FULL_S1));
+					} else {
+						machineGoods.setEndTime(DateUtil.toDateTime(machineGoods.getEndTimeStr(), DateUtil.DF_FULL_S1));
 					}
 
 					MachineGoods mG = new MachineGoods();

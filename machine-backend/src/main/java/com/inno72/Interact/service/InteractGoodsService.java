@@ -1,6 +1,7 @@
 package com.inno72.Interact.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.inno72.Interact.model.Inno72InteractGoods;
 import com.inno72.Interact.vo.InteractGoodsVo;
@@ -18,8 +19,10 @@ public interface InteractGoodsService extends Service<Inno72InteractGoods> {
 
 	Result<String> update(InteractGoodsVo model);
 
-	List<InteractGoodsVo> getList(String interactId, String shopsId);
+	List<InteractGoodsVo> getList(String interactId, String shopsId, Integer isAlone);
 
 	Result<String> deleteById(String interactId, String goodsId);
+
+	List<Map<String, Object>> couponGetList(String interactId, String shopsId);
 
 }

@@ -1,5 +1,8 @@
 package com.inno72.Interact.vo;
 
+import java.util.List;
+import java.util.Map;
+
 import com.inno72.project.model.Inno72Goods;
 
 public class InteractGoodsVo extends Inno72Goods {
@@ -15,6 +18,10 @@ public class InteractGoodsVo extends Inno72Goods {
 
 	private String shopName;
 	private String merchantName;
+
+	private Integer isAlone;
+
+	private List<Map<String, String>> goodsList;
 
 	public String getInteractId() {
 		return interactId;
@@ -54,6 +61,22 @@ public class InteractGoodsVo extends Inno72Goods {
 
 	public void setMerchantName(String merchantName) {
 		this.merchantName = merchantName;
+	}
+
+	public Integer getIsAlone() {
+		return isAlone;
+	}
+
+	public void setIsAlone(Integer isAlone) {
+		this.isAlone = isAlone;
+	}
+
+	public List<Map<String, String>> getGoodsList() {
+		return goodsList;
+	}
+
+	public void setGoodsList(List<Map<String, String>> goodsList) {
+		this.goodsList = goodsList;
 	}
 
 }

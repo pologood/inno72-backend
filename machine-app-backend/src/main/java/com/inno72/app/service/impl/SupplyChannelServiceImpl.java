@@ -2,7 +2,9 @@ package com.inno72.app.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -11,7 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inno72.app.mapper.Inno72MachineBatchDetailMapper;
+import com.inno72.app.mapper.Inno72MachineBatchMapper;
 import com.inno72.app.mapper.Inno72SupplyChannelMapper;
+import com.inno72.app.model.Inno72MachineBatchDetail;
 import com.inno72.app.model.Inno72SupplyChannel;
 import com.inno72.app.service.SupplyChannelService;
 import com.inno72.common.AbstractService;
@@ -32,6 +37,12 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	@Resource
 	private Inno72SupplyChannelMapper inno72SupplyChannelMapper;
 
+	@Resource
+	private Inno72MachineBatchMapper inno72MachineBatchMapper;
+
+	@Resource
+	private Inno72MachineBatchDetailMapper inno72MachineBatchDetailMapper;
+
 	@Override
 	public Result<String> initChannel(String machineId, String machineCode, List<Inno72SupplyChannel> channels) {
 		if (channels == null) {
@@ -41,9 +52,10 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		String batchId = machineCode.substring(0, 2);
 		condition.createCriteria().andEqualTo("machineId", machineId);
 		List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectByCondition(condition);
+		Map<Integer, Inno72MachineBatchDetail> ch = getChannels(batchId);
 		if (supplyChannelList == null || supplyChannelList.isEmpty()) {
 			for (Inno72SupplyChannel channel : channels) {
-				Inno72SupplyChannel a = buildSupplyChannel(channel, batchId, machineId);
+				Inno72SupplyChannel a = buildSupplyChannel(channel, ch, machineId);
 				super.save(a);
 			}
 		}
@@ -59,6 +71,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		String batchId = machineCode.substring(0, 2);
 		condition.createCriteria().andEqualTo("machineId", machineId);
 		List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectByCondition(condition);
+		Map<Integer, Inno72MachineBatchDetail> ch = getChannels(batchId);
 		if (supplyChannelList == null || supplyChannelList.isEmpty()) {
 			initChannel(machineId, machineCode, channels);
 		} else {
@@ -72,7 +85,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 					}
 				}
 				if (status == 0) {
-					Inno72SupplyChannel c = buildSupplyChannel(channel, batchId, machineId);
+					Inno72SupplyChannel c = buildSupplyChannel(channel, ch, machineId);
 					newChannel.add(c);
 				}
 			}
@@ -97,7 +110,21 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		return Results.success();
 	}
 
-	private Inno72SupplyChannel buildSupplyChannel(Inno72SupplyChannel channel, String batchId, String machineId) {
+	private Map<Integer, Inno72MachineBatchDetail> getChannels(String batchId) {
+		Condition condition1 = new Condition(Inno72MachineBatchDetail.class);
+		condition1.createCriteria().andEqualTo("batchId", batchId);
+		List<Inno72MachineBatchDetail> channels_db = inno72MachineBatchDetailMapper.selectByCondition(condition1);
+		Map<Integer, Inno72MachineBatchDetail> map = new HashMap<>();
+		if (channels_db != null) {
+			for (Inno72MachineBatchDetail detail : channels_db) {
+				map.put(detail.getRowNo(), detail);
+			}
+		}
+		return map;
+	}
+
+	private Inno72SupplyChannel buildSupplyChannel(Inno72SupplyChannel channel,
+			Map<Integer, Inno72MachineBatchDetail> channels, String machineId) {
 		channel.setMachineId(machineId);
 		channel.setId(StringUtil.getUUID());
 		channel.setName("货道" + channel.getCode());
@@ -107,23 +134,42 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		channel.setCreateTime(LocalDateTime.now());
 		channel.setUpdateTime(LocalDateTime.now());
 		channel.setUpdateId("系统");
-		if ("18".equals(batchId)) {
-			if (Integer.parseInt(channel.getCode()) < 20) {
-				channel.setVolumeCount(11);
-			} else if (Integer.parseInt(channel.getCode()) < 30 && Integer.parseInt(channel.getCode()) > 20) {
-				channel.setVolumeCount(11);
-			} else {
-				channel.setVolumeCount(50);
-			}
-		} else if ("19".equals(batchId)) {
-			if (Integer.parseInt(channel.getCode()) < 20) {
-				channel.setVolumeCount(11);
-			} else if (Integer.parseInt(channel.getCode()) < 40 && Integer.parseInt(channel.getCode()) > 20) {
-				channel.setVolumeCount(5);
-			} else {
-				channel.setVolumeCount(50);
-			}
+		String c = channel.getCode().length() == 1 ? "0" + channel.getCode() : channel.getCode();
+		String row = c.substring(0, 1);
+		Integer code = Integer.parseInt(row) + 1;
+		Inno72MachineBatchDetail detail = channels.get(code);
+		if (detail != null) {
+			channel.setVolumeCount(detail.getVolumeCount());
+		} else {
+			channel.setVolumeCount(11);
 		}
+		// if ("18".equals(batchId)) {
+		// if (Integer.parseInt(channel.getCode()) < 20) {
+		// channel.setVolumeCount(11);
+		// } else if (Integer.parseInt(channel.getCode()) < 30 &&
+		// Integer.parseInt(channel.getCode()) > 20) {
+		// channel.setVolumeCount(11);
+		// } else {
+		// channel.setVolumeCount(50);
+		// }
+		// } else if ("19".equals(batchId)) {
+		// if (Integer.parseInt(channel.getCode()) < 20) {
+		// channel.setVolumeCount(11);
+		// } else if (Integer.parseInt(channel.getCode()) < 40 &&
+		// Integer.parseInt(channel.getCode()) > 20) {
+		// channel.setVolumeCount(5);
+		// } else {
+		// channel.setVolumeCount(50);
+		// }
+		// }
 		return channel;
+	}
+
+	public static void main(String[] args) {
+		String ccc = "10";
+		String c = ccc.length() == 1 ? "0" + ccc : ccc;
+		String row = c.substring(0, 1);
+		Integer code = Integer.parseInt(row);
+		System.out.println(code);
 	}
 }

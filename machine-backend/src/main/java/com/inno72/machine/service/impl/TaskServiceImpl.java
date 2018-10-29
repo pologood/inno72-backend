@@ -14,6 +14,9 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +39,7 @@ import com.inno72.machine.model.Inno72App;
 import com.inno72.machine.model.Inno72Task;
 import com.inno72.machine.service.AppService;
 import com.inno72.machine.service.TaskService;
+import com.inno72.machine.vo.AppVersion;
 import com.inno72.machine.vo.Inno72TaskMachineVo;
 import com.inno72.machine.vo.Inno72TaskVo;
 import com.inno72.project.vo.Inno72AdminAreaVo;
@@ -63,6 +67,9 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 	@Autowired
 	private AppService appService;
 
+	@Autowired
+	private MongoOperations mongoTpl;
+
 	// yyyy-MM-dd HH:mm
 	private String timeRegex = "^((([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))|((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[3579][26])00))-02-29))\\s+([0-1]?[0-9]|2[0-3]):([0-5][0-9])$";
 
@@ -84,15 +91,17 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 					return Results.failure("请选择APP");
 				}
 				Inno72App app = inno72AppMapper.selectByPrimaryKey(task.getAppId());
+				Query query = new Query();
+				query.addCriteria(Criteria.where("appPackageName").is(app.getAppPackageName()));
+				logger.info("mogo获取版本信息开始");
+				AppVersion appVersion = mongoTpl.findOne(query, AppVersion.class, "AppVersion");
+				logger.info("mogo获取版本信息结束");
+				logger.info(appVersion.getAppName());
+
 				task.setApp(app.getAppPackageName());
-				if (StringUtil.isBlank(task.getAppVersion())) {
-					logger.info("请填写升级版本");
-					return Results.failure("请填写升级版本");
-				}
-				if (StringUtil.isBlank(task.getAppUrl())) {
-					logger.info("请填写升级链接");
-					return Results.failure("请填写升级链接");
-				}
+				task.setAppUrl(appVersion.getDownloadUrl());
+				task.setAppVersion(appVersion.getAppVersionCode() + "");
+
 			}
 			if (2 == type) {
 				if (StringUtil.isBlank(task.getAppId())) {
@@ -203,16 +212,14 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 					logger.info("请选择APP");
 					return Results.failure("请选择APP");
 				}
-				if (StringUtil.isBlank(task.getAppVersion())) {
-					logger.info("请填写升级版本");
-					return Results.failure("请填写升级版本");
-				}
-				if (StringUtil.isBlank(task.getAppUrl())) {
-					logger.info("请填写升级链接");
-					return Results.failure("请填写升级链接");
-				}
 				Inno72App app = inno72AppMapper.selectByPrimaryKey(task.getAppId());
+				Query query = new Query();
+				query.addCriteria(Criteria.where("appPackageName").is(app.getAppPackageName()));
+				AppVersion appVersion = mongoTpl.findOne(query, AppVersion.class, "AppVersion");
+
 				task.setApp(app.getAppPackageName());
+				task.setAppUrl(appVersion.getDownloadUrl());
+				task.setAppVersion(appVersion.getAppVersionCode() + "");
 			}
 			if (2 == type) {
 				if (StringUtil.isBlank(task.getAppId())) {

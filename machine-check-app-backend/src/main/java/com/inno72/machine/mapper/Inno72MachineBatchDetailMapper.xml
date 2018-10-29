@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.machine.mapper.Inno72MachineBatchDetailMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.machine.model.Inno72MachineBatchDetail">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="batch_id" jdbcType="VARCHAR" property="batchId" />
+    <result column="row_no" jdbcType="INTEGER" property="rowNo" />
+    <result column="count" jdbcType="INTEGER" property="count" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="volume_count" jdbcType="INTEGER" property="volumeCount" />
+  </resultMap>
+
+    <select id="selectByParam" resultMap="BaseResultMap">
+        select * from inno72_machine_batch_detail
+        where batch_id=left(#{machineCode},2)
+        and row_no = #{rowNo}
+    </select>
+</mapper>
