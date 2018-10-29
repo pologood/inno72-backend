@@ -343,8 +343,8 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 			int n = inno72InteractMachineGoodsMapper.selectCount(machineGoods);
 
 			if (n > 0) {
-				logger.info("请商品已关联机器不能删除");
-				return Results.failure("请商品已关联机器不能删除");
+				logger.info("当前商品已绑定优惠券，不可删除");
+				return Results.failure("当前商品已绑定优惠券，不可删除");
 			}
 
 			Inno72InteractGoods interactGoods = new Inno72InteractGoods();
