@@ -22,7 +22,7 @@ import java.security.NoSuchAlgorithmException;
  */
 public class AesUtils {
 
-    public static final String logalrithm = "AES/CBC/PKCS5Padding";
+    public static final String logalrithm = "AES/CBC/PKCS7Padding";
     public static final String bm = "utf-8";
     private static byte[] keyValue = "02069578fbc54618".getBytes();
     private static byte[] iv = "ad62dfa9dede426e".getBytes();
