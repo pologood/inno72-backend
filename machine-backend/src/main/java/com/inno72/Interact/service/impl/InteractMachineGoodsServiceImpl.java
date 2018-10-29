@@ -108,7 +108,7 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 					}
 
 					MachineGoods mG = new MachineGoods();
-					mG.setMachineCode(interactMachine.getMachineCode());
+					mG.setMachineCode(base.getMachineCode());
 					mG.setGoodsId(machineGoods.getGoodsId());
 
 					machineGoodsList.add(mG);
