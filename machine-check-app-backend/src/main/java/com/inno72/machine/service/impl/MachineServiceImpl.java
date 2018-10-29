@@ -14,6 +14,7 @@ import com.inno72.machine.model.Inno72AdminArea;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
+import com.inno72.machine.vo.SupplyChannelVo;
 import com.inno72.machine.vo.SupplyRequestVo;
 
 import org.springframework.stereotype.Service;
@@ -104,6 +105,33 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
                     inno72Machine.setSignInStatus(-1);
                 }
                 inno72Machine.setSignInList(null);
+
+				Integer lackGoodsStatus = 0;
+				List<SupplyChannelVo> supplyChannelVoList = inno72Machine.getSupplyChannelVoList();
+				if (supplyChannelVoList != null && supplyChannelVoList.size() > 0) {
+					Map<String, Integer> map = new HashMap<>();
+					for (SupplyChannelVo supplyChannelVo : supplyChannelVoList) {
+						String goodsId = supplyChannelVo.getGoodsId();
+						if (StringUtil.isNotEmpty(goodsId)) {
+							int goodsCount = supplyChannelVo.getGoodsCount();
+							if (map.containsKey(goodsId)) {
+								int count = map.get(goodsId);
+								count += goodsCount;
+								map.put(goodsId, count);
+							} else {
+								map.put(goodsId, goodsCount);
+							}
+						}
+					}
+					for (Integer value : map.values()) {
+						if (value < 5) {
+							lackGoodsStatus = 1;
+							break;
+						}
+					}
+				}
+				inno72Machine.setLackGoodsStatus(lackGoodsStatus);
+				inno72Machine.setSupplyChannelVoList(null);
             });
         }
         return ResultGenerator.genSuccessResult(list);
