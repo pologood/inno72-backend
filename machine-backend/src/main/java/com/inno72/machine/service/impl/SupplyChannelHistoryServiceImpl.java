@@ -100,7 +100,7 @@ public class SupplyChannelHistoryServiceImpl extends AbstractService<Inno72Suppl
 		String endTime = supplyOrderVo.getEndTime();
 		String keyword = supplyOrderVo.getKeyword();
 
-		if (StringUtil.isNotEmpty(areaCode.trim())) {
+		if (StringUtil.isNotEmpty(areaCode)) {
 			int num = StringUtil.getAreaCodeNum(areaCode);
 			String likeCode = areaCode.substring(0, num);
 			map.put("code", likeCode);
@@ -116,7 +116,7 @@ public class SupplyChannelHistoryServiceImpl extends AbstractService<Inno72Suppl
 		if (StringUtil.isNotEmpty(keyword) && StringUtil.isNotEmpty(keyword.trim())) {
 			map.put("keyword", keyword.trim());
 		}
-		List<Map<String, Object>> list = inno72SupplyChannelHistoryMapper.selectDayGoodsCount(map);
+		List<Map<String, Object>> list = inno72SupplyChannelHistoryMapper.selectDayGoodsCountByPage(map);
 		return list;
 	}
 
@@ -128,7 +128,7 @@ public class SupplyChannelHistoryServiceImpl extends AbstractService<Inno72Suppl
 		String endTime = supplyOrderVo.getEndTime();
 		String keyword = supplyOrderVo.getKeyword();
 
-		if (StringUtil.isNotEmpty(areaCode.trim())) {
+		if (StringUtil.isNotBlank(areaCode)) {
 			int num = StringUtil.getAreaCodeNum(areaCode);
 			String likeCode = areaCode.substring(0, num);
 			map.put("code", likeCode);
@@ -144,7 +144,7 @@ public class SupplyChannelHistoryServiceImpl extends AbstractService<Inno72Suppl
 		if (StringUtil.isNotEmpty(keyword) && StringUtil.isNotEmpty(keyword.trim())) {
 			map.put("keyword", keyword.trim());
 		}
-		List<Map<String, Object>> list = inno72SupplyChannelHistoryMapper.selectDayGoodsList(map);
+		List<Map<String, Object>> list = inno72SupplyChannelHistoryMapper.selectDayGoodsListByPage(map);
 		return list;
 	}
 

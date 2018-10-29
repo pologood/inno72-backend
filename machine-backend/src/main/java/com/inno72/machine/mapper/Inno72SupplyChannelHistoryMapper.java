@@ -11,9 +11,9 @@ public interface Inno72SupplyChannelHistoryMapper extends Mapper<Inno72SupplyCha
 
 	List<Inno72SupplyChannelHistory> getSupplyOrderGoods(Map<String, Object> map);
 
-	List<Map<String, Object>> selectDayGoodsCount(Map<String, Object> map);
+	List<Map<String, Object>> selectDayGoodsCountByPage(Map<String, Object> map);
 
-	List<Map<String, Object>> selectDayGoodsList(Map<String, Object> map);
+	List<Map<String, Object>> selectDayGoodsListByPage(Map<String, Object> map);
 
 	List<Map<String, Object>> selectDayGoodsDetail(Map<String, Object> map);
 

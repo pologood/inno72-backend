@@ -52,7 +52,7 @@ public class SupplyChannelHistoryController {
 	 * 商品统计
 	 */
 	@RequestMapping(value = "/dayGoodsCount")
-	public ModelAndView dateGoodsCount(@RequestBody SupplyOrderVo supplyOrderVo) {
+	public ModelAndView dateGoodsCount(SupplyOrderVo supplyOrderVo) {
 		List<Map<String, Object>> list = supplyChannelHistoryService.dayGoodsCount(supplyOrderVo);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}

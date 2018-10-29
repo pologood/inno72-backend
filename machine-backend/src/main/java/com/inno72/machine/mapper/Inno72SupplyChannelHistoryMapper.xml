@@ -44,21 +44,29 @@
     and hi.after_count != hi.before_count
   </select>
   
-  <select id="selectDayGoodsCount" resultType="java.util.Map">
+  <select id="selectDayGoodsCountByPage" resultType="java.util.Map">
   	SELECT
-		s.id,m.machine_code AS machineCode,DATE_FORMAT(s.create_time,'%Y-%m-%d') AS date,
-		CONCAT(area.province,area.city,area.district,IFNULL(l.mall,""),IFNULL( l.name,'')) AS localeStr
+		hi.id,
+		g.`name` AS goodsName,
+		m.machine_code AS machineCode,
+		CONCAT(area.province,area.city,area.district,IFNULL(l.mall,""),IFNULL( l.name,'')) AS localDesc,
+		0 AS beforeNum,
+		SUM((hi.after_count-hi.before_count) )AS afterNum,
+		DATE_FORMAT(hi.create_time,'%Y-%m-%d') AS date,
+		0 num
 	FROM
-		inno72_supply_channel_order s 
-		LEFT JOIN inno72_machine m ON m.id=s.machine_id
+		inno72_supply_channel_history hi
+		LEFT JOIN inno72_machine m ON m.id=hi.machine_id
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
-	  	LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
+		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
+		LEFT JOIN inno72_goods g ON g.id=hi.goods_id
 	WHERE
-	  <if test="code !=null and code !=''">and LEFT(l.area_code,#{num}) = LEFT(#{code},#{num})</if>
+		hi.after_count>0 AND hi.after_count != hi.before_count AND LENGTH(hi.goods_id) >1
 	  <if test="beginTime != null and beginTime !=''  "> and s.create_time <![CDATA[>]]> #{beginTime} </if>
       <if test="endTime != null and endTime !='' "> and s.create_time <![CDATA[<=]]> #{endTime} </if>
       <if test="keyword != null and keyword !='' ">
-       AND (m.machine_code LIKE '%${keyword}%' 
+       AND (m.machine_code LIKE '%${keyword}%'
+       		or g.name LIKE '%${keyword}%' 
 			or l.mall LIKE '%${keyword}%' 
 			or JSON_EXTRACT(l.tag, '$.tags') LIKE '%${keyword}%'  
 			or l.name LIKE '%${keyword}%' 
@@ -66,19 +74,20 @@
 			or area.city LIKE '%${keyword}%' 
 			or area.district LIKE '%${keyword}%' )
       </if>
-	GROUP BY s.machine_id,date ORDER BY date DESC
+	GROUP BY DATE_FORMAT(hi.create_time,'%Y-%m-%d'),hi.machine_id,hi.goods_id
+	ORDER BY hi.create_time DESC
   </select>
   
-  <select id="selectDayGoodsList" resultType="java.util.Map">
+  <select id="selectDayGoodsListByPage" resultType="java.util.Map">
   	SELECT
-		s.id,m.machine_id AS machineId,m.machine_code AS machineCode,DATE_FORMAT(s.create_time,'%Y-%m-%d') AS date,
+		s.id,m.id AS machineId,m.machine_code AS machineCode,DATE_FORMAT(s.create_time,'%Y-%m-%d') AS date,
 		CONCAT(area.province,area.city,area.district,IFNULL(l.mall,""),IFNULL( l.name,'')) AS localeStr
 	FROM
 		inno72_supply_channel_order s 
 		LEFT JOIN inno72_machine m ON m.id=s.machine_id
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
 	  	LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
-	WHERE
+	WHERE 1=1
 	  <if test="code !=null and code !=''">and LEFT(l.area_code,#{num}) = LEFT(#{code},#{num})</if>
 	  <if test="beginTime != null and beginTime !=''  "> and s.create_time <![CDATA[>]]> #{beginTime} </if>
       <if test="endTime != null and endTime !='' "> and s.create_time <![CDATA[<=]]> #{endTime} </if>
@@ -91,10 +100,11 @@
 			or area.city LIKE '%${keyword}%' 
 			or area.district LIKE '%${keyword}%' )
       </if>
-	GROUP BY s.machine_id,date ORDER BY date DESC
+	GROUP BY s.machine_id,DATE_FORMAT(s.create_time,'%Y-%m-%d') ORDER BY s.create_time DESC
   </select>
   
   <select id="selectDayGoodsDetail" resultType="java.util.Map">
+  SELECT * from (
   	SELECT
   		hi.create_time AS createTime,
 		g.`name` AS googsName,
@@ -109,6 +119,7 @@
       	<if test="endTime != null and endTime !='' "> and hi.create_time <![CDATA[<=]]> #{endTime} </if>
       	AND hi.after_count>0 AND hi.after_count != hi.before_count AND LENGTH(hi.goods_id) >1
 		GROUP BY hi.batch_no,hi.goods_id
+	) m
   </select>
   
 
