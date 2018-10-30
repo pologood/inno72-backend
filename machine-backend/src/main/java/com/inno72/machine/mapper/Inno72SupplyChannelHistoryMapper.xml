@@ -134,6 +134,8 @@
   <select id="selectDayGoodsDetail" resultType="java.util.Map">
   SELECT * from (
   	SELECT
+  		hi.id,
+  		u.`name` AS user,
   		date_format(hi.create_time,'%Y-%m-%d %H:%i:%s') AS createTime,
 		g.`name` AS goodsName,
 		SUM((hi.after_count-hi.before_count) )AS num,
@@ -142,7 +144,8 @@
 	FROM
 		inno72_supply_channel_history hi
 		LEFT JOIN inno72_goods g ON g.id=hi.goods_id
-		where hi.machine_id=#{machineId}
+		LEFT JOIN inno72_check_user u on u.id=hi.user_id
+	where hi.machine_id=#{machineId}
 		<if test="beginTime != null and beginTime !=''  "> and hi.create_time <![CDATA[>]]> #{beginTime} </if>
       	<if test="endTime != null and endTime !='' "> and hi.create_time <![CDATA[<=]]> #{endTime} </if>
       	AND hi.after_count>0 AND hi.after_count != hi.before_count AND LENGTH(hi.goods_id) >1
