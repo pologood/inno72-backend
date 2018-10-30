@@ -363,4 +363,30 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		return Results.success();
 	}
 
+	@Override
+	public Result<String> updateWifiPwd(Map<String, Object> msg) {
+		String machineCode = (String) Optional.of(msg).map(a -> a.get("machineCode")).orElse("");
+		if (StringUtil.isEmpty(machineCode)) {
+			return Results.failure("machineCode传入为空");
+		}
+		String wifiPwd = (String) Optional.of(msg).map(a -> a.get("wifiPwd")).orElse("");
+		if (StringUtil.isEmpty(wifiPwd)) {
+			return Results.failure("wifiPwd传入为空");
+		}
+		Condition condition = new Condition(Inno72Machine.class);
+		condition.createCriteria().andEqualTo("machineCode", machineCode);
+		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition);
+		if (machines == null || machines.size() != 1) {
+			return Results.failure("machineCode传入错误");
+		}
+		Inno72Machine machine = machines.get(0);
+		machine.setUpdateTime(LocalDateTime.now());
+		machine.setWifiPwd(wifiPwd);
+		int result = inno72MachineMapper.updateByPrimaryKeySelective(machine);
+		if (result == 1) {
+			return Results.success();
+		}
+		return Results.failure("更新失败");
+	}
+
 }

@@ -17,14 +17,17 @@
 		<result column="device_id" jdbcType="VARCHAR" property="deviceId" />
 		<result column="address" jdbcType="VARCHAR" property="address" />
 		<result column="bluetooth_address" jdbcType="VARCHAR" property="bluetoothAddress" />
+		<result column="wifi_pwd" jdbcType="VARCHAR" property="wifiPwd" />
 
 	</resultMap>
 	<select id="selectMachineLocale" parameterType="String"
 		resultType="java.lang.String">
 		select
 		if(aa.province=aa.city,CONCAT_WS('-',aa.province,aa.district,if(aa.circle='其他','',aa.circle),l.mall,l.name),
-		CONCAT_WS('-',aa.province,aa.city,aa.district,if(aa.circle='其他','',aa.circle),l.mall,l.name)) locale
-		from inno72_machine m left join inno72_locale l on m.locale_id=l.id
+		CONCAT_WS('-',aa.province,aa.city,aa.district,if(aa.circle='其他','',aa.circle),l.mall,l.name))
+		locale
+		from inno72_machine m left join inno72_locale l on
+		m.locale_id=l.id
 		left join inno72_admin_area aa on l.area_code=aa.code
 		where m.machine_code=#{machineCode}
 	</select>
