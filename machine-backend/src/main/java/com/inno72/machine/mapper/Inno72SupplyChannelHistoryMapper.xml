@@ -62,8 +62,8 @@
 		LEFT JOIN inno72_goods g ON g.id=hi.goods_id
 	WHERE
 		hi.after_count>0 AND hi.after_count != hi.before_count AND LENGTH(hi.goods_id) >1
-	  <if test="beginTime != null and beginTime !=''  "> and s.create_time <![CDATA[>]]> #{beginTime} </if>
-      <if test="endTime != null and endTime !='' "> and s.create_time <![CDATA[<=]]> #{endTime} </if>
+	  <if test="beginTime != null and beginTime !=''  "> and hi.create_time <![CDATA[>]]> #{beginTime} </if>
+      <if test="endTime != null and endTime !='' "> and hi.create_time <![CDATA[<=]]> #{endTime} </if>
       <if test="keyword != null and keyword !='' ">
        AND (m.machine_code LIKE '%${keyword}%'
        		or g.name LIKE '%${keyword}%' 
