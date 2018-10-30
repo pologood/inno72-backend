@@ -120,8 +120,8 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 				JSONObject resultJson = JSON.parseObject(result);
 				logger.info("调用汗青接口结束:" + result);
 				if (resultJson.getInteger("code") != 0) {
-					logger.info("天猫接口调用失败");
-					return Results.failure("天猫接口调用失败");
+					logger.info("天猫接口调用失败:" + resultJson.getString("msg"));
+					return Results.failure("操作失败：" + resultJson.getString("msg"));
 				}
 
 				Inno72InteractMachineGoods del = new Inno72InteractMachineGoods();
