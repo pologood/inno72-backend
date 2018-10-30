@@ -106,8 +106,8 @@
   <select id="selectDayGoodsDetail" resultType="java.util.Map">
   SELECT * from (
   	SELECT
-  		hi.create_time AS createTime,
-		g.`name` AS googsName,
+  		date_format(hi.create_time,'%Y-%m-%d %H:%i:%s') AS createTime,
+		g.`name` AS goodsName,
 		SUM((hi.after_count-hi.before_count) )AS num,
 		hi.batch_no AS batchNo,
 		count(1) As countNum
