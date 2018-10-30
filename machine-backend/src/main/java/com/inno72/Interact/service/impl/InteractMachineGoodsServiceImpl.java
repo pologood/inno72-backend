@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.inno72.Interact.controller.GameServiceFeignClient;
 import com.inno72.Interact.mapper.Inno72InteractMachineGoodsMapper;
 import com.inno72.Interact.mapper.Inno72InteractMachineMapper;
@@ -115,12 +114,14 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 				String URL = machineBackendProperties.getProps().get("gameServiceUrl");
 				String result = HttpClient.post(URL + "newretail/saveMachine", data);
 				logger.info(result);
-				JSONObject resultJson = JSON.parseObject(result);
-				logger.info("调用汗青接口结束:" + result);
-				if (resultJson.getInteger("code") != 0) {
-					logger.info("天猫接口调用失败:" + resultJson.getString("msg"));
-					return Results.failure("操作失败：" + resultJson.getString("msg"));
-				}
+				/*
+				 * JSONObject resultJson = JSON.parseObject(result);
+				 * logger.info("调用汗青接口结束:" + result); if
+				 * (resultJson.getInteger("code") != 0) {
+				 * logger.info("天猫接口调用失败:" + resultJson.getString("msg"));
+				 * return Results.failure("操作失败：" +
+				 * resultJson.getString("msg")); }
+				 */
 
 				Inno72InteractMachineGoods del = new Inno72InteractMachineGoods();
 				del.setInteractMachineId(base.getId());
