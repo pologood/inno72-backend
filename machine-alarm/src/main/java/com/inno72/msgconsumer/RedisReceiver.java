@@ -213,11 +213,11 @@ public class RedisReceiver {
 					smsMap.put("localStr", address);
 				}
 				if(normalSupplyList != null && normalSupplyList.size()>0){//有未被锁定的货道
-					if(StringUtil.senSmsActive(active)){//生产，预发发送短信
-						text = "货道"+channelNum+"掉货异常，货道已经被锁定";
-						smsMap.put("text",  text);
-						this.sendSms(smsMap,machineCode,"sms_alarm_drop");
-					}
+//					if(StringUtil.senSmsActive(active)){//生产，预发发送短信
+//						text = "货道"+channelNum+"掉货异常，货道已经被锁定";
+//						smsMap.put("text",  text);
+//						this.sendSms(smsMap,machineCode,"sms_alarm_drop");
+//					}
 					text = "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。";
 				}else{//货道全部被锁
 					if(StringUtil.senSmsActive(active)){//生产，预发发送短信
