@@ -85,6 +85,9 @@ public class Inno72Machine {
 	@Column(name = "bluetooth_address")
 	private String bluetoothAddress;
 
+	@Column(name = "wifi_pwd")
+	private String wifiPwd;
+
 	public enum Machine_Status {
 		// 开机
 		START(1),
@@ -332,6 +335,14 @@ public class Inno72Machine {
 
 	public void setBluetoothAddress(String bluetoothAddress) {
 		this.bluetoothAddress = bluetoothAddress;
+	}
+
+	public String getWifiPwd() {
+		return wifiPwd;
+	}
+
+	public void setWifiPwd(String wifiPwd) {
+		this.wifiPwd = wifiPwd;
 	}
 
 }
