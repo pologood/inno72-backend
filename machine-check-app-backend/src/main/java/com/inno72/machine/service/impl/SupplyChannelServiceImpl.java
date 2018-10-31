@@ -166,7 +166,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		if (supplyChannel != null) {
 			String machineCode = supplyChannel.getMachineCode();
 			Inno72MachineBatchDetail batchDetail = getBatchDetail(machineCode,codeInteger);
-			if(batchDetail == null || batchDetail.getType() != 2){
+			if(batchDetail == null || batchDetail.getType() == 3){
 				return Results.failure("当前货道不能拆分");
 			}
 			Integer newCode = codeInteger + 1;
