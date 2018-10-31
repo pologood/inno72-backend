@@ -165,6 +165,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 					List<CheckUserVo> checkUserList = machine.getCheckUserVoList();
 					List<String> userIdList = new ArrayList<>();
 					if (checkUserList != null && checkUserList.size() > 0) {
+						String active = System.getenv("spring_profiles_active");
 						for (CheckUserVo user : checkUserList) {
 							String phone = user.getPhone();
 							if (StringUtil.isNotEmpty(phone)) {
@@ -178,7 +179,9 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 										msgUtil.sendPush("push_ios_check_app", params, phone, appName, title, messgeInfo);
 									}
 								}
-								msgUtil.sendSMS(smsCode, params, phone, appName);
+								if(StringUtil.senSmsActive(active)){
+									msgUtil.sendSMS(smsCode, params, phone, appName);
+								}
 							}
 						}
 
