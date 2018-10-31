@@ -70,8 +70,8 @@ public class SupplyChannelHistoryController {
 	 * 新——补货记录详情
 	 */
 	@RequestMapping(value = "/dayGoodsDetail", method = { RequestMethod.GET })
-	public Result<List<Map<String, Object>>> dateGoodsDetail(String machineId, String dateTime) {
-		List<Map<String, Object>> list = supplyChannelHistoryService.dayGoodsDetail(machineId, dateTime);
+	public Result<List<Map<String, Object>>> dateGoodsDetail(String machineId, String datetime) {
+		List<Map<String, Object>> list = supplyChannelHistoryService.dayGoodsDetail(machineId, datetime);
 		return ResultGenerator.genSuccessResult(list);
 	}
 }
