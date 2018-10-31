@@ -150,7 +150,7 @@
       	<if test="endTime != null and endTime !='' "> and hi.create_time <![CDATA[<=]]> #{endTime} </if>
       	AND hi.after_count>0 AND hi.after_count != hi.before_count AND LENGTH(hi.goods_id) >1
 		GROUP BY hi.batch_no,hi.goods_id
-	) m
+	) m ORDER BY createTime DESC
   </select>
   
 
