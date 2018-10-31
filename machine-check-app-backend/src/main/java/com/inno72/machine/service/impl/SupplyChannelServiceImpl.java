@@ -521,18 +521,20 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 							goods.setId(StringUtil.getUUID());
 							goods.setSupplyChannelId(supplyChannelId);
 							inno72SupplyChannelGoodsMapper.insertSelective(goods);
+							if(beforeGoodsCount != afterGoodsCount){
+								Inno72SupplyChannelHistory history = new Inno72SupplyChannelHistory();
+								history.setId(StringUtil.getUUID());
+								history.setBeforeCount(beforeGoodsCount);
+								history.setAfterCount(afterGoodsCount);
+								history.setBatchNo(batchNo);
+								history.setSupplyChannelId(supplyChannelId);
+								history.setMachineId(supplyChannel.getMachineId());
+								history.setUserId(UserUtil.getUser().getId());
+								history.setCreateTime(now);
+								history.setGoodsId(goodsIdStr);
+								inno72SupplyChannelHistoryMapper.insertSelective(history);
+							}
 						}
-						Inno72SupplyChannelHistory history = new Inno72SupplyChannelHistory();
-						history.setId(StringUtil.getUUID());
-						history.setBeforeCount(beforeGoodsCount);
-						history.setAfterCount(afterGoodsCount);
-						history.setBatchNo(batchNo);
-						history.setSupplyChannelId(supplyChannelId);
-						history.setMachineId(supplyChannel.getMachineId());
-						history.setUserId(UserUtil.getUser().getId());
-						history.setCreateTime(now);
-						history.setGoodsId(goodsIdStr);
-						inno72SupplyChannelHistoryMapper.insertSelective(history);
 					}
 				});
 
