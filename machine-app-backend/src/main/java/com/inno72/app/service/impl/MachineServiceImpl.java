@@ -312,6 +312,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			Map<String, Object> map = new HashMap<>();
 			map.put("Coil_id", channel.getCode());
 			map.put("iSlot_status", channel.getWorkStatus());
+			map.put("lock_status", channel.getIsDelete());
+			map.put("channel_id", channel.getId());
+
 			list.add(map);
 		}
 		return Results.success(list);
@@ -387,6 +390,26 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			return Results.success();
 		}
 		return Results.failure("更新失败");
+	}
+
+	@Override
+	public Result<String> updateChannelStatus(Map<String, Object> msg) {
+		String channelId = MapUtil.getParam(msg, "channelId", String.class);
+		if (StringUtil.isEmpty(channelId)) {
+			return Results.failure("channelId传入为空");
+		}
+		Integer lockStatus = MapUtil.getParam(msg, "lockStatus", Integer.class);
+		if (lockStatus == null || (lockStatus != 0 && lockStatus != 1)) {
+			return Results.failure("lockStatus传入错误");
+		}
+		Inno72SupplyChannel channel = supplyChannelService.findById(channelId);
+		if (channel == null) {
+			return Results.failure("channelId传入错误");
+		}
+		channel.setIsDelete(lockStatus);
+		channel.setUpdateTime(LocalDateTime.now());
+		supplyChannelService.update(channel);
+		return Results.success();
 	}
 
 }

@@ -168,6 +168,17 @@ public class MachineController {
 		return machineService.updateWifiPwd(msg);
 	}
 
+	/**
+	 * 启用货道
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	@RequestMapping(value = "/updateChannelStatus", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> updateChannelStatus(@RequestBody Map<String, Object> msg) {
+		return machineService.updateChannelStatus(msg);
+	}
+
 	@PostMapping("encrypt")
 	public String encrypt(HttpServletRequest request) throws IOException {
 		byte[] encryptRequestBodyBytes = StreamUtils.copyToByteArray(request.getInputStream());
