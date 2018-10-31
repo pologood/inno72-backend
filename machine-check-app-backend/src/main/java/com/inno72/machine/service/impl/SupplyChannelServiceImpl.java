@@ -104,7 +104,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		String machineCode = machine.getMachineCode();
 		Integer codeInt = Integer.parseInt(code);
 		Inno72MachineBatchDetail batchDetail = getBatchDetail(machineCode,codeInt);
-		if(batchDetail == null || batchDetail.getType() != 2){
+		if(batchDetail == null || (batchDetail.getType() != 1 && batchDetail.getType() != 2)){
 			return Results.failure("当前货道不能合并");
 		}
 		Map<String, Object> map = new HashMap<>();
@@ -166,7 +166,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		if (supplyChannel != null) {
 			String machineCode = supplyChannel.getMachineCode();
 			Inno72MachineBatchDetail batchDetail = getBatchDetail(machineCode,codeInteger);
-			if(batchDetail == null || batchDetail.getType() == 3){
+			if(batchDetail == null || (batchDetail.getType() != 1 && batchDetail.getType() != 2)){
 				return Results.failure("当前货道不能拆分");
 			}
 			Integer newCode = codeInteger + 1;
