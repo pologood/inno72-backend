@@ -1,7 +1,9 @@
 package com.inno72.Interact.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -219,7 +221,11 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 		for (MachineSellerVo machineSellerVo : list) {
 			try {
 				logger.info("查询门店开始:");
-				String data = JSON.toJSONString(machineSellerVo.getShopName());
+				Map<String, String> m = new HashMap<>();
+				m.put("storeName", machineSellerVo.getShopName());
+
+				String data = JSON.toJSONString(m);
+				System.out.println(data);
 				String URL = machineBackendProperties.getProps().get("gameServiceUrl");
 				String result = HttpClient.post(URL + "newretail/findStores", data);
 				logger.info("查询门店结束" + result);
@@ -237,7 +243,7 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 		if (list != null && size > 0) {
 			ExportExcel<MachineSellerVo> ee = new ExportExcel<MachineSellerVo>();
 			// 导出excel
-			ee.setResponseHeader(USERCHARGE, USERCOLUMN, list, response, "打卡记录");
+			ee.setResponseHeader(USERCHARGE, USERCOLUMN, list, response, "门店导出");
 		}
 
 	}
