@@ -194,11 +194,11 @@ public class RedisReceiver {
 				pushMap.put("localStr", localStr);
 				pushMap.put("text", "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。");
 				log.info("machineDropGoods send msg ，params：{}", pushMap.toString());
-				//				//查询巡检人员手机号
-				//				for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-				//					String phone = inno72CheckUserPhone1.getPhone();
-				//					msgUtil.sendPush("push_alarm_common", pushMap, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
-				//				}
+				//查询巡检人员手机号
+				for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+					String phone = inno72CheckUserPhone1.getPhone();
+					msgUtil.sendPush("push_alarm_common", pushMap, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
+				}
 				//钉钉报警
 				Map<String, String> ddMaram = new HashMap<>();
 				ddMaram.put("machineCode", machineCode);
