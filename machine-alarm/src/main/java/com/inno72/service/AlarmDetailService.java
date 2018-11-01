@@ -8,11 +8,11 @@ import com.inno72.model.Inno72Machine;
 
 public interface AlarmDetailService{
 
-    public void addToMachineBean(List<Inno72Machine> list);
+	public void addToMachineBean(List<Inno72Machine> list);
 
-    public void addToExceptionMachineBean();
+	public void addToExceptionMachineBean();
 
-    public void sendExceptionMachineAlarm();
+	public void sendExceptionMachineAlarm();
 
 	public void updateMachineStart();
 }
