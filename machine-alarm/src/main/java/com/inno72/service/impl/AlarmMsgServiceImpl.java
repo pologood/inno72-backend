@@ -77,13 +77,13 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 			if(StringUtil.isNotEmpty(phone)){
 				String key = CommonConstants.CHECK_LOGIN_TYPE_KEY_PREF+phone;
 				String loginType = redisUtil.get(key);
-				if(StringUtil.isNotEmpty(loginType)){
-					if(loginType.equals("android")){
-						msgUtil.sendPush("push_android_check_app", params, phone, appName, title, detail);
-					}else if(loginType.equals("ios")){
-						msgUtil.sendPush("push_ios_check_app", params, phone, appName, title, detail);
-					}
-				}
+//				if(StringUtil.isNotEmpty(loginType)){
+//					if(loginType.equals("android")){
+//						msgUtil.sendPush("push_android_check_app", params, phone, appName, title, detail);
+//					}else if(loginType.equals("ios")){
+//						msgUtil.sendPush("push_ios_check_app", params, phone, appName, title, detail);
+//					}
+//				}
 			}
 		}
 	}
