@@ -71,16 +71,18 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 		inno72AlarmMsgMapper.insertSelective(inno72AlarmMsg);
 		Map<String,String> params = new HashMap<>();
 		params.put("machineCode", machineCode);
-		String appName = "machine_check_app_backend";
+		String appName = "machine_alarm";
 		for(Inno72CheckUserPhone checkUserPhone:inno72CheckUserPhones){
 			String phone = checkUserPhone.getPhone();
-			String key = CommonConstants.CHECK_LOGIN_TYPE_KEY_PREF+phone;
-			String loginType = redisUtil.get(key);
-			if(StringUtil.isNotEmpty(loginType)){
-				if(loginType.equals("android")){
-					msgUtil.sendPush("push_android_check_app", params, phone, appName, title, detail);
-				}else if(loginType.equals("ios")){
-					msgUtil.sendPush("push_ios_check_app", params, phone, appName, title, detail);
+			if(StringUtil.isNotEmpty(phone)){
+				String key = CommonConstants.CHECK_LOGIN_TYPE_KEY_PREF+phone;
+				String loginType = redisUtil.get(key);
+				if(StringUtil.isNotEmpty(loginType)){
+					if(loginType.equals("android")){
+						msgUtil.sendPush("push_android_check_app", params, phone, appName, title, detail);
+					}else if(loginType.equals("ios")){
+						msgUtil.sendPush("push_ios_check_app", params, phone, appName, title, detail);
+					}
 				}
 			}
 		}
