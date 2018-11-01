@@ -52,7 +52,7 @@
   </select>
   <select id="findMachineSellerId2" resultType="com.inno72.Interact.vo.MachineSellerVo">
   	SELECT 
-		distinct m.machine_code,ms.merchant_code,area.province,area.city,l.`name` AS area
+		distinct m.machine_code AS machineCode,ms.merchant_code AS sellerId,area.province,area.city,l.`name` AS area
 	FROM
 		inno72_activity_plan_game_result apg
 		LEFT JOIN inno72_activity_plan ap ON ap.id = apg.activity_plan_id
