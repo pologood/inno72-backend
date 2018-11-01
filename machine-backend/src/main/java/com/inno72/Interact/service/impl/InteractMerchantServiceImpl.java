@@ -1,9 +1,8 @@
 package com.inno72.Interact.service.impl;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -221,13 +220,11 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 		for (MachineSellerVo machineSellerVo : list) {
 			try {
 				logger.info("查询门店开始:");
-				Map<String, String> m = new HashMap<>();
-				m.put("storeName", machineSellerVo.getShopName());
-
-				String data = JSON.toJSONString(m);
-				System.out.println(data);
-				String URL = machineBackendProperties.getProps().get("gameServiceUrl");
-				String result = HttpClient.post(URL + "newretail/findStores", data);
+				System.out.println(machineSellerVo.getShopName());
+				String gameServiceUrl = machineBackendProperties.getProps().get("gameServiceUrl")
+						+ "newretail/findStores?storeName={0}";
+				String url = MessageFormat.format(gameServiceUrl, machineSellerVo.getShopName());
+				String result = HttpClient.get(url);
 				logger.info("查询门店结束" + result);
 				JSONObject resultJson = JSON.parseObject(result);
 				if (StringUtil.isNotBlank(resultJson.getString("data"))) {
