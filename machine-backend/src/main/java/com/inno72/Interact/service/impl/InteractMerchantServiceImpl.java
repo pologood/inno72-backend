@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.inno72.Interact.mapper.Inno72InteractMerchantMapper;
 import com.inno72.Interact.model.Inno72InteractMerchant;
 import com.inno72.Interact.service.InteractMerchantService;
@@ -25,6 +27,7 @@ import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.plugin.http.HttpClient;
 import com.inno72.project.mapper.Inno72MerchantMapper;
 import com.inno72.project.mapper.Inno72ShopsMapper;
 import com.inno72.project.model.Inno72Merchant;
@@ -212,18 +215,23 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 				list = inno72InteractMerchantMapper.findMachineSellerId2(activityId);
 			}
 		}
-		/*
-		 * for (MachineSellerVo machineSellerVo : list) { try {
-		 * logger.info("查询门店开始:"); String data =
-		 * JSON.toJSONString(machineSellerVo.getShopName()); String URL =
-		 * machineBackendProperties.getProps().get("gameServiceUrl"); String
-		 * result = HttpClient.post(URL + "newretail/findStores", data);
-		 * logger.info("查询门店结束" + result); JSONObject resultJson =
-		 * JSON.parseObject(result); if
-		 * (StringUtil.isNotBlank(resultJson.getString("data"))) {
-		 * list.remove(machineSellerVo); } } catch (Exception e) {
-		 * logger.error("查找门店异常{}", e.getMessage()); throw e; } }
-		 */
+
+		for (MachineSellerVo machineSellerVo : list) {
+			try {
+				logger.info("查询门店开始:");
+				String data = JSON.toJSONString(machineSellerVo.getShopName());
+				String URL = machineBackendProperties.getProps().get("gameServiceUrl");
+				String result = HttpClient.post(URL + "newretail/findStores", data);
+				logger.info("查询门店结束" + result);
+				JSONObject resultJson = JSON.parseObject(result);
+				if (StringUtil.isNotBlank(resultJson.getString("data"))) {
+					list.remove(machineSellerVo);
+				}
+			} catch (Exception e) {
+				logger.error("查找门店异常{}", e.getMessage());
+				throw e;
+			}
+		}
 
 		int size = list.size();
 		if (list != null && size > 0) {
