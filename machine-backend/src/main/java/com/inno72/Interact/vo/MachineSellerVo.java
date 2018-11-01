@@ -75,7 +75,7 @@ public class MachineSellerVo implements Serializable {
 	}
 
 	public String getShopName() {
-		return shopName;
+		return this.getSellerId() + "-" + this.getMachineCode();
 	}
 
 	public void setShopName(String shopName) {

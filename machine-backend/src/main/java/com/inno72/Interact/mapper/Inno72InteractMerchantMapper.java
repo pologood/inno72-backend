@@ -14,8 +14,8 @@ public interface Inno72InteractMerchantMapper extends Mapper<Inno72InteractMerch
 
 	List<InteractMerchantVo> selectMerchantByInteractId(@Param("interactId") String interactId);
 
-	List<MachineSellerVo> findMachineSellerId1(@Param("interactId") String interactId);
+	List<MachineSellerVo> findMachineSellerId1(@Param("activityId") String activityId);
 
-	List<MachineSellerVo> findMachineSellerId2(@Param("interactId") String interactId);
+	List<MachineSellerVo> findMachineSellerId2(@Param("activityId") String activityId);
 
 }
