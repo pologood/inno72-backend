@@ -54,51 +54,51 @@ import com.inno72.service.SupplyChannelService;
 @Service
 public class RedisReceiver {
 
-    Logger log = LoggerFactory.getLogger(this.getClass());
+	Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Resource
-    private AlarmMsgService alarmMsgService;
+	@Resource
+	private AlarmMsgService alarmMsgService;
 
-    @Autowired
-    private MongoOperations mongoTpl;
+	@Autowired
+	private MongoOperations mongoTpl;
 
-    @Autowired
-    private MsgUtil msgUtil;
+	@Autowired
+	private MsgUtil msgUtil;
 
-    @Resource
-    private LocaleService localeService;
+	@Resource
+	private LocaleService localeService;
 
-    @Resource
-    private CheckUserService checkUserService;
+	@Resource
+	private CheckUserService checkUserService;
 
-    @Resource
-    private MachineService machineService;
+	@Resource
+	private MachineService machineService;
 
-    @Resource
-    private SupplyChannelService supplyChannelService;
+	@Resource
+	private SupplyChannelService supplyChannelService;
 
-    @Resource
-    private AlarmGroupService alarmGroupService;
+	@Resource
+	private AlarmGroupService alarmGroupService;
 
-    public void receiveMessage(String message) throws UnsupportedEncodingException {
+	public void receiveMessage(String message) throws UnsupportedEncodingException {
 
 
-        JSONObject jsonObject = JSON.parseObject(message);
-        String type = jsonObject.getString("type");
-        String system = jsonObject.getString("system");
-        log.info("receive msg:{}", message);
+		JSONObject jsonObject = JSON.parseObject(message);
+		String type = jsonObject.getString("type");
+		String system = jsonObject.getString("system");
+		log.info("receive msg:{}", message);
 		String text = "";
 		String goodsInfo = "";
 		String active = System.getenv("spring_profiles_active");
 
 
-        if ((CommonConstants.SYS_MACHINE_LACKGOODS).equals(system)) {
-            //接收并转数据类型
-            AlarmMessageBean<ChannelGoodsAlarmBean> alarmMessageBean = JSONObject.parseObject(message,
-                    new TypeReference<AlarmMessageBean<ChannelGoodsAlarmBean>>() {
-                    });
-            ChannelGoodsAlarmBean channelGoodsAlarmBean = alarmMessageBean.getData();
-            if(channelGoodsAlarmBean != null){
+		if ((CommonConstants.SYS_MACHINE_LACKGOODS).equals(system)) {
+			//接收并转数据类型
+			AlarmMessageBean<ChannelGoodsAlarmBean> alarmMessageBean = JSONObject.parseObject(message,
+					new TypeReference<AlarmMessageBean<ChannelGoodsAlarmBean>>() {
+					});
+			ChannelGoodsAlarmBean channelGoodsAlarmBean = alarmMessageBean.getData();
+			if(channelGoodsAlarmBean != null){
 				String machineCode = channelGoodsAlarmBean.getMachineCode();
 				Inno72Machine machine = machineService.findByCode(machineCode);
 				Inno72AlarmGroup group = alarmGroupService.selectByParam(machine.getAreaCode());
@@ -168,22 +168,22 @@ public class RedisReceiver {
 					}
 				}
 			}
-        }else if ((CommonConstants.SYS_MACHINE_DROPGOODS).equals(system)) {
-            //接收并转数据类型
-            AlarmMessageBean<MachineDropGoodsBean> alarmMessageBean = JSONObject.parseObject(message,
-                    new TypeReference<AlarmMessageBean<MachineDropGoodsBean>>() {
-                    });
-            MachineDropGoodsBean machineDropGoods = alarmMessageBean.getData();
-            String machineCode = machineDropGoods.getMachineCode();
+		}else if ((CommonConstants.SYS_MACHINE_DROPGOODS).equals(system)) {
+			//接收并转数据类型
+			AlarmMessageBean<MachineDropGoodsBean> alarmMessageBean = JSONObject.parseObject(message,
+					new TypeReference<AlarmMessageBean<MachineDropGoodsBean>>() {
+					});
+			MachineDropGoodsBean machineDropGoods = alarmMessageBean.getData();
+			String machineCode = machineDropGoods.getMachineCode();
 			Inno72Machine machine = machineService.findByCode(machineCode);
 			Inno72AlarmGroup group = alarmGroupService.selectByParam(machine.getAreaCode());
 			Boolean alarmFlag = setAlarmFlag(machine);
 			log.info("继续执行掉货异常报警。。。。");
 			List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
-            String channelNum = machineDropGoods.getChannelNum();
+			String channelNum = machineDropGoods.getChannelNum();
 			String localStr = machine.getLocaleStr();
-            Inno72SupplyChannel supplyChannel = supplyChannelService.selectByParam(machine.getId(),channelNum);
-            log.info("machineDropGoods send msg ，machineCode：{}，channelNum：{}，describtion：{}", machineCode, channelNum, machineDropGoods.getDescribtion());
+			Inno72SupplyChannel supplyChannel = supplyChannelService.selectByParam(machine.getId(),channelNum);
+			log.info("machineDropGoods send msg ，machineCode：{}，channelNum：{}，describtion：{}", machineCode, channelNum, machineDropGoods.getDescribtion());
 			supplyChannel.setIsDelete(1);
 			supplyChannelService.closeSupply(supplyChannel);//锁货道
 			List<Inno72SupplyChannel> normalSupplyList = supplyChannelService.selectNormalSupply(machine.getId(),channelNum);
@@ -194,11 +194,11 @@ public class RedisReceiver {
 				pushMap.put("localStr", localStr);
 				pushMap.put("text", "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。");
 				log.info("machineDropGoods send msg ，params：{}", pushMap.toString());
-//				//查询巡检人员手机号
-				for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-					String phone = inno72CheckUserPhone1.getPhone();
-					msgUtil.sendPush("push_alarm_common", pushMap, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
-				}
+				//				//查询巡检人员手机号
+				//				for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+				//					String phone = inno72CheckUserPhone1.getPhone();
+				//					msgUtil.sendPush("push_alarm_common", pushMap, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
+				//				}
 				//钉钉报警
 				Map<String, String> ddMaram = new HashMap<>();
 				ddMaram.put("machineCode", machineCode);
@@ -213,11 +213,6 @@ public class RedisReceiver {
 					smsMap.put("localStr", address);
 				}
 				if(normalSupplyList != null && normalSupplyList.size()>0){//有未被锁定的货道
-					if(StringUtil.senSmsActive(active)){//生产，预发发送短信
-						text = "货道"+channelNum+"掉货异常，货道已经被锁定";
-						smsMap.put("text",  text);
-						this.sendSms(smsMap,machineCode,"sms_alarm_drop");
-					}
 					text = "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。";
 				}else{//货道全部被锁
 					if(StringUtil.senSmsActive(active)){//生产，预发发送短信
@@ -240,44 +235,44 @@ public class RedisReceiver {
 			}
 			//保存接口
 			int lackNum = 0;
-			alarmMsgService.saveAlarmMsg(type, system, machineCode, lackNum, localStr);
-        }
-    }
+			alarmMsgService.saveAlarmMsg(type, system, machineCode, lackNum, localStr,inno72CheckUserPhones);
+		}
+	}
 
-    /**
-     * find phone by machineCode
-     *
-     * @param machineCode
-     * @return List
-     */
-    private List<Inno72CheckUserPhone> getInno72CheckUserPhones(String machineCode) {
-        Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
-        inno72CheckUserPhone.setMachineCode(machineCode);
-        return checkUserService.selectPhoneByMachineCode(inno72CheckUserPhone);
-    }
+	/**
+	 * find phone by machineCode
+	 *
+	 * @param machineCode
+	 * @return List
+	 */
+	private List<Inno72CheckUserPhone> getInno72CheckUserPhones(String machineCode) {
+		Inno72CheckUserPhone inno72CheckUserPhone = new Inno72CheckUserPhone();
+		inno72CheckUserPhone.setMachineCode(machineCode);
+		return checkUserService.selectPhoneByMachineCode(inno72CheckUserPhone);
+	}
 
-    /**
-     * find locale by machineCode
-     *
-     * @param machineId
-     * @return String
-     */
-    private String getLocaleString(String machineId) {
-        List<MachineLocaleInfo> machineLocaleInfos = new ArrayList<>();
-        MachineLocaleInfo machineLocaleInfo = new MachineLocaleInfo();
-        machineLocaleInfo.setMachineCode(machineId);
-        machineLocaleInfos.add(machineLocaleInfo);
-        List<MachineLocaleInfo> machineLocaleInfoList = localeService.selectLocaleByMachineCode(machineLocaleInfos);
-        String localStr = "";
-        for (MachineLocaleInfo machineLocale : machineLocaleInfoList) {
-            localStr = machineLocale.getLocaleStr();
-        }
-        return localStr;
-    }
+	/**
+	 * find locale by machineCode
+	 *
+	 * @param machineId
+	 * @return String
+	 */
+	private String getLocaleString(String machineId) {
+		List<MachineLocaleInfo> machineLocaleInfos = new ArrayList<>();
+		MachineLocaleInfo machineLocaleInfo = new MachineLocaleInfo();
+		machineLocaleInfo.setMachineCode(machineId);
+		machineLocaleInfos.add(machineLocaleInfo);
+		List<MachineLocaleInfo> machineLocaleInfoList = localeService.selectLocaleByMachineCode(machineLocaleInfos);
+		String localStr = "";
+		for (MachineLocaleInfo machineLocale : machineLocaleInfoList) {
+			localStr = machineLocale.getLocaleStr();
+		}
+		return localStr;
+	}
 
-    public Boolean setAlarmFlag(Inno72Machine machine){
+	public Boolean setAlarmFlag(Inno72Machine machine){
 		log.info("机器信息：{}",JSON.toJSON(machine));
-    	boolean alarmFlag = false;
+		boolean alarmFlag = false;
 		if(machine != null && machine.getOpenStatus() == 0){
 			String monitorStart = machine.getMonitorStart();
 			String monitorEnd = machine.getMonitorEnd();
