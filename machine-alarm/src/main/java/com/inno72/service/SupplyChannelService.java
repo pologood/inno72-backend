@@ -9,7 +9,7 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
     public void closeSupply(Inno72SupplyChannel supplyChannel);
 
-    public List<Inno72SupplyChannel> selectNormalSupply(String machineId,String code);
+    public List<Inno72SupplyChannel> selectNormalSupply(String machineId,String goodsId);
 
-	Inno72SupplyChannel selectByParam(String machineId, String channelNum);
+	List<Inno72SupplyChannel> selectByParam(String machineId, String[] channelArray);
 }
