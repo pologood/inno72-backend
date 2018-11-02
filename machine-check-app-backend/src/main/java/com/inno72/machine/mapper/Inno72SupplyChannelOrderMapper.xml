@@ -25,42 +25,50 @@
     <collection property="historyList" resultMap="historyList"></collection>
   </resultMap>
 
-    <resultMap id="historyList" type="com.inno72.machine.model.Inno72SupplyChannelHistory">
-        <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
-        <result column="subCount" jdbcType="INTEGER" property="subCount"/>
-    </resultMap>
+  <resultMap id="historyList" type="com.inno72.machine.model.Inno72SupplyChannelHistory">
+    <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
+    <result column="subCount" jdbcType="INTEGER" property="subCount"/>
+  </resultMap>
 
-  <select id="selectByPage" resultMap="WorkOrderVoList">
-    select t1.id batchNo,t1.machine_id,t1.create_time,t2.machine_code,
-    CONCAT(
-    t4.province,
-    t4.city,
-    t4.district,
-    if(t4.circle='其他' or t4.circle is null,'',t4.circle),IFNULL(t3.mall,""),IFNULL( t3.name,'')
-    ) AS localeStr
-    from inno72_supply_channel_order t1
-    left join inno72_machine t2 on t1.machine_id=t2.id
-    LEFT JOIN inno72_locale t3 ON t3.id = t2.locale_id
-    LEFT JOIN inno72_admin_area t4 ON t4.CODE = t3.area_code
-    left join inno72_check_user_machine t5 on t2.id=t5.machine_id
-    where t5.check_user_id=#{checkUserId}
-    <if test="keyword != null">
-      and (
-      t2.machine_code like CONCAT('%','${keyword}','%')
-      OR t4.circle like CONCAT('%','${keyword}','%')
-      )
-    </if>
-    <if test="beginTime != null and endTime != null">
-      and t1.create_time between #{beginTime} and #{endTime}
-    </if>
-    order by t1.create_time desc
-  </select>
+    <select id="selectByPage" resultMap="WorkOrderVoList">
+        select
+        sco.id batchNo,
+        sco.machine_id,
+        sco.create_time,
+        m.machine_code,
+        CONCAT(
+          aa.province,
+          aa.city,
+          aa.district,
+          if(aa.circle='其他' or aa.circle is null,'',aa.circle),IFNULL(l.mall,""),IFNULL( l.name,'')
+        ) AS localeStr
+        from inno72_supply_channel_order sco
+        inner join inno72_machine m on sco.machine_id=m.id
+        inner join inno72_check_user_machine cum on m.id=cum.machine_id
+        inner join inno72_locale l on l.id = m.locale_id
+        inner join inno72_admin_area aa on aa.code = l.area_code
+        where cum.check_user_id=#{checkUserId}
+        <if test="keyword != null">
+            and (
+            m.machine_code like CONCAT('%','${keyword}','%')
+            or aa.circle like CONCAT('%','${keyword}','%')
+            or aa.district like CONCAT('%','${keyword}','%')
+            )
+        </if>
+        <if test="beginTime != null and endTime != null">
+          and sco.create_time between #{beginTime} and #{endTime}
+        </if>
+        order by sco.create_time desc
+    </select>
 
     <select id="selectOrderByMonth" resultMap="WorkOrderVoList">
-        select co.create_time,co.machine_id,m.machine_code
+        select
+        co.create_time,
+        co.machine_id,
+        m.machine_code
         from inno72_supply_channel_order co
-        left join inno72_machine m on co.machine_id=m.id
-        left join inno72_check_user_machine cum on m.id=cum.machine_id
+        inner join inno72_machine m on co.machine_id=m.id
+        inner join inno72_check_user_machine cum on m.id=cum.machine_id
         where co.user_id=#{checkUserId}
         <if test="machineId != null">
             and m.id = #{machineId}
@@ -77,7 +85,10 @@
 
 
     <select id="selectWorkOrderDetail" resultMap="WorkOrderVoList">
-        select co.id batchNo,goods.name goodsName,sum((sch.after_count-sch.before_count)) subCount
+        select
+        co.id batchNo,
+        goods.name goodsName,
+        sum((sch.after_count-sch.before_count)) subCount
         from inno72_supply_channel_order co
         left join inno72_supply_channel_history sch on co.id=sch.batch_no
         inner join inno72_goods goods on sch.goods_id=goods.id
