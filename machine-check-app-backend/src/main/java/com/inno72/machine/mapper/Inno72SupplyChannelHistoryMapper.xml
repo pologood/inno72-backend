@@ -72,8 +72,8 @@
     ) AS localeStr
     from inno72_supply_channel_history hi
     inner join inno72_machine m on hi.machine_id=m.id
-    inner JOIN inno72_locale l ON l.id = m.locale_id
-    inner JOIN inno72_admin_area aa ON aa.CODE = l.area_code
+    inner join inno72_locale l ON l.id = m.locale_id
+    inner join inno72_admin_area aa ON aa.CODE = l.area_code
     inner join inno72_goods goods on hi.goods_id=goods.id
     where hi.batch_no=#{batchNo}
     and hi.after_count>0
