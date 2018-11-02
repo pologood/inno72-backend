@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +56,13 @@ public class SupplyChannelHistoryController {
 	public ModelAndView dateGoodsCount(SupplyOrderVo supplyOrderVo) {
 		List<Map<String, Object>> list = supplyChannelHistoryService.dayGoodsCount(supplyOrderVo);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
+	}
+
+	@RequestMapping(value = "/dayGoodsCountExcel", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<Object> dayGoodsCountExcel(HttpServletResponse response, SupplyOrderVo supplyOrderVo) {
+		supplyChannelHistoryService.dayGoodsCountExcel(supplyOrderVo, response);
+
+		return null;
 	}
 
 	/**

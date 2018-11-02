@@ -3,6 +3,8 @@ package com.inno72.machine.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.inno72.common.Result;
 import com.inno72.common.Service;
 import com.inno72.machine.model.Inno72SupplyChannelHistory;
@@ -20,4 +22,6 @@ public interface SupplyChannelHistoryService extends Service<Inno72SupplyChannel
 	List<Map<String, Object>> dayGoodsList(SupplyOrderVo supplyOrderVo);
 
 	List<Map<String, Object>> dayGoodsDetail(String machineId, String dateTime);
+
+	Result<String> dayGoodsCountExcel(SupplyOrderVo supplyOrderVo, HttpServletResponse response);
 }
