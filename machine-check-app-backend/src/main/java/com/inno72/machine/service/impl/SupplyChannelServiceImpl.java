@@ -393,10 +393,11 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		if (StringUtil.isEmpty(machineId)) {
 			return Results.failure("参数不能为空");
 		}
-		List<Inno72Goods> list = inno72GoodsMapper.selectPaiyangByMachineId(machineId);
-		if(list == null || list.size()==0){
-			list = inno72GoodsMapper.selectByMachineId(machineId);
-		}
+		List<Inno72Goods> list = inno72GoodsMapper.selectByMachineId(machineId);
+//		List<Inno72Goods> list = inno72GoodsMapper.selectPaiyangByMachineId(machineId);
+//		if(list == null || list.size()==0){
+//			list = inno72GoodsMapper.selectByMachineId(machineId);
+//		}
 		return ResultGenerator.genSuccessResult(list);
 	}
 
