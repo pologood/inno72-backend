@@ -1,6 +1,10 @@
 package com.inno72.machine.vo;
 
-public class MachineExceptionVo {
+import java.time.LocalDateTime;
+
+import com.inno72.common.datetime.LocalDateTimeUtil;
+
+public class MachineExceptionVo implements Comparable<MachineExceptionVo> {
 	private String id;
 	private String machineCode;
 	private String local;
@@ -101,6 +105,27 @@ public class MachineExceptionVo {
 
 	public void setUpdateTime(String updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	@Override
+	public int compareTo(MachineExceptionVo o) {
+		if ("未知".equals(this.getOfflineTime()) && !"未知".equals(o.getOfflineTime())) {
+			return 1;
+		}
+		if ("未知".equals(o.getOfflineTime()) && !"未知".equals(this.getOfflineTime())) {
+			return -1;
+		}
+		if ("未知".equals(o.getOfflineTime()) && "未知".equals(this.getOfflineTime())) {
+			return 0;
+		}
+
+		LocalDateTime thisTime = LocalDateTimeUtil.transfer(this.getOfflineTime());
+		LocalDateTime voTime = LocalDateTimeUtil.transfer(o.getOfflineTime());
+		if (thisTime.isAfter(voTime)) {
+			return -1;
+		}
+
+		return 1;
 	}
 
 }
