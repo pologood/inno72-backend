@@ -58,7 +58,6 @@ import com.inno72.machine.vo.MachineExceptionVo;
 import com.inno72.machine.vo.MachineInstallAppBean;
 import com.inno72.machine.vo.MachineListVo;
 import com.inno72.machine.vo.MachineListVo1;
-import com.inno72.machine.vo.MachineLogInfo;
 import com.inno72.machine.vo.MachineNetInfo;
 import com.inno72.machine.vo.MachinePortalVo;
 import com.inno72.machine.vo.MachineStartAppBean;
@@ -529,9 +528,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 		if (type == 1) {
 
-			List<MachineLogInfo> netList = mongoTpl.find(new Query(), MachineLogInfo.class, "MachineLogInfo");
+			List<SystemStatus> netList = mongoTpl.find(new Query(), SystemStatus.class, "SystemStatus");
 			Map<String, String> machines = new HashMap<>();
-			for (MachineLogInfo machineLogInfo : netList) {
+			for (SystemStatus machineLogInfo : netList) {
 				LocalDateTime createTime = machineLogInfo.getCreateTime();
 				machines.put(machineLogInfo.getMachineId(), DateUtil.toTimeStr(createTime, DateUtil.DF_FULL_S1));
 			}
@@ -542,6 +541,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 				MachineExceptionVo vo = it.next();
 				vo.setOfflineTime(Optional.ofNullable(machines.get(vo.getMachineCode())).orElse("未知"));
 			}
+			Collections.sort(exceptionVos);
 			return Results.success(exceptionVos);
 		} else if (type == 2) {
 			param.put("type", 2);
