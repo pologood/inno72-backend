@@ -208,16 +208,11 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 			Map<String, Object> pm = new HashMap<>();
 			pm.put("activityId", activityId);
 			pm.put("activityType", activityType);
-
 			// 派样
 			List<Inno72NeedExportStore> list = inno72InteractMerchantMapper.findMachineSellerId(pm);
-
-			int size = list.size();
-			if (list != null && size > 0) {
-				ExportExcel<Inno72NeedExportStore> ee = new ExportExcel<Inno72NeedExportStore>();
-				// 导出excel
-				ee.setResponseHeader(USERCHARGE, USERCOLUMN, list, response, "门店导出");
-			}
+			ExportExcel<Inno72NeedExportStore> ee = new ExportExcel<Inno72NeedExportStore>();
+			// 导出excel
+			ee.setResponseHeader(USERCHARGE, USERCOLUMN, list, response, "门店导出");
 		}
 	}
 
