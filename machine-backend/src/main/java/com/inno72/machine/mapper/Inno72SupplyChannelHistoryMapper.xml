@@ -46,52 +46,21 @@
   
   <select id="selectDayGoodsCountByPage" resultType="java.util.Map">
   	SELECT
-		hi.id,
-		g.`name` AS goodsName,
-		m.machine_code AS machineCode,
+		g.goods_name AS goodsName,
+		m.machine_code  AS machineCode,
 		CONCAT(area.province,area.city,area.district,IFNULL(l.mall,""),IFNULL( l.name,'')) AS localDesc,
-		IFNULL(mgc.num,0) AS beforeNum,
-		SUM((hi.after_count-hi.before_count) )AS afterNum,
-		DATE_FORMAT(hi.create_time,'%Y-%m-%d') AS date,
-		IFNULL(sgc.num,0) AS num
+		g.before_num AS beforeNum,
+		g.add_num AS afterNum,
+		g.num,
+		DATE_FORMAT(g.submit_time,'%Y-%m-%d') AS date
 	FROM
-		inno72_supply_channel_history hi
-		LEFT JOIN inno72_machine m ON m.id=hi.machine_id
-		LEFT JOIN inno72_locale l ON l.id = m.locale_id
-		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
-		LEFT JOIN inno72_goods g ON g.id=hi.goods_id
-		LEFT JOIN inno72_machine_goods_count mgc ON mgc.machine_id=m.id AND mgc.goods_id=hi.goods_id AND DATE_FORMAT(mgc.submit_time,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d')
-		LEFT JOIN (
-			SELECT
-				scg.goods_id,sum(sc.goods_count) AS num,sc.machine_id
-			FROM
-				inno72_supply_channel_goods scg
-				LEFT JOIN inno72_supply_channel sc ON sc.id = scg.supply_channel_id
-				LEFT JOIN inno72_goods g ON scg.goods_id = g.id
-				INNER JOIN (
-					 SELECT * FROM (
-						SELECT img.goods_id,m.id AS machine_id FROM inno72_interact_machine_goods img
-						LEFT JOIN inno72_interact_machine im ON im.id = img.interact_machine_id
-						LEFT JOIN inno72_interact_machine_time imt ON im.id = imt.interact_machine_id
-						LEFT JOIN inno72_machine m ON m.id = im.machine_id
-						LEFT JOIN inno72_interact i ON i.id =im.interact_id
-						WHERE  i.is_delete=0 AND i.`status`=1  AND NOW() BETWEEN imt.start_time AND imt.end_time 
-						UNION 
-						SELECT apg.prize_id AS goods_id,m.id AS machine_id FROM inno72_activity_plan_game_result apg
-						LEFT JOIN inno72_activity_plan ap ON ap.id = apg.activity_plan_id
-						LEFT JOIN inno72_activity_plan_machine apm ON apm.activity_plan_id = apg.activity_plan_id
-						LEFT JOIN inno72_machine m ON m.id = apm.machine_id 
-						WHERE  ap.is_delete = 0 AND apg.prize_type = 1 AND NOW( ) BETWEEN ap.start_time AND ap.end_time
-					) m GROUP BY machine_id,goods_id
-			 )m ON m.goods_id=scg.goods_id AND m.machine_id=sc.machine_id
-				WHERE  sc.is_delete=0  
-				GROUP BY sc.machine_id,scg.goods_id
-				ORDER BY sc.machine_id
-		) sgc ON sgc.machine_id=m.id AND sgc.goods_id=hi.goods_id
-	WHERE
-		hi.after_count != hi.before_count AND LENGTH(hi.goods_id) >1
-	  <if test="beginTime != null and beginTime !=''  "> and hi.create_time <![CDATA[>]]> #{beginTime} </if>
-      <if test="endTime != null and endTime !='' "> and hi.create_time <![CDATA[<=]]> #{endTime} </if>
+		inno72_machine_goods_count g 
+	LEFT JOIN inno72_machine m ON m.id=g.machine_id
+	LEFT JOIN inno72_locale l ON l.id = m.locale_id
+	LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
+	WHERE 1=1
+	  <if test="beginTime != null and beginTime !=''  "> and g.submit_time <![CDATA[>]]> #{beginTime} </if>
+      <if test="endTime != null and endTime !='' "> and g.submit_time <![CDATA[<=]]> #{endTime} </if>
       <if test="keyword != null and keyword !='' ">
        AND (m.machine_code LIKE '%${keyword}%'
        		or g.name LIKE '%${keyword}%' 
@@ -102,8 +71,7 @@
 			or area.city LIKE '%${keyword}%' 
 			or area.district LIKE '%${keyword}%' )
       </if>
-	GROUP BY DATE_FORMAT(hi.create_time,'%Y-%m-%d'),hi.machine_id,hi.goods_id
-	ORDER BY hi.create_time DESC
+	ORDER BY DATE_FORMAT(g.submit_time,'%Y-%m-%d') DESC,g.add_num DESC,g.num DESC
   </select>
   
   <select id="selectDayGoodsListByPage" resultType="java.util.Map">
