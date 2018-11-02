@@ -71,7 +71,7 @@
 		) AS localeStr,
 		scg.goods_id goodsId
 		from inno72_machine m
-		inner join inno72_machine_goods mg on m.id=mg.machine_id
+		inner join view_machine_goods mg on m.id=mg.machine_id
 		inner join inno72_check_user_machine cum on m.id=cum.machine_id
 		inner join inno72_supply_channel sc on cum.machine_id = sc.machine_id
 		inner JOIN inno72_locale l ON l.id = m.locale_id
@@ -100,7 +100,7 @@
 		if(aa.circle='其他' or aa.circle is null,'',aa.circle),IFNULL(l.mall,""),IFNULL( l.name,'')
 		) AS localeStr
 		from inno72_machine m
-		inner join inno72_machine_goods mg on mg.machine_id=m.id
+		inner join view_machine_goods mg on mg.machine_id=m.id
 		inner join inno72_check_user_machine cum on m.id=cum.machine_id
 		inner join inno72_check_user cu on cum.check_user_id=cu.id
 		inner join inno72_supply_channel sc on sc.machine_id=m.id

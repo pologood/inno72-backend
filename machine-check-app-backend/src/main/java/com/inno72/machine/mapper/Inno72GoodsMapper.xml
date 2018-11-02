@@ -43,13 +43,13 @@
         inner join inno72_machine m on sc.machine_id=m.id
         inner join inno72_check_user_machine sum on sum.machine_id=m.id
         inner join inno72_check_user cu on sum.check_user_id=cu.id
-        inner join inno72_machine_goods mg on mg.machine_id=m.id
+        inner join view_machine_goods mg on mg.machine_id=m.id
         where cu.id=#{checkUserId} and m.machine_status=4
     </select>
 
     <select id="selectByMachineId" resultMap="BaseResultMap">
         select goods.* from inno72_goods goods
-		inner join inno72_machine_goods mg on goods.id=mg.goods_id
+		inner join view_machine_goods mg on goods.id=mg.goods_id
         where mg.machine_id=#{machineId}
     </select>
 
