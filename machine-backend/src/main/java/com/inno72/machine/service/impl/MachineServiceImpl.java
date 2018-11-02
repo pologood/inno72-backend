@@ -20,7 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -106,8 +105,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	private ActivityPlanService activityPlanService;
 	@Autowired
 	private AppLogService appLogService;
-	@Autowired
-	private StringRedisTemplate stringRedisTemplate;
 	@Autowired
 	private MsgUtil msgUtil;
 
@@ -483,10 +480,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition1);
 		vo.setOffline(machines.size());
 		vo.setDropGoodsSwitchException(findExceptionMachine(2).getData().size());
-		vo.setChannelException(0);
-
 		vo.setChannelException(findExceptionMachine(4).getData().size());
-
+		vo.setLockCount(findExceptionMachine(5).getData().size());
 		List<MachineExceptionVo> stockOutVos = inno72MachineMapper.findStockOutMachines();
 		vo.setStockout(stockOutVos == null ? 0 : stockOutVos.size());
 		Condition condition = new Condition(Inno72CheckFault.class);
@@ -596,6 +591,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 				}
 			}
 			return Results.success(result);
+		} else if (type == 5) {
+			List<MachineExceptionVo> exceptionVos = inno72MachineMapper.findMachineLocked();
+			return Results.success(exceptionVos);
 		} else {
 			return Results.failure("参数传入错误");
 		}

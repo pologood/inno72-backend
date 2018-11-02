@@ -9,6 +9,7 @@ public class MachinePortalVo {
 	private Integer processed;// 处理中
 	private Integer waitConfirm;// 待确认
 	private Integer paiActivityCount;// 派样活动
+	private Integer lockCount;// 锁定机器
 
 	public Integer getOffline() {
 		return offline;
@@ -73,4 +74,13 @@ public class MachinePortalVo {
 	public void setPaiActivityCount(Integer paiActivityCount) {
 		this.paiActivityCount = paiActivityCount;
 	}
+
+	public Integer getLockCount() {
+		return lockCount;
+	}
+
+	public void setLockCount(Integer lockCount) {
+		this.lockCount = lockCount;
+	}
+
 }
