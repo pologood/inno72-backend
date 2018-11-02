@@ -1,12 +1,13 @@
 package com.inno72.Interact.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
 import com.inno72.Interact.model.Inno72InteractMerchant;
+import com.inno72.Interact.vo.Inno72NeedExportStore;
 import com.inno72.Interact.vo.InteractMerchantVo;
-import com.inno72.Interact.vo.MachineSellerVo;
 import com.inno72.common.Mapper;
 
 @org.apache.ibatis.annotations.Mapper
@@ -14,8 +15,6 @@ public interface Inno72InteractMerchantMapper extends Mapper<Inno72InteractMerch
 
 	List<InteractMerchantVo> selectMerchantByInteractId(@Param("interactId") String interactId);
 
-	List<MachineSellerVo> findMachineSellerId1(@Param("activityId") String activityId);
-
-	List<MachineSellerVo> findMachineSellerId2(@Param("activityId") String activityId);
+	List<Inno72NeedExportStore> findMachineSellerId(Map<String, Object> params);
 
 }

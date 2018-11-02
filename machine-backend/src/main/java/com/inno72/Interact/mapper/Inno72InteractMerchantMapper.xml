@@ -36,36 +36,11 @@
   </select>
   
   
-  <select id="findMachineSellerId1" resultType="com.inno72.Interact.vo.MachineSellerVo">
-  	SELECT
-		distinct im.machine_code AS machineCode,m.merchant_code AS sellerId ,area.province,area.city,l.`name` AS area
-	FROM
-		inno72_interact_machine im
-		JOIN inno72_interact_machine_goods img ON im.id = img.interact_machine_id
-		LEFT JOIN inno72_machine mm ON mm.id = im.machine_id
-		LEFT JOIN inno72_goods g ON g.id = img.goods_id
-		LEFT JOIN inno72_merchant m ON g.seller_id = m.id 
-		LEFT JOIN inno72_locale l ON l.id = mm.locale_id
-		LEFT JOIN inno72_admin_area area ON area.`code`=l.area_code
-	WHERE
-		img.type = 0 and im.interact_id =#{activityId}
+  <select id="findMachineSellerId" resultType="com.inno72.Interact.vo.Inno72NeedExportStore">
+  	SELECT *,machine_code AS machineCode, seller_id AS sellerId,CONCAT(seller_id,"-",machine_code) AS shopName FROM inno72_need_export_store s
+  	 WHERE s.activity_id=#{activityId} AND s.activity_type=#{activityType}
   </select>
-  <select id="findMachineSellerId2" resultType="com.inno72.Interact.vo.MachineSellerVo">
-  	SELECT 
-		distinct m.machine_code AS machineCode,ms.merchant_code AS sellerId,area.province,area.city,l.`name` AS area
-	FROM
-		inno72_activity_plan_game_result apg
-		LEFT JOIN inno72_activity_plan ap ON ap.id = apg.activity_plan_id
-		LEFT JOIN inno72_activity_plan_machine apm ON apm.activity_plan_id = apg.activity_plan_id
-		LEFT JOIN inno72_machine m ON m.id = apm.machine_id
-		LEFT JOIN inno72_goods g ON g.id = apg.prize_id
-		LEFT JOIN inno72_merchant ms ON ms.id = g.seller_id 
-		LEFT JOIN inno72_locale l ON l.id = m.locale_id
-		LEFT JOIN inno72_admin_area area ON area.`code`=l.area_code
-	WHERE
-		m.machine_status = 4 AND ap.is_delete = 0 
-		AND apg.prize_type = 1 AND ap.activity_id=#{activityId}
-  </select>
+  
   
   
   
