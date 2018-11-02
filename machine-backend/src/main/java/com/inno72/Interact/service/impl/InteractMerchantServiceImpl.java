@@ -61,7 +61,7 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 			"核销账号(write_off_account)", "法人姓名(legal_person_name)", "法人身份证号(legal_cert_no)", "营业主体名称(license_name)",
 			"营业主体类型(license_type)", "营业执照编号(license_code)" };
 	public static final String[] USERCOLUMN = { "province", "city", "", "", "", "", "shopName", "", "", "locale",
-			"phone", "", "img", "", "", "", "date", "", "", "", "", "", "", "", "" };
+			"phone", "", "img", "", "", "date", "", "", "", "", "", "", "", "", "" };
 
 	@Override
 	public Result<String> save(InteractMerchantVo model) {
