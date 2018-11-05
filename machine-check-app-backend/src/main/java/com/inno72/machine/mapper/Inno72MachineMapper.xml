@@ -114,6 +114,7 @@
 	<select id="machineList" resultMap="BaseResultMap">
 		select
 		m.*,
+		scg.goods_id goodsId,
 		cf.code faultCode,
 		cf.id faultId,
 		cf.status faultStatus,
@@ -142,7 +143,7 @@
 		and date_format(csi.create_time,'%Y%M%D') = date_format(CURRENT_DATE,'%Y%M%D')
 		and csi.check_user_id=#{checkUserId,jdbcType=VARCHAR}
 		left join inno72_supply_channel sc on m.id = sc.machine_id
-		left join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id
+		inner join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id
 		where m.machine_status=4 and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
 		and sc.status=0 and sc.is_delete=0
 	</select>
