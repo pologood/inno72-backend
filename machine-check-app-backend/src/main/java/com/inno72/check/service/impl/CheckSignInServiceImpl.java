@@ -15,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -49,8 +51,12 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
     }
 
     @Override
-    public Result<List<Inno72CheckSignIn>> findThisMonth(String machineId) {
-        List<Inno72CheckSignIn> list = checkSignInMapper.selectTishMonth(UserUtil.getUser().getId(),machineId);
+    public Result<List<Inno72CheckSignIn>> findByMonth(Inno72CheckSignIn signIn) {
+    	Map<String,Object> map = new HashMap<>();
+    	map.put("checkUserId",UserUtil.getUser().getId());
+    	map.put("machineId",signIn.getMachineId());
+    	map.put("createTime",signIn.getCreateTime());
+        List<Inno72CheckSignIn> list = checkSignInMapper.selectByMonth(map);
         return ResultGenerator.genSuccessResult(list);
     }
 

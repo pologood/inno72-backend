@@ -13,7 +13,7 @@ public interface CheckSignInService extends Service<Inno72CheckSignIn> {
 
     Result<String> add(Inno72CheckSignIn signIn);
 
-    Result<List<Inno72CheckSignIn>> findThisMonth(String machineId);
+    Result<List<Inno72CheckSignIn>> findByMonth(Inno72CheckSignIn signIn);
 
     Result<List<MachineSignInVo>> findMachineSignList();
 }

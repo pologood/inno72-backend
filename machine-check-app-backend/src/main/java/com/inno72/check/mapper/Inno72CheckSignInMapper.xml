@@ -18,10 +18,10 @@
     <association property="signInList" resultMap="BaseResultMap"/>
   </resultMap>
 
-  <select id="selectTishMonth" resultMap="BaseResultMap">
+  <select id="selectByMonth" resultMap="BaseResultMap">
     select id,check_user_id,machine_id,type,create_time
     from inno72_check_sign_in
-    where DATE_FORMAT(create_time,'%Y%M') = DATE_FORMAT(CURRENT_DATE,'%Y%M')
+    where DATE_FORMAT(create_time,'%Y%M') = DATE_FORMAT(#{createTime},'%Y%M')
     and machine_id=#{machineId} and check_user_id=#{checkUserId}
   </select>
 

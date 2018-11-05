@@ -40,7 +40,7 @@ public class CheckSignInController {
     @RequestMapping(value="list", method = {RequestMethod.POST})
     public Result<List<Inno72CheckSignIn>> list(@RequestBody Inno72CheckSignIn signIn){
         logger.info("查询本月打卡记录接口参数{}", JSON.toJSON(signIn));
-        Result<List<Inno72CheckSignIn>> result = checkSignInService.findThisMonth(signIn.getMachineId());
+        Result<List<Inno72CheckSignIn>> result = checkSignInService.findByMonth(signIn);
         logger.info("查询本月打卡记录接口结果{}", JSON.toJSON(result));
         return result;
     }
