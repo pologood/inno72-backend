@@ -71,12 +71,12 @@
 		) AS localeStr,
 		scg.goods_id goodsId
 		from inno72_machine m
-		inner join view_machine_goods mg on m.id=mg.machine_id
+		left join view_machine_goods mg on m.id=mg.machine_id
 		inner join inno72_check_user_machine cum on m.id=cum.machine_id
 		inner join inno72_supply_channel sc on cum.machine_id = sc.machine_id
 		inner JOIN inno72_locale l ON l.id = m.locale_id
         inner JOIN inno72_admin_area aa ON aa.CODE = l.area_code
-        left join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id
+        left join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id and mg.goods_id=scg.goods_id
 		where m.machine_status=4 and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
 		and sc.status=0 and sc.is_delete=0
 	</select>
