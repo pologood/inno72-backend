@@ -49,17 +49,20 @@
 		<if test="type !=null and type !='' "> and a.type=#{type}</if>
 		<if test="code !=null and code !='' "> and LEFT(locale.area_code,#{num}) =#{code}</if>
 		<if test="startTime !=null and startTime !='' ">
-   <![CDATA[AND ( #{startTime} <= ap.end_time AND #{endTime} >= ap.start_time ) ]]>
+  			 <![CDATA[AND ( #{startTime} <= ap.end_time AND #{endTime} >= ap.start_time ) ]]>
 		</if>
 		<if test="status ==null or status =='' ">and ap.is_delete = 0 and NOW() &lt; ap.end_time</if>
 		<if test="status ==1">and ap.is_delete = 0 and NOW() &lt; ap.start_time </if>
-		<if test="status ==2">and ap.is_delete = 0 and (NOW() BETWEEN ap.start_time and
-			ap.end_time ) </if>
-		<if test="status ==3"> and ap.is_delete != 1 and (NOW() &gt; ap.end_time or
-			ap.is_delete = 2)  </if>
+		<if test="status ==2">and ap.is_delete = 0 and (NOW() BETWEEN ap.start_time and ap.end_time ) </if>
+		<if test="status ==3"> and ap.is_delete != 1 and (NOW() &gt; ap.end_time or ap.is_delete = 2)  </if>
+		<if test="keyword !=null and keyword !='' "> 
+			and (locale.mall LIKE '%${keyword}%'
+				OR locale.name LIKE '%${keyword}%' 
+				OR JSON_EXTRACT(locale.tag, '$.tags') LIKE '%${keyword}%'  
+				OR m.machine_code LIKE '%${keyword}%')
+		</if>
 		and 9=9
-		GROUP BY ap.id
-		ORDER BY ap.start_time
+		GROUP BY ap.id ORDER BY ap.start_time
 	</select>
 	<!-- 联动区域机器列表 -->
 	<resultMap id="ResultAreaMachineMap" type="com.inno72.project.vo.Inno72AdminAreaVo">

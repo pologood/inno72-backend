@@ -699,8 +699,10 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 
 	@Override
 	public List<Inno72ActivityPlanVo> selectPlanList(String code, String status, String type, String startTime,
-			String endTime) {
+			String endTime, String keyword) {
 		Map<String, Object> params = new HashMap<String, Object>();
+		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
+		params.put("keyword", keyword);
 		params.put("startTime", startTime);
 		params.put("endTime", endTime);
 		params.put("status", status);
