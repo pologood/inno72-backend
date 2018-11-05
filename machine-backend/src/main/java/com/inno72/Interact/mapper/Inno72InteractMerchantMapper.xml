@@ -37,8 +37,16 @@
   
   
   <select id="findMachineSellerId" resultType="com.inno72.Interact.vo.Inno72NeedExportStore">
-  	SELECT *,machine_code AS machineCode, seller_id AS sellerId,CONCAT(seller_id,"-",machine_code) AS shopName FROM inno72_need_export_store s
-  	 WHERE s.activity_id=#{activityId} AND s.activity_type=#{activityType}
+  	SELECT *,machine_code AS machineCode, seller_id AS sellerId,CONCAT(seller_id,"-",machine_code) AS shopName 
+  	FROM inno72_need_export_store s
+  	  <where>
+          <if test="activityId != null and activityId != ''">
+          	AND s.activity_id=#{activityId}
+          </if>
+          <if test="activityType != null and activityType != ''">
+          	AND s.activity_type=#{activityType}
+          </if>
+      </where>
   </select>
   
   

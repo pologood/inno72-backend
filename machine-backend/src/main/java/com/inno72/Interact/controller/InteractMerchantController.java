@@ -56,8 +56,8 @@ public class InteractMerchantController {
 	}
 
 	@RequestMapping(value = "/exportMachineSellerId")
-	public void exportMachineSellerId(String activityId, Integer activityType, HttpServletResponse response)
-			throws Exception {
+	public void exportMachineSellerId(@RequestParam(required = false) String activityId,
+			@RequestParam(required = false) String activityType, HttpServletResponse response) throws Exception {
 		interactMerchantService.findMachineSellerId(activityId, activityType, response);
 
 	}

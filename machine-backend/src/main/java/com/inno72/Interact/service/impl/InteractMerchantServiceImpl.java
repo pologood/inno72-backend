@@ -202,18 +202,16 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 	}
 
 	@Override
-	public void findMachineSellerId(String activityId, Integer activityType, HttpServletResponse response) {
+	public void findMachineSellerId(String activityId, String activityType, HttpServletResponse response) {
 
-		if (StringUtil.isNotBlank(activityId)) {
-			Map<String, Object> pm = new HashMap<>();
-			pm.put("activityId", activityId);
-			pm.put("activityType", activityType);
-			// 派样
-			List<Inno72NeedExportStore> list = inno72InteractMerchantMapper.findMachineSellerId(pm);
-			ExportExcel<Inno72NeedExportStore> ee = new ExportExcel<Inno72NeedExportStore>();
-			// 导出excel
-			ee.setResponseHeader(USERCHARGE, USERCOLUMN, list, response, "门店导出");
-		}
+		Map<String, Object> pm = new HashMap<>();
+		pm.put("activityId", activityId);
+		pm.put("activityType", activityType);
+		// 派样
+		List<Inno72NeedExportStore> list = inno72InteractMerchantMapper.findMachineSellerId(pm);
+		ExportExcel<Inno72NeedExportStore> ee = new ExportExcel<Inno72NeedExportStore>();
+		// 导出excel
+		ee.setResponseHeader(USERCHARGE, USERCOLUMN, list, response, "门店导出");
 	}
 
 }

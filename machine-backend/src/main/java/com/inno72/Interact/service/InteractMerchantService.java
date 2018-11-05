@@ -25,6 +25,6 @@ public interface InteractMerchantService extends Service<Inno72InteractMerchant>
 
 	Result<String> deleteById(String interactId, String merchantId);
 
-	void findMachineSellerId(String activityId, Integer activityType, HttpServletResponse response);
+	void findMachineSellerId(String activityId, String activityType, HttpServletResponse response);
 
 }
