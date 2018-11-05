@@ -70,7 +70,7 @@
       left join inno72_supply_channel_goods cg on ch.id=cg.supply_channel_id
       left join inno72_goods goods on cg.goods_id=goods.id
       left join inno72_machine m on ch.machine_id=m.id
-      left join view_machine_goods mg on mg.machine_id=m.idgetMachine
+      left join view_machine_goods mg on mg.machine_id=m.id
     <where>
         <if test="code != null">
             and ch.code = #{code}
