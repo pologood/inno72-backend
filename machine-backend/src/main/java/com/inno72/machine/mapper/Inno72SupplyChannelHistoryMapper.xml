@@ -101,7 +101,7 @@
 			or area.city LIKE '%${keyword}%' 
 			or area.district LIKE '%${keyword}%' )
       </if>
-	ORDER BY DATE_FORMAT(g.submit_time,'%Y-%m-%d') DESC,g.add_num DESC,g.num DESC limt 40000
+	ORDER BY DATE_FORMAT(g.submit_time,'%Y-%m-%d') DESC,g.add_num DESC,g.num DESC LIMIT 40000
   </select>
   
   <select id="selectDayGoodsListByPage" resultType="java.util.Map">
