@@ -76,7 +76,7 @@
 		inner join inno72_supply_channel sc on cum.machine_id = sc.machine_id
 		inner JOIN inno72_locale l ON l.id = m.locale_id
         inner JOIN inno72_admin_area aa ON aa.CODE = l.area_code
-        inner join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id
+        left join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id
 		where m.machine_status=4 and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
 		and sc.status=0 and sc.is_delete=0
 	</select>
