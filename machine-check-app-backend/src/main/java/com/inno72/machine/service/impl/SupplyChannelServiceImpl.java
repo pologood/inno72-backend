@@ -312,7 +312,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 						}
 					}
 					for (Integer value : map.values()) {
-						if (value < 5) {
+						if (value < 10) {
 							lackGoodsStatus = 1;
 							break;
 						}

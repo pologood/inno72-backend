@@ -124,7 +124,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 						}
 					}
 					for (Integer value : map.values()) {
-						if (value < 5) {
+						if (value < 10) {
 							lackGoodsStatus = 1;
 							break;
 						}
