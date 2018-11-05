@@ -63,7 +63,7 @@
       <if test="endTime != null and endTime !='' "> and g.submit_time <![CDATA[<=]]> #{endTime} </if>
       <if test="keyword != null and keyword !='' ">
        AND (m.machine_code LIKE '%${keyword}%'
-       		or g.name LIKE '%${keyword}%' 
+       		or g.goods_name LIKE '%${keyword}%' 
 			or l.mall LIKE '%${keyword}%' 
 			or JSON_EXTRACT(l.tag, '$.tags') LIKE '%${keyword}%'  
 			or l.name LIKE '%${keyword}%' 
@@ -93,7 +93,7 @@
       <if test="endTime != null and endTime !='' "> and g.submit_time <![CDATA[<=]]> #{endTime} </if>
       <if test="keyword != null and keyword !='' ">
        AND (m.machine_code LIKE '%${keyword}%'
-       		or g.name LIKE '%${keyword}%' 
+       		or g.goods_name LIKE '%${keyword}%' 
 			or l.mall LIKE '%${keyword}%' 
 			or JSON_EXTRACT(l.tag, '$.tags') LIKE '%${keyword}%'  
 			or l.name LIKE '%${keyword}%' 
@@ -101,7 +101,7 @@
 			or area.city LIKE '%${keyword}%' 
 			or area.district LIKE '%${keyword}%' )
       </if>
-	ORDER BY DATE_FORMAT(g.submit_time,'%Y-%m-%d') DESC,g.add_num DESC,g.num DESC
+	ORDER BY DATE_FORMAT(g.submit_time,'%Y-%m-%d') DESC,g.add_num DESC,g.num DESC limt 40000
   </select>
   
   <select id="selectDayGoodsListByPage" resultType="java.util.Map">

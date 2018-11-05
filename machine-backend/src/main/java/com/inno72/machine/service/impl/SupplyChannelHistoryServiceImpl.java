@@ -154,8 +154,8 @@ public class SupplyChannelHistoryServiceImpl extends AbstractService<Inno72Suppl
 			map.put("keyword", keyword.trim());
 		}
 		List<MachineGoodsCount> list = inno72SupplyChannelHistoryMapper.selectDayGoodsCountExcel(map);
-		if (list.size() > 20000) {
-			return Results.failure("数据两大于20000条");
+		if (list.size() > 40000) {
+			return Results.failure("数据两大于40000条");
 		}
 		// 导出excel
 		ExportExcel<MachineGoodsCount> ee = new ExportExcel<MachineGoodsCount>();
