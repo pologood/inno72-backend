@@ -22,7 +22,7 @@ import com.inno72.service.AlarmMsgService;
 
 /**
  * Created by CodeGenerator on 2018/07/19.
- * 
+ *
  * @author
  */
 @Service

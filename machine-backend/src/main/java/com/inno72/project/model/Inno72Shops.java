@@ -51,6 +51,12 @@ public class Inno72Shops {
 	private String sessionKey;
 
 	/**
+	 * 关注session_key
+	 */
+	@Column(name = "focus_session_key")
+	private String focusSessionKey;
+
+	/**
 	 * 状态：0正常，1停止
 	 */
 	@Column(name = "is_delete")
@@ -171,6 +177,14 @@ public class Inno72Shops {
 
 	public void setSessionKey(String sessionKey) {
 		this.sessionKey = sessionKey;
+	}
+
+	public String getFocusSessionKey() {
+		return focusSessionKey;
+	}
+
+	public void setFocusSessionKey(String focusSessionKey) {
+		this.focusSessionKey = focusSessionKey;
 	}
 
 	/**

@@ -16,14 +16,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
+import com.inno72.Interact.vo.MachineGoods;
 import com.inno72.common.AbstractService;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.DateUtil;
+import com.inno72.common.MachineBackendProperties;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.machine.mapper.Inno72MachineMapper;
+import com.inno72.machine.model.Inno72Machine;
+import com.inno72.plugin.http.HttpClient;
 import com.inno72.project.mapper.Inno72ActivityMapper;
 import com.inno72.project.mapper.Inno72ActivityPlanGameResultMapper;
 import com.inno72.project.mapper.Inno72ActivityPlanGoodsMapper;
@@ -69,6 +74,11 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 	private Inno72CouponMapper inno72CouponMapper;
 	@Resource
 	private Inno72ActivityPlanGoodsMapper inno72ActivityPlanGoodsMapper;
+	@Resource
+	private Inno72MachineMapper inno72MachineMapper;
+
+	@Resource
+	private MachineBackendProperties machineBackendProperties;
 
 	@Resource
 	private Inno72ActivityPlanGameResultMapper inno72ActivityPlanGameResultMapper;
@@ -224,6 +234,31 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					}
 
 				}
+				List<MachineGoods> machineGoodsList = new ArrayList<>();
+				for (Inno72ActivityPlanMachine inno72ActivityPlanMachine : insertPlanMachineList) {
+					// 查询机器Code
+					Inno72Machine m = inno72MachineMapper.selectByPrimaryKey(inno72ActivityPlanMachine.getMachineId());
+					for (Inno72ActivityPlanGoods inno72ActivityPlanGoods : insertPlanGoodList) {
+						MachineGoods mG = new MachineGoods();
+						mG.setMachineCode(m.getMachineCode());
+						mG.setGoodsId(inno72ActivityPlanGoods.getGoodsId());
+						machineGoodsList.add(mG);
+					}
+				}
+				logger.info("调用汗青接口开始");
+				String data = JSON.toJSONString(machineGoodsList);
+				String URL = machineBackendProperties.getProps().get("gameServiceUrl");
+				String result = HttpClient.post(URL + "newretail/saveMachine", data);
+				logger.info(result);
+				/*
+				 * JSONObject resultJson = JSON.parseObject(result);
+				 * logger.info("调用汗青接口结束:" + result); if
+				 * (resultJson.getInteger("code") != 0) {
+				 * logger.info("天猫接口调用失败:" + resultJson.getString("msg"));
+				 * return Results.failure("操作失败：" +
+				 * resultJson.getString("msg")); }
+				 */
+
 			}
 			// 保存优惠券
 			List<Inno72Coupon> insertCouponList = new ArrayList<>();
@@ -501,6 +536,32 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					}
 					insertPlanGameResultList.add(planGameResult);
 				}
+
+				List<MachineGoods> machineGoodsList = new ArrayList<>();
+				for (Inno72ActivityPlanMachine inno72ActivityPlanMachine : insertPlanMachineList) {
+					// 查询机器Code
+					Inno72Machine m = inno72MachineMapper.selectByPrimaryKey(inno72ActivityPlanMachine.getMachineId());
+					for (Inno72ActivityPlanGoods inno72ActivityPlanGoods : insertPlanGoodList) {
+						MachineGoods mG = new MachineGoods();
+						mG.setMachineCode(m.getMachineCode());
+						mG.setGoodsId(inno72ActivityPlanGoods.getGoodsId());
+						machineGoodsList.add(mG);
+					}
+				}
+				logger.info("调用汗青接口开始");
+				String data = JSON.toJSONString(machineGoodsList);
+				String URL = machineBackendProperties.getProps().get("gameServiceUrl");
+				String result = HttpClient.post(URL + "newretail/saveMachine", data);
+				logger.info(result);
+				/*
+				 * JSONObject resultJson = JSON.parseObject(result);
+				 * logger.info("调用汗青接口结束:" + result); if
+				 * (resultJson.getInteger("code") != 0) {
+				 * logger.info("天猫接口调用失败:" + resultJson.getString("msg"));
+				 * return Results.failure("操作失败：" +
+				 * resultJson.getString("msg")); }
+				 */
+
 			}
 
 			// 保存优惠券

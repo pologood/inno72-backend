@@ -30,6 +30,18 @@ public class Inno72Coupon {
 	private String code;
 
 	/**
+	 * 图片
+	 */
+	@Column(name = "img")
+	private String img;
+
+	/**
+	 * banner
+	 */
+	@Column(name = "banner")
+	private String banner;
+
+	/**
 	 * 店铺ID
 	 */
 	@Column(name = "shops_id")
@@ -121,6 +133,22 @@ public class Inno72Coupon {
 	 */
 	public String getCode() {
 		return code;
+	}
+
+	public String getImg() {
+		return img;
+	}
+
+	public void setImg(String img) {
+		this.img = img;
+	}
+
+	public String getBanner() {
+		return banner;
+	}
+
+	public void setBanner(String banner) {
+		this.banner = banner;
 	}
 
 	public String getShopsId() {
