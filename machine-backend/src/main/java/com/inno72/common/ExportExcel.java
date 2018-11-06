@@ -1,6 +1,5 @@
 package com.inno72.common;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -47,8 +46,8 @@ public class ExportExcel<T> {
 	 * @param out
 	 *            与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
 	 * @param pattern
-	 *            如果有时间数据，设定输出格式。默认为"yyy-MM-dd"
-	 * @SuppressWarnings("unchecked") 屏蔽某些编译时的警告信息
+	 *            如果有时间数据，设定输出格式。默认为"yyy-MM-dd" @SuppressWarnings("unchecked")
+	 *            屏蔽某些编译时的警告信息
 	 */
 	// 每次设置导出数量
 	public static int NUM = CommonConstants.ONE_THOUSAND;
@@ -69,8 +68,8 @@ public class ExportExcel<T> {
 	 *            时间格式
 	 * @throws Exception
 	 */
-	public void exportExcel(String[] headers, String[] columns, List<T> result,
-			OutputStream out, String fileName) throws Exception {
+	public void exportExcel(String[] headers, String[] columns, List<T> result, OutputStream out, String fileName)
+			throws Exception {
 
 		File zip = new File(fileName + ".zip");// 压缩文件
 		int n = 0;
@@ -94,8 +93,7 @@ public class ExportExcel<T> {
 					if (result.size() % NUM == 0) {
 						result1 = result.subList(NUM * j, NUM * (j + 1));
 					} else {
-						result1 = result.subList(NUM * j,
-								NUM * j + result.size() % NUM);
+						result1 = result.subList(NUM * j, NUM * j + result.size() % NUM);
 					}
 				} else {
 					result1 = result.subList(NUM * j, NUM * (j + 1));
@@ -171,22 +169,22 @@ public class ExportExcel<T> {
 					for (int i = 0; i < columns.length; i++) {
 						HSSFCell cell = row.createCell(i);
 						String fieldName = columns[i];
-						String getMethodName = "get"
-								+ fieldName.substring(0, 1).toUpperCase()
-								+ fieldName.substring(1);
-						Class tCls = t.getClass();
-						Method getMethod = tCls.getMethod(getMethodName,
-								new Class[] {});
-						Object value = getMethod.invoke(t, new Class[] {});
-						String textValue = null;
-						
-						if (value == null) {
-							textValue = "";
-						} else {
-							// 其它数据类型都当作字符串简单处理
-							textValue = value.toString();
+						String textValue = "";
+						if (!StringUtil.isEmpty(fieldName)) {
+							String getMethodName = "get" + fieldName.substring(0, 1).toUpperCase()
+									+ fieldName.substring(1);
+							Class tCls = t.getClass();
+							Method getMethod = tCls.getMethod(getMethodName, new Class[] {});
+							Object value = getMethod.invoke(t, new Class[] {});
+
+							if (value == null) {
+								textValue = "";
+							} else {
+								// 其它数据类型都当作字符串简单处理
+								textValue = value.toString();
+							}
+
 						}
-						
 						if (textValue != null) {
 							Pattern p = Pattern.compile("^//d+(//.//d+)?$");
 							Matcher matcher = p.matcher(textValue);
@@ -194,8 +192,7 @@ public class ExportExcel<T> {
 								// 是数字当作double处理
 								cell.setCellValue(Double.parseDouble(textValue));
 							} else {
-								HSSFRichTextString richString = new HSSFRichTextString(
-										textValue);
+								HSSFRichTextString richString = new HSSFRichTextString(textValue);
 								cell.setCellValue(richString);
 							}
 						}
@@ -218,13 +215,11 @@ public class ExportExcel<T> {
 		inStream.close();
 	}
 
-	
 	// 压缩文件
 	public static void ZipFiles(File[] srcfile, File zipfile) {
 		byte[] buf = new byte[1024];
 		try {
-			ZipOutputStream out = new ZipOutputStream(new FileOutputStream(
-					zipfile));
+			ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipfile));
 			for (int i = 0; i < srcfile.length; i++) {
 				FileInputStream in = new FileInputStream(srcfile[i]);
 				out.putNextEntry(new ZipEntry(srcfile[i].getName()));
@@ -242,18 +237,17 @@ public class ExportExcel<T> {
 	}
 
 	/** 设置响应头 */
-	public void setResponseHeader(String[] headers, String[] columns,
-			List<T> result, HttpServletResponse response, String fileName) {
+	public void setResponseHeader(String[] headers, String[] columns, List<T> result, HttpServletResponse response,
+			String fileName) {
 		try {
 			String titles = title + fileName;
 			response.reset();// 清空输出流
 			response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-			response.setHeader("Content-Disposition", "attachment;filename="
-					+ new String(titles.getBytes("GB2312"), "8859_1") + ".zip");
+			response.setHeader("Content-Disposition",
+					"attachment;filename=" + new String(titles.getBytes("GB2312"), "8859_1") + ".zip");
 			response.addHeader("Pargam", "no-cache");
 			response.addHeader("Cache-Control", "no-cache");
-			exportExcel(headers, columns, result, response.getOutputStream(),
-					fileName);
+			exportExcel(headers, columns, result, response.getOutputStream(), fileName);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

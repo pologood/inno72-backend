@@ -68,7 +68,7 @@
 		<if test="code !=null and code !='' ">and LEFT(l.area_code,#{num})='${code}'</if>
 		<if test="machineCode !=null and machineCode !=''">
 			AND (m.machine_code LIKE '%${machineCode}%' or l.mall LIKE
-			'%${machineCode}%' or l.name LIKE '%${machineCode}%')
+			'%${machineCode}%' or l.name LIKE '%${machineCode}%' or l.tag like '%${machineCode}%' )
 		</if>
 		<if test="machineType !=null and machineType !='' ">and l.type=#{machineType}</if>
 		<if test="machineStatus !=null and machineStatus !=''">and m.machine_status=#{machineStatus}</if>
@@ -78,7 +78,7 @@
 			 AND STR_TO_DATE(#{endTime}, '%Y-%m-%d') >= STR_TO_DATE(DATE_FORMAT(m.inside_time,"%Y-%m-%d") ,'%Y-%m-%d') ) ]]>
 		</if>
 		and 9=9
-		order by m.update_time desc
+		order by m.inside_time desc
 
 	</select>
 	<select id="findMachineInfoById" parameterType="java.lang.String"

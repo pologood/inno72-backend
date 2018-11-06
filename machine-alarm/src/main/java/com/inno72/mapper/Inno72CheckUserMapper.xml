@@ -33,6 +33,7 @@
 		LEFT JOIN inno72_check_user icu ON cum.check_user_id = icu.id
 	WHERE
 		im.machine_code = #{machineCode}
+		and icu.is_delete=0 and icu.status=0
   </select>
 
 

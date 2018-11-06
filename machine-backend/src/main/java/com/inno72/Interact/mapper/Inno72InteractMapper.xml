@@ -48,10 +48,10 @@
 			date_format(i.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
 			
 			CASE
-			WHEN i.status=1 and <![CDATA[CURRENT_TIMESTAMP < i.run_time]]> THEN 1
 			WHEN i.status=1 and <![CDATA[(i.`day`='max' or i.`day` >= DATEDIFF(NOW(),i.run_time)) ]]>THEN 2
 			WHEN i.status=2 THEN 3
 			WHEN i.status=1 and i.`day`!='max' and <![CDATA[i.`day`< DATEDIFF(NOW(),i.run_time)]]> THEN 4
+			WHEN i.status=1 and <![CDATA[CURRENT_TIMESTAMP < i.run_time]]> THEN 1
 			ELSE 0
 			END As status,
 			gm.name AS game_name,

@@ -20,6 +20,7 @@
     <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
     <result column="user_day_number" jdbcType="INTEGER" property="userDayNumber" />
     <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="is_alone" jdbcType="INTEGER" property="isAlone" />
     <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
     <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
     
@@ -52,7 +53,7 @@
   
   <select id="selectInteractCouponById" parameterType="String" resultMap="InteractGoodsVoResultMap">
 		SELECT
-			c.*,c.shops_id AS shop_id,s.seller_id,ig.interact_id,ig.user_day_number,ig.type 
+			c.*,c.shops_id AS shop_id,s.seller_id,ig.interact_id,ig.user_day_number,ig.type ,ig.is_alone 
 		FROM
 			inno72_interact_goods ig 
 			LEFT JOIN inno72_coupon c ON c.id = ig.goods_id
@@ -68,7 +69,7 @@
 			LEFT JOIN inno72_goods g ON g.id = ig.goods_id 
 			LEFT JOIN inno72_shops s ON s.id = g.shop_id 
 			LEFT JOIN inno72_merchant m ON m.id = g.seller_id 
-		WHERE ig.type =0 AND g.id is not null
+		WHERE ig.type =0 AND g.is_delete =0 AND g.id is not null
 		<if test="interactId !=null and interactId !='' ">and ig.interact_id = #{interactId} </if>
 		<if test="shopsId !=null and shopsId !='' ">and g.shop_id = #{shopsId} </if>
 		UNION
@@ -79,10 +80,24 @@
 			LEFT JOIN inno72_coupon c ON c.id = ig.goods_id 
 			LEFT JOIN inno72_shops s ON s.id = c.shops_id 
 			LEFT JOIN inno72_merchant m ON m.id = s.seller_id 
-		WHERE ig.type =1 AND c.id is not null
+		WHERE ig.type =1 AND c.is_delete =0 AND c.id is not null
+		<if test="isAlone ==0 ">and ig.is_alone=0 </if>
 		<if test="interactId !=null and interactId !='' ">and ig.interact_id = #{interactId} </if>
 		<if test="shopsId !=null and shopsId !='' ">and c.shops_id = #{shopsId} </if>
 				
+  </select>
+  
+  <select id="selectCouponGetList" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT 
+			ig.goods_id AS id,
+			g.`name` AS name,
+			IF(LENGTH(ig.coupon)>1,1,0) AS isCheck,
+			IFNULL(ig.coupon,"") couponId
+		FROM inno72_interact_goods ig
+		LEFT JOIN inno72_goods g ON g.id=ig.goods_id
+		WHERE ig.type=0
+		<if test="interactId !=null and interactId !='' ">and ig.interact_id = #{interactId} </if>
+		<if test="shopsId !=null and shopsId !='' ">and g.shop_id = #{shopsId} </if>
   </select>
   
   <resultMap id="GoodsTreeResultMap" type="com.inno72.Interact.vo.TreeVo">

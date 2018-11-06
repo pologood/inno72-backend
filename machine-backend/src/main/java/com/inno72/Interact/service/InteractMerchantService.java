@@ -2,6 +2,8 @@ package com.inno72.Interact.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.inno72.Interact.model.Inno72InteractMerchant;
 import com.inno72.Interact.vo.InteractMerchantVo;
 import com.inno72.common.Result;
@@ -22,5 +24,7 @@ public interface InteractMerchantService extends Service<Inno72InteractMerchant>
 	List<InteractMerchantVo> getList(String interactId);
 
 	Result<String> deleteById(String interactId, String merchantId);
+
+	void findMachineSellerId(String activityId, String activityType, HttpServletResponse response);
 
 }

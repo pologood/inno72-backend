@@ -407,7 +407,8 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 
 			// 更新删除机器端资源缓存
 			logger.info("更新删除机器端资源缓存");
-			redisUtil.deleteByPrex(CommonConstants.REDIS_ACTIVITY_PLAN_CACHE_KEY + interactId + ":" + machineId);
+			redisUtil.deleteByPrex(
+					CommonConstants.REDIS_ACTIVITY_PLAN_CACHE_KEY + interactId + ":" + base.getMachineCode());
 
 			inno72InteractMachineMapper.delete(interactMachine);
 			inno72InteractMachineGoodsMapper.delete(delGoods);
