@@ -59,13 +59,12 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
     public Result<List<SignVo>> findByMonth(SignVo signVo) {
     	Map<String,Object> map = new HashMap<>();
     	String machineId = signVo.getMachineId();
-//		UserUtil.getUser().getId()
-		String checkUserId = "jjjjkjk";
+		String checkUserId = UserUtil.getUser().getId();
     	map.put("checkUserId",checkUserId);
     	map.put("machineId",machineId);
     	map.put("signDateStr",signVo.getSignDateStr());
         List<SignVo> list = checkSignInMapper.selectMonth(map);
-        LocalDate localDate = DateUtil.toDate(signVo.getSignDateStr(),DateUtil.DF_FULL_S1);
+        LocalDate localDate = DateUtil.toDate(signVo.getSignDateStr(),DateUtil.DF_ONLY_YMD_S1);
 		List<String> dateList = DateUtil.getMonthFullDay(localDate);
 		Map<String,SignVo> signVoMap = new HashMap<>();
 		for(SignVo vo:list){
