@@ -45,6 +45,7 @@
     LEFT JOIN inno72_locale t4 ON t4.id = t1.locale_id
     LEFT JOIN inno72_admin_area t5 ON t5.CODE = t4.area_code
     where t2.check_user_id = #{checkUserId}
+    order by t3.create_time desc
   </select>
 
     <resultMap id="signVoList" type="com.inno72.check.vo.SignVo">

@@ -104,6 +104,7 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
                 List<Inno72CheckSignIn> signInList = vo.getSignInList();
                 if(signInList != null && signInList.size()>0){
                     vo.setSignInStatus(1);
+                    vo.setCreateTime(signInList.get(0).getCreateTime());
                 }else{
                     vo.setSignInStatus(-1);
                 }
