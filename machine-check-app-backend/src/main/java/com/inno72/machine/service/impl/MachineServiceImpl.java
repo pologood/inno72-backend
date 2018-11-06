@@ -23,6 +23,8 @@ import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -124,7 +126,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 						}
 					}
 					for (Integer value : map.values()) {
-						if (value < 5) {
+						if (value < 10) {
 							lackGoodsStatus = 1;
 							break;
 						}
@@ -134,7 +136,29 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 				inno72Machine.setSupplyChannelVoList(null);
             });
         }
-        return ResultGenerator.genSuccessResult(list);
+		List<Inno72Machine> list1 = new ArrayList<>();
+		List<Inno72Machine> list2 = new ArrayList<>();
+		List<Inno72Machine> list3 = new ArrayList<>();
+		List<Inno72Machine> list4 = new ArrayList<>();
+		for(Inno72Machine machine:list){
+			int lackGoodsStatus = machine.getLackGoodsStatus();
+			int faultStatus = machine.getFaultStatus();
+			if(lackGoodsStatus==1 && faultStatus==-1){
+				list1.add(machine);
+			}else if(lackGoodsStatus==1 && faultStatus==1){
+				list2.add(machine);
+			}else if(lackGoodsStatus == 0 && faultStatus == -1){
+				list3.add(machine);
+			}else if(lackGoodsStatus == 0 && faultStatus == 1){
+				list4.add(machine);
+			}
+		}
+		List<Inno72Machine> resultList = new ArrayList<>();
+		resultList.addAll(list1);
+		resultList.addAll(list2);
+		resultList.addAll(list3);
+		resultList.addAll(list4);
+        return ResultGenerator.genSuccessResult(resultList);
     }
 
     /**
@@ -206,5 +230,15 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
             return Results.failure("机器有误");
         }
     }
+
+	@Override
+	public Result<Inno72Machine> getMachine(Inno72Machine inno72Machine) {
+    	String machineCode = inno72Machine.getMachineCode();
+    	if(StringUtil.isEmpty(machineCode)){
+    		Results.failure("参数缺失");
+		}
+		Inno72Machine machine = inno72MachineMapper.getMachineByCode(machineCode);
+		return ResultGenerator.genSuccessResult(machine);
+	}
 
 }

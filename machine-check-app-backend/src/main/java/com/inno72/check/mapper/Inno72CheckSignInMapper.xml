@@ -18,10 +18,10 @@
     <association property="signInList" resultMap="BaseResultMap"/>
   </resultMap>
 
-  <select id="selectTishMonth" resultMap="BaseResultMap">
+  <select id="selectByMonth" resultMap="BaseResultMap">
     select id,check_user_id,machine_id,type,create_time
     from inno72_check_sign_in
-    where DATE_FORMAT(create_time,'%Y%M') = DATE_FORMAT(CURRENT_DATE,'%Y%M')
+    where DATE_FORMAT(create_time,'%Y%M') = DATE_FORMAT(#{createTime},'%Y%M')
     and machine_id=#{machineId} and check_user_id=#{checkUserId}
   </select>
 
@@ -31,11 +31,11 @@
     t1.machine_code machineCode,
     t1.machine_name machineName,
     CONCAT(
-          t5.province,
-          t5.city,
-          t5.district,
-          if(t5.circle='其他','',t5.circle),IFNULL(t4.mall,""),IFNULL( t4.name,'')
-          ) AS localeStr,
+		t5.province,
+		t5.city,
+		t5.district,
+		if(t5.circle='其他' or t5.circle is null,'',t5.circle),IFNULL(t4.mall,""),IFNULL( t4.name,'')
+		) AS localeStr,
     t3.*
     from inno72_machine t1
     left join inno72_check_user_machine t2 on t1.id = t2.machine_id
@@ -45,5 +45,20 @@
     LEFT JOIN inno72_locale t4 ON t4.id = t1.locale_id
     LEFT JOIN inno72_admin_area t5 ON t5.CODE = t4.area_code
     where t2.check_user_id = #{checkUserId}
+    order by t3.create_time desc
   </select>
+
+    <resultMap id="signVoList" type="com.inno72.check.vo.SignVo">
+        <result column="checkUserId" jdbcType="VARCHAR" property="checkUserId"/>
+        <result column="machineId" jdbcType="VARCHAR" property="machineId"/>
+        <result column="signDateStr" jdbcType="VARCHAR" property="signDateStr"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+    </resultMap>
+    <select id="selectMonth" resultMap="signVoList">
+        select csi.check_user_id checkUserId,DATE_FORMAT(csi.create_time,'%Y-%m-%d') signDateStr ,1 AS type,csi.machine_id machineId from inno72_check_sign_in csi
+        where csi.check_user_id=#{checkUserId} and csi.machine_id=#{machineId} and DATE_FORMAT(csi.create_time,'%Y%m')=DATE_FORMAT(#{signDateStr},'%Y%m')
+        UNION all
+        select cf.submit_id checkUserId,DATE_FORMAT(cf.submit_time,'%Y-%m-%d') signDateStr ,2 AS type,cf.machine_id machineId from inno72_check_fault cf
+        where cf.submit_id=#{checkUserId} and cf.machine_id=#{machineId} and DATE_FORMAT(cf.submit_time,'%Y%m')=DATE_FORMAT(#{signDateStr},'%Y%m')
+    </select>
 </mapper>

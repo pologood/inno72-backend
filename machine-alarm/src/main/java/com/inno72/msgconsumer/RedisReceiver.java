@@ -181,12 +181,25 @@ public class RedisReceiver {
 			log.info("继续执行掉货异常报警。。。。");
 			List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
             String channelNum = machineDropGoods.getChannelNum();
+            String [] channelArray = null;
+            if(StringUtil.isNotEmpty(channelNum)){
+            	channelArray = channelNum.split(",");
+			}
+
 			String localStr = machine.getLocaleStr();
-            Inno72SupplyChannel supplyChannel = supplyChannelService.selectByParam(machine.getId(),channelNum);
+            List<Inno72SupplyChannel> supplyChannelList = supplyChannelService.selectByParam(machine.getId(),channelArray);
             log.info("machineDropGoods send msg ，machineCode：{}，channelNum：{}，describtion：{}", machineCode, channelNum, machineDropGoods.getDescribtion());
-			supplyChannel.setIsDelete(1);
-			supplyChannelService.closeSupply(supplyChannel);//锁货道
-			List<Inno72SupplyChannel> normalSupplyList = supplyChannelService.selectNormalSupply(machine.getId(),channelNum);
+			String goodsId = null;
+			String goodsName = null;
+            if(supplyChannelList != null && supplyChannelList.size()>0){
+				for(Inno72SupplyChannel inno72SupplyChannel:supplyChannelList){
+					inno72SupplyChannel.setIsDelete(1);
+					goodsName = inno72SupplyChannel.getGoodsName();
+					goodsId = inno72SupplyChannel.getGoodsId();
+					supplyChannelService.closeSupply(inno72SupplyChannel);//锁货道
+				}
+			}
+			List<Inno72SupplyChannel> normalSupplyList = supplyChannelService.selectNormalSupply(machine.getId(),goodsId);
 			if(alarmFlag){
 				//巡检app接口
 				Map<String, String> pushMap = new HashMap<>();
@@ -195,10 +208,10 @@ public class RedisReceiver {
 				pushMap.put("text", "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。");
 				log.info("machineDropGoods send msg ，params：{}", pushMap.toString());
 //				//查询巡检人员手机号
-				for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
-					String phone = inno72CheckUserPhone1.getPhone();
-					msgUtil.sendPush("push_alarm_common", pushMap, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
-				}
+//				for (Inno72CheckUserPhone inno72CheckUserPhone1 : inno72CheckUserPhones) {
+//					String phone = inno72CheckUserPhone1.getPhone();
+//					msgUtil.sendPush("push_alarm_common", pushMap, phone, "machineAlarm-RedisReceiver", "【报警】您负责的机器出现掉货异常", "");
+//				}
 				//钉钉报警
 				Map<String, String> ddMaram = new HashMap<>();
 				ddMaram.put("machineCode", machineCode);
@@ -213,19 +226,14 @@ public class RedisReceiver {
 					smsMap.put("localStr", address);
 				}
 				if(normalSupplyList != null && normalSupplyList.size()>0){//有未被锁定的货道
-//					if(StringUtil.senSmsActive(active)){//生产，预发发送短信
-//						text = "货道"+channelNum+"掉货异常，货道已经被锁定";
-//						smsMap.put("text",  text);
-//						this.sendSms(smsMap,machineCode,"sms_alarm_drop");
-//					}
 					text = "您好，"+localStr+"，机器编号："+machineCode+"，"+channelNum+"掉货异常，货道已经被锁定，请及时联系巡检人员。";
 				}else{//货道全部被锁
 					if(StringUtil.senSmsActive(active)){//生产，预发发送短信
-						text = "货道"+channelNum+"掉货异常，"+supplyChannel.getGoodsName()+"所在货道已全部被锁定";
+						text = "货道"+channelNum+"掉货异常，"+goodsName+"所在货道已全部被锁定";
 						smsMap.put("text",  text);
 						this.sendSms(smsMap,machineCode,"sms_alarm_drop");
 					}
-					text = "您好，"+localStr+"，机器编号："+machineCode+"，"+supplyChannel.getGoodsName()+"所在的货道全部被锁定，请及时联系巡检人员处理。";
+					text = "您好，"+localStr+"，机器编号："+machineCode+"，"+goodsName+"所在的货道全部被锁定，请及时联系巡检人员处理。";
 				}
 				ddMaram.put("text",StringUtil.setText(text,active));
 				log.info("group值为：{}",JSON.toJSON(group));

@@ -31,6 +31,11 @@ public class MachineSignInVo {
     @Transient
     private int signInStatus;
 
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
+    private LocalDateTime createTime;
+
     private List<Inno72CheckSignIn> signInList;
 
     public String getMachineId() {
@@ -80,4 +85,12 @@ public class MachineSignInVo {
     public void setSignInList(List<Inno72CheckSignIn> signInList) {
         this.signInList = signInList;
     }
+
+	public LocalDateTime getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(LocalDateTime createTime) {
+		this.createTime = createTime;
+	}
 }

@@ -12,5 +12,5 @@ public interface Inno72SupplyChannelMapper extends Mapper<Inno72SupplyChannel> {
 
 	List<Inno72SupplyChannel> selectNormalSupply(Map<String,Object> map);
 
-	Inno72SupplyChannel selectByParam(Map<String,Object> map);
+	List<Inno72SupplyChannel> selectByParam(Map<String,Object> map);
 }

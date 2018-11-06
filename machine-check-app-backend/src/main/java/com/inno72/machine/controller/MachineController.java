@@ -93,5 +93,17 @@ public class MachineController {
 		return result;
 	}
 
+	/**
+	 * 根据机器编号查询机器
+	 * @param inno72Machine
+	 * @return
+	 */
+	@RequestMapping(value = "/get")
+	public Result<Inno72Machine> getMachine(@RequestBody Inno72Machine inno72Machine){
+		Result<Inno72Machine> result = machineService.getMachine(inno72Machine);
+		return result;
+
+	}
+
 
 }

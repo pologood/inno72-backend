@@ -18,7 +18,8 @@
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete"/>
-      <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
+    <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
+    <result column="goodsId" jdbcType="VARCHAR" property="goodsId"/>
   </resultMap>
 
   <update id="closeSupply">
@@ -33,15 +34,19 @@
 
     <select id="selectNormalSupply" resultMap="BaseResultMap">
         select sc.* from inno72_supply_channel sc left join inno72_supply_channel_goods cg on sc.id=cg.supply_channel_id
-        where sc.machine_id=#{machineId} and sc.is_delete=0 and cg.goods_id in
-        (select g.goods_id from inno72_supply_channel c left join inno72_supply_channel_goods g on c.id=g.supply_channel_id
-         where c.machine_id=#{machineId} and c.code = #{code})
+        where sc.machine_id=#{machineId} and sc.is_delete=0 and cg.goods_id=#{goodsId}
     </select>
 
     <select id="selectByParam" resultMap="BaseResultMap">
-        select c.*,ig.name goodsName from inno72_supply_channel c
+        select c.*,ig.name goodsName,ig.id goodsId from inno72_supply_channel c
         left join inno72_supply_channel_goods g on c.id=g.supply_channel_id
         left join inno72_goods ig on g.goods_id=ig.id
-        where c.machine_id=#{machineId} and c.code = #{code}
+        where c.machine_id=#{machineId}
+         <if test="channelArray != null">
+             and
+             <foreach collection="channelArray" index="index" item="item" open="(" close=")" separator="or">
+                 c.code = #{item}
+             </foreach>
+         </if>
     </select>
 </mapper>
