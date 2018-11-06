@@ -2,6 +2,7 @@ package com.inno72.machine.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -322,6 +323,15 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				machine.setSupplyChannelVoList(null);
 			}
 		}
+		machineList.sort(new Comparator<Inno72Machine>() {
+			@Override
+			public int compare(Inno72Machine o1, Inno72Machine o2) {
+				if(o1.getLackGoodsStatus()>o2.getLackGoodsStatus()){
+					return 1;
+				}
+				return -1;
+			}
+		});
 		logger.info("机器缺货返回数据：{}", JSON.toJSON(machineList));
 		return ResultGenerator.genSuccessResult(machineList);
 	}

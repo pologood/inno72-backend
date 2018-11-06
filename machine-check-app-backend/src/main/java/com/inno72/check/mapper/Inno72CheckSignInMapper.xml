@@ -46,4 +46,18 @@
     LEFT JOIN inno72_admin_area t5 ON t5.CODE = t4.area_code
     where t2.check_user_id = #{checkUserId}
   </select>
+
+    <resultMap id="signVoList" type="com.inno72.check.vo.SignVo">
+        <result column="checkUserId" jdbcType="VARCHAR" property="checkUserId"/>
+        <result column="machineId" jdbcType="VARCHAR" property="machineId"/>
+        <result column="signDateStr" jdbcType="VARCHAR" property="signDateStr"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+    </resultMap>
+    <select id="selectMonth" resultMap="signVoList">
+        select csi.check_user_id checkUserId,DATE_FORMAT(csi.create_time,'%Y-%m-%d') signDateStr ,1 AS type,csi.machine_id machineId from inno72_check_sign_in csi
+        where csi.check_user_id=#{checkUserId} and csi.machine_id=#{machineId} and DATE_FORMAT(csi.create_time,'%Y%m')=DATE_FORMAT(#{signDateStr},'%Y%m')
+        UNION all
+        select cf.submit_id checkUserId,DATE_FORMAT(cf.submit_time,'%Y-%m-%d') signDateStr ,2 AS type,cf.machine_id machineId from inno72_check_fault cf
+        where cf.submit_id=#{checkUserId} and cf.machine_id=#{machineId} and DATE_FORMAT(cf.submit_time,'%Y%m')=DATE_FORMAT(#{signDateStr},'%Y%m')
+    </select>
 </mapper>

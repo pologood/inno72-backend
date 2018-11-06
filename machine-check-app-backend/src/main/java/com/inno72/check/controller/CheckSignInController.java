@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.inno72.check.model.Inno72CheckSignIn;
 import com.inno72.check.service.CheckSignInService;
 import com.inno72.check.vo.MachineSignInVo;
+import com.inno72.check.vo.SignVo;
 import com.inno72.common.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +39,9 @@ public class CheckSignInController {
      * 查询本月打卡记录
      */
     @RequestMapping(value="list", method = {RequestMethod.POST})
-    public Result<List<Inno72CheckSignIn>> list(@RequestBody Inno72CheckSignIn signIn){
-        logger.info("查询本月打卡记录接口参数{}", JSON.toJSON(signIn));
-        Result<List<Inno72CheckSignIn>> result = checkSignInService.findByMonth(signIn);
+    public Result<List<SignVo>> list(@RequestBody SignVo signVo){
+        logger.info("查询本月打卡记录接口参数{}", JSON.toJSON(signVo));
+        Result<List<SignVo>> result = checkSignInService.findByMonth(signVo);
         logger.info("查询本月打卡记录接口结果{}", JSON.toJSON(result));
         return result;
     }
