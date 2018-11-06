@@ -237,7 +237,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
     	if(StringUtil.isEmpty(machineCode)){
     		Results.failure("参数缺失");
 		}
-		Inno72Machine machine = inno72MachineMapper.selectOne(inno72Machine);
+		Inno72Machine machine = inno72MachineMapper.getMachineByCode(machineCode);
 		return ResultGenerator.genSuccessResult(machine);
 	}
 
