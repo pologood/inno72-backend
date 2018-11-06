@@ -277,7 +277,7 @@
 	<select id="findMachineStockoutInfo" resultMap="StockoutInfoResultMap">
 
 		select g.name as
-		goods_name,IFNULL(scg.goods_count,0) as goods_count
+		good_name,IFNULL(scg.goods_count,0) as good_count
 		from
 		view_machine_goods am
 		left join inno72_goods g on am.goods_id=g.id
