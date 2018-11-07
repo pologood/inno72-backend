@@ -150,14 +150,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		}
 
 		List<MachineListVo1> machines = inno72MachineMapper.findMachinePlan(param);
-		List<MachineListVo1> interactMachines = inno72MachineMapper.findMachineInteract(param);
 
-		for (MachineListVo1 machine : machines) {
-			if (interactMachines.contains(machine)) {
-				int index = interactMachines.indexOf(machine);
-				machine.getPlanTime().addAll(interactMachines.get(index).getPlanTime());
-			}
-		}
 		return machines;
 	}
 
