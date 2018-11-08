@@ -166,7 +166,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 					params.put("localeStr", localeStr);
 					params.put("faultType", faultType);
 					params.put("remark", remark);
-					params.put("messgeInfo", messgeInfo);
+					params.put("msg", messgeInfo);
 					List<CheckUserVo> checkUserList = machine.getCheckUserVoList();
 					List<String> userIdList = new ArrayList<>();
 					if (checkUserList != null && checkUserList.size() > 0) {
