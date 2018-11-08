@@ -192,7 +192,8 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 					alarmMsg.setMachineCode(machineCode);
 					alarmMsg.setSystem("machineChannel");
 					alarmMsg.setTitle(title);
-					alarmMsg.setType(1);
+					alarmMsg.setMainType(2);
+					alarmMsg.setChildType(1);
 					alarmMsg.setDetail(messgeInfo);
 					inno72AlarmMsgMapper.insertSelective(alarmMsg);
 
