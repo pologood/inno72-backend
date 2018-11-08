@@ -115,7 +115,7 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         user.setLoginType(loginType);
 		String clientId = user.getClientId();
 		if(StringUtil.isNotEmpty(clientId)){
-			String pushKey = CommonConstants.CHECK_LOGIN_TYPE_KEY_PREF + phone+":"+user.getClientId();
+			String pushKey = CommonConstants.PUSH_KEY_PREF + phone+":"+user.getClientId();
 			redisUtil.set(pushKey,loginType);
 			redisUtil.expire(pushKey,CommonConstants.SESSION_DATA_EXP);
 			user.setPushKey(pushKey);
