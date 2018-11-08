@@ -12,5 +12,33 @@
         <result column="detail" jdbcType="VARCHAR" property="detail"/>
         <result column="machine_Code" jdbcType="VARCHAR" property="machineCode"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="isRead" jdbcType="INTEGER" property="isRead"/>
+        <collection property="inno72CheckUserMachineList" resultMap="inno72CheckUserMachineList"/>
     </resultMap>
+
+    <resultMap id="inno72CheckUserMachineList" type="com.inno72.check.model.Inno72CheckUserMachine">
+        <result column="check_user_id" jdbcType="VARCHAR" property="checkUserId" />
+    </resultMap>
+    <select id="selectByPage" resultMap="BaseResultMap">
+        select am.*,amd.is_read isRead
+        from inno72_alarm_msg am
+        left join inno72_alarm_msg_detail amd on am.id=amd.alarm_msg_id and amd.check_user_id=#{checkUserId}
+		inner join inno72_machine m on am.machine_code=m.machine_code
+		inner join inno72_check_user_machine cum on m.id=cum.machine_id
+		where cum.check_user_id=#{checkUserId}
+        order by am.create_time desc,amd.is_read
+    </select>
+
+    <select id="selectAlarmUser" resultMap="BaseResultMap">
+        select am.*,cum.check_user_id from inno72_alarm_msg am
+        inner join inno72_machine m on am.machine_code=m.machine_code
+        inner join inno72_check_user_machine cum on m.id=cum.machine_id
+    </select>
+    <select id="selectUnReadCount" resultType="java.lang.Integer">
+      select count(*) from inno72_alarm_msg am
+	  inner join inno72_machine m on am.machine_code=m.machine_code
+      inner join inno72_check_user_machine cum on m.id=cum.machine_id
+	  left join inno72_alarm_msg_detail amd on am.id=amd.alarm_msg_id and amd.check_user_id=#{checkUserId}
+	  where cum.check_user_id=#{checkUserId} and (amd.is_read is null or is_read=0)
+    </select>
 </mapper>

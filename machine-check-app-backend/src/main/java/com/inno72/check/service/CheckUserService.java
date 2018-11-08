@@ -13,7 +13,7 @@ public interface CheckUserService extends Service<Inno72CheckUser> {
 
     Result<String> smsCode(String phone);
 
-    Result<SessionData> login(String phone, String smsCode);
+    Result<SessionData> login(Inno72CheckUser checkUser);
 
     Result<String> upload(MultipartFile file);
 

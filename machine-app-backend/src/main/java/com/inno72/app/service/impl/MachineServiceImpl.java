@@ -91,7 +91,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		machine.setCreateTime(now);
 		machine.setUpdateTime(now);
 		machine.setNetStatus(0);
-		int result = inno72MachineMapper.insert(machine);
+		int result = inno72MachineMapper.insertSelective(machine);
 		if (result != 1) {
 			return Results.failure("生成machineCode失败");
 		}
@@ -312,6 +312,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			Map<String, Object> map = new HashMap<>();
 			map.put("Coil_id", channel.getCode());
 			map.put("iSlot_status", channel.getWorkStatus());
+			map.put("lock_status", channel.getIsDelete());
+			map.put("channel_id", channel.getId());
+
 			list.add(map);
 		}
 		return Results.success(list);
@@ -360,6 +363,52 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		machine.setMachineStatus(9);
 		machine.setUpdateTime(LocalDateTime.now());
 		inno72MachineMapper.updateByPrimaryKeySelective(machine);
+		return Results.success();
+	}
+
+	@Override
+	public Result<String> updateWifiPwd(Map<String, Object> msg) {
+		String machineCode = (String) Optional.of(msg).map(a -> a.get("machineCode")).orElse("");
+		if (StringUtil.isEmpty(machineCode)) {
+			return Results.failure("machineCode传入为空");
+		}
+		String wifiPwd = (String) Optional.of(msg).map(a -> a.get("wifiPwd")).orElse("");
+		if (StringUtil.isEmpty(wifiPwd)) {
+			return Results.failure("wifiPwd传入为空");
+		}
+		Condition condition = new Condition(Inno72Machine.class);
+		condition.createCriteria().andEqualTo("machineCode", machineCode);
+		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition);
+		if (machines == null || machines.size() != 1) {
+			return Results.failure("machineCode传入错误");
+		}
+		Inno72Machine machine = machines.get(0);
+		machine.setUpdateTime(LocalDateTime.now());
+		machine.setWifiPwd(wifiPwd);
+		int result = inno72MachineMapper.updateByPrimaryKeySelective(machine);
+		if (result == 1) {
+			return Results.success();
+		}
+		return Results.failure("更新失败");
+	}
+
+	@Override
+	public Result<String> updateChannelStatus(Map<String, Object> msg) {
+		String channelId = MapUtil.getParam(msg, "channelId", String.class);
+		if (StringUtil.isEmpty(channelId)) {
+			return Results.failure("channelId传入为空");
+		}
+		Integer lockStatus = MapUtil.getParam(msg, "lockStatus", Integer.class);
+		if (lockStatus == null || (lockStatus != 0 && lockStatus != 1)) {
+			return Results.failure("lockStatus传入错误");
+		}
+		Inno72SupplyChannel channel = supplyChannelService.findById(channelId);
+		if (channel == null) {
+			return Results.failure("channelId传入错误");
+		}
+		channel.setIsDelete(lockStatus);
+		channel.setUpdateTime(LocalDateTime.now());
+		supplyChannelService.update(channel);
 		return Results.success();
 	}
 

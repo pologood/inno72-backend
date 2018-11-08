@@ -1,12 +1,14 @@
 package com.inno72.alarmMsg.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.check.model.Inno72CheckUserMachine;
 import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Inno72AlarmMsg {
     /**
@@ -53,6 +55,12 @@ public class Inno72AlarmMsg {
      */
     @Column(name = "machine_code")
     private String machineCode;
+
+    @Transient
+    private Integer isRead;
+
+	@Transient
+    private List<Inno72CheckUserMachine> inno72CheckUserMachineList;
 
     public String getId() {
         return id;
@@ -109,4 +117,20 @@ public class Inno72AlarmMsg {
     public void setMachineCode(String machineCode) {
         this.machineCode = machineCode;
     }
+
+	public Integer getIsRead() {
+		return isRead;
+	}
+
+	public void setIsRead(Integer isRead) {
+		this.isRead = isRead;
+	}
+
+	public List<Inno72CheckUserMachine> getInno72CheckUserMachineList() {
+		return inno72CheckUserMachineList;
+	}
+
+	public void setInno72CheckUserMachineList(List<Inno72CheckUserMachine> inno72CheckUserMachineList) {
+		this.inno72CheckUserMachineList = inno72CheckUserMachineList;
+	}
 }

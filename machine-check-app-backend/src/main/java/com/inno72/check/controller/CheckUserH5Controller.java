@@ -44,7 +44,7 @@ public class CheckUserH5Controller {
     @RequestMapping(value="/login", method = {RequestMethod.POST})
     public Result<SessionData> login(@RequestBody Inno72CheckUser inno72CheckUser){
         logger.info("登录H5接口参数：{}",JSON.toJSON(inno72CheckUser));
-        Result<SessionData> result = checkUserService.login(inno72CheckUser.getPhone(),inno72CheckUser.getSmsCode());
+        Result<SessionData> result = checkUserService.login(inno72CheckUser);
         logger.info("登录H5接口结果：{}",JSON.toJSON(result));
         return result;
     }

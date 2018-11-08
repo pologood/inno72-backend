@@ -5,6 +5,7 @@ import com.inno72.check.model.Inno72CheckSignIn;
 import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.check.service.CheckSignInService;
 import com.inno72.check.vo.MachineSignInVo;
+import com.inno72.check.vo.SignVo;
 import com.inno72.common.*;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72Machine;
@@ -14,8 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -49,9 +56,44 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
     }
 
     @Override
-    public Result<List<Inno72CheckSignIn>> findThisMonth(String machineId) {
-        List<Inno72CheckSignIn> list = checkSignInMapper.selectTishMonth(UserUtil.getUser().getId(),machineId);
-        return ResultGenerator.genSuccessResult(list);
+    public Result<List<SignVo>> findByMonth(SignVo signVo) {
+    	Map<String,Object> map = new HashMap<>();
+    	String machineId = signVo.getMachineId();
+		String checkUserId = UserUtil.getUser().getId();
+    	map.put("checkUserId",checkUserId);
+    	map.put("machineId",machineId);
+    	map.put("signDateStr",signVo.getSignDateStr());
+        List<SignVo> list = checkSignInMapper.selectMonth(map);
+        LocalDate localDate = DateUtil.toDate(signVo.getSignDateStr(),DateUtil.DF_ONLY_YMD_S1);
+		List<String> dateList = DateUtil.getMonthFullDay(localDate);
+		Map<String,SignVo> signVoMap = new HashMap<>();
+		for(SignVo vo:list){
+			String date = vo.getSignDateStr();
+			int type = vo.getType();
+			if(!signVoMap.containsKey(date)){
+				signVoMap.put(date,vo);
+			}else if(type==2){
+				signVoMap.put(date,vo);
+			}
+		}
+		List<SignVo> resultList = new ArrayList<>();
+		for(String date:dateList){
+			if(signVoMap.containsKey(date)){
+				resultList.add(signVoMap.get(date));
+			}else{
+				SignVo unVo = new SignVo();
+				unVo.setSignDateStr(date);
+				unVo.setMachineId(machineId);
+				unVo.setCheckUserId(checkUserId);
+				if(DateUtil.toDateOld(date,DateUtil.DF_ONLY_YMD_S1_OLD).before(new Date())){
+					unVo.setType(3);
+				}else{
+					unVo.setType(4);
+				}
+				resultList.add(unVo);
+			}
+		}
+        return ResultGenerator.genSuccessResult(resultList);
     }
 
     @Override
@@ -62,6 +104,7 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
                 List<Inno72CheckSignIn> signInList = vo.getSignInList();
                 if(signInList != null && signInList.size()>0){
                     vo.setSignInStatus(1);
+                    vo.setCreateTime(signInList.get(0).getCreateTime());
                 }else{
                     vo.setSignInStatus(-1);
                 }

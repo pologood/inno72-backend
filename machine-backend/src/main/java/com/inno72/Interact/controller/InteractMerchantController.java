@@ -3,6 +3,7 @@ package com.inno72.Interact.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,6 +53,13 @@ public class InteractMerchantController {
 		List<InteractMerchantVo> list = interactMerchantService.getList(interactId);
 
 		return ResultGenerator.genSuccessResult(list);
+	}
+
+	@RequestMapping(value = "/exportMachineSellerId")
+	public void exportMachineSellerId(@RequestParam(required = false) String activityId,
+			@RequestParam(required = false) String activityType, HttpServletResponse response) throws Exception {
+		interactMerchantService.findMachineSellerId(activityId, activityType, response);
+
 	}
 
 }

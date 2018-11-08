@@ -12,4 +12,8 @@ import java.util.Map;
 public interface Inno72SupplyChannelOrderMapper extends Mapper<Inno72SupplyChannelOrder> {
 
 	List<WorkOrderVo> selectByPage(Map<String, Object> map);
+
+	List<WorkOrderVo> selectOrderByMonth(Map<String,Object> map);
+
+	List<WorkOrderVo> selectWorkOrderDetail(Map<String,Object> map);
 }

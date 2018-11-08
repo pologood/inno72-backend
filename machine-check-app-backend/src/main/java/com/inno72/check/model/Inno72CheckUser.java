@@ -136,6 +136,9 @@ public class Inno72CheckUser {
     @Transient
     private String smsCode;
 
+    @Transient
+    private String loginType;
+
     public String getId() {
         return id;
     }
@@ -295,4 +298,12 @@ public class Inno72CheckUser {
     public void setSmsCode(String smsCode) {
         this.smsCode = smsCode;
     }
+
+	public String getLoginType() {
+		return loginType;
+	}
+
+	public void setLoginType(String loginType) {
+		this.loginType = loginType;
+	}
 }

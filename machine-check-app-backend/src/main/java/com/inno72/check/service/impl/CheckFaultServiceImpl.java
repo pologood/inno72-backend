@@ -40,8 +40,10 @@ import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.vo.PointLog;
 import com.inno72.msg.MsgUtil;
+import com.inno72.redis.IRedisUtil;
 
 import tk.mybatis.mapper.entity.Condition;
+import tk.mybatis.mapper.entity.Example;
 
 @Service("checkFaultService")
 public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> implements CheckFaultService {
@@ -69,6 +71,9 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 
 	@Resource
 	private MongoOperations mongoTpl;
+
+	@Resource
+	private IRedisUtil redisUtil;
 
 	@Override
 	public Result<String> addCheckFault(Inno72CheckFault checkFault) {
@@ -142,7 +147,6 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			if (machines != null && machines.size() > 0) {
 				String title = "您负责的机器出现故障";
 				String appName = "machine_check_app_backend";
-				String pushCode = "push_check_app_fault";
 				String smsCode = "sms_check_app_fault";
 				String faultType = checkFaultType.getName();
 
@@ -161,12 +165,23 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 					List<CheckUserVo> checkUserList = machine.getCheckUserVoList();
 					List<String> userIdList = new ArrayList<>();
 					if (checkUserList != null && checkUserList.size() > 0) {
+						String active = System.getenv("spring_profiles_active");
 						for (CheckUserVo user : checkUserList) {
 							String phone = user.getPhone();
 							if (StringUtil.isNotEmpty(phone)) {
 								userIdList.add(user.getId());
-								msgUtil.sendPush(pushCode, params, phone, appName, title, messgeInfo);
-								msgUtil.sendSMS(smsCode, params, phone, appName);
+								String userPhoneKey = CommonConstants.CHECK_LOGIN_TYPE_KEY_PREF + phone;
+								String loginType = redisUtil.get(userPhoneKey);
+								if(StringUtil.isNotEmpty(loginType)){
+									if(loginType.equals("android")){
+										msgUtil.sendPush("push_android_check_app", params, phone, appName, title, messgeInfo);
+									}else if(loginType.equals("ios")){
+										msgUtil.sendPush("push_ios_check_app", params, phone, appName, title, messgeInfo);
+									}
+								}
+								if(StringUtil.senSmsActive(active)){
+									msgUtil.sendSMS(smsCode, params, phone, appName);
+								}
 							}
 						}
 
@@ -336,12 +351,18 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 	}
 
 	@Override
-	public Result<List<Inno72CheckFaultType>> getTypeList(String parentCode) {
+	public Result<List<Inno72CheckFaultType>> getTypeList(Inno72CheckFaultType inno72CheckFaultType) {
+		String type = inno72CheckFaultType.getType();
+		Integer submitType = inno72CheckFaultType.getSubmitType();
 		Condition condition = new Condition(Inno72CheckFaultType.class);
-		if (StringUtil.isEmpty(parentCode)) {
-			condition.createCriteria().andEqualTo("level", 1);
+		Example.Criteria criteria = condition.createCriteria();
+		if (StringUtil.isEmpty(type)) {
+			criteria.andEqualTo("level", 1);
 		} else {
-			condition.createCriteria().andEqualTo("parentCode", parentCode);
+			criteria.andEqualTo("parentCode", type);
+		}
+		if(submitType != null){
+			criteria.andEqualTo("submitType",submitType);
 		}
 		List<Inno72CheckFaultType> list = inno72CheckFaultTypeMapper.selectByCondition(condition);
 		return ResultGenerator.genSuccessResult(list);

@@ -2,6 +2,7 @@ package com.inno72.machine.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -104,7 +105,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		String machineCode = machine.getMachineCode();
 		Integer codeInt = Integer.parseInt(code);
 		Inno72MachineBatchDetail batchDetail = getBatchDetail(machineCode,codeInt);
-		if(batchDetail == null || batchDetail.getType() != 2){
+		if(batchDetail == null || (batchDetail.getType() != 1 && batchDetail.getType() != 2)){
 			return Results.failure("当前货道不能合并");
 		}
 		Map<String, Object> map = new HashMap<>();
@@ -166,7 +167,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		if (supplyChannel != null) {
 			String machineCode = supplyChannel.getMachineCode();
 			Inno72MachineBatchDetail batchDetail = getBatchDetail(machineCode,codeInteger);
-			if(batchDetail == null || batchDetail.getType() != 2){
+			if(batchDetail == null || (batchDetail.getType() != 1 && batchDetail.getType() != 2)){
 				return Results.failure("当前货道不能拆分");
 			}
 			Integer newCode = codeInteger + 1;
@@ -312,7 +313,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 						}
 					}
 					for (Integer value : map.values()) {
-						if (value < 5) {
+						if (value < 10) {
 							lackGoodsStatus = 1;
 							break;
 						}
@@ -322,6 +323,15 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				machine.setSupplyChannelVoList(null);
 			}
 		}
+		machineList.sort(new Comparator<Inno72Machine>() {
+			@Override
+			public int compare(Inno72Machine o1, Inno72Machine o2) {
+				if(o1.getLackGoodsStatus()>o2.getLackGoodsStatus()){
+					return 1;
+				}
+				return -1;
+			}
+		});
 		logger.info("机器缺货返回数据：{}", JSON.toJSON(machineList));
 		return ResultGenerator.genSuccessResult(machineList);
 	}
@@ -393,10 +403,11 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		if (StringUtil.isEmpty(machineId)) {
 			return Results.failure("参数不能为空");
 		}
-		List<Inno72Goods> list = inno72GoodsMapper.selectPaiyangByMachineId(machineId);
-		if(list == null || list.size()==0){
-			list = inno72GoodsMapper.selectByMachineId(machineId);
-		}
+		List<Inno72Goods> list = inno72GoodsMapper.selectByMachineId(machineId);
+//		List<Inno72Goods> list = inno72GoodsMapper.selectPaiyangByMachineId(machineId);
+//		if(list == null || list.size()==0){
+//			list = inno72GoodsMapper.selectByMachineId(machineId);
+//		}
 		return ResultGenerator.genSuccessResult(list);
 	}
 
@@ -480,17 +491,11 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			Inno72Machine machine = inno72MachineMapper.getMachineById(machineId);
 			String batchNo = StringUtil.getUUID();
 			LocalDateTime now = LocalDateTime.now();
-			Inno72SupplyChannelOrder order = new Inno72SupplyChannelOrder();
-			order.setId(batchNo);
-			order.setCreateTime(now);
-			order.setMachineId(machineId);
-			order.setType(1);
-			order.setUserId(checkUser.getId());
 			StringBuffer detail = new StringBuffer("");
-			inno72SupplyChannelOrderMapper.insertSelective(order);
-			supplyChannelList.forEach(supplyChannel -> {
+			int historyCount = 0;
+			for(Inno72SupplyChannel supplyChannel:supplyChannelList){
 				String supplyChannelId = supplyChannel.getId();
-				mapList.forEach(map -> {
+				for(Map<String, Object> map:mapList){
 					String id = map.get("id").toString();
 					if (id.equals(supplyChannelId)) {
 						Object goodsCount = map.get("goodsCount");
@@ -521,22 +526,33 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 							goods.setId(StringUtil.getUUID());
 							goods.setSupplyChannelId(supplyChannelId);
 							inno72SupplyChannelGoodsMapper.insertSelective(goods);
+							if(beforeGoodsCount != afterGoodsCount){
+								Inno72SupplyChannelHistory history = new Inno72SupplyChannelHistory();
+								history.setId(StringUtil.getUUID());
+								history.setBeforeCount(beforeGoodsCount);
+								history.setAfterCount(afterGoodsCount);
+								history.setBatchNo(batchNo);
+								history.setSupplyChannelId(supplyChannelId);
+								history.setMachineId(supplyChannel.getMachineId());
+								history.setUserId(UserUtil.getUser().getId());
+								history.setCreateTime(now);
+								history.setGoodsId(goodsIdStr);
+								inno72SupplyChannelHistoryMapper.insertSelective(history);
+								historyCount++;
+							}
 						}
-						Inno72SupplyChannelHistory history = new Inno72SupplyChannelHistory();
-						history.setId(StringUtil.getUUID());
-						history.setBeforeCount(beforeGoodsCount);
-						history.setAfterCount(afterGoodsCount);
-						history.setBatchNo(batchNo);
-						history.setSupplyChannelId(supplyChannelId);
-						history.setMachineId(supplyChannel.getMachineId());
-						history.setUserId(UserUtil.getUser().getId());
-						history.setCreateTime(now);
-						history.setGoodsId(goodsIdStr);
-						inno72SupplyChannelHistoryMapper.insertSelective(history);
 					}
-				});
-
-			});
+				}
+			}
+			if(historyCount>0){
+				Inno72SupplyChannelOrder order = new Inno72SupplyChannelOrder();
+				order.setId(batchNo);
+				order.setCreateTime(now);
+				order.setMachineId(machineId);
+				order.setType(1);
+				order.setUserId(checkUser.getId());
+				inno72SupplyChannelOrderMapper.insertSelective(order);
+			}
 			String detailStr = detail.toString();
 			logger.info("补货添加日志：{}",detailStr);
 			if(!detailStr.equals("")){
@@ -564,45 +580,20 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	}
 
 	@Override
-	public Result<WorkOrderVo> workOrderDetail(String machineId, String batchNo) {
-		if (StringUtil.isEmpty(batchNo)) {
-			return Results.failure("参数不能为空");
+	public Result<List<WorkOrderVo>> workOrderDetail(SupplyRequestVo vo) {
+		Inno72CheckUser checkUser = UserUtil.getUser();
+		String checkUserId = checkUser.getId();
+		Map<String,Object> map = new HashMap<>();
+		String machineId = vo.getMachineId();
+		String findTime = vo.getFindTime();
+		if(StringUtil.isEmpty(machineId) || StringUtil.isEmpty(findTime)){
+			return Results.failure("参数缺失");
 		}
-		Map<String, Object> map = new HashMap<>();
-		map.put("batchNo", batchNo);
-		WorkOrderVo workOrderVo = new WorkOrderVo();
-		List<Inno72SupplyChannelHistory> historyList = inno72SupplyChannelHistoryMapper.getWorkOrderGoods(map);
-		List<Inno72SupplyChannelHistory> resultList = new ArrayList<>();
-		if (historyList != null && historyList.size() > 0) {
-			workOrderVo.setBatchNo(batchNo);
-			workOrderVo.setMachineCode(historyList.get(0).getMachineCode());
-			workOrderVo.setCreateTime(historyList.get(0).getCreateTime());
-			workOrderVo.setLocaleStr(historyList.get(0).getLocaleStr());
-			workOrderVo.setMachineId(machineId);
-			Set<String> set = new HashSet<>();
-
-			for (Inno72SupplyChannelHistory history : historyList) {
-				String goodsName = history.getGoodsName();
-				if (!set.contains(goodsName)) {
-					set.add(goodsName);
-					int count = 0;
-					for (Inno72SupplyChannelHistory his : historyList) {
-						String name = his.getGoodsName();
-						if (name.equals(goodsName)) {
-							count += his.getSubCount();
-						}
-					}
-					if (count > 0) {
-						history.setSubCount(count);
-						resultList.add(history);
-					}
-
-				}
-
-			}
-			workOrderVo.setHistoryList(resultList);
-		}
-		return ResultGenerator.genSuccessResult(workOrderVo);
+		map.put("checkUserId",checkUserId);
+		map.put("machineId",machineId);
+		map.put("findTime",findTime);
+		List<WorkOrderVo> list = inno72SupplyChannelOrderMapper.selectWorkOrderDetail(map);
+		return ResultGenerator.genSuccessResult(list);
 	}
 
 	@Override
@@ -672,6 +663,10 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		}
 	}
 
+	/**
+	 * 发送掉货异常报警
+	 * @param vo
+	 */
 	@Override
 	public void setDropGoods(SupplyRequestVo vo) {
 		String machineCode = vo.getMachineCode();
@@ -684,6 +679,95 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		alarmMessageBean.setType("machineDropGoodsException");
 		alarmMessageBean.setData(machineDropGoodsBean);
 		redisUtil.publish("moniterAlarm",JSONObject.toJSONString(alarmMessageBean));
+	}
+
+	@Override
+	public Result<List<WorkOrderVo>> findOrderByMonth(SupplyRequestVo vo) {
+		Inno72CheckUser checkUser = UserUtil.getUser();
+		String checkUserId = checkUser.getId();
+		String machineId = vo.getMachineId();
+		String findTime = vo.getFindTime();
+		if(StringUtil.isEmpty(machineId) || StringUtil.isEmpty(findTime)){
+			return Results.failure("参数缺失");
+		}
+		Map<String,Object> map = new HashMap<>();
+		map.put("checkUserId",checkUserId);
+		map.put("machineId",machineId);
+		map.put("findTime",findTime);
+		List<WorkOrderVo> list = inno72SupplyChannelOrderMapper.selectOrderByMonth(map);
+		return ResultGenerator.genSuccessResult(list);
+	}
+
+	@Override
+	public Result<List<Inno72SupplyChannel>> exceptionList(SupplyRequestVo vo) {
+		List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectExceptionList(vo.getMachineId());
+		return ResultGenerator.genSuccessResult(list);
+	}
+
+	@Override
+	public Result<String> openSupplyChannel(SupplyRequestVo vo) {
+		String supplyCode = vo.getSupplyCode();
+		String machineId = vo.getMachineId();
+		if(StringUtil.isEmpty(supplyCode) || StringUtil.isEmpty(machineId)){
+			return Results.failure("参数缺失");
+		}
+		Map<String,Object> map = new HashMap<>();
+		map.put("machineId",machineId);
+		map.put("code",supplyCode);
+		inno72SupplyChannelMapper.updateOpen(map);
+		return ResultGenerator.genSuccessResult();
+	}
+
+	@Override
+	public Result<String> updateSupplyChannel(Map<String, Object> map) {
+		Inno72CheckUser checkUser = UserUtil.getUser();
+		String machineCode = (String) map.get("machineCode");
+		Inno72Machine machine = inno72MachineMapper.getMachineByCode(machineCode);
+		List<String> paramList = (List<String>) map.get("list");
+		Map<String, Object> param = new HashMap<>();
+		param.put("machineCode", machineCode);
+		List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectListByParam(param);
+		if(!list.isEmpty()){
+			Map<String,Inno72SupplyChannel> supplyChannelMap = new HashMap<>();
+			for(Inno72SupplyChannel sc:list){
+				supplyChannelMap.put(sc.getCode(),sc);
+			}
+			for(String supplyCode :paramList){
+				if(!supplyChannelMap.containsKey(supplyCode)){
+					int codeInt = Integer.parseInt(supplyCode);
+					int rowNo = codeInt/10;
+					rowNo++;
+					Map<String,Object> detailMap = new HashMap<>();
+					detailMap.put("rowNo",rowNo);
+					detailMap.put("machineCode",machineCode);
+					Inno72MachineBatchDetail batchDetail = inno72MachineBatchDetailMapper.selectByParam(detailMap);
+					if(batchDetail != null){
+						Inno72SupplyChannel supplyChannel = new Inno72SupplyChannel();
+						supplyChannel.setId(StringUtil.getUUID());
+						supplyChannel.setMachineId(machine.getId());
+						supplyChannel.setCode(supplyCode);
+						supplyChannel.setName("货道"+supplyCode);
+						supplyChannel.setStatus(0);
+						supplyChannel.setVolumeCount(batchDetail.getVolumeCount());
+						supplyChannel.setCreateId(checkUser.getId());
+						supplyChannel.setCreateTime(LocalDateTime.now());
+						supplyChannel.setUpdateId(checkUser.getId());
+						supplyChannel.setUpdateTime(LocalDateTime.now());
+						supplyChannel.setIsDelete(0);
+						supplyChannel.setWorkStatus(0);
+						inno72SupplyChannelMapper.insertSelective(supplyChannel);
+					}
+				}
+			}
+			for(String key:supplyChannelMap.keySet()){
+				if(!paramList.contains(key)){
+					Condition condition = new Condition(Inno72SupplyChannel.class);
+					condition.createCriteria().andEqualTo("machineId",machine.getId()).andEqualTo("code",key);
+					inno72SupplyChannelMapper.deleteByCondition(condition);
+				}
+			}
+		}
+		return ResultGenerator.genSuccessResult();
 	}
 
 	public void addSupplyChannelToMongo(Inno72SupplyChannel supplyChannel) {

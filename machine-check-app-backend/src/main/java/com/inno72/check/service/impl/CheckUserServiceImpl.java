@@ -83,7 +83,13 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
     }
 
     @Override
-    public Result<SessionData> login(String phone, String smsCode) {
+    public Result<SessionData> login(Inno72CheckUser checkUser) {
+    	String phone = checkUser.getPhone();
+    	String smsCode = checkUser.getSmsCode();
+    	String loginType = checkUser.getLoginType();
+    	if(StringUtil.isEmpty(loginType)){
+    		loginType = "android";
+		}
         Condition condition = new Condition(Inno72CheckUser.class);
         condition.createCriteria().andEqualTo("phone", phone).andEqualTo("isDelete",0);
         List<Inno72CheckUser> users = inno72CheckUserMapper.selectByCondition(condition);
@@ -106,6 +112,7 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         }
         Inno72CheckUser user = users.get(0);
         String token = StringUtil.getUUID();
+        user.setLoginType(loginType);
         SessionData sessionData = new SessionData(token, user);
         String headImage = sessionData.getUser().getHeadImage();
         sessionData.getUser().setHeadImage(ImageUtil.getLongImageUrl(headImage));
@@ -115,6 +122,9 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         // 缓存用户登录sessionData
         redisUtil.set(userInfoKey, JsonUtil.toJson(sessionData));
         redisUtil.expire(userInfoKey, CommonConstants.SESSION_DATA_EXP);
+        String userPhoneKey = CommonConstants.CHECK_LOGIN_TYPE_KEY_PREF + phone;
+        redisUtil.set(userPhoneKey,loginType);
+        redisUtil.expire(userPhoneKey,CommonConstants.SESSION_DATA_EXP);
         return Results.success(sessionData);
 
     }

@@ -35,4 +35,8 @@ public interface MachineService extends Service<Inno72Machine> {
 
 	Result<String> resetTuMachine(Map<String, Object> msg);
 
+	Result<String> updateWifiPwd(Map<String, Object> msg);
+
+	Result<String> updateChannelStatus(Map<String, Object> msg);
+
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.alarmMsg.mapper.Inno72AlarmMsgDetailMapper">
+    <resultMap id="BaseResultMap" type="com.inno72.alarmMsg.model.Inno72AlarmMsgDetail">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="alarm_msg_id" jdbcType="VARCHAR" property="alarmMsgId"/>
+        <result column="check_user_id" jdbcType="VARCHAR" property="checkUserId"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="is_read" jdbcType="INTEGER" property="isRead"/>
+        <result column="read_time" jdbcType="TIMESTAMP" property="readTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+    <select id="selectByParam" resultMap="BaseResultMap">
+        select * from inno72_alarm_msg_detail
+        <where>
+            <if test="alarmMsgId != null">
+                and alarm_msg_id = #{alarmMsgId}
+            </if>
+            <if test="checkUserId != null">
+                and check_user_id = #{checkUserId}
+            </if>
+        </where>
+        limit 1
+    </select>
+</mapper>

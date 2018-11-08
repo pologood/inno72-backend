@@ -1,6 +1,7 @@
 package com.inno72.machine.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.inno72.common.AesUtils;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
@@ -155,9 +156,21 @@ public class SupplyChannelController {
 	 * 工单详情
 	 */
 	@RequestMapping(value="workOrderDetail",method = {RequestMethod.POST})
-	public Result<WorkOrderVo> workOrderDetail(@RequestBody SupplyRequestVo vo){
+	public Result<List<WorkOrderVo>> workOrderDetail(@RequestBody SupplyRequestVo vo){
 		logger.info("查询工单详情接口参数：{}",JSON.toJSON(vo));
-        return supplyChannelService.workOrderDetail(vo.getMachineId(),vo.getBatchNo());
+        return supplyChannelService.workOrderDetail(vo);
+	}
+
+
+	/**
+	 * 按月查询补货记录
+	 * @param vo
+	 * @return
+	 */
+	@RequestMapping(value="findByMonth",method = {RequestMethod.POST})
+	public Result<List<WorkOrderVo>> findByMonth(@RequestBody SupplyRequestVo vo){
+		logger.info("按日历查询补货记录接口参数：{}",JSON.toJSON(vo));
+		return supplyChannelService.findOrderByMonth(vo);
 	}
 
 
@@ -181,10 +194,44 @@ public class SupplyChannelController {
 	}
 
 
+
 	@RequestMapping(value="setDropGoods")
 	public void setDropGoods(@RequestBody SupplyRequestVo vo){
 		supplyChannelService.setDropGoods(vo);
 	}
 
+	/**
+	 * 查询异常货道
+	 * @param vo
+	 * @return
+	 */
+	@RequestMapping(value = "exceptionList" ,method = {RequestMethod.POST})
+	public Result<List<Inno72SupplyChannel>> exceptionList(@RequestBody SupplyRequestVo vo){
+		Result<List<Inno72SupplyChannel>> result = supplyChannelService.exceptionList(vo);
+		return result;
+	}
+
+	/**
+	 * 启用货道
+	 * @param vo
+	 * @return
+	 */
+	@RequestMapping(value = "openSupplyChannel" ,method = {RequestMethod.POST})
+	public Result<String> openSupplyChannel(@RequestBody SupplyRequestVo vo){
+		Result<String> result = supplyChannelService.openSupplyChannel(vo);
+		return result;
+	}
+
+
+	/**
+	 * 同步货道
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping(value = "updateSupplyChannel")
+	public Result<String> updateSupplyChannel(@RequestBody Map<String,Object> map){
+		Result<String> result = supplyChannelService.updateSupplyChannel(map);
+		return result;
+	}
 
 }

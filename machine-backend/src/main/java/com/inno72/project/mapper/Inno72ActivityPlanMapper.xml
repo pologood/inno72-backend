@@ -109,7 +109,7 @@
 				FROM inno72_interact_machine_time mt
 				LEFT JOIN inno72_interact_machine m ON mt.interact_machine_id = m.id
 				LEFT JOIN inno72_interact i ON m.interact_id = i.id
-				WHERE i.is_delete = 0 AND i.status != 2 and  <![CDATA[(mt.start_time > #{endTime} OR mt.end_time < #{startTime})]]>
+				WHERE i.is_delete = 0 AND i.status != 2 and  <![CDATA[(mt.start_time <= #{endTime} and mt.end_time >= #{startTime})]]>
 			) mm
 		) aa on m.id=aa.machine_id
 		WHERE 1=1

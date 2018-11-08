@@ -30,20 +30,20 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
     }
 
 	@Override
-	public List<Inno72SupplyChannel> selectNormalSupply(String machineId, String code) {
+	public List<Inno72SupplyChannel> selectNormalSupply(String machineId, String goodsId) {
     	Map<String,Object> map = new HashMap<>();
     	map.put("machineId",machineId);
-    	map.put("code",code);
+    	map.put("goodsId",goodsId);
     	List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectNormalSupply(map);
 		return list;
 	}
 
 	@Override
-	public Inno72SupplyChannel selectByParam(String machineId, String code) {
+	public List<Inno72SupplyChannel> selectByParam(String machineId, String[] channelArray) {
 		Map<String,Object> map = new HashMap<>();
 		map.put("machineId",machineId);
-		map.put("code",code);
-		Inno72SupplyChannel supplyChannel = inno72SupplyChannelMapper.selectByParam(map);
-		return supplyChannel;
+		map.put("channelArray",channelArray);
+		List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectByParam(map);
+		return list;
 	}
 }

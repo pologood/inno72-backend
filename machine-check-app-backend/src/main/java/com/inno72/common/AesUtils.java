@@ -24,12 +24,8 @@ public class AesUtils {
 
     public static final String logalrithm = "AES/CBC/PKCS5Padding";
     public static final String bm = "utf-8";
-    private static byte[] keyValue = new byte[]{
-            17, -35, -45, 25, 54, -55, -45, 40, 35, -45, 35, 26, -95, 25, -35, 76
-    };
-    private static byte[] iv = new byte[]{
-            -13, 35, -25, 22, 54, -87, 34, -15, -22, 55, 45, -66, 28, 5 - 4, 67, 43
-    };
+    private static byte[] keyValue = "02069578fbc54618".getBytes();
+    private static byte[] iv = "ad62dfa9dede426e".getBytes();
 
     private static Key keySpec;
     private static IvParameterSpec ivSpec;
