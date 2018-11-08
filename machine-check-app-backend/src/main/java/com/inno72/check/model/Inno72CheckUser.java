@@ -139,6 +139,12 @@ public class Inno72CheckUser {
     @Transient
     private String loginType;
 
+    @Transient
+    private String clientId;
+
+    @Transient
+    private String pushKey;
+
     public String getId() {
         return id;
     }
@@ -305,5 +311,21 @@ public class Inno72CheckUser {
 
 	public void setLoginType(String loginType) {
 		this.loginType = loginType;
+	}
+
+	public String getClientId() {
+		return clientId;
+	}
+
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
+	}
+
+	public String getPushKey() {
+		return pushKey;
+	}
+
+	public void setPushKey(String pushKey) {
+		this.pushKey = pushKey;
 	}
 }

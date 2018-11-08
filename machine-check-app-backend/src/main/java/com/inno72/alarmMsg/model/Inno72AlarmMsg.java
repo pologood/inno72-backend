@@ -88,7 +88,7 @@ public class Inno72AlarmMsg {
 	private String serviceId;
 
 	@Transient
-	private String[] mainTypes;
+	private int [] mainTypes;
 
 	@Transient
     private List<Inno72CheckUserMachine> inno72CheckUserMachineList;
@@ -189,11 +189,11 @@ public class Inno72AlarmMsg {
 		this.serviceId = serviceId;
 	}
 
-	public String[] getMainTypes() {
+	public int[] getMainTypes() {
 		return mainTypes;
 	}
 
-	public void setMainTypes(String[] mainTypes) {
+	public void setMainTypes(int[] mainTypes) {
 		this.mainTypes = mainTypes;
 	}
 

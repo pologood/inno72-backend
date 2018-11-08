@@ -65,7 +65,7 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 		Map<String,Object> map = new HashMap<>();
 		String machineCode = alarmMsg.getMachineCode();
 		map.put("machineCode",machineCode);
-		String[] mainTypes = alarmMsg.getMainTypes();
+		int[] mainTypes = alarmMsg.getMainTypes();
 		if(mainTypes != null && mainTypes.length>0){
 			map.put("mainTypes",mainTypes);
 		}
@@ -102,7 +102,7 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 		String machineCode = alarmMsg.getMachineCode();
 		map.put("checkUserId",checkUserId);
 		map.put("machineCode",machineCode);
-		String[] mainTypes = alarmMsg.getMainTypes();
+		int[] mainTypes = alarmMsg.getMainTypes();
 		if(mainTypes != null && mainTypes.length>0){
 			map.put("mainTypes",mainTypes);
 		}
