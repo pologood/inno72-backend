@@ -19,7 +19,7 @@
   </resultMap>
   
   <delete id="deleteByPlanId" parameterType="String">
-		DELETE FROM inno72_coupon WHERE activity_plan_id=#{planId}
+  		UPDATE inno72_coupon SET is_delete =1  WHERE activity_plan_id=#{planId}
 </delete>
 
 	<insert id="insertCouponList" parameterType="java.util.List">
