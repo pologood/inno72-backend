@@ -17,6 +17,7 @@
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="enterprise" jdbcType="VARCHAR" property="enterprise" />
     <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
      <result column="localeName" jdbcType="VARCHAR" property="localeName" />
@@ -29,6 +30,7 @@
 			u.phone,
 			u.enterprise,
 			m.machine_code,
+			s.status,
 			sin.create_time,
 			CONCAT( area.province, area.city, area.district,IFNULL( l.mall,""),IFNULL( l.name,"")) AS localeName
 		FROM
@@ -43,6 +45,11 @@
 				AND ( u.name LIKE '%${keyword}%' 
 				or u.phone LIKE '%${keyword}%' 
 				or u.enterprise LIKE '%${keyword}%'
+				or m.machine_code LIKE '%${keyword}%'
+				or area.province LIKE '%${keyword}%'
+				or area.city LIKE '%${keyword}%'
+				or l.mall LIKE '%${keyword}%'
+				or l.name LIKE '%${keyword}%'
 				)
 			</if>
 			<if test="startTime !=null and startTime !='' ">
