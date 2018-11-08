@@ -43,20 +43,20 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 	}
 
 	@Override
-	public void saveAlarmMsg(String type, String system, String machineCode, int lackNum, String localStr,List<Inno72CheckUserPhone> inno72CheckUserPhones) {
+	public void saveAlarmMsg(String system, String machineCode, int lackNum, String localStr,List<Inno72CheckUserPhone> inno72CheckUserPhones) {
 		String title = "";
 		int typeInt = 0;
 		String detail = "";
 		Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
-		if ((CommonConstants.MACHINE_DROPGOODS_EXCEPTION).equals(type)) {
+		if ((CommonConstants.SYS_MACHINE_DROPGOODS).equals(system)) {
 			title = "您好，您负责的机器货道被锁定，请及时处理";
 			typeInt = 2;
 			detail = localStr + "," + machineCode + "," + "出现掉货异常，请及时处理";
-		} else if (CommonConstants.MACHINE_LACKGOODS_EXCEPTION.equals(type)) {
+		} else if (CommonConstants.SYS_MACHINE_LACKGOODS.equals(system)) {
 			title = "您好，您负责的机器已缺货，请及时补货";
 			typeInt = 3;
 			detail = localStr + "," + machineCode + "," + "缺货" + lackNum + "个，请及时处理";
-		} else if (CommonConstants.MACHINE_NET_EXCEPTION.equals(type)){
+		} else if (CommonConstants.SYS_MACHINE_NET.equals(system)){
 			title = "您好，您负责的机器出现网络异常，请及时处理";
 			typeInt = 4;
 			detail = "您好，"+localStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时联系巡检人员。";
@@ -77,13 +77,13 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 			if(StringUtil.isNotEmpty(phone)){
 				String key = CommonConstants.CHECK_LOGIN_TYPE_KEY_PREF+phone;
 				String loginType = redisUtil.get(key);
-//				if(StringUtil.isNotEmpty(loginType)){
-//					if(loginType.equals("android")){
-//						msgUtil.sendPush("push_android_check_app", params, phone, appName, title, detail);
-//					}else if(loginType.equals("ios")){
-//						msgUtil.sendPush("push_ios_check_app", params, phone, appName, title, detail);
-//					}
-//				}
+				if(StringUtil.isNotEmpty(loginType)){
+					if(loginType.equals("android")){
+						msgUtil.sendPush("push_android_check_app", params, phone, appName, title, detail);
+					}else if(loginType.equals("ios")){
+						msgUtil.sendPush("push_ios_check_app", params, phone, appName, title, detail);
+					}
+				}
 			}
 		}
 	}
