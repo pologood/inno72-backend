@@ -229,7 +229,9 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 								}
 								this.sendSms(param,machineCode,"sms_alarm_connect",inno72CheckUserPhones);
 							}
-							alarmMsgService.saveAlarmMsg(CommonConstants.MACHINE_NET_EXCEPTION,CommonConstants.SYS_MACHINE_NET,machineCode,0,localeStr,inno72CheckUserPhones);
+							if(machineStatus==4){
+								alarmMsgService.saveAlarmMsg(CommonConstants.MACHINE_NET_EXCEPTION,CommonConstants.SYS_MACHINE_NET,machineCode,0,localeStr,inno72CheckUserPhones);
+							}
 							text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时联系巡检人员。";
 						}else if(level == 2){
 							text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续30分钟未连接成功，请及时联系巡检人员。";
