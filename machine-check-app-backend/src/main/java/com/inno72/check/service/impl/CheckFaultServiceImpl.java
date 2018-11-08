@@ -10,6 +10,8 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -75,6 +77,8 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 
 	@Resource
 	private IRedisUtil redisUtil;
+
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public Result<String> addCheckFault(Inno72CheckFault checkFault) {
@@ -184,6 +188,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 											}else if(loginType.equals("ios")){
 												msgUtil.sendPush("push_ios_check_app", params, value, appName, title, messgeInfo);
 											}
+											logger.info("发送push给"+loginType+"设备"+"标识为"+value);
 										}
 										if(StringUtil.senSmsActive(active)){
 											msgUtil.sendSMS(smsCode, params, phone, appName);
