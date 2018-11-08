@@ -49,4 +49,9 @@ public class CheckSignInController {
 
 		return;
 	}
+
+	@RequestMapping(value = "/updateStatus", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> updateStatus(String id, @RequestParam(required = false) String status) {
+		return checkSignInService.updateStatus(id, status);
+	}
 }

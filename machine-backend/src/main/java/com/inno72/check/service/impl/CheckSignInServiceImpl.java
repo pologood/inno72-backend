@@ -1,5 +1,7 @@
 package com.inno72.check.service.impl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +19,12 @@ import com.inno72.check.service.CheckSignInService;
 import com.inno72.check.vo.Inno72CheckUserVo;
 import com.inno72.common.AbstractService;
 import com.inno72.common.ExportExcel;
+import com.inno72.common.Result;
+import com.inno72.common.Results;
+import com.inno72.common.SessionData;
+import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.system.model.Inno72User;
 
 /**
  * Created by CodeGenerator on 2018/07/20.
@@ -79,6 +86,42 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
 			// 导出excel
 			ee.setResponseHeader(USERCHARGE, USERCOLUMN, list, response, "打卡记录");
 		}
+	}
+
+	@Override
+	public Result<String> updateStatus(String ids, String status) {
+
+		SessionData session = SessionUtil.sessionData.get();
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			return Results.failure("未找到用户登录信息");
+		}
+		if (StringUtil.isBlank(ids)) {
+			return Results.failure("请选择要操作记录");
+		}
+		if (StringUtil.isBlank(status)) {
+			return Results.failure("标为是否有效");
+		}
+		try {
+			String[] idArray = ids.split(",");
+			LocalDate now = LocalDate.now();
+			int n = now.getDayOfMonth();
+			for (String id : idArray) {
+				Inno72CheckSignIn signIn = inno72CheckSignInMapper.selectByPrimaryKey(id);
+				// 判断时间 当月可修改，5号以后不可修改上月数据
+				LocalDateTime signInTime = signIn.getCreateTime();
+				if (n >= 5 && !now.getMonth().equals(signInTime.getMonth())) {
+					return Results.failure("记录已超时，不能操作");
+				}
+				signIn.setStatus(Integer.parseInt(status));
+				signIn.setUpdateTime(LocalDateTime.now());
+				inno72CheckSignInMapper.updateByPrimaryKey(signIn);
+			}
+
+		} catch (Exception e) {
+			return Results.failure("操作失败");
+		}
+		return Results.success();
 	}
 
 }
