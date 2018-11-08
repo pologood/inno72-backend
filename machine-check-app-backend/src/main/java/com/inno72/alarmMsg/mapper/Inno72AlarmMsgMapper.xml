@@ -8,11 +8,15 @@
         <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="title" jdbcType="VARCHAR" property="title"/>
         <result column="system" jdbcType="VARCHAR" property="system"/>
-        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="main_type" jdbcType="INTEGER" property="mainType"/>
+        <result column="child_type" jdbcType="INTEGER" property="childType"/>
         <result column="detail" jdbcType="VARCHAR" property="detail"/>
         <result column="machine_Code" jdbcType="VARCHAR" property="machineCode"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
-        <result column="isRead" jdbcType="INTEGER" property="isRead"/>
+        <result column="is_read" jdbcType="INTEGER" property="isRead"/>
+        <result column="read_time" jdbcType="TIMESTAMP" property="readTime"/>
+        <result column="read_user_id" jdbcType="VARCHAR" property="readUserId"/>
+        <result column="service_id" jdbcType="VARCHAR" property="serviceId"/>
         <collection property="inno72CheckUserMachineList" resultMap="inno72CheckUserMachineList"/>
     </resultMap>
 
@@ -20,13 +24,18 @@
         <result column="check_user_id" jdbcType="VARCHAR" property="checkUserId" />
     </resultMap>
     <select id="selectByPage" resultMap="BaseResultMap">
-        select am.*,amd.is_read isRead
-        from inno72_alarm_msg am
-        left join inno72_alarm_msg_detail amd on am.id=amd.alarm_msg_id and amd.check_user_id=#{checkUserId}
-		inner join inno72_machine m on am.machine_code=m.machine_code
+        select * from inno72_alarm_msg am
+        inner join inno72_machine m on am.machine_code=m.machine_code
 		inner join inno72_check_user_machine cum on m.id=cum.machine_id
 		where cum.check_user_id=#{checkUserId}
-        order by am.create_time desc,amd.is_read
+		and am.machine_code = #{machineCode}
+		<if test="mainTypes != null">
+            and
+            <foreach collection="mainTypes" item="item" index="index" open="(" close=")">
+                main_type=#{item}
+            </foreach>
+        </if>
+        order by am.create_time desc,am.is_read
     </select>
 
     <select id="selectAlarmUser" resultMap="BaseResultMap">
@@ -38,7 +47,12 @@
       select count(*) from inno72_alarm_msg am
 	  inner join inno72_machine m on am.machine_code=m.machine_code
       inner join inno72_check_user_machine cum on m.id=cum.machine_id
-	  left join inno72_alarm_msg_detail amd on am.id=amd.alarm_msg_id and amd.check_user_id=#{checkUserId}
-	  where cum.check_user_id=#{checkUserId} and (amd.is_read is null or is_read=0)
+	  where cum.check_user_id=#{checkUserId} and am.machine_code=#{machineCode} and (amd.is_read is null or is_read=0)
+      <if test="mainTypes != null">
+          and
+          <foreach collection="mainTypes" item="item" index="index" open="(" close=")">
+              main_type=#{item}
+          </foreach>
+      </if>
     </select>
 </mapper>

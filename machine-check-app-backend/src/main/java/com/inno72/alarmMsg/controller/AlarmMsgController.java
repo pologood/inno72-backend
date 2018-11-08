@@ -62,8 +62,8 @@ public class AlarmMsgController {
 	 * @return
 	 */
 	@RequestMapping(value = "unReadCount")
-	public Result<Integer> unReadCount(){
-		Result<Integer> result = alarmMsgService.unReadCount();
+	public Result<Integer> unReadCount(@RequestBody Inno72AlarmMsg alarmMsg){
+		Result<Integer> result = alarmMsgService.unReadCount(alarmMsg);
 		return result;
 	}
 

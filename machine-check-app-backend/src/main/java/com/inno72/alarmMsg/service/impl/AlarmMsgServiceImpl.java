@@ -18,6 +18,7 @@ import com.inno72.check.model.Inno72CheckUserMachine;
 import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
+import com.inno72.common.Results;
 import com.inno72.common.StringUtil;
 import com.inno72.common.UserUtil;
 
@@ -44,15 +45,30 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 	@Override
 	public Result<String> readDetail(Inno72AlarmMsg alarmMsg) {
 		String alarmMsgId = alarmMsg.getId();
-		Inno72CheckUser user = UserUtil.getUser();
-		String checkUserId = user.getId();
-		this.saveDetail(checkUserId,alarmMsgId);
+		if(StringUtil.isEmpty(alarmMsgId)){
+			return Results.failure("参数缺失");
+		}
+		Inno72AlarmMsg msg = inno72AlarmMsgMapper.selectByPrimaryKey(alarmMsgId);
+		if(msg == null){
+			return Results.failure("参数有误");
+		}
+		int isRead = msg.getIsRead();
+		if(isRead != 1){
+			msg.setIsRead(1);
+			inno72AlarmMsgMapper.updateByPrimaryKeySelective(msg);
+		}
 		return ResultGenerator.genSuccessResult();
 	}
 
 	@Override
 	public List<Inno72AlarmMsg> findDataByPage(Inno72AlarmMsg alarmMsg) {
 		Map<String,Object> map = new HashMap<>();
+		String machineCode = alarmMsg.getMachineCode();
+		map.put("machineCode",machineCode);
+		String[] mainTypes = alarmMsg.getMainTypes();
+		if(mainTypes != null && mainTypes.length>0){
+			map.put("mainTypes",mainTypes);
+		}
 		List<Inno72AlarmMsg> list = inno72AlarmMsgDetailMapper.selectByPage(map);
 		return list;
 	}
@@ -79,10 +95,18 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 	}
 
 	@Override
-	public Result<Integer> unReadCount() {
+	public Result<Integer> unReadCount(Inno72AlarmMsg alarmMsg) {
 		Inno72CheckUser checkUser = UserUtil.getUser();
 		String checkUserId = checkUser.getId();
-		int unReadCount = inno72AlarmMsgMapper.selectUnReadCount(checkUserId);
+		Map<String,Object> map = new HashMap<>();
+		String machineCode = alarmMsg.getMachineCode();
+		map.put("checkUserId",checkUserId);
+		map.put("machineCode",machineCode);
+		String[] mainTypes = alarmMsg.getMainTypes();
+		if(mainTypes != null && mainTypes.length>0){
+			map.put("mainTypes",mainTypes);
+		}
+		int unReadCount = inno72AlarmMsgMapper.selectUnReadCount(map);
 		return ResultGenerator.genSuccessResult(unReadCount);
 	}
 

@@ -30,11 +30,14 @@ public class Inno72AlarmMsg {
     @Column(name="system")
     private String system;
 
+	@Column(name="main_type")
+    private int mainType;
+
     /**
      * 类型
      */
-    @Column(name = "type")
-    private int type;
+    @Column(name = "child_type")
+    private int childType;
 
     /**
      * 详情
@@ -56,67 +59,111 @@ public class Inno72AlarmMsg {
     @Column(name = "machine_code")
     private String machineCode;
 
-    @Transient
-    private Integer isRead;
+	/**
+	 * 系统
+	 */
+	@Column(name="read_user_id")
+	private String readUserId;
+
+	/**
+	 * 类型
+	 */
+	@Column(name = "is_read")
+	private Integer isRead;
+
+
+	/**
+	 * 创建时间
+	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
+	private LocalDateTime readTime;
+
+
+	/**
+	 * 业务ID
+	 */
+	@Column(name = "service_id")
+	private String serviceId;
+
+	@Transient
+	private String[] mainTypes;
 
 	@Transient
     private List<Inno72CheckUserMachine> inno72CheckUserMachineList;
 
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public String getTitle() {
-        return title;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    public String getSystem() {
-        return system;
-    }
+	public String getSystem() {
+		return system;
+	}
 
-    public void setSystem(String system) {
-        this.system = system;
-    }
+	public void setSystem(String system) {
+		this.system = system;
+	}
 
-    public int getType() {
-        return type;
-    }
+	public int getMainType() {
+		return mainType;
+	}
 
-    public void setType(int type) {
-        this.type = type;
-    }
+	public void setMainType(int mainType) {
+		this.mainType = mainType;
+	}
 
-    public String getDetail() {
-        return detail;
-    }
+	public int getChildType() {
+		return childType;
+	}
 
-    public void setDetail(String detail) {
-        this.detail = detail;
-    }
+	public void setChildType(int childType) {
+		this.childType = childType;
+	}
 
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
+	public String getDetail() {
+		return detail;
+	}
 
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
+	public void setDetail(String detail) {
+		this.detail = detail;
+	}
 
-    public String getMachineCode() {
-        return machineCode;
-    }
+	public LocalDateTime getCreateTime() {
+		return createTime;
+	}
 
-    public void setMachineCode(String machineCode) {
-        this.machineCode = machineCode;
-    }
+	public void setCreateTime(LocalDateTime createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getMachineCode() {
+		return machineCode;
+	}
+
+	public void setMachineCode(String machineCode) {
+		this.machineCode = machineCode;
+	}
+
+	public String getReadUserId() {
+		return readUserId;
+	}
+
+	public void setReadUserId(String readUserId) {
+		this.readUserId = readUserId;
+	}
 
 	public Integer getIsRead() {
 		return isRead;
@@ -124,6 +171,30 @@ public class Inno72AlarmMsg {
 
 	public void setIsRead(Integer isRead) {
 		this.isRead = isRead;
+	}
+
+	public LocalDateTime getReadTime() {
+		return readTime;
+	}
+
+	public void setReadTime(LocalDateTime readTime) {
+		this.readTime = readTime;
+	}
+
+	public String getServiceId() {
+		return serviceId;
+	}
+
+	public void setServiceId(String serviceId) {
+		this.serviceId = serviceId;
+	}
+
+	public String[] getMainTypes() {
+		return mainTypes;
+	}
+
+	public void setMainTypes(String[] mainTypes) {
+		this.mainTypes = mainTypes;
 	}
 
 	public List<Inno72CheckUserMachine> getInno72CheckUserMachineList() {
