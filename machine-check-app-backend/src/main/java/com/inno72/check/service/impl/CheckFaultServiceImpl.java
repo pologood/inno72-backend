@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -170,18 +171,24 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 							String phone = user.getPhone();
 							if (StringUtil.isNotEmpty(phone)) {
 								userIdList.add(user.getId());
-								String userPhoneKey = CommonConstants.CHECK_LOGIN_TYPE_KEY_PREF + phone;
-								String loginType = redisUtil.get(userPhoneKey);
-								if(StringUtil.isNotEmpty(loginType)){
-									if(loginType.equals("android")){
-										msgUtil.sendPush("push_android_check_app", params, phone, appName, title, messgeInfo);
-									}else if(loginType.equals("ios")){
-										msgUtil.sendPush("push_ios_check_app", params, phone, appName, title, messgeInfo);
+								String userPhoneKey = CommonConstants.PUSH_KEY_PREF + phone;
+								Set<String> set = redisUtil.keys(0,userPhoneKey+"*");
+								if(set != null && set.size()>0){
+									for(String key:set){
+										String loginType = redisUtil.get(key);
+										if(StringUtil.isNotEmpty(loginType)){
+											if(loginType.equals("android")){
+												msgUtil.sendPush("push_android_check_app", params, key, appName, title, messgeInfo);
+											}else if(loginType.equals("ios")){
+												msgUtil.sendPush("push_ios_check_app", params, key, appName, title, messgeInfo);
+											}
+										}
+										if(StringUtil.senSmsActive(active)){
+											msgUtil.sendSMS(smsCode, params, phone, appName);
+										}
 									}
 								}
-								if(StringUtil.senSmsActive(active)){
-									msgUtil.sendSMS(smsCode, params, phone, appName);
-								}
+
 							}
 						}
 
