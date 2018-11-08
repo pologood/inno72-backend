@@ -143,7 +143,7 @@ public class Inno72CheckUser {
     private String clientId;
 
     @Transient
-    private String pushKey;
+    private String pushValue;
 
     public String getId() {
         return id;
@@ -321,11 +321,11 @@ public class Inno72CheckUser {
 		this.clientId = clientId;
 	}
 
-	public String getPushKey() {
-		return pushKey;
+	public String getPushValue() {
+		return pushValue;
 	}
 
-	public void setPushKey(String pushKey) {
-		this.pushKey = pushKey;
+	public void setPushValue(String pushValue) {
+		this.pushValue = pushValue;
 	}
 }

@@ -171,16 +171,18 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 							String phone = user.getPhone();
 							if (StringUtil.isNotEmpty(phone)) {
 								userIdList.add(user.getId());
-								String userPhoneKey = CommonConstants.PUSH_KEY_PREF + phone;
-								Set<String> set = redisUtil.keys(0,userPhoneKey+"*");
-								if(set != null && set.size()>0){
-									for(String key:set){
-										String loginType = redisUtil.get(key);
+								String pushKey = "push:" + phone;
+								Set<Object> pushSet = redisUtil.smembers(pushKey);
+								if(pushSet != null && pushSet.size()>0){
+									for(Object set:pushSet){
+										String value = set.toString();
+										String setArray [] = value.split("_");
+										String loginType = setArray[0];
 										if(StringUtil.isNotEmpty(loginType)){
 											if(loginType.equals("android")){
-												msgUtil.sendPush("push_android_check_app", params, key, appName, title, messgeInfo);
+												msgUtil.sendPush("push_android_check_app", params, value, appName, title, messgeInfo);
 											}else if(loginType.equals("ios")){
-												msgUtil.sendPush("push_ios_check_app", params, key, appName, title, messgeInfo);
+												msgUtil.sendPush("push_ios_check_app", params, value, appName, title, messgeInfo);
 											}
 										}
 										if(StringUtil.senSmsActive(active)){

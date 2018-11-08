@@ -113,12 +113,12 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         Inno72CheckUser user = users.get(0);
         String token = StringUtil.getUUID();
         user.setLoginType(loginType);
-		String clientId = user.getClientId();
+		String clientId = checkUser.getClientId();
 		if(StringUtil.isNotEmpty(clientId)){
-			String pushKey = CommonConstants.PUSH_KEY_PREF + phone+":"+user.getClientId();
-			redisUtil.set(pushKey,loginType);
-			redisUtil.expire(pushKey,CommonConstants.SESSION_DATA_EXP);
-			user.setPushKey(pushKey);
+			String pushKey = "push:"+phone;
+			String pushValue = loginType+"_"+phone+"_"+clientId;
+			redisUtil.sadd(pushKey,pushValue);
+			user.setPushValue(pushValue);
 		}
         SessionData sessionData = new SessionData(token, user);
         String headImage = sessionData.getUser().getHeadImage();
@@ -159,6 +159,8 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         if (StringUtil.isNotBlank(oldToken)) {
             redisUtil.del(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + oldToken);
         }
+
+        redisUtil.srem("push:"+user.getPhone(),user.getPushValue());
         return ResultGenerator.genSuccessResult();
     }
 
