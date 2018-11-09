@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
-import com.inno72.common.Result;
+import com.inno72.common.ResultPages;
 import com.inno72.common.Results;
 import com.inno72.machine.service.AppVersionService;
 import com.inno72.machine.vo.MachineAppVersionVo;
@@ -22,8 +23,9 @@ public class MachineAppVersionController {
 	private AppVersionService appVersionService;
 
 	@RequestMapping(value = "/appVersion", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<MachineAppVersionVo>> appVersion(String appPackage, Integer versionCode, String keyword) {
+	public ModelAndView appVersion(String appPackage, Integer versionCode, String keyword) {
 		List<MachineAppVersionVo> list = appVersionService.appVersion(appPackage, versionCode, keyword);
-		return Results.success(list);
+		return ResultPages.page(Results.success(list));
 	}
+
 }

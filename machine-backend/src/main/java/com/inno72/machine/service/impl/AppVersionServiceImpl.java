@@ -56,8 +56,12 @@ public class AppVersionServiceImpl extends AbstractService<Inno72App> implements
 		Pagination page = Pagination.threadLocal.get();
 		if (page == null) { // 没有设置分页page
 			page = new Pagination();
+			Pagination.threadLocal.set(page);
 		}
-		query.with(new Sort(Sort.Direction.DESC, "createTime")).skip(page.getCurrentResult()).limit(page.getPageSize());
+		query.with(new Sort(Sort.Direction.DESC, "createTime"));
+		List<MachineAppStatus> appVersion1 = mongoTpl.find(query, MachineAppStatus.class, "MachineAppStatus");
+		Pagination.threadLocal.get().setTotalCount(appVersion1.size());
+		query.skip(page.getCurrentResult()).limit(page.getPageSize());
 		List<MachineAppStatus> appVersions = mongoTpl.find(query, MachineAppStatus.class, "MachineAppStatus");
 		if (appVersions != null) {
 			Map<String, Integer> map = new HashMap<>();
