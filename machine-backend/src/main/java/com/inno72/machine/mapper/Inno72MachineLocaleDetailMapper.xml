@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.machine.mapper.Inno72MachineLocaleDetailMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.machine.model.Inno72MachineLocaleDetail">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
+    <result column="locale" jdbcType="VARCHAR" property="locale" />
+    <result column="old_locale" jdbcType="VARCHAR" property="oldLocale" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  
+  <select id="selectMachineTimeByPage" resultType="java.util.Map" parameterType="java.util.Map">
+  	SELECT
+		m.id,
+		m.machine_code AS machineCode,
+		CONCAT(area.province,area.city,area.district,IFNULL(l.mall,""),IFNULL( l.name,'')) AS locale,
+		MAX( d.create_time ) AS firstTime,
+		MIN( d.create_time ) AS lastTime
+	FROM
+		inno72_machine_locale_detail d 
+	LEFT JOIN inno72_machine m ON m.id = d.machine_id
+	LEFT JOIN inno72_locale l ON l.id = d.locale
+	LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
+	<where>
+        <if test="code !=null and code !=''">and LEFT(l.area_code,#{num}) = LEFT(#{code},#{num})</if>
+	    <if test="keyword != null and keyword !='' ">
+	    AND (m.machine_code LIKE '%${keyword}%' 
+			or l.mall LIKE '%${keyword}%' 
+			or JSON_EXTRACT(l.tag, '$.tags') LIKE '%${keyword}%'  
+			or l.name LIKE '%${keyword}%' 
+			or area.province LIKE '%${keyword}%' 
+			or area.city LIKE '%${keyword}%' 
+			or area.district LIKE '%${keyword}%' )
+	      </if>
+    </where>
+	GROUP BY d.machine_id
+  </select>
+  
+  <select id="selectMachineLocaleDetail" resultType="java.util.Map" parameterType="java.util.Map">
+  	SELECT
+		d.id,
+		CONCAT(area.province,area.city,area.district,IFNULL(l.mall,""),IFNULL( l.name,'')) AS locale,
+		CONCAT(oldArea.province,oldArea.city,oldArea.district,IFNULL(ol.mall,""),IFNULL( ol.name,'')) AS old_locale,
+		d.create_time
+	FROM
+		inno72_machine_locale_detail d 
+	LEFT JOIN inno72_locale l ON l.id = d.locale
+	LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
+	LEFT JOIN inno72_locale ol ON ol.id = d.old_locale
+	LEFT JOIN inno72_admin_area oldArea ON oldArea.CODE = ol.area_code
+	where d.machine_id=#{machineId}
+	ORDER BY d.create_time DESC
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+</mapper>
