@@ -115,8 +115,8 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         user.setLoginType(loginType);
 		String clientId = checkUser.getClientId();
 		if(StringUtil.isNotEmpty(clientId)){
-			String pushKey = "push:"+phone;
-			String pushValue = loginType+"_"+phone+"_"+clientId;
+			String pushKey = "push:"+loginType+":"+phone;
+			String pushValue = phone+"_"+clientId;
 			redisUtil.sadd(pushKey,pushValue);
 			user.setPushValue(pushValue);
 		}
@@ -133,6 +133,8 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         return Results.success(sessionData);
 
     }
+
+
 
     @Override
     public Result<String> upload(MultipartFile file) {
@@ -159,8 +161,10 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         if (StringUtil.isNotBlank(oldToken)) {
             redisUtil.del(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + oldToken);
         }
-
-        redisUtil.srem("push:"+user.getPhone(),user.getPushValue());
+        String loginType = user.getLoginType();
+        if(StringUtil.isNotEmpty(loginType)){
+			redisUtil.srem("push:"+loginType+":"+user.getPhone(),user.getPushValue());
+		}
         return ResultGenerator.genSuccessResult();
     }
 
