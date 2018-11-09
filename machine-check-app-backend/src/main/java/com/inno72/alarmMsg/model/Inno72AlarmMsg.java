@@ -89,8 +89,6 @@ public class Inno72AlarmMsg {
 
 	private int [] mainTypes;
 
-	@Transient
-    private List<Inno72CheckUserMachine> inno72CheckUserMachineList;
 
 	public String getId() {
 		return id;
@@ -196,11 +194,4 @@ public class Inno72AlarmMsg {
 		this.mainTypes = mainTypes;
 	}
 
-	public List<Inno72CheckUserMachine> getInno72CheckUserMachineList() {
-		return inno72CheckUserMachineList;
-	}
-
-	public void setInno72CheckUserMachineList(List<Inno72CheckUserMachine> inno72CheckUserMachineList) {
-		this.inno72CheckUserMachineList = inno72CheckUserMachineList;
-	}
 }

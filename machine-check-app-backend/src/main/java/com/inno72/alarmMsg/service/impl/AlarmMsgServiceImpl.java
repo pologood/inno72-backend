@@ -79,22 +79,7 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 	@Override
 	public Result<String> initData() {
 		List<Inno72AlarmMsg> list = inno72AlarmMsgMapper.selectAlarmUser();
-		int dataNum = 0;
-		if(list != null && list.size()>0){
-			for(Inno72AlarmMsg alarmMsg:list){
-				String alarmMsgId = alarmMsg.getId();
-				List<Inno72CheckUserMachine> inno72CheckUserMachineList = alarmMsg.getInno72CheckUserMachineList();
-				if(inno72CheckUserMachineList != null && inno72CheckUserMachineList.size()>0){
-					for(Inno72CheckUserMachine checkUserMachine:inno72CheckUserMachineList){
-						String checkUserId = checkUserMachine.getCheckUserId();
-						dataNum = dataNum+this.saveDetail(checkUserId,alarmMsgId);
-					}
-				}else{
-					logger.info("没有用户");
-				}
-			}
-		}
-		return ResultGenerator.genSuccessResult("初始化消息详情数量为："+dataNum);
+		return ResultGenerator.genSuccessResult();
 	}
 
 	@Override

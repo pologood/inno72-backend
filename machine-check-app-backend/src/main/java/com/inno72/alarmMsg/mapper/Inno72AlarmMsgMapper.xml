@@ -17,14 +17,10 @@
         <result column="read_time" jdbcType="TIMESTAMP" property="readTime"/>
         <result column="read_user_id" jdbcType="VARCHAR" property="readUserId"/>
         <result column="service_id" jdbcType="VARCHAR" property="serviceId"/>
-        <collection property="inno72CheckUserMachineList" resultMap="inno72CheckUserMachineList"/>
     </resultMap>
 
-    <resultMap id="inno72CheckUserMachineList" type="com.inno72.check.model.Inno72CheckUserMachine">
-        <result column="check_user_id" jdbcType="VARCHAR" property="checkUserId" />
-    </resultMap>
     <select id="selectByPage" resultMap="BaseResultMap">
-        select * from inno72_alarm_msg am
+        select am.* from inno72_alarm_msg am
         inner join inno72_machine m on am.machine_code=m.machine_code
 		inner join inno72_check_user_machine cum on m.id=cum.machine_id
 		where cum.check_user_id=#{checkUserId}

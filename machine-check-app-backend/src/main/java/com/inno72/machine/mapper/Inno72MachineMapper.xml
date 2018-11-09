@@ -145,7 +145,7 @@
 		left join view_machine_goods mg on mg.machine_id=m.id
 		left join inno72_supply_channel sc on m.id = sc.machine_id
 		left join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id and scg.goods_id=mg.goods_id
-		where m.machine_status=4 or m.machine_status=9 and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
+		where (m.machine_status=4 or m.machine_status=9) and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
 		and sc.status=0 and sc.is_delete=0
 	</select>
 
