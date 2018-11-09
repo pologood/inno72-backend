@@ -62,14 +62,17 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 
 	@Override
 	public List<Inno72AlarmMsg> findDataByPage(Inno72AlarmMsg alarmMsg) {
+		Inno72CheckUser user = UserUtil.getUser();
+		String userId = user.getId();
 		Map<String,Object> map = new HashMap<>();
 		String machineCode = alarmMsg.getMachineCode();
+		map.put("checkUserId",userId);
 		map.put("machineCode",machineCode);
 		int[] mainTypes = alarmMsg.getMainTypes();
 		if(mainTypes != null && mainTypes.length>0){
 			map.put("mainTypes",mainTypes);
 		}
-		List<Inno72AlarmMsg> list = inno72AlarmMsgDetailMapper.selectByPage(map);
+		List<Inno72AlarmMsg> list = inno72AlarmMsgMapper.selectByPage(map);
 		return list;
 	}
 

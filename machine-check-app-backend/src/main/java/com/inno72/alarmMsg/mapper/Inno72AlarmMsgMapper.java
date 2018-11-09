@@ -12,4 +12,6 @@ public interface Inno72AlarmMsgMapper extends Mapper<Inno72AlarmMsg> {
 	List<Inno72AlarmMsg> selectAlarmUser();
 
 	int selectUnReadCount(Map<String,Object> map);
+
+	List<Inno72AlarmMsg> selectByPage(Map<String,Object> map);
 }

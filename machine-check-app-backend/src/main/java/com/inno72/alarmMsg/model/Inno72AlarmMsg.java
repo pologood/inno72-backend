@@ -87,7 +87,6 @@ public class Inno72AlarmMsg {
 	@Column(name = "service_id")
 	private String serviceId;
 
-	@Transient
 	private int [] mainTypes;
 
 	@Transient
