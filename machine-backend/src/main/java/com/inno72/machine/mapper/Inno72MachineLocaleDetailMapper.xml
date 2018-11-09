@@ -18,8 +18,8 @@
 		m.id,
 		m.machine_code AS machineCode,
 		CONCAT(area.province,area.city,area.district,IFNULL(l.mall,""),IFNULL( l.name,'')) AS locale,
-		MAX( d.create_time ) AS firstTime,
-		MIN( d.create_time ) AS lastTime
+		date_format( MAX( d.create_time ), '%Y-%m-%d %H:%i:%s' ) AS firstTime,
+		date_format( MIN( d.create_time ), '%Y-%m-%d %H:%i:%s' ) AS lastTime
 	FROM
 		inno72_machine_locale_detail d 
 	LEFT JOIN inno72_machine m ON m.id = d.machine_id
@@ -44,8 +44,8 @@
   	SELECT
 		d.id,
 		CONCAT(area.province,area.city,area.district,IFNULL(l.mall,""),IFNULL( l.name,'')) AS locale,
-		CONCAT(oldArea.province,oldArea.city,oldArea.district,IFNULL(ol.mall,""),IFNULL( ol.name,'')) AS old_locale,
-		d.create_time
+		CONCAT(oldArea.province,oldArea.city,oldArea.district,IFNULL(ol.mall,""),IFNULL( ol.name,'')) AS oldLocale,
+		date_format(d.create_time) AS createTime
 	FROM
 		inno72_machine_locale_detail d 
 	LEFT JOIN inno72_locale l ON l.id = d.locale
