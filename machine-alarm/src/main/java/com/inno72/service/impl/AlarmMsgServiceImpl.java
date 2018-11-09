@@ -4,9 +4,12 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +40,8 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 	@Resource
 	private MsgUtil msgUtil;
 
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	@Override
 	public List<Inno72AlarmMsg> findByPage(Object condition) {
 		return null;
@@ -62,26 +67,36 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 			detail = "您好，"+localStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时联系巡检人员。";
 		}
 		inno72AlarmMsg.setDetail(detail);
+		inno72AlarmMsg.setMainType(1);
+		inno72AlarmMsg.setChildType(typeInt);
 		inno72AlarmMsg.setTitle(title);
-		inno72AlarmMsg.setType(typeInt);
 		inno72AlarmMsg.setCreateTime(LocalDateTime.now());
 		inno72AlarmMsg.setSystem(system);
 		inno72AlarmMsg.setMachineCode(machineCode);
 		inno72AlarmMsg.setId(StringUtil.getUUID());
 		inno72AlarmMsgMapper.insertSelective(inno72AlarmMsg);
+		logger.info("存储消息"+title);
 		Map<String,String> params = new HashMap<>();
 		params.put("machineCode", machineCode);
 		String appName = "machine_alarm";
 		for(Inno72CheckUserPhone checkUserPhone:inno72CheckUserPhones){
 			String phone = checkUserPhone.getPhone();
 			if(StringUtil.isNotEmpty(phone)){
-				String key = CommonConstants.CHECK_LOGIN_TYPE_KEY_PREF+phone;
-				String loginType = redisUtil.get(key);
-				if(StringUtil.isNotEmpty(loginType)){
-					if(loginType.equals("android")){
-						msgUtil.sendPush("push_android_check_app", params, phone, appName, title, detail);
-					}else if(loginType.equals("ios")){
-						msgUtil.sendPush("push_ios_check_app", params, phone, appName, title, detail);
+				String pushKey = "push:" + phone;
+				Set<Object> pushSet = redisUtil.smembers(pushKey);
+				if(pushSet != null && pushSet.size()>0){
+					for(Object set:pushSet){
+						String value = set.toString();
+						String setArray [] = value.split("_");
+						String loginType = setArray[0];
+						if(StringUtil.isNotEmpty(loginType)){
+							if(loginType.equals("android")){
+								msgUtil.sendPush("push_android_check_app", params, value, appName, title, detail);
+							}else if(loginType.equals("ios")){
+								msgUtil.sendPush("push_ios_check_app", params, value, appName, title, detail);
+							}
+							logger.info("发送push给"+loginType+"设备"+"标识为"+value);
+						}
 					}
 				}
 			}
