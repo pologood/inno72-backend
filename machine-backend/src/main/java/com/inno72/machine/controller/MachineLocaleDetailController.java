@@ -32,7 +32,7 @@ public class MachineLocaleDetailController {
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 
-	@RequestMapping(value = "/dayGoodsDetail", method = { RequestMethod.GET })
+	@RequestMapping(value = "/machineLocaleDetail", method = { RequestMethod.GET })
 	public Result<List<Map<String, Object>>> findMachineLocaleDetail(String machineId) {
 		List<Map<String, Object>> list = machineLocaleDetailService.findMachineLocaleDetail(machineId);
 		return ResultGenerator.genSuccessResult(list);
