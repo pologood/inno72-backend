@@ -23,6 +23,7 @@
 		<association property="checkUserVoList" resultMap="checkUserVoList"/>
 		<association property="faultVoList" resultMap="faultVoList"/>
 		<association property="signInList" resultMap="signInList"/>
+        <association property="alarmMsgList" resultMap="alarmMsgList"/>
 	</resultMap>
 
 	<resultMap id="supplyChannelVoList" type="com.inno72.machine.vo.SupplyChannelVo">
@@ -53,6 +54,10 @@
 		<result column="signInId" jdbcType="VARCHAR" property="id"/>
 		<result column="cTime" jdbcType="TIMESTAMP" property="createTime"/>
 	</resultMap>
+
+    <resultMap id="alarmMsgList" type="com.inno72.alarmMsg.model.Inno72AlarmMsg">
+        <result column="alarmMsgId" jdbcType="VARCHAR" property="id"/>
+    </resultMap>
 
 	<select id="getMachine" resultMap="BaseResultMap">
 		select m.*,
@@ -133,7 +138,8 @@
 		sc.machine_id,
 		sc.parent_code,
 		sc.volume_count,
-		sc.goods_count
+		sc.goods_count,
+		am.id alarmMsgId
 		from inno72_machine m
 		inner join inno72_check_user_machine cum on cum.machine_id=m.id
 		inner join inno72_locale l on m.locale_id=l.id
@@ -145,6 +151,7 @@
 		left join view_machine_goods mg on mg.machine_id=m.id
 		left join inno72_supply_channel sc on m.id = sc.machine_id
 		left join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id and scg.goods_id=mg.goods_id
+		left join inno72_alarm_msg am on m.machine_code=am.machine_code and am.is_read=0
 		where (m.machine_status=4 or m.machine_status=9) and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
 		and sc.status=0 and sc.is_delete=0
 	</select>

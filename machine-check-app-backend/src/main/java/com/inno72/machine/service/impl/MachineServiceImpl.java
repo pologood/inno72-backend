@@ -1,5 +1,6 @@
 package com.inno72.machine.service.impl;
 
+import com.inno72.alarmMsg.model.Inno72AlarmMsg;
 import com.inno72.check.mapper.Inno72CheckUserMachineMapper;
 import com.inno72.check.mapper.Inno72CheckUserMapper;
 import com.inno72.check.model.Inno72CheckSignIn;
@@ -134,6 +135,11 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 				}
 				inno72Machine.setLackGoodsStatus(lackGoodsStatus);
 				inno72Machine.setSupplyChannelVoList(null);
+				List<Inno72AlarmMsg> alarmMsgList = inno72Machine.getAlarmMsgList();
+				if(alarmMsgList != null && alarmMsgList.size()>0){
+					inno72Machine.setNoReadCount(alarmMsgList.size());
+					inno72Machine.setAlarmMsgList(null);
+				}
             });
         }
 		List<Inno72Machine> list1 = new ArrayList<>();
