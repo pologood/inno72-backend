@@ -287,7 +287,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				update.set("handle",1);
 				Query upQuery = new Query();
 				upQuery.addCriteria(Criteria.where("_id").is(lackGoodsBean.getId()));
-				mongoUtil.updateFirst(upQuery,update,"AlarmDropGoodsBean");
+				mongoUtil.updateFirst(upQuery,update,"AlarmLackGoodsBean");
 			}
 		}
 	}
