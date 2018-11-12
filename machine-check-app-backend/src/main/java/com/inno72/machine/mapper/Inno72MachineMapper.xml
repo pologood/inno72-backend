@@ -78,12 +78,11 @@
 		from inno72_machine m
 		left join view_machine_goods mg on m.id=mg.machine_id
 		inner join inno72_check_user_machine cum on m.id=cum.machine_id
-		inner join inno72_supply_channel sc on cum.machine_id = sc.machine_id
+		inner join inno72_supply_channel sc on cum.machine_id = sc.machine_id and sc.status=0 and sc.is_delete=0
 		inner JOIN inno72_locale l ON l.id = m.locale_id
         inner JOIN inno72_admin_area aa ON aa.CODE = l.area_code
         left join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id and mg.goods_id=scg.goods_id
 		where m.machine_status=4 and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
-		and sc.status=0 and sc.is_delete=0
 	</select>
 
 
@@ -108,12 +107,12 @@
 		inner join view_machine_goods mg on mg.machine_id=m.id
 		inner join inno72_check_user_machine cum on m.id=cum.machine_id
 		inner join inno72_check_user cu on cum.check_user_id=cu.id
-		inner join inno72_supply_channel sc on sc.machine_id=m.id
+		inner join inno72_supply_channel sc on sc.machine_id=m.id and sc.status=0 and sc.is_delete=0
 		inner join inno72_supply_channel_goods scg on scg.supply_channel_id=sc.id
 		inner join inno72_locale l on m.locale_id=l.id
 		inner join inno72_admin_area aa on aa.code=l.area_code
 		where m.machine_status=4 and cu.id=#{checkUserId,jdbcType=VARCHAR}
-		and sc.status=0 and sc.is_delete=0 and scg.goods_id=#{goodsId}
+		and scg.goods_id=#{goodsId}
 	</select>
 
 	<select id="machineList" resultMap="BaseResultMap">
@@ -149,11 +148,11 @@
 		and date_format(csi.create_time,'%Y%M%D') = date_format(CURRENT_DATE,'%Y%M%D')
 		and csi.check_user_id=#{checkUserId,jdbcType=VARCHAR}
 		left join view_machine_goods mg on mg.machine_id=m.id
-		left join inno72_supply_channel sc on m.id = sc.machine_id
+		left join inno72_supply_channel sc on m.id = sc.machine_id and sc.status=0 and sc.is_delete=0
 		left join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id and scg.goods_id=mg.goods_id
 		left join inno72_alarm_msg am on m.machine_code=am.machine_code and am.is_read=0
 		where (m.machine_status=4 or m.machine_status=9) and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
-		and sc.status=0 and sc.is_delete=0
+
 	</select>
 
 	<select id="selectByParam" resultMap="BaseResultMap">
