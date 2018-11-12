@@ -43,7 +43,7 @@
       select count(*) from inno72_alarm_msg am
 	  inner join inno72_machine m on am.machine_code=m.machine_code
       inner join inno72_check_user_machine cum on m.id=cum.machine_id
-	  where cum.check_user_id=#{checkUserId} and am.machine_code=#{machineCode} and (amd.is_read is null or is_read=0)
+	  where cum.check_user_id=#{checkUserId} and am.machine_code=#{machineCode} and (am.is_read is null or am.is_read=0)
       <if test="mainTypes != null">
           and
           <foreach collection="mainTypes" item="item" index="index" open="(" close=")">
