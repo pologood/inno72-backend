@@ -28,7 +28,6 @@ import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.machine.model.Inno72Machine;
-import com.inno72.plugin.http.HttpClient;
 import com.inno72.project.mapper.Inno72ActivityMapper;
 import com.inno72.project.mapper.Inno72ActivityPlanGameResultMapper;
 import com.inno72.project.mapper.Inno72ActivityPlanGoodsMapper;
@@ -234,7 +233,6 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					}
 
 				}
-				List<MachineGoods> machineGoodsList = new ArrayList<>();
 				for (Inno72ActivityPlanMachine inno72ActivityPlanMachine : insertPlanMachineList) {
 					// 查询机器Code
 					Inno72Machine m = inno72MachineMapper.selectByPrimaryKey(inno72ActivityPlanMachine.getMachineId());
@@ -242,22 +240,8 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 						MachineGoods mG = new MachineGoods();
 						mG.setMachineCode(m.getMachineCode());
 						mG.setGoodsId(inno72ActivityPlanGoods.getGoodsId());
-						machineGoodsList.add(mG);
 					}
 				}
-				logger.info("调用汗青接口开始");
-				String data = JSON.toJSONString(machineGoodsList);
-				String URL = machineBackendProperties.getProps().get("gameServiceUrl");
-				String result = HttpClient.post(URL + "newretail/saveMachine", data);
-				logger.info(result);
-				/*
-				 * JSONObject resultJson = JSON.parseObject(result);
-				 * logger.info("调用汗青接口结束:" + result); if
-				 * (resultJson.getInteger("code") != 0) {
-				 * logger.info("天猫接口调用失败:" + resultJson.getString("msg"));
-				 * return Results.failure("操作失败：" +
-				 * resultJson.getString("msg")); }
-				 */
 
 			}
 			// 保存优惠券
@@ -537,7 +521,6 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 					insertPlanGameResultList.add(planGameResult);
 				}
 
-				List<MachineGoods> machineGoodsList = new ArrayList<>();
 				for (Inno72ActivityPlanMachine inno72ActivityPlanMachine : insertPlanMachineList) {
 					// 查询机器Code
 					Inno72Machine m = inno72MachineMapper.selectByPrimaryKey(inno72ActivityPlanMachine.getMachineId());
@@ -545,22 +528,8 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 						MachineGoods mG = new MachineGoods();
 						mG.setMachineCode(m.getMachineCode());
 						mG.setGoodsId(inno72ActivityPlanGoods.getGoodsId());
-						machineGoodsList.add(mG);
 					}
 				}
-				logger.info("调用汗青接口开始");
-				String data = JSON.toJSONString(machineGoodsList);
-				String URL = machineBackendProperties.getProps().get("gameServiceUrl");
-				String result = HttpClient.post(URL + "newretail/saveMachine", data);
-				logger.info(result);
-				/*
-				 * JSONObject resultJson = JSON.parseObject(result);
-				 * logger.info("调用汗青接口结束:" + result); if
-				 * (resultJson.getInteger("code") != 0) {
-				 * logger.info("天猫接口调用失败:" + resultJson.getString("msg"));
-				 * return Results.failure("操作失败：" +
-				 * resultJson.getString("msg")); }
-				 */
 
 			}
 
@@ -699,8 +668,10 @@ public class ActivityPlanServiceImpl extends AbstractService<Inno72ActivityPlan>
 
 	@Override
 	public List<Inno72ActivityPlanVo> selectPlanList(String code, String status, String type, String startTime,
-			String endTime) {
+			String endTime, String keyword) {
 		Map<String, Object> params = new HashMap<String, Object>();
+		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
+		params.put("keyword", keyword);
 		params.put("startTime", startTime);
 		params.put("endTime", endTime);
 		params.put("status", status);

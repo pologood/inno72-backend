@@ -18,6 +18,7 @@ public class MachineExceptionVo implements Comparable<MachineExceptionVo> {
 	private String goodsChannelStatus;
 	private Integer voice;
 	private String updateTime;
+	private Integer lockCount;
 
 	public String getId() {
 		return id;
@@ -105,6 +106,14 @@ public class MachineExceptionVo implements Comparable<MachineExceptionVo> {
 
 	public void setUpdateTime(String updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public Integer getLockCount() {
+		return lockCount;
+	}
+
+	public void setLockCount(Integer lockCount) {
+		this.lockCount = lockCount;
 	}
 
 	@Override
