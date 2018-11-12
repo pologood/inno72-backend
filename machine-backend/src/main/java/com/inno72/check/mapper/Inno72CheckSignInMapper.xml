@@ -30,7 +30,7 @@
 			u.phone,
 			u.enterprise,
 			m.machine_code,
-			s.status,
+			sin.status,
 			sin.create_time,
 			CONCAT( area.province, area.city, area.district,IFNULL( l.mall,""),IFNULL( l.name,"")) AS localeName
 		FROM
