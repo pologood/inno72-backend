@@ -24,6 +24,13 @@
     where DATE_FORMAT(create_time,'%Y%M') = DATE_FORMAT(#{createTime},'%Y%M')
     and machine_id=#{machineId} and check_user_id=#{checkUserId}
   </select>
+  
+  <select id="selectDaySignInNum" resultType="int">
+    select count(1)
+    from inno72_check_sign_in
+    where DATE_FORMAT(create_time,'%Y-%m-%d') = DATE_FORMAT(CURRENT_DATE,'%Y-%m-%d')
+    and machine_id=#{machineId} and check_user_id=#{checkUserId}
+  </select>
 
 
   <select id="selectMachineSignList" resultMap="MachineSignList">
