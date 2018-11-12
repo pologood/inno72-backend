@@ -31,6 +31,7 @@ import com.inno72.model.Inno72Machine;
 import com.inno72.model.Inno72SupplyChannel;
 import com.inno72.mongo.MongoUtil;
 import com.inno72.msg.MsgUtil;
+import com.inno72.redis.IRedisUtil;
 import com.inno72.service.AlarmGroupService;
 import com.inno72.service.AlarmMsgService;
 import com.inno72.service.CheckUserService;
@@ -59,6 +60,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 
 	@Resource
 	private AlarmMsgService alarmMsgService;
+
+	@Resource
+	private IRedisUtil redisUtil;
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
     @Override
@@ -237,6 +241,57 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 							goodsInfo = goodsInfo.substring(0, goodsInfo.length() - 1);
 						}
 					}
+
+					String info = "20,10,5";
+					String[] infoArray = info.split(",");
+					String lackKey = "lackGoods:"+machineCode+":"+lackGoodsBean.getGoodsId();
+					for(int i=0;i<infoArray.length;i++){
+						int count = Integer.parseInt(infoArray[i]);
+						if(surPlusNum>count){
+							if(i==0){
+								redisUtil.del(lackKey);
+							}else{
+								String value = redisUtil.getSet(lackKey,infoArray[i]);
+								if(StringUtil.isEmpty(value)){
+									//push
+									redisUtil.sadd(lackKey,count);
+								}else{
+									if(i<infoArray.length-1){
+										redisUtil.srem(lackKey,infoArray[i+1]);
+									}
+								}
+							}
+						}else if(surPlusNum == count){
+							//push
+							redisUtil.sadd(lackKey,count);
+						}
+					}
+
+
+//					if(surPlusNum>Integer.parseInt(infoArray[0])){
+//						redisUtil.del(lackKey);
+//					}else if(surPlusNum>10 && surPlusNum<20){
+//						String lackGoodsValue20 = redisUtil.get(lackGoodsKey20);
+//						if(StringUtil.isEmpty(lackGoodsValue20)){
+//							//发送push
+//							//设置redis lackGoodsKey20
+//						}
+//						redisUtil.del(lackGoodsKey10);
+//						redisUtil.del(lackGoodsKey5);
+//					}else if(surPlusNum>5 && surPlusNum<10){
+//						String lackGoodsValue10 = redisUtil.get(lackGoodsKey10);
+//						if(StringUtil.isEmpty(lackGoodsValue10)){
+//							//发送push
+//							//设置redis lackGoodsKey10
+//						}
+//						redisUtil.del(lackGoodsKey5);
+//					}else if(surPlusNum<5){
+//						String lackGoodsValue5 = redisUtil.get(lackGoodsKey5);
+//						if(StringUtil.isEmpty(lackGoodsValue5)){
+//							//发送push
+//							//设置redis lackGoodsKey5
+//						}
+//					}
 					if(surPlusNum == 20 || surPlusNum == 10 || surPlusNum == 5){
 						text = "您好，" + machine.getLocaleStr() + "，机器编号：" + machineCode + "，" + goodsInfo
 								+ "请及时联系巡检人员补货";
@@ -250,6 +305,13 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 									"machineAlarm-RedisReceiver");
 						}
 						alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_LACKGOODS,machineCode,surPlusNum,localStr,inno72CheckUserPhones);
+						if(surPlusNum==Integer.parseInt(infoArray[0])){
+							redisUtil.sadd(lackKey,surPlusNum);
+						}else if(surPlusNum==Integer.parseInt(infoArray[1])){
+							redisUtil.sadd(lackKey,infoArray[1]);
+						}else {
+							redisUtil.set(lackKey,infoArray[2]);
+						}
 					}
 
 				}
