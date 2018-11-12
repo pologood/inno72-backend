@@ -56,16 +56,20 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 		Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
 		if ((CommonConstants.SYS_MACHINE_DROPGOODS).equals(system)) {
 			title = "您好，您负责的机器货道被锁定，请及时处理";
-			typeInt = 2;
+			typeInt = 1;
 			detail = localStr + "," + machineCode + "," + "出现掉货异常，请及时处理";
 		} else if (CommonConstants.SYS_MACHINE_LACKGOODS.equals(system)) {
 			title = "您好，您负责的机器已缺货，请及时补货";
-			typeInt = 3;
+			typeInt = 2;
 			detail = localStr + "," + machineCode + "," + "缺货" + lackNum + "个，请及时处理";
 		} else if (CommonConstants.SYS_MACHINE_NET.equals(system)){
 			title = "您好，您负责的机器出现网络异常，请及时处理";
-			typeInt = 4;
+			typeInt = 3;
 			detail = "您好，"+localStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时联系巡检人员。";
+		} else if(CommonConstants.SYS_MACHINE_HEART.equals(system)){
+			title = "您好，您负责的机器出现页面异常，请及时处理";
+			typeInt = 4;
+			detail = "您好，"+localStr+"，机器编号："+machineCode+"，页面连接异常，请及时联系巡检人员。";
 		}
 		inno72AlarmMsg.setDetail(detail);
 		inno72AlarmMsg.setMainType(1);
