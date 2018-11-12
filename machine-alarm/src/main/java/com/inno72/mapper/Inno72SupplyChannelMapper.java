@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.inno72.common.Mapper;
+import com.inno72.model.GoodsBean;
 import com.inno72.model.Inno72SupplyChannel;
 
 @org.apache.ibatis.annotations.Mapper
@@ -13,4 +14,8 @@ public interface Inno72SupplyChannelMapper extends Mapper<Inno72SupplyChannel> {
 	List<Inno72SupplyChannel> selectNormalSupply(Map<String,Object> map);
 
 	List<Inno72SupplyChannel> selectByParam(Map<String,Object> map);
+
+	List<GoodsBean> selectLockGoodsList(String machineCode);
+
+	Inno72SupplyChannel selectLockGoods(Map<String, Object> map);
 }

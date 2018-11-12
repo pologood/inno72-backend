@@ -1,6 +1,7 @@
 package com.inno72.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.gexin.rp.sdk.base.IPushResult;
+import com.gexin.rp.sdk.base.impl.AppMessage;
+import com.gexin.rp.sdk.base.uitls.AppConditions;
+import com.gexin.rp.sdk.http.IGtPush;
+import com.gexin.rp.sdk.template.LinkTemplate;
+import com.gexin.rp.sdk.template.TransmissionTemplate;
 import com.inno72.common.AbstractService;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.StringUtil;
@@ -79,27 +88,89 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 		Map<String,String> params = new HashMap<>();
 		params.put("machineCode", machineCode);
 		String appName = "machine_alarm";
+		List<String> androidTagList = new ArrayList<>();
+		List<String> iosTagList = new ArrayList<>();
 		for(Inno72CheckUserPhone checkUserPhone:inno72CheckUserPhones){
 			String phone = checkUserPhone.getPhone();
 			if(StringUtil.isNotEmpty(phone)){
-				String pushKey = "push:" + phone;
-				Set<Object> pushSet = redisUtil.smembers(pushKey);
-				if(pushSet != null && pushSet.size()>0){
-					for(Object set:pushSet){
-						String value = set.toString();
-						String setArray [] = value.split("_");
-						String loginType = setArray[0];
-						if(StringUtil.isNotEmpty(loginType)){
-							if(loginType.equals("android")){
-								msgUtil.sendPush("push_android_check_app", params, value, appName, title, detail);
-							}else if(loginType.equals("ios")){
-								msgUtil.sendPush("push_ios_check_app", params, value, appName, title, detail);
-							}
-							logger.info("发送push给"+loginType+"设备"+"标识为"+value);
-						}
-					}
+				String androidKey = "push:android:" + phone;
+				String iosKey = "push:ios:"+phone;
+				String androidValue = redisUtil.get(androidKey);
+				String iosValue = redisUtil.get(iosKey);
+				if(StringUtil.isNotEmpty(androidValue)){
+					androidTagList.add(phone);
+				}
+				if(StringUtil.isNotEmpty(iosValue)){
+					iosTagList.add(phone);
 				}
 			}
 		}
+		if(androidTagList != null && androidTagList.size()>0){
+			sendPushTagList(JSON.toJSONString(inno72AlarmMsg),2,androidTagList,"CheckAppMessage_toApp");
+		}
+		if(iosTagList != null && iosTagList.size()>0){
+			sendPushTagList(JSON.toJSONString(inno72AlarmMsg),2,iosTagList,"CheckAppMessage_toApp");
+		}
+	}
+
+	private static String appId = "vxa494yf3Z7cb22lmvIxq2";
+	private static String appKey = "qPXgOKKzFkAxtUD5IhDLk2";
+	private static String masterSecret = "sqA0pWF3qU5rtlwWErbGg";
+	static String host = "http://sdk.open.api.igexin.com/apiex.htm";
+
+	public static void main(String[] args) throws Exception {
+		IGtPush push = new IGtPush(host, appKey, masterSecret);
+		TransmissionTemplate transmissionTemplate = new TransmissionTemplate();
+		transmissionTemplate.setTransmissionType(2);
+		transmissionTemplate.setAppId(appId);
+		transmissionTemplate.setAppkey(appKey);
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("id","12345");
+		jsonObject.put("title","报警消息");
+		jsonObject.put("content","消息详情");
+		transmissionTemplate.setTransmissionContent(jsonObject.toJSONString());
+		AppMessage message = new AppMessage();
+		message.setData(transmissionTemplate);
+		message.setOffline(true); //离线有效时间，单位为毫秒，可选 message.setOfflineExpireTime(24 * 1000 * 3600); //推送给App的⽬目标⽤用户需要满⾜足的条件
+		AppConditions cdt = new AppConditions();
+		List<String> appIdList = new ArrayList<String>();
+		appIdList.add(appId);
+		message.setAppIdList(appIdList);
+		//⼿手机类型
+		List<String> tagList = new ArrayList<String>();
+		tagList.add("18911820367");
+		cdt.addCondition(AppConditions.TAG,tagList);
+		message.setConditions(cdt);
+		IPushResult ret = push.pushMessageToApp(message,"CheckAppMessage_toApp");
+		System.out.println(ret.getResponse().toString());
+
+
+
+	}
+
+	/**
+	 *
+	 * @param transmissionContent 透传json串
+	 * @param tagList 标签集合
+	 * @param taskGroupName 群组名
+	 */
+	public static void sendPushTagList(String transmissionContent,int transmissionType,List<String> tagList,String taskGroupName){
+		IGtPush push = new IGtPush(host, appKey, masterSecret);
+		TransmissionTemplate transmissionTemplate = new TransmissionTemplate();
+		transmissionTemplate.setTransmissionType(transmissionType);
+		transmissionTemplate.setAppId(appId);
+		transmissionTemplate.setAppkey(appKey);
+		transmissionTemplate.setTransmissionContent(transmissionContent);
+		AppMessage message = new AppMessage();
+		message.setData(transmissionTemplate);
+		message.setOffline(true); //离线有效时间，单位为毫秒，可选 message.setOfflineExpireTime(24 * 1000 * 3600); //推送给App的⽬目标⽤用户需要满⾜足的条件
+		AppConditions cdt = new AppConditions();
+		List<String> appIdList = new ArrayList<String>();
+		appIdList.add(appId);
+		message.setAppIdList(appIdList);
+		cdt.addCondition(AppConditions.TAG,tagList);
+		message.setConditions(cdt);
+		IPushResult ret = push.pushMessageToApp(message,taskGroupName);
+		System.out.println(ret.getResponse().toString());
 	}
 }
