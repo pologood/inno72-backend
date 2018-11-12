@@ -279,6 +279,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 										"machineAlarm-RedisReceiver");
 							}
 							alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_LACKGOODS,machineCode,surPlusNum,localStr,inno72CheckUserPhones);
+							pushFlag = false;
 						}
 					}
 				}
