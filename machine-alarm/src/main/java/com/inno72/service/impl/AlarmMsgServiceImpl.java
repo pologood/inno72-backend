@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.common.AbstractService;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.StringUtil;
@@ -77,29 +78,34 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 		inno72AlarmMsgMapper.insertSelective(inno72AlarmMsg);
 		logger.info("存储消息"+title);
 		Map<String,String> params = new HashMap<>();
-		params.put("machineCode", machineCode);
 		String appName = "machine_alarm";
+		String androidStr = "";
+		String iosStr = "";
 		for(Inno72CheckUserPhone checkUserPhone:inno72CheckUserPhones){
 			String phone = checkUserPhone.getPhone();
 			if(StringUtil.isNotEmpty(phone)){
-				String pushKey = "push:" + phone;
-				Set<Object> pushSet = redisUtil.smembers(pushKey);
-				if(pushSet != null && pushSet.size()>0){
-					for(Object set:pushSet){
-						String value = set.toString();
-						String setArray [] = value.split("_");
-						String loginType = setArray[0];
-						if(StringUtil.isNotEmpty(loginType)){
-							if(loginType.equals("android")){
-								msgUtil.sendPush("push_android_check_app", params, value, appName, title, detail);
-							}else if(loginType.equals("ios")){
-								msgUtil.sendPush("push_ios_check_app", params, value, appName, title, detail);
-							}
-							logger.info("发送push给"+loginType+"设备"+"标识为"+value);
-						}
-					}
+				String androidPushKey = "push:android:" + phone;
+				String iosPushKey = "push:ios:"+phone;
+				Set<Object> androidPushSet = redisUtil.smembers(androidPushKey);
+				Set<Object> iosPushSet = redisUtil.smembers(iosPushKey);
+				if(androidPushSet != null && androidPushSet.size()>0){
+					androidStr+=phone+",";
+				}
+				if(iosPushSet != null && iosPushSet.size()>0){
+					iosStr+=phone+",";
 				}
 			}
+		}
+		String text = JSON.toJSONString(inno72AlarmMsg);
+		if(StringUtil.isNotEmpty(androidStr)){
+			androidStr = androidStr.substring(0,androidStr.length()-1);
+			params.put("tags",androidStr);
+			msgUtil.sendPush("push_android_check_app", params, null, appName, title, text);
+		}
+		if(StringUtil.isNotEmpty(iosStr)){
+			iosStr = iosStr.substring(0,iosStr.length()-1);
+			params.put("tags",iosStr);
+			msgUtil.sendPush("push_ios_check_app", params, null, appName, title, text);
 		}
 	}
 }
