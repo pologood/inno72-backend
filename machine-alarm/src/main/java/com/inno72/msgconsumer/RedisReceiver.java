@@ -152,7 +152,7 @@ public class RedisReceiver {
 										"machineAlarm-RedisReceiver");
 							}
 						}
-						alarmMsgService.saveAlarmMsg(system,machineCode,surPlusNum,localStr,inno72CheckUserPhones);
+						alarmMsgService.saveAlarmMsg(system,machineCode,text,inno72CheckUserPhones);
 					}
 
 				}
@@ -238,7 +238,7 @@ public class RedisReceiver {
 			}
 			// 保存接口
 			int lackNum = 0;
-			alarmMsgService.saveAlarmMsg(system, machineCode, lackNum, localStr, inno72CheckUserPhones);
+			alarmMsgService.saveAlarmMsg(system, machineCode,text, inno72CheckUserPhones);
 		}
 
 	}
