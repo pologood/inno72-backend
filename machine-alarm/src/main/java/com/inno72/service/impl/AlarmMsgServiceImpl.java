@@ -107,13 +107,13 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 		if(StringUtil.isNotEmpty(androidStr)){
 			androidStr = androidStr.substring(0,androidStr.length()-1);
 			params.put("tags",androidStr);
-			msgUtil.sendPush("push_android_check_app", params, null, appName, title, "");
+			msgUtil.sendPush("push_android_check_app", params, null, appName, title, detail);
 			logger.info("按标签发送安卓push，接收者为："+androidStr);
 		}
 		if(StringUtil.isNotEmpty(iosStr)){
 			iosStr = iosStr.substring(0,iosStr.length()-1);
 			params.put("tags",iosStr);
-			msgUtil.sendPush("push_ios_check_app", params, null, appName, title, "");
+			msgUtil.sendPush("push_ios_check_app", params, null, appName, title, detail);
 			logger.info("按标签发送苹果手机push，接收者为："+iosStr);
 		}
 	}
