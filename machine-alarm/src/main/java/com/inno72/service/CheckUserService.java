@@ -1,6 +1,7 @@
 package com.inno72.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.inno72.common.Service;
 import com.inno72.model.Inno72CheckUser;
@@ -21,4 +22,7 @@ public interface CheckUserService extends Service<Inno72CheckUser> {
      */
     List<Inno72CheckUserPhone> selectPhoneByMachineCode(Inno72CheckUserPhone inno72CheckUserPhone);
 
+	List<Inno72CheckUser> selectUnReadByParam(Map<String,Object> map);
+
+	void sendSmsToCheck(List<Inno72CheckUser> checkUserList);
 }
