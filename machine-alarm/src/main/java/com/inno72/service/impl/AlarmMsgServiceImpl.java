@@ -101,7 +101,6 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 			}
 		}
 
-		params.put("tags","18911820367");
 		String text = JSON.toJSONString(inno72AlarmMsg);
 		params.put("msg",text);
 		if(StringUtil.isNotEmpty(androidStr)){
