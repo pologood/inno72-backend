@@ -12,8 +12,6 @@ import com.inno72.model.Inno72CheckUser;
 import com.inno72.service.CheckUserService;
 
 public class CheckSmsTask {
-
-
 	@Resource
 	private CheckUserService checkUserService;
 	@Scheduled(cron = "0 0 10,11,12,13,14,15,16,17,18,19,20 * * ? ")

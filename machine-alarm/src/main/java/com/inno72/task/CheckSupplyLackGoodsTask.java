@@ -31,7 +31,9 @@ public class CheckSupplyLackGoodsTask {
 //    @Scheduled(cron = "0 0/20 * * * ?")
     public void lackGoods(){
 		List<AlarmLackGoodsBean> list = supplyChannelService.getLackGoodsList();
-		supplyChannelService.sendAlarmLackGoods(list);
+		if(list != null && list.size()>0){
+			supplyChannelService.sendAlarmLackGoods(list);
+		}
 
     }
 
