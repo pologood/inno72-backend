@@ -185,6 +185,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			return Results.failure("修改点位失败");
 		}
 		Inno72MachineLocaleDetail model = new Inno72MachineLocaleDetail();
+		model.setId(StringUtil.getUUID());
 		model.setCreateId(mUser.getId());
 		model.setLocale(localeId);
 		model.setOldLocale(old);
