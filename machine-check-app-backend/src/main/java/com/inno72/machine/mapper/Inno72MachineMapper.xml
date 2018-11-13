@@ -19,11 +19,12 @@
 		<result column="address" jdbcType="VARCHAR" property="address" />
 		<result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
         <result column="wifi_pwd" jdbcType="VARCHAR" property="wifiPwd"/>
+        <result column="noReadCount" jdbcType="INTEGER" property="noReadCount"/>
 		<association property="supplyChannelVoList" resultMap="supplyChannelVoList"/>
 		<association property="checkUserVoList" resultMap="checkUserVoList"/>
 		<association property="faultVoList" resultMap="faultVoList"/>
 		<association property="signInList" resultMap="signInList"/>
-        <association property="alarmMsgList" resultMap="alarmMsgList"/>
+
 	</resultMap>
 
 	<resultMap id="supplyChannelVoList" type="com.inno72.machine.vo.SupplyChannelVo">
@@ -138,7 +139,7 @@
 		sc.parent_code,
 		sc.volume_count,
 		sc.goods_count,
-		am.id alarmMsgId
+		(select count(*) from inno72_alarm_msg am where machine_code=m.machine_code and am.is_read=0)  noReadCount
 		from inno72_machine m
 		inner join inno72_check_user_machine cum on cum.machine_id=m.id
 		inner join inno72_locale l on m.locale_id=l.id
@@ -150,9 +151,7 @@
 		left join view_machine_goods mg on mg.machine_id=m.id
 		left join inno72_supply_channel sc on m.id = sc.machine_id and sc.status=0 and sc.is_delete=0
 		left join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id and scg.goods_id=mg.goods_id
-		left join inno72_alarm_msg am on m.machine_code=am.machine_code and am.is_read=0
 		where (m.machine_status=4 or m.machine_status=9) and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
-
 	</select>
 
 	<select id="selectByParam" resultMap="BaseResultMap">
