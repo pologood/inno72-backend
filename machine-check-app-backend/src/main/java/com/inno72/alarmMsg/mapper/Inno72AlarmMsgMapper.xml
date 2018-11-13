@@ -31,7 +31,7 @@
                 main_type=#{item}
             </foreach>
         </if>
-        order by am.create_time desc,am.is_read
+        order by am.is_read,am.create_time desc
     </select>
 
     <select id="selectAlarmUser" resultMap="BaseResultMap">
