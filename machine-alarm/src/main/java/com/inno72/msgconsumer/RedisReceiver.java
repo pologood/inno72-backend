@@ -132,9 +132,9 @@ public class RedisReceiver {
 									+ "请及时联系巡检人员补货";
 							param.put("text", StringUtil.setText(text, active));
 							if (group != null) {
-								text = "缺货报警，提醒方式：钉钉和短信，内容：您好，" + localStr + "，机器编号：" + machineCode + "," + goodsName
+								text = "您好，" + localStr + "，机器编号：" + machineCode + "," + goodsName
 										+ "数量已少于" + surPlusNum + "，请及时补货。";
-								StringUtil.logger(CommonConstants.LOG_TYPE_LACKGOODS, machineCode, text);
+								StringUtil.logger(CommonConstants.LOG_TYPE_LACKGOODS, machineCode, "缺货报警，提醒方式：钉钉和短信，内容："+text);
 								log.info("发送缺货" + surPlusNum + "报警日志，日志内容为：{}", machineCode, text);
 								msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId2(),
 										"machineAlarm-RedisReceiver");
@@ -144,9 +144,9 @@ public class RedisReceiver {
 									+ "请及时联系巡检人员补货";
 							param.put("text", StringUtil.setText(text, active));
 							if (group != null) {
-								text = "缺货报警，提醒方式：钉钉，内容：您好，" + localStr + "，机器编号：" + machineCode + "," + goodsName + "数量已少于"
+								text = "您好，" + localStr + "，机器编号：" + machineCode + "," + goodsName + "数量已少于"
 										+ surPlusNum + "，请及时补货。";
-								StringUtil.logger(CommonConstants.LOG_TYPE_LACKGOODS, machineCode, text);
+								StringUtil.logger(CommonConstants.LOG_TYPE_LACKGOODS, machineCode, "缺货报警，提醒方式：钉钉，内容："+text);
 								log.info("发送缺货" + surPlusNum + "报警日志，日志内容为：{}", machineCode, text);
 								msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId2(),
 										"machineAlarm-RedisReceiver");
@@ -230,9 +230,9 @@ public class RedisReceiver {
 					log.info("发送钉钉消息{}", JSON.toJSON(ddMaram));
 					msgUtil.sendDDTextByGroup("dingding_alarm_common", ddMaram, group.getGroupId1(),
 							"machineAlarm-RedisReceiver");
-					text = "掉货异常，提醒方式：短信和钉钉，内容：您好，" + localStr + "机器编号：" + machineCode + "," + channelNum
+					text = "您好，" + localStr + "机器编号：" + machineCode + "," + channelNum
 							+ "掉货异常，货道已被锁定，请及时联系巡检人员。";
-					StringUtil.logger(CommonConstants.LOG_TYPE_DROPGOODS, machineCode, text);
+					StringUtil.logger(CommonConstants.LOG_TYPE_DROPGOODS, machineCode, "掉货异常，提醒方式：短信和钉钉，内容："+text);
 					log.info("发送掉货异常埋点日志", CommonConstants.LOG_TYPE_DROPGOODS, machineCode, text);
 				}
 			}
