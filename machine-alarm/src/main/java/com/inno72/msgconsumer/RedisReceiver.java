@@ -101,23 +101,12 @@ public class RedisReceiver {
 				param.put("localStr", localStr);
 				if (alarmFlag) {
 					List<GoodsBean> goodsBeanList = channelGoodsAlarmBean.getGoodsBeanList();
-					if (goodsName.length() > 3) {
-						goodsInfo += goodsName.substring(goodsName.length() - 3, goodsName.length()) + "剩" + surPlusNum
-								+ "，";
-					} else {
-						goodsInfo += goodsName + "剩" + surPlusNum + "，";
-					}
+					goodsInfo += goodsName + "剩" + surPlusNum + "，";
 					if (goodsBeanList != null && goodsBeanList.size() > 0) {
 						for (GoodsBean goodsBean : goodsBeanList) {
 							String goods = goodsBean.getGoodsName();
 							if (StringUtil.isNotEmpty(goods) && !goods.equals(goodsName)) {
-								int goodsSize = goods.length();
-								if (goodsSize > 3) {
-									goodsInfo += goods.substring(goodsSize - 3, goodsSize);
-								} else {
-									goodsInfo += goods;
-								}
-								goodsInfo += "剩" + goodsBean.getTotalCount() + "，";
+								goodsInfo += goods+"剩" + goodsBean.getTotalCount() + "，";
 							}
 						}
 						if (goodsInfo.lastIndexOf("，") == goodsInfo.length() - 1) {
