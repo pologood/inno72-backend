@@ -152,7 +152,6 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			if (machines != null && machines.size() > 0) {
 				String title = "您负责的机器出现故障";
 				String appName = "machine_check_app_backend";
-				String smsCode = "sms_check_app_fault";
 				String faultType = checkFaultType.getName();
 
 				for (Inno72Machine machine : machines) {
