@@ -21,7 +21,6 @@ public class CheckDropGoodsTask {
 	@Scheduled(cron = "0 0/1 * * * ?")
 	public void sendDropGoods(){
 		List<AlarmDropGoodsBean> list = supplyChannelService.getDropGoodsList();
-		if(list != null && list.size()>0){
-		}
+		supplyChannelService.sendAlarmDropGoods(list);
 	}
 }

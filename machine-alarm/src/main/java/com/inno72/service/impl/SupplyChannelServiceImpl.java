@@ -147,15 +147,6 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 					Map<String, String> ddMaram = new HashMap<>();
 					ddMaram.put("machineCode", machineCode);
 					ddMaram.put("localStr", localStr);
-					Map<String, String> smsMap = new HashMap<>();
-					smsMap.put("machineCode", machineCode);
-					String address = machine.getAddress();
-					if (StringUtil.isNotEmpty(address)) {
-						if (address.length() > 10) {
-							address = address.substring(address.length() - 10, address.length());
-						}
-						smsMap.put("localStr", address);
-					}
 					if (normalSupplyList != null && normalSupplyList.size() > 0) {// 有未被锁定的货道
 						text = "您好，" + localStr + "，机器编号：" + machineCode + "，" + channelNum + "掉货异常，货道已经被锁定，请及时联系巡检人员。";
 					} else {// 货道全部被锁
