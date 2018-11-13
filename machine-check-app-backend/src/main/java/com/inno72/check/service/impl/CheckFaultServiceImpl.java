@@ -169,34 +169,36 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 					params.put("msg", messgeInfo);
 					List<CheckUserVo> checkUserList = machine.getCheckUserVoList();
 					List<String> userIdList = new ArrayList<>();
+					String androidStr = "";
+					String iosStr = "";
 					if (checkUserList != null && checkUserList.size() > 0) {
-						String active = System.getenv("spring_profiles_active");
 						for (CheckUserVo user : checkUserList) {
 							String phone = user.getPhone();
-							if (StringUtil.isNotEmpty(phone)) {
-								userIdList.add(user.getId());
-								String pushKey = "push:" + phone;
-								Set<Object> pushSet = redisUtil.smembers(pushKey);
-								if(pushSet != null && pushSet.size()>0){
-									for(Object set:pushSet){
-										String value = set.toString();
-										String setArray [] = value.split("_");
-										String loginType = setArray[0];
-										if(StringUtil.isNotEmpty(loginType)){
-											if(loginType.equals("android")){
-												msgUtil.sendPush("push_android_check_app", params, value, appName, title, messgeInfo);
-											}else if(loginType.equals("ios")){
-												msgUtil.sendPush("push_ios_check_app", params, value, appName, title, messgeInfo);
-											}
-											logger.info("发送push给"+loginType+"设备"+"标识为"+value);
-										}
-										if(StringUtil.senSmsActive(active)){
-											msgUtil.sendSMS(smsCode, params, phone, appName);
-										}
-									}
+							if(StringUtil.isNotEmpty(phone)){
+								String androidPushKey = "push:android:" + phone;
+								String iosPushKey = "push:ios:"+phone;
+								Set<Object> androidPushSet = redisUtil.smembers(androidPushKey);
+								Set<Object> iosPushSet = redisUtil.smembers(iosPushKey);
+								if(androidPushSet != null && androidPushSet.size()>0){
+									androidStr+=phone+",";
 								}
-
+								if(iosPushSet != null && iosPushSet.size()>0){
+									iosStr+=phone+",";
+								}
 							}
+						}
+
+						if(StringUtil.isNotEmpty(androidStr)){
+							androidStr = androidStr.substring(0,androidStr.length()-1);
+							params.put("tags",androidStr);
+							msgUtil.sendPush("push_android_check_app", params, null, appName, title, messgeInfo);
+							logger.info("按标签发送安卓push，接收者为："+androidStr);
+						}
+						if(StringUtil.isNotEmpty(iosStr)){
+							iosStr = iosStr.substring(0,iosStr.length()-1);
+							params.put("tags",iosStr);
+							msgUtil.sendPush("push_ios_check_app", params, null, appName, title, messgeInfo);
+							logger.info("按标签发送苹果手机push，接收者为："+iosStr);
 						}
 
 					}
