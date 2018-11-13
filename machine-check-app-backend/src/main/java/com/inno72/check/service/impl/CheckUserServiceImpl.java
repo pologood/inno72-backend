@@ -91,7 +91,8 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
     		loginType = "android";
 		}
         Condition condition = new Condition(Inno72CheckUser.class);
-        condition.createCriteria().andEqualTo("phone", phone).andEqualTo("isDelete",0);
+        condition.createCriteria().andEqualTo("phone", phone).andEqualTo("isDelete",0)
+		.andEqualTo("status",0);
         List<Inno72CheckUser> users = inno72CheckUserMapper.selectByCondition(condition);
         if (users == null || users.size() != 1) {
             return Results.failure("用户不存在");
