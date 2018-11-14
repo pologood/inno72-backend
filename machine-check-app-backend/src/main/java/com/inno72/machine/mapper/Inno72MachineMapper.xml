@@ -181,6 +181,16 @@
 			</foreach>
 
 		</if>
+        <if test="keyword != null">
+            and (
+            aa.city like '%${keyword}%'
+            or aa.district like '%${keyword}%'
+            or aa.circle like '%${keyword}%'
+            or l.mall like '%${keyword}%'
+            or l.name like '%${keyword}%'
+            or m.machine_code like '%${keyword}%'
+            )
+        </if>
 	</select>
 	<select id="getMachineByCode" resultMap="BaseResultMap">
 		select
@@ -213,4 +223,31 @@
 		where m.id=#{machineId}
 		limit 1
 	</select>
+
+    <select id="selectMachineByParam" resultMap="BaseResultMap">
+        select
+        m.*,
+        CONCAT(
+        aa.province,
+        aa.city,
+        aa.district,
+        if(aa.circle='其他' or aa.circle is null,'',aa.circle),IFNULL(l.mall,""),IFNULL( l.name,'')
+        ) AS localeStr
+        from inno72_machine m
+        inner join inno72_check_user_machine cum on m.id=cum.machine_id
+        inner join inno72_check_user cu on cum.check_user_id=cu.id
+        inner join inno72_locale l on l.id=m.locale_id
+        inner join inno72_admin_area aa on aa.code = l.area_code
+        where m.machine_status=4 and cu.id=#{checkUserId,jdbcType=VARCHAR}
+        <if test="keyword != null">
+            and (
+            aa.city like '%${keyword}%'
+            or aa.district like '%${keyword}%'
+            or aa.circle like '%${keyword}%'
+            or l.mall like '%${keyword}%'
+            or l.name like '%${keyword}%'
+            or m.machine_code like '%${keyword}%'
+            )
+        </if>
+    </select>
 </mapper>

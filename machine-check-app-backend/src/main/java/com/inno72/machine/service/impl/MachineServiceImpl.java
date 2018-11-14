@@ -17,6 +17,9 @@ import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.vo.SupplyChannelVo;
 import com.inno72.machine.vo.SupplyRequestVo;
+import com.inno72.model.AlarmDropGoodsBean;
+import com.inno72.model.AlarmLackGoodsBean;
+import com.inno72.util.AlarmUtil;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +51,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
     @Resource
     private Inno72CheckUserMapper inno72CheckUserMapper;
+
+    @Resource
+    private AlarmUtil alarmUtil;
     @Override
     public Result<String> setMachine(SupplyRequestVo vo) {
         String localeId = vo.getLocaleId();
@@ -245,6 +251,35 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		}
 		Inno72Machine machine = inno72MachineMapper.getMachineByCode(machineCode);
 		return ResultGenerator.genSuccessResult(machine);
+	}
+
+	@Override
+	public Result<String> saveDrop() {
+		AlarmDropGoodsBean bean = new AlarmDropGoodsBean();
+		bean.setGoodsId("1");
+		bean.setChannelNum("1");
+		bean.setMachineCode("12345");
+		alarmUtil.saveDropGoodsBean(bean);
+
+		AlarmLackGoodsBean goodsBean = new AlarmLackGoodsBean();
+		goodsBean.setGoodsId("1");
+		goodsBean.setMachineCode("12345");
+		alarmUtil.saveLackGoodsBean(goodsBean);
+		return ResultGenerator.genSuccessResult();
+	}
+
+	@Override
+	public Result<List<Inno72Machine>> getSupplyMachineList(Inno72Machine inno72Machine) {
+		String keyword = inno72Machine.getKeyword();
+		Inno72CheckUser user = UserUtil.getUser();
+		String checkUserId = user.getId();
+		Map<String,Object> map = new HashMap<>();
+		map.put("checkUserId",checkUserId);
+		if(StringUtil.isNotEmpty(keyword)){
+			map.put("keyword",keyword);
+		}
+		List<Inno72Machine> list = inno72MachineMapper.selectMachineByParam(map);
+    	return ResultGenerator.genSuccessResult(list);
 	}
 
 }

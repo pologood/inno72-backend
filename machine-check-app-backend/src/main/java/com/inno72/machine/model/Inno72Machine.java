@@ -129,6 +129,9 @@ public class Inno72Machine {
 	private int noReadCount;
 
 	@Transient
+	private String keyword;
+
+	@Transient
 	private List<SupplyChannelVo> supplyChannelVoList;
 
 	@Transient
@@ -494,5 +497,13 @@ public class Inno72Machine {
 
 	public void setNoReadCount(int noReadCount) {
 		this.noReadCount = noReadCount;
+	}
+
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
 	}
 }

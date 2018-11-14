@@ -2,12 +2,15 @@ package com.inno72.machine.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.inno72.common.Result;
+import com.inno72.common.ResultGenerator;
 import com.inno72.common.UserUtil;
 import com.inno72.machine.model.Inno72AdminArea;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.vo.SupplyRequestVo;
+import com.inno72.model.AlarmDropGoodsBean;
+import com.inno72.util.AlarmUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +30,9 @@ public class MachineController {
 	private MachineService machineService;
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	@Resource
+	private AlarmUtil alarmUtil;
 
 	/**
 	 * 设置机器点位及管理人
@@ -103,6 +109,18 @@ public class MachineController {
 		Result<Inno72Machine> result = machineService.getMachine(inno72Machine);
 		return result;
 
+	}
+
+	@RequestMapping(value = "/getSupplyMachineList")
+	public Result<List<Inno72Machine>> getSupplyMachineList(@RequestBody Inno72Machine inno72Machine){
+		Result<List<Inno72Machine>> result = machineService.getSupplyMachineList(inno72Machine);
+		return result;
+	}
+
+	@RequestMapping(value="setDrop")
+	public Result<String> setDrop(){
+		Result<String> result = machineService.saveDrop();
+		return result;
 	}
 
 
