@@ -18,7 +18,7 @@
 		<result column="status" jdbcType="INTEGER" property="status" />
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
 		<result column="create_id" jdbcType="VARCHAR" property="createId" />
-		<result column="update_time" jdbcType="TIMESTAMP" property="update_time" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
 		<result column="update_id" jdbcType="VARCHAR" property="updateId" />
 		<result column="is_delete" jdbcType="INTEGER" property="isDelete" />
 		<result column="remark" jdbcType="VARCHAR" property="remark" />
@@ -40,6 +40,7 @@
 				u.status,
 				a.city as area,
 				u.is_delete,
+				u.update_time,
 				GROUP_CONCAT(m.machine_code) AS machine_code
 			from inno72_check_user u
 			LEFT JOIN inno72_admin_area a ON a.code = u.area
@@ -55,6 +56,7 @@
 			or uu.enterprise LIKE '%${keyword}%'
 			or uu.machine_code LIKE '%${keyword}%' )
 		</if>
+		ORDER BY uu.update_time
 	</select>
 
 	<select id="checkCardNoIsExist" parameterType="String"
