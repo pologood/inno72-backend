@@ -53,6 +53,18 @@ public class Inno72Game {
 	private String versionInno72;
 
 	/**
+	 * 是否设置规则：0不设置，1设置
+	 */
+	@Column(name = "is_set")
+	private Integer isSet;
+
+	/**
+	 * 是否查看：0不查看，1查看
+	 */
+	@Column(name = "is_see")
+	private Integer isSee;
+
+	/**
 	 * 游戏描述
 	 */
 	@Column(name = "remark")
@@ -155,6 +167,22 @@ public class Inno72Game {
 
 	public void setVersionInno72(String versionInno72) {
 		this.versionInno72 = versionInno72;
+	}
+
+	public Integer getIsSet() {
+		return isSet;
+	}
+
+	public void setIsSet(Integer isSet) {
+		this.isSet = isSet;
+	}
+
+	public Integer getIsSee() {
+		return isSee;
+	}
+
+	public void setIsSee(Integer isSee) {
+		this.isSee = isSee;
 	}
 
 	/**
