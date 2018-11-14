@@ -40,7 +40,6 @@
 				u.status,
 				a.city as area,
 				u.is_delete,
-				u.update_time,
 				GROUP_CONCAT(m.machine_code) AS machine_code
 			from inno72_check_user u
 			LEFT JOIN inno72_admin_area a ON a.code = u.area
@@ -49,14 +48,13 @@
 			LEFT JOIN inno72_locale l ON l.id=m.locale_id
 			WHERE u.is_delete=0 and 9=9
 			GROUP BY u.id
-		) u where 1=1
+		) uu where 1=1
 		<if test="keyword !=null and keyword !=''">
-			and ( u.name LIKE '%${keyword}%'
-			or u.phone LIKE '%${keyword}%'
-			or u.enterprise LIKE '%${keyword}%'
-			or u.machine_code LIKE '%${keyword}%' )
+			and ( uu.name LIKE '%${keyword}%'
+			or uu.phone LIKE '%${keyword}%'
+			or uu.enterprise LIKE '%${keyword}%'
+			or uu.machine_code LIKE '%${keyword}%' )
 		</if>
-		ORDER BY u.update_time DESC
 	</select>
 
 	<select id="checkCardNoIsExist" parameterType="String"
