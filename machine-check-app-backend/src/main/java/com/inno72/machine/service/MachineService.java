@@ -26,7 +26,6 @@ public interface MachineService extends Service<Inno72Machine> {
 
 	Result<Inno72Machine> getMachine(Inno72Machine inno72Machine);
 
-	Result<String> saveDrop();
 
 	Result<List<Inno72Machine>> getSupplyMachineList(Inno72Machine inno72Machine);
 }

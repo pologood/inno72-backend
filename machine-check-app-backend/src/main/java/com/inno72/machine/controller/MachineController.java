@@ -117,11 +117,4 @@ public class MachineController {
 		return result;
 	}
 
-	@RequestMapping(value="setDrop")
-	public Result<String> setDrop(){
-		Result<String> result = machineService.saveDrop();
-		return result;
-	}
-
-
 }
