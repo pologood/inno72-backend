@@ -10,7 +10,7 @@ import com.inno72.common.Mapper;
 
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72AlarmMsgDetailMapper extends Mapper<Inno72AlarmMsgDetail> {
-	List<Inno72AlarmMsg> selectByPage(Map<String,Object> map);
+
 
 	Inno72AlarmMsgDetail selectByParam(Map<String,Object> map);
 }

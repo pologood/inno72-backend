@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -74,6 +77,8 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 
 	@Resource
 	private IRedisUtil redisUtil;
+
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public Result<String> addCheckFault(Inno72CheckFault checkFault) {
@@ -147,7 +152,6 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			if (machines != null && machines.size() > 0) {
 				String title = "您负责的机器出现故障";
 				String appName = "machine_check_app_backend";
-				String smsCode = "sms_check_app_fault";
 				String faultType = checkFaultType.getName();
 
 				for (Inno72Machine machine : machines) {
@@ -161,28 +165,39 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 					params.put("localeStr", localeStr);
 					params.put("faultType", faultType);
 					params.put("remark", remark);
-					params.put("messgeInfo", messgeInfo);
+					params.put("msg", messgeInfo);
 					List<CheckUserVo> checkUserList = machine.getCheckUserVoList();
 					List<String> userIdList = new ArrayList<>();
+					String androidStr = "";
+					String iosStr = "";
 					if (checkUserList != null && checkUserList.size() > 0) {
-						String active = System.getenv("spring_profiles_active");
 						for (CheckUserVo user : checkUserList) {
 							String phone = user.getPhone();
-							if (StringUtil.isNotEmpty(phone)) {
-								userIdList.add(user.getId());
-								String userPhoneKey = CommonConstants.CHECK_LOGIN_TYPE_KEY_PREF + phone;
-								String loginType = redisUtil.get(userPhoneKey);
-								if(StringUtil.isNotEmpty(loginType)){
-									if(loginType.equals("android")){
-										msgUtil.sendPush("push_android_check_app", params, phone, appName, title, messgeInfo);
-									}else if(loginType.equals("ios")){
-										msgUtil.sendPush("push_ios_check_app", params, phone, appName, title, messgeInfo);
-									}
+							if(StringUtil.isNotEmpty(phone)){
+								String androidPushKey = "push:android:" + phone;
+								String iosPushKey = "push:ios:"+phone;
+								Set<Object> androidPushSet = redisUtil.smembers(androidPushKey);
+								Set<Object> iosPushSet = redisUtil.smembers(iosPushKey);
+								if(androidPushSet != null && androidPushSet.size()>0){
+									androidStr+=phone+",";
 								}
-								if(StringUtil.senSmsActive(active)){
-									msgUtil.sendSMS(smsCode, params, phone, appName);
+								if(iosPushSet != null && iosPushSet.size()>0){
+									iosStr+=phone+",";
 								}
 							}
+						}
+
+						if(StringUtil.isNotEmpty(androidStr)){
+							androidStr = androidStr.substring(0,androidStr.length()-1);
+							params.put("tags",androidStr);
+							msgUtil.sendPush("push_android_check_app", params, null, appName, title, messgeInfo);
+							logger.info("按标签发送安卓push，接收者为："+androidStr);
+						}
+						if(StringUtil.isNotEmpty(iosStr)){
+							iosStr = iosStr.substring(0,iosStr.length()-1);
+							params.put("tags",iosStr);
+							msgUtil.sendPush("push_ios_check_app", params, null, appName, title, messgeInfo);
+							logger.info("按标签发送苹果手机push，接收者为："+iosStr);
 						}
 
 					}
@@ -192,7 +207,8 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 					alarmMsg.setMachineCode(machineCode);
 					alarmMsg.setSystem("machineChannel");
 					alarmMsg.setTitle(title);
-					alarmMsg.setType(1);
+					alarmMsg.setMainType(2);
+					alarmMsg.setChildType(1);
 					alarmMsg.setDetail(messgeInfo);
 					inno72AlarmMsgMapper.insertSelective(alarmMsg);
 

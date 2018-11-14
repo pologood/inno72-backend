@@ -91,7 +91,9 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
     		loginType = "android";
 		}
         Condition condition = new Condition(Inno72CheckUser.class);
-        condition.createCriteria().andEqualTo("phone", phone).andEqualTo("isDelete",0);
+        condition.createCriteria().andEqualTo("phone", phone)
+				.andEqualTo("isDelete",0)
+				.andEqualTo("status",0);
         List<Inno72CheckUser> users = inno72CheckUserMapper.selectByCondition(condition);
         if (users == null || users.size() != 1) {
             return Results.failure("用户不存在");
@@ -113,6 +115,13 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         Inno72CheckUser user = users.get(0);
         String token = StringUtil.getUUID();
         user.setLoginType(loginType);
+		String clientId = checkUser.getClientId();
+		if(StringUtil.isNotEmpty(clientId)){
+			String pushKey = "push:"+loginType+":"+phone;
+			String pushValue = phone+"_"+clientId;
+			redisUtil.sadd(pushKey,pushValue);
+			user.setPushValue(pushValue);
+		}
         SessionData sessionData = new SessionData(token, user);
         String headImage = sessionData.getUser().getHeadImage();
         sessionData.getUser().setHeadImage(ImageUtil.getLongImageUrl(headImage));
@@ -122,12 +131,12 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         // 缓存用户登录sessionData
         redisUtil.set(userInfoKey, JsonUtil.toJson(sessionData));
         redisUtil.expire(userInfoKey, CommonConstants.SESSION_DATA_EXP);
-        String userPhoneKey = CommonConstants.CHECK_LOGIN_TYPE_KEY_PREF + phone;
-        redisUtil.set(userPhoneKey,loginType);
-        redisUtil.expire(userPhoneKey,CommonConstants.SESSION_DATA_EXP);
+
         return Results.success(sessionData);
 
     }
+
+
 
     @Override
     public Result<String> upload(MultipartFile file) {
@@ -154,6 +163,10 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         if (StringUtil.isNotBlank(oldToken)) {
             redisUtil.del(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + oldToken);
         }
+        String loginType = user.getLoginType();
+        if(StringUtil.isNotEmpty(loginType)){
+			redisUtil.srem("push:"+loginType+":"+user.getPhone(),user.getPushValue());
+		}
         return ResultGenerator.genSuccessResult();
     }
 

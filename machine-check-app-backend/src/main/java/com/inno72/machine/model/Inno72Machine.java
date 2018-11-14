@@ -1,6 +1,7 @@
 package com.inno72.machine.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.inno72.alarmMsg.model.Inno72AlarmMsg;
 import com.inno72.check.model.Inno72CheckSignIn;
 import com.inno72.check.vo.CheckUserVo;
 import com.inno72.check.vo.FaultVo;
@@ -125,6 +126,9 @@ public class Inno72Machine {
 	private int signInStatus;
 
 	@Transient
+	private int noReadCount;
+
+	@Transient
 	private List<SupplyChannelVo> supplyChannelVoList;
 
 	@Transient
@@ -135,6 +139,9 @@ public class Inno72Machine {
 
 	@Transient
 	private List<Inno72CheckSignIn> signInList;
+
+	@Transient
+	private List<Inno72AlarmMsg> alarmMsgList;
 
 	public enum Machine_Status {
 		// 在厂测试
@@ -471,5 +478,21 @@ public class Inno72Machine {
 
 	public void setWifiPwd(String wifiPwd) {
 		this.wifiPwd = wifiPwd;
+	}
+
+	public List<Inno72AlarmMsg> getAlarmMsgList() {
+		return alarmMsgList;
+	}
+
+	public void setAlarmMsgList(List<Inno72AlarmMsg> alarmMsgList) {
+		this.alarmMsgList = alarmMsgList;
+	}
+
+	public int getNoReadCount() {
+		return noReadCount;
+	}
+
+	public void setNoReadCount(int noReadCount) {
+		this.noReadCount = noReadCount;
 	}
 }

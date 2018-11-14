@@ -8,9 +8,14 @@
         <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="title" jdbcType="VARCHAR" property="title"/>
         <result column="system" jdbcType="VARCHAR" property="system"/>
-        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="main_type" jdbcType="INTEGER" property="mainType"/>
+        <result column="child_type" jdbcType="INTEGER" property="childType"/>
         <result column="detail" jdbcType="VARCHAR" property="detail"/>
         <result column="machine_Code" jdbcType="VARCHAR" property="machineCode"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="is_read" jdbcType="INTEGER" property="isRead"/>
+        <result column="read_time" jdbcType="TIMESTAMP" property="readTime"/>
+        <result column="read_user_id" jdbcType="VARCHAR" property="readUserId"/>
+        <result column="service_id" jdbcType="VARCHAR" property="serviceId"/>
     </resultMap>
 </mapper>

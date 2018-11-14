@@ -12,5 +12,5 @@ import com.inno72.model.Inno72CheckUserPhone;
  */
 public interface AlarmMsgService extends Service<Inno72AlarmMsg> {
 
-	public void saveAlarmMsg(String type, String system, String machineCode, int lackNum, String localStr,List<Inno72CheckUserPhone> inno72CheckUserPhones);
+	public void saveAlarmMsg(String system, String machineCode, String detail,List<Inno72CheckUserPhone> inno72CheckUserPhones);
 }
