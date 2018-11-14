@@ -53,6 +53,12 @@ public class Inno72Game {
 	private String versionInno72;
 
 	/**
+	 * 游戏编码
+	 */
+	@Column(name = "code")
+	private String code;
+
+	/**
 	 * 是否设置规则：0不设置，1设置
 	 */
 	@Column(name = "is_set")
@@ -167,6 +173,14 @@ public class Inno72Game {
 
 	public void setVersionInno72(String versionInno72) {
 		this.versionInno72 = versionInno72;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public Integer getIsSet() {
