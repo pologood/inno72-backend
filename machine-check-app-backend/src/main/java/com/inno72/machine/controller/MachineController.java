@@ -9,8 +9,6 @@ import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.vo.SupplyRequestVo;
-import com.inno72.model.AlarmDropGoodsBean;
-import com.inno72.util.AlarmUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +28,6 @@ public class MachineController {
 	private MachineService machineService;
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	@Resource
-	private AlarmUtil alarmUtil;
 
 	/**
 	 * 设置机器点位及管理人
