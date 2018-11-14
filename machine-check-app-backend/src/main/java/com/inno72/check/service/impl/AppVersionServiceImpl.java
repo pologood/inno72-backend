@@ -24,9 +24,6 @@ public class AppVersionServiceImpl extends AbstractService<Inno72AppVersion> imp
         Map<String,Object> map = new HashMap<>();
         map.put("appType",inno72AppVersion.getAppType());
         Inno72AppVersion version = inno72AppVersionMapper.selectNowVersion(map);
-        if(version != null){
-            version.setUrl(CommonConstants.DOWNLOAD_APP_PREF+version.getUrl());
-        }
         return ResultGenerator.genSuccessResult(version);
     }
 }
