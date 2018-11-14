@@ -83,6 +83,12 @@
       <if test="orderType != null">
         and t1.order_type = #{orderType}
       </if>
+      <if test="goodsStatus != null">
+        and t1.goods_status = #{goodsStatus}
+      </if>
+      <if test="payStatus != null">
+        and t1.pay_status = #{payStatus}
+      </if>
       <if test="keyword != null">
         and (t6.machine_code like CONCAT('%','${keyword}','%')
         or ac.name like CONCAT('%','${keyword}','%')
