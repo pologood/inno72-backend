@@ -158,9 +158,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 					log.info("发送钉钉消息{}", JSON.toJSON(ddMaram));
 					msgUtil.sendDDTextByGroup("dingding_alarm_common", ddMaram, group.getGroupId1(),
 							"machineAlarm-RedisReceiver");
-					text = "掉货异常，提醒方式：短信和钉钉，内容：您好，" + localStr + "机器编号：" + machineCode + "," + channelNum
-							+ "掉货异常，货道已被锁定，请及时联系巡检人员。";
-					StringUtil.logger(CommonConstants.LOG_TYPE_DROPGOODS, machineCode, text);
+					StringUtil.logger(CommonConstants.LOG_TYPE_DROPGOODS, machineCode, "掉货异常，提醒方式：短信和钉钉，内容："+text);
 					log.info("发送掉货异常埋点日志", CommonConstants.LOG_TYPE_DROPGOODS, machineCode, text);
 				}
 			}
