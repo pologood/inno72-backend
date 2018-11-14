@@ -17,7 +17,6 @@ import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.vo.SupplyChannelVo;
 import com.inno72.machine.vo.SupplyRequestVo;
-import com.inno72.util.AlarmUtil;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,8 +49,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
     @Resource
     private Inno72CheckUserMapper inno72CheckUserMapper;
 
-    @Resource
-    private AlarmUtil alarmUtil;
     @Override
     public Result<String> setMachine(SupplyRequestVo vo) {
         String localeId = vo.getLocaleId();
