@@ -77,8 +77,8 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 			}
 			List<Merchant> Merchants = model.getMerchants();
 			if (Merchants.size() == 0) {
-				logger.info("请添加要商户");
-				return Results.failure("请添加要商户");
+				logger.info("请添加商户");
+				return Results.failure("请添加商户");
 			}
 			List<Inno72InteractMerchant> insertList = new ArrayList<>();
 			for (Merchant merchant : Merchants) {

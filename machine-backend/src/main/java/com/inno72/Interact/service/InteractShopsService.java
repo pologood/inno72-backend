@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.inno72.Interact.model.Inno72InteractShops;
 import com.inno72.Interact.vo.InteractShopsVo;
+import com.inno72.Interact.vo.ShopsVo;
 import com.inno72.common.Result;
 import com.inno72.common.Service;
 
@@ -14,11 +15,9 @@ public interface InteractShopsService extends Service<Inno72InteractShops> {
 
 	Result<String> save(InteractShopsVo model);
 
-	Result<String> update(InteractShopsVo model);
+	ShopsVo findShopsById(String id);
 
-	InteractShopsVo findShopsById(String id);
-
-	List<InteractShopsVo> getList(String interactId, String merchantId);
+	List<ShopsVo> getList(String interactId, String merchantId);
 
 	Result<String> deleteById(String interactId, String shopsId);
 

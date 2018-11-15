@@ -11,13 +11,11 @@
     <result column="is_vip" jdbcType="INTEGER" property="isVip" />
   </resultMap>
   
-  <resultMap id="InteractShopsVoResultMap" type="com.inno72.Interact.vo.InteractShopsVo">
+  <resultMap id="InteractShopsVoResultMap" type="com.inno72.Interact.vo.ShopsVo">
     <!--
       WARNING - @mbg.generated
     -->
     <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="interact_id" jdbcType="VARCHAR" property="interactId" />
-    <result column="shops_id" jdbcType="VARCHAR" property="shopsId" />
     <result column="is_vip" jdbcType="INTEGER" property="isVip" />
     <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
     
@@ -36,7 +34,6 @@
   <select id="selectInteractShopsById" parameterType="String" resultMap="InteractShopsVoResultMap">
 		SELECT
 			s.*,
-			isp.interact_id,
 			isp.is_vip
 		FROM
 			inno72_interact_shops isp
