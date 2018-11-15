@@ -155,7 +155,7 @@
 				<if test="machineCode !=null and machineCode !=''">
 					AND ( m.machine_code LIKE '%${machineCode}%' or mt.activityName LIKE '%${machineCode}%')
 				</if>
-				<if test="state ==null ">and NOW() &lt; mt.end_time</if>
+				<if test="state =='' ">and NOW() &lt; mt.end_time</if>
 				<if test="state ==1 ">and mt.state =1</if>
 				<if test="state ==2 ">and mt.state =2</if>
 				<if test="state ==3 ">and mt.state =3</if>
