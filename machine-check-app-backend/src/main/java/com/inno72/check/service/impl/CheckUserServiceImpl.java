@@ -118,7 +118,7 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
 		String clientId = checkUser.getClientId();
 		if(StringUtil.isNotEmpty(clientId)){
 			String pushKey = "push:"+loginType+":"+phone;
-			String pushValue = phone+"_"+clientId;
+			String pushValue = phone+"_"+clientId.substring(clientId.length()-11,clientId.length()-1);
 			redisUtil.sadd(pushKey,pushValue);
 			user.setPushValue(pushValue);
 		}

@@ -158,14 +158,14 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 					String machineCode = machine.getMachineCode();
 					String localeStr = machine.getLocaleStr();
 					Map<String, String> params = new HashMap<>();
-					String messgeInfo = "【互动管家】您负责的机器，" + localeStr + "，" + machineCode + "出现故障，故障类型：" + faultType
+					String detail = "您负责的机器，" + localeStr + "，" + machineCode + "出现故障，故障类型：" + faultType
 							+ "，故障描述：" + remark + "，请及时处理。";
 					params.put("machineCode", machineCode);
 					params.put("machineId", machine.getId());
 					params.put("localeStr", localeStr);
 					params.put("faultType", faultType);
 					params.put("remark", remark);
-					params.put("msg", messgeInfo);
+					params.put("msg", detail);
 					List<CheckUserVo> checkUserList = machine.getCheckUserVoList();
 					List<String> userIdList = new ArrayList<>();
 					String androidStr = "";
@@ -179,27 +179,21 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 								Set<Object> androidPushSet = redisUtil.smembers(androidPushKey);
 								Set<Object> iosPushSet = redisUtil.smembers(iosPushKey);
 								if(androidPushSet != null && androidPushSet.size()>0){
-									androidStr+=phone+",";
+									for(Object clientValue:androidPushSet){
+										String clientValueStr = clientValue.toString();
+										msgUtil.sendPush("push_android_check_app", params, clientValueStr, appName, title, detail);
+										logger.info("按别名发送安卓手机push，接收者为："+clientValueStr+",title为："+title+"，内容为："+detail);
+									}
 								}
 								if(iosPushSet != null && iosPushSet.size()>0){
-									iosStr+=phone+",";
+									for(Object clientValue:iosPushSet){
+										String clientValueStr = clientValue.toString();
+										msgUtil.sendPush("push_ios_check_app", params, clientValueStr, appName, title, detail);
+										logger.info("按别名发送苹果手机push，接收者为："+clientValueStr+",title为："+title+"，内容为："+detail);
+									}
 								}
 							}
 						}
-
-						if(StringUtil.isNotEmpty(androidStr)){
-							androidStr = androidStr.substring(0,androidStr.length()-1);
-							params.put("tags",androidStr);
-							msgUtil.sendPush("push_android_check_app", params, null, appName, title, messgeInfo);
-							logger.info("按标签发送安卓push，接收者为："+androidStr);
-						}
-						if(StringUtil.isNotEmpty(iosStr)){
-							iosStr = iosStr.substring(0,iosStr.length()-1);
-							params.put("tags",iosStr);
-							msgUtil.sendPush("push_ios_check_app", params, null, appName, title, messgeInfo);
-							logger.info("按标签发送苹果手机push，接收者为："+iosStr);
-						}
-
 					}
 					Inno72AlarmMsg alarmMsg = new Inno72AlarmMsg();
 					alarmMsg.setId(StringUtil.getUUID());
@@ -209,7 +203,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 					alarmMsg.setTitle(title);
 					alarmMsg.setMainType(2);
 					alarmMsg.setChildType(1);
-					alarmMsg.setDetail(messgeInfo);
+					alarmMsg.setDetail(detail);
 					inno72AlarmMsgMapper.insertSelective(alarmMsg);
 
 					Map<String, Object> paramsMap = new HashMap<>();
