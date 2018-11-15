@@ -1,5 +1,6 @@
 package com.inno72.machine.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -11,6 +12,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.inno72.check.vo.SignVo;
+import com.inno72.common.DateUtil;
 import com.inno72.machine.mapper.Inno72MachineBatchDetailMapper;
 import com.inno72.machine.model.Inno72MachineBatchDetail;
 import com.inno72.machine.vo.SupplyRequestVo;
@@ -695,7 +698,31 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		map.put("machineId",machineId);
 		map.put("findTime",findTime);
 		List<WorkOrderVo> list = inno72SupplyChannelOrderMapper.selectOrderByMonth(map);
-		return ResultGenerator.genSuccessResult(list);
+		List<WorkOrderVo> resultList = new ArrayList<>();
+		LocalDate localDate = DateUtil.toDate(findTime,DateUtil.DF_ONLY_YMD_S1);
+		List<String> dateList = DateUtil.getMonthFullDay(localDate);
+
+		Map<String,WorkOrderVo> workOrderMap = new HashMap<>();
+		for(WorkOrderVo orderVo:list){
+			String date = orderVo.getCreateDate();
+			if(!workOrderMap.containsKey(date)){
+				workOrderMap.put(date,orderVo);
+			}
+		}
+		for(String key:dateList){
+			WorkOrderVo workOrderVo = null;
+			if(!workOrderMap.containsKey(key)){
+				workOrderVo = new WorkOrderVo();
+				workOrderVo.setCreateDate(key);
+				workOrderVo.setSupplyFlag(0);
+			}else{
+				workOrderVo = workOrderMap.get(key);
+				workOrderVo.setSupplyFlag(1);
+			}
+			workOrderVo.setMachineId(machineId);
+			resultList.add(workOrderVo);
+		}
+		return ResultGenerator.genSuccessResult(resultList);
 	}
 
 	@Override
