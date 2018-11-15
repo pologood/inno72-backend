@@ -28,7 +28,7 @@ public class CheckSupplyLackGoodsTask {
 
 
     Map<String,Object> map = new HashMap<>();
-	@Scheduled(cron = "0/5 * * * * ?")
+//	@Scheduled(cron = "0/5 * * * * ?")
 //    @Scheduled(cron = "0 0/1 * * * ?")
     public void lackGoods(){
 		List<AlarmLackGoodsBean> list = supplyChannelService.getLackGoodsList();

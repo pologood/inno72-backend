@@ -37,5 +37,5 @@ public interface Inno72MachineMapper extends Mapper<Inno72Machine> {
 
     List<Inno72Machine> findAlarmAllMachine();
 
-
+	List<Inno72Machine> selectSignMachineList(String findTime);
 }
