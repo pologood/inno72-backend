@@ -61,12 +61,9 @@
         INNER JOIN inno72_supply_channel_goods scg ON sc.id = scg.supply_channel_id
         INNER JOIN inno72_goods goods ON scg.goods_id = goods.id
         LEFT JOIN inno72_machine m ON sc.machine_id = m.id
-        LEFT JOIN inno72_activity_plan_machine apm ON m.id = apm.machine_id
-        LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id
+        LEFT JOIN view_machine_goods vmg on vmg.machine_id=m.id
         WHERE
         m.machine_status = 4
-        AND now( ) BETWEEN ap.start_time
-        AND ap.end_time
         AND m.machine_code = #{machineCode}
         AND sc.is_delete = 0
         GROUP BY
@@ -95,12 +92,9 @@
         LEFT JOIN inno72_machine m ON sc.machine_id = m.id
         LEFT JOIN inno72_locale l ON l.id = m.locale_id
         LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code
-        LEFT JOIN inno72_activity_plan_machine apm ON m.id = apm.machine_id
-        LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id
+        LEFT JOIN view_machine_goods vmg on vmg.machine_id=m.id
         WHERE
         m.machine_status = 4
-        AND now( ) BETWEEN ap.start_time
-        AND ap.end_time
         AND scg.goods_id = #{goodsId}
         AND sc.is_delete = 0
         AND m.machine_code = #{machineCode}

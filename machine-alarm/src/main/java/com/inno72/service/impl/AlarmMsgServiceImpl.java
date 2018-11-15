@@ -125,9 +125,14 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 		transmissionTemplate.setAppId(appId);
 		transmissionTemplate.setAppkey(appKey);
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("id","12345");
-		jsonObject.put("title","报警消息");
-		jsonObject.put("content","消息详情");
+		jsonObject.put("childType",0);
+		jsonObject.put("createTime",LocalDateTime.now());
+		jsonObject.put("detail","消息详情");
+		jsonObject.put("id","6785678765678");
+		jsonObject.put("machineCode","13995322");
+		jsonObject.put("mainType",1);
+		jsonObject.put("system","machineNoHeart");
+		jsonObject.put("title","yyyyyyy");
 		transmissionTemplate.setTransmissionContent(jsonObject.toJSONString());
 		AppMessage message = new AppMessage();
 		message.setData(transmissionTemplate);
@@ -138,7 +143,7 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 		message.setAppIdList(appIdList);
 		//⼿手机类型
 		List<String> tagList = new ArrayList<String>();
-		tagList.add("18911820367");
+		tagList.add("13716944223");
 		cdt.addCondition(AppConditions.TAG,tagList);
 		message.setConditions(cdt);
 		IPushResult ret = push.pushMessageToApp(message,"CheckAppMessage_toApp");
