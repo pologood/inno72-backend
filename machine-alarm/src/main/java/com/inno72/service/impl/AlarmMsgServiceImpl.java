@@ -99,7 +99,7 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 				if(iosPushSet != null && iosPushSet.size()>0){
 					for(Object clientValue:iosPushSet){
 						String clientValueStr = clientValue.toString();
-						msgUtil.sendPush("push_ios_check_app", params, clientValueStr, appName, title, detail);
+						msgUtil.sendPush("push_ios_check_app", params, clientValueStr, appName, "", title);
 						logger.info("按别名发送苹果手机push，接收者为："+clientValueStr+",title为："+title+"，内容为："+detail);
 					}
 				}
