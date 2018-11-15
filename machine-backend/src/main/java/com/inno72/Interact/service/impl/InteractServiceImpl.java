@@ -27,9 +27,9 @@ import com.inno72.Interact.service.InteractService;
 import com.inno72.Interact.vo.Inno72InteractMachineGoodsVo;
 import com.inno72.Interact.vo.Inno72InteractVo;
 import com.inno72.Interact.vo.InteractListVo;
-import com.inno72.Interact.vo.InteractMerchantVo;
 import com.inno72.Interact.vo.InteractRuleVo;
 import com.inno72.Interact.vo.MachineVo;
+import com.inno72.Interact.vo.Merchant;
 import com.inno72.Interact.vo.TreeVo;
 import com.inno72.common.AbstractService;
 import com.inno72.common.CommonConstants;
@@ -371,11 +371,11 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 	@Override
 	public List<TreeVo> merchantTree(String interactId) {
 
-		List<InteractMerchantVo> merchantList = inno72InteractMerchantMapper.selectMerchantByInteractId(interactId);
+		List<Merchant> merchantList = inno72InteractMerchantMapper.selectMerchantByInteractId(interactId);
 
 		List<TreeVo> firstList = new ArrayList<>();
 
-		for (InteractMerchantVo interactMerchantVo : merchantList) {
+		for (Merchant interactMerchantVo : merchantList) {
 
 			TreeVo first = new TreeVo();
 			first.setKey(interactMerchantVo.getId());

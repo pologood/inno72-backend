@@ -1,6 +1,7 @@
 package com.inno72.Interact.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import com.inno72.Interact.model.Inno72InteractMerchant;
 import com.inno72.Interact.service.InteractMerchantService;
 import com.inno72.Interact.vo.Inno72NeedExportStore;
 import com.inno72.Interact.vo.InteractMerchantVo;
+import com.inno72.Interact.vo.Merchant;
 import com.inno72.common.AbstractService;
 import com.inno72.common.ExportExcel;
 import com.inno72.common.MachineBackendProperties;
@@ -64,7 +66,7 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 			"phone", "", "img", "", "", "date", "", "", "", "", "", "", "", "", "" };
 
 	@Override
-	public Result<String> save(InteractMerchantVo model) {
+	public Result<Object> save(InteractMerchantVo model) {
 
 		try {
 			SessionData session = SessionUtil.sessionData.get();
@@ -73,34 +75,30 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
-			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-			model.setId(StringUtil.getUUID());
-			model.setIsDelete(0);
-			model.setCreateId(mUserId);
-			model.setUpdateId(mUserId);
-			model.setCreateTime(LocalDateTime.now());
-			model.setUpdateTime(LocalDateTime.now());
-			// 数据校验
-			if (StringUtil.isBlank(model.getChannelId())) {
-				logger.info("请选择渠道");
-				return Results.failure("请选择渠道");
+			List<Merchant> Merchants = model.getMerchants();
+			if (Merchants.size() == 0) {
+				logger.info("请添加要商户");
+				return Results.failure("请添加要商户");
 			}
-			if (StringUtil.isBlank(model.getMerchantCode())) {
-				logger.info("请填写商家编号");
-				return Results.failure("请填写商家编号");
-			}
-			if (StringUtil.isBlank(model.getMerchantName())) {
-				logger.info("请填写商家名称");
-				return Results.failure("请填写商家名称");
-			}
+			List<Inno72InteractMerchant> insertList = new ArrayList<>();
+			for (Merchant merchant : Merchants) {
+				Inno72InteractMerchant interactMerchant = new Inno72InteractMerchant();
+				interactMerchant.setId(StringUtil.getUUID());
+				interactMerchant.setInteractId(model.getInteractId());
+				interactMerchant.setMerchantId(merchant.getId());
 
-			Inno72InteractMerchant interactMerchant = new Inno72InteractMerchant();
-			interactMerchant.setId(StringUtil.getUUID());
-			interactMerchant.setInteractId(model.getInteractId());
-			interactMerchant.setMerchantId(model.getId());
-
-			inno72InteractMerchantMapper.insert(interactMerchant);
-			inno72MerchantMapper.insert(model);
+				insertList.add(interactMerchant);
+			}
+			// 判断是否已添加
+			Inno72InteractMerchant having = new Inno72InteractMerchant();
+			having.setInteractId(model.getInteractId());
+			List<Inno72InteractMerchant> havingList = inno72InteractMerchantMapper.select(having);
+			boolean fg = havingList.removeAll(insertList);
+			if (fg) {
+				logger.info("添加商户中部分已添加过");
+				return Results.failure("添加商户中部分已添加过");
+			}
+			inno72InteractMerchantMapper.insertInteractMerchantList(insertList);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.info(e.getMessage());
@@ -110,43 +108,7 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 	}
 
 	@Override
-	public Result<String> update(InteractMerchantVo model) {
-
-		try {
-			SessionData session = SessionUtil.sessionData.get();
-			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
-			if (mUser == null) {
-				logger.info("登陆用户为空");
-				return Results.failure("未找到用户登录信息");
-			}
-			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-			model.setUpdateId(mUserId);
-			model.setUpdateTime(LocalDateTime.now());
-			// 数据校验
-			if (StringUtil.isBlank(model.getChannelId())) {
-				logger.info("请选择渠道");
-				return Results.failure("请选择渠道");
-			}
-			if (StringUtil.isBlank(model.getMerchantCode())) {
-				logger.info("请填写商家编号");
-				return Results.failure("请填写商家编号");
-			}
-			if (StringUtil.isBlank(model.getMerchantName())) {
-				logger.info("请填写商家名称");
-				return Results.failure("请填写商家名称");
-			}
-
-			inno72MerchantMapper.updateByPrimaryKeySelective(model);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.info(e.getMessage());
-			return Results.failure("操作失败");
-		}
-		return Results.success("操作成功");
-	}
-
-	@Override
-	public List<InteractMerchantVo> getList(String interactId) {
+	public List<Merchant> getList(String interactId) {
 		logger.info("---------------------获取活动下商户列表-------------------");
 		return inno72InteractMerchantMapper.selectMerchantByInteractId(interactId);
 

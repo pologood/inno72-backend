@@ -10,7 +10,7 @@
     <result column="merchant_id" jdbcType="VARCHAR" property="merchantId" />
   </resultMap>
   
-  <resultMap id="InteractMerchantVoResultMap" type="com.inno72.Interact.vo.InteractMerchantVo">
+  <resultMap id="InteractMerchantResultMap" type="com.inno72.Interact.vo.Merchant">
     <!--
       WARNING - @mbg.generated
     -->
@@ -23,7 +23,7 @@
     <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
   </resultMap>
   
-  <select id="selectMerchantByInteractId" parameterType="String" resultMap="InteractMerchantVoResultMap">
+  <select id="selectMerchantByInteractId" parameterType="String" resultMap="InteractMerchantResultMap">
 		SELECT
 			m.id,
 			m.merchant_code,
@@ -34,6 +34,15 @@
 		WHERE m.is_delete = 0 
 			AND im.interact_id = #{interactId}
   </select>
+  
+  
+  <insert id="insertInteractMerchantList" parameterType="java.util.List">
+        insert into inno72_interact_machine_goods (id,interact_id,merchant_id,)
+        values
+        <foreach collection="list" item="t" index="index" separator=",">
+            (#{t.id}, #{t.interactId},#{t.merchantId})
+        </foreach>
+  </insert>
   
   
   <select id="findMachineSellerId" resultType="com.inno72.Interact.vo.Inno72NeedExportStore">
