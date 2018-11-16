@@ -129,6 +129,7 @@
 				FROM
 				 inno72_activity_plan_machine apm 
 				LEFT JOIN inno72_activity_plan ap ON ap.id = apm.activity_plan_id AND ap.is_delete = 0
+					<if test="state =='' ">and NOW() &lt; ap.end_time</if>
 				LEFT JOIN inno72_activity a ON a.id = ap.activity_id 
 				UNION
 				SELECT 
@@ -145,6 +146,7 @@
 				LEFT JOIN inno72_interact_machine im ON im.interact_id = t.id
 				LEFT JOIN inno72_interact_machine_time mt ON mt.interact_machine_id = im.id 
 				WHERE t.is_delete = 0 AND t.`status`=1
+				<if test="state =='' ">and NOW() &lt; mt.end_time</if>
 			) mt ON mt.machine_id = m.id 
 			WHERE
 				m.machine_status = '4'
@@ -155,7 +157,6 @@
 				<if test="machineCode !=null and machineCode !=''">
 					AND ( m.machine_code LIKE '%${machineCode}%' or mt.activityName LIKE '%${machineCode}%')
 				</if>
-				<if test="state =='' ">and NOW() &lt; mt.end_time</if>
 				<if test="state ==1 ">and mt.state =1</if>
 				<if test="state ==2 ">and mt.state =2</if>
 				<if test="state ==3 ">and mt.state =3</if>
