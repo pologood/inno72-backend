@@ -18,6 +18,8 @@ public class CheckSmsTask {
 	public void sendSmsToCheckUser(){
 		Map<String,Object> map = new HashMap<>();
 		List<Inno72CheckUser> checkUserList = checkUserService.selectUnReadByParam(map);
-		checkUserService.sendSmsToCheck(checkUserList);
+		if(checkUserList != null && checkUserList.size()>0){
+			checkUserService.sendSmsToCheck(checkUserList);
+		}
 	}
 }

@@ -15,10 +15,12 @@ import com.inno72.common.AbstractService;
 import com.inno72.common.StringUtil;
 import com.inno72.mapper.Inno72CheckUserMapper;
 import com.inno72.mapper.Inno72SmsMapper;
+import com.inno72.model.Inno72AlarmParam;
 import com.inno72.model.Inno72CheckUser;
 import com.inno72.model.Inno72CheckUserPhone;
 import com.inno72.model.Inno72Sms;
 import com.inno72.msg.MsgUtil;
+import com.inno72.service.AlarmParamService;
 import com.inno72.service.CheckUserService;
 
 
@@ -39,6 +41,9 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	@Autowired
 	private MsgUtil msgUtil;
 
+	@Resource
+	private AlarmParamService alarmParamService;
+
     @Override
     public List<Inno72CheckUserPhone> selectPhoneByMachineCode(Inno72CheckUserPhone inno72CheckUserPhone) {
 
@@ -49,6 +54,10 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 
 	@Override
 	public List<Inno72CheckUser> selectUnReadByParam(Map<String, Object> map) {
+		Inno72AlarmParam alarmParam = alarmParamService.findByAlarmType(5);
+		if(alarmParam == null){
+			return null;
+		}
     	List<Inno72CheckUser> list = inno72CheckUserMapper.selectUnReadByParam(map);
 		return list;
 	}
