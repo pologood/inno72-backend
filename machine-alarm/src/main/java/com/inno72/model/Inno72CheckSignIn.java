@@ -51,6 +51,9 @@ public class Inno72CheckSignIn {
     @Column(name="create_time")
     private LocalDateTime createTime;
 
+    @Column(name = "status")
+    private Integer status;
+
     public String getId() {
         return id;
     }
@@ -90,4 +93,12 @@ public class Inno72CheckSignIn {
     public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 }

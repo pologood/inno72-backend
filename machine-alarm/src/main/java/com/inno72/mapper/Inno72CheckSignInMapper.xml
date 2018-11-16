@@ -10,6 +10,7 @@
     <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
     <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="status" jdbcType="INTEGER" property="status"/>
   </resultMap>
 
 </mapper>
