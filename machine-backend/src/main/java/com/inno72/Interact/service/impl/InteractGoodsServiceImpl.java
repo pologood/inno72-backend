@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.Interact.mapper.Inno72InteractGoodsMapper;
 import com.inno72.Interact.mapper.Inno72InteractMachineGoodsMapper;
+import com.inno72.Interact.mapper.Inno72InteractMapper;
+import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.model.Inno72InteractGoods;
 import com.inno72.Interact.model.Inno72InteractMachineGoods;
 import com.inno72.Interact.service.InteractGoodsService;
@@ -28,8 +30,12 @@ import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72CouponMapper;
 import com.inno72.project.mapper.Inno72GoodsMapper;
+import com.inno72.project.mapper.Inno72MerchantMapper;
+import com.inno72.project.mapper.Inno72ShopsMapper;
 import com.inno72.project.model.Inno72Coupon;
 import com.inno72.project.model.Inno72Goods;
+import com.inno72.project.model.Inno72Merchant;
+import com.inno72.project.model.Inno72Shops;
 import com.inno72.system.model.Inno72User;
 
 /**
@@ -45,6 +51,14 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 	private Inno72CouponMapper inno72CouponMapper;
 	@Resource
 	private Inno72GoodsMapper inno72GoodsMapper;
+
+	@Resource
+	private Inno72MerchantMapper inno72MerchantMapper;
+	@Resource
+	private Inno72ShopsMapper inno72ShopsMapper;
+
+	@Resource
+	private Inno72InteractMapper inno72InteractMapper;
 	@Resource
 	private Inno72InteractMachineGoodsMapper inno72InteractMachineGoodsMapper;
 
@@ -69,22 +83,25 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 				logger.info("请选择商品类型");
 				return Results.failure("请选择商品类型");
 			}
+			if (StringUtil.isBlank(model.getSellerId())) {
+				logger.info("请选择商家");
+				return Results.failure("请选择商家");
+			}
+			Result<Object> sr = this.wxChannlShops(model.getSellerId(), model.getInteractId());
+
+			if (StringUtil.isBlank(model.getShopId())) {
+				logger.info("请选择店铺");
+				return Results.failure("请选择店铺");
+			}
 			if (0 == model.getType()) {
-				if (StringUtil.isBlank(model.getSellerId())) {
-					logger.info("请选择商家");
-					return Results.failure("请选择商家");
-				}
-				if (StringUtil.isBlank(model.getShopId())) {
-					logger.info("请选择店铺");
-					return Results.failure("请选择店铺");
-				}
+
 				if (StringUtil.isBlank(model.getName())) {
 					logger.info("请填写商品名称");
 					return Results.failure("请填写商品名称");
 				}
 				if (StringUtil.isBlank(model.getCode())) {
-					logger.info("请填写商品编码");
-					return Results.failure("请填写商品编码");
+					logger.info("请填写商品ID");
+					return Results.failure("请填写商品ID");
 				}
 				if (null == model.getImg()) {
 					logger.info("请上传图片");
@@ -104,16 +121,12 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 				interactGoods.setUserDayNumber(model.getUserDayNumber());
 			} else {
 				if (StringUtil.isBlank(model.getName())) {
-					logger.info("请填写商品名称");
-					return Results.failure("请填写商品名称");
+					logger.info("请填写优惠券名称");
+					return Results.failure("请填写优惠券名称");
 				}
 				if (StringUtil.isBlank(model.getCode())) {
-					logger.info("请填写商品编码");
-					return Results.failure("请填写商品编码");
-				}
-				if (StringUtil.isBlank(model.getShopId())) {
-					logger.info("请选择店铺");
-					return Results.failure("请选择店铺");
+					logger.info("请填写优惠券ID");
+					return Results.failure("请填写优惠券ID");
 				}
 				if (null == model.getIsAlone()) {
 					logger.info("请选择是否关联商品");
@@ -173,6 +186,38 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 			return Results.failure("操作失败");
 		}
 		return Results.success("操作成功");
+	}
+
+	// 微信渠道添加虚拟店铺
+	public Result<Object> wxChannlShops(String merchantId, String merchantIdss) {
+
+		try {
+			// 判断是是否微信渠道，微信则添加店铺
+			Inno72Interact m = inno72InteractMapper.selectByPrimaryKey(merchantId);
+			if (m.getPaiyangType() == 2) {
+				// 已添加 已添加返回ID
+				Inno72Shops params = new Inno72Shops();
+				params.setSellerId(merchantId);
+				Inno72Shops shops = null;
+				shops = inno72ShopsMapper.select(params).get(0);
+				if (shops != null) {
+					return Results.warn("", 0, shops.getId());
+				} else {
+					Inno72Merchant merchant = inno72MerchantMapper.selectByPrimaryKey(merchantId);
+					shops.setId(StringUtil.getUUID());
+					shops.setShopName(merchant.getMerchantName() + "店铺");
+					shops.setShopCode(merchant.getMerchantCode() + "DP");
+				}
+				return Results.warn("店铺ID", 0, shops.getId());
+			} else {
+				return Results.failure("无需操作店铺");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
 	}
 
 	@Override
