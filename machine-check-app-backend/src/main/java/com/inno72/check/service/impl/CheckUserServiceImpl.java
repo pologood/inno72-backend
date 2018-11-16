@@ -163,9 +163,11 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         if (StringUtil.isNotBlank(oldToken)) {
             redisUtil.del(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + oldToken);
         }
+        logger.info("退出登录：{}",JSON.toJSON(user));
         String loginType = user.getLoginType();
         if(StringUtil.isNotEmpty(loginType)){
 			redisUtil.srem("push:"+loginType+":"+user.getPhone(),user.getPushValue());
+			logger.info("清除登录pushValue:",user.getPushValue());
 		}
         return ResultGenerator.genSuccessResult();
     }
