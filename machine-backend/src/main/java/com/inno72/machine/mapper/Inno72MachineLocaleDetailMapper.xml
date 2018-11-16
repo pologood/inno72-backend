@@ -19,8 +19,7 @@
 		m.machine_code AS machineCode,
 		CONCAT(area.province,area.city,area.district,IFNULL(l.mall,""),IFNULL( l.name,'')) AS locale,
 		date_format(dd.firstTime, '%Y-%m-%d %H:%i:%s' ) AS firstTime,
-		date_format(dd.lastTime, '%Y-%m-%d %H:%i:%s' ) AS lastTime,
-		,
+		date_format(dd.lastTime, '%Y-%m-%d %H:%i:%s' ) AS lastTime
 	FROM (
 		SELECT d.machine_id,MIN( d.create_time ) AS firstTime,MAX( d.create_time ) AS lastTime 
 		FROM inno72_machine_locale_detail d GROUP BY	d.machine_id
@@ -41,7 +40,6 @@
 			or area.district LIKE '%${keyword}%' )
 	      </if>
     </where>
-	GROUP BY d.machine_id
   </select>
   
   <select id="selectMachineLocaleDetail" resultType="java.util.Map" parameterType="java.util.Map">
