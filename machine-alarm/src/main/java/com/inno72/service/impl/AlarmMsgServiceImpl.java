@@ -57,23 +57,22 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 	}
 
 	@Override
-	public void saveAlarmMsg(String system, String machineCode, int lackNum, String localStr,List<Inno72CheckUserPhone> inno72CheckUserPhones) {
+	public void saveAlarmMsg(String system,String machineCode, String detail,List<Inno72CheckUserPhone> inno72CheckUserPhones) {
 		String title = "";
 		int typeInt = 0;
-		String detail = "";
 		Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
 		if ((CommonConstants.SYS_MACHINE_DROPGOODS).equals(system)) {
 			title = "您好，您负责的机器货道被锁定，请及时处理";
-			typeInt = 2;
-			detail = localStr + "," + machineCode + "," + "出现掉货异常，请及时处理";
+			typeInt = 1;
 		} else if (CommonConstants.SYS_MACHINE_LACKGOODS.equals(system)) {
 			title = "您好，您负责的机器已缺货，请及时补货";
-			typeInt = 3;
-			detail = localStr + "," + machineCode + "," + "缺货" + lackNum + "个，请及时处理";
+			typeInt = 2;
 		} else if (CommonConstants.SYS_MACHINE_NET.equals(system)){
 			title = "您好，您负责的机器出现网络异常，请及时处理";
+			typeInt = 3;
+		} else if(CommonConstants.SYS_MACHINE_HEART.equals(system)){
+			title = "您好，您负责的机器出现页面异常，请及时处理";
 			typeInt = 4;
-			detail = "您好，"+localStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时联系巡检人员。";
 		}
 		inno72AlarmMsg.setDetail(detail);
 		inno72AlarmMsg.setMainType(1);
@@ -86,30 +85,33 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 		inno72AlarmMsgMapper.insertSelective(inno72AlarmMsg);
 		logger.info("存储消息"+title);
 		Map<String,String> params = new HashMap<>();
-		params.put("machineCode", machineCode);
 		String appName = "machine_alarm";
-		List<String> androidTagList = new ArrayList<>();
-		List<String> iosTagList = new ArrayList<>();
+		String androidStr = "";
+		String iosStr = "";
+		String text = JSON.toJSONString(inno72AlarmMsg);
+		params.put("msg",text);
 		for(Inno72CheckUserPhone checkUserPhone:inno72CheckUserPhones){
 			String phone = checkUserPhone.getPhone();
 			if(StringUtil.isNotEmpty(phone)){
-				String androidKey = "push:android:" + phone;
-				String iosKey = "push:ios:"+phone;
-				String androidValue = redisUtil.get(androidKey);
-				String iosValue = redisUtil.get(iosKey);
-				if(StringUtil.isNotEmpty(androidValue)){
-					androidTagList.add(phone);
+				String androidPushKey = "push:android:" + phone;
+				String iosPushKey = "push:ios:"+phone;
+				Set<Object> androidPushSet = redisUtil.smembers(androidPushKey);
+				Set<Object> iosPushSet = redisUtil.smembers(iosPushKey);
+				if(androidPushSet != null && androidPushSet.size()>0){
+					for(Object clientValue:androidPushSet){
+						String clientValueStr = clientValue.toString();
+						msgUtil.sendPush("push_android_check_app", params, clientValueStr, appName, title, detail);
+						logger.info("按别名发送安卓手机push，接收者为："+clientValueStr+",title为："+title+"，内容为："+detail);
+					}
 				}
-				if(StringUtil.isNotEmpty(iosValue)){
-					iosTagList.add(phone);
+				if(iosPushSet != null && iosPushSet.size()>0){
+					for(Object clientValue:iosPushSet){
+						String clientValueStr = clientValue.toString();
+						msgUtil.sendPush("push_ios_check_app", params, clientValueStr, appName, "", title);
+						logger.info("按别名发送苹果手机push，接收者为："+clientValueStr+",title为："+title+"，内容为："+detail);
+					}
 				}
 			}
-		}
-		if(androidTagList != null && androidTagList.size()>0){
-			sendPushTagList(JSON.toJSONString(inno72AlarmMsg),2,androidTagList,"CheckAppMessage_toApp");
-		}
-		if(iosTagList != null && iosTagList.size()>0){
-			sendPushTagList(JSON.toJSONString(inno72AlarmMsg),2,iosTagList,"CheckAppMessage_toApp");
 		}
 	}
 
