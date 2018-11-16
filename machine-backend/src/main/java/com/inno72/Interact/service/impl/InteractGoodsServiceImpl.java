@@ -87,12 +87,18 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 				logger.info("请选择商家");
 				return Results.failure("请选择商家");
 			}
-			Result<Object> sr = this.wxChannlShops(model.getSellerId(), model.getInteractId());
+			// 微信类型操作默认店铺
+			Result<Object> sr = this.wxChannlShops(model.getSellerId(), model.getInteractId(), mUserId);
+			String shopsID = sr.getData().toString();
+			if (StringUtil.isNotBlank(shopsID)) {
+				model.setShopId(shopsID);
+			}
 
 			if (StringUtil.isBlank(model.getShopId())) {
 				logger.info("请选择店铺");
 				return Results.failure("请选择店铺");
 			}
+
 			if (0 == model.getType()) {
 
 				if (StringUtil.isBlank(model.getName())) {
@@ -189,7 +195,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 	}
 
 	// 微信渠道添加虚拟店铺
-	public Result<Object> wxChannlShops(String merchantId, String merchantIdss) {
+	public Result<Object> wxChannlShops(String merchantId, String merchantIdss, String mUserId) {
 
 		try {
 			// 判断是是否微信渠道，微信则添加店铺
@@ -204,9 +210,17 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					return Results.warn("", 0, shops.getId());
 				} else {
 					Inno72Merchant merchant = inno72MerchantMapper.selectByPrimaryKey(merchantId);
-					shops.setId(StringUtil.getUUID());
+					shops = new Inno72Shops();
 					shops.setShopName(merchant.getMerchantName() + "店铺");
 					shops.setShopCode(merchant.getMerchantCode() + "DP");
+
+					shops.setId(StringUtil.getUUID());
+					shops.setIsDelete(0);
+					shops.setCreateId(mUserId);
+					shops.setUpdateId(mUserId);
+					shops.setCreateTime(LocalDateTime.now());
+					shops.setUpdateTime(LocalDateTime.now());
+
 				}
 				return Results.warn("店铺ID", 0, shops.getId());
 			} else {
@@ -239,15 +253,22 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 				logger.info("请选择商品类型");
 				return Results.failure("请选择商品类型");
 			}
+			if (StringUtil.isBlank(model.getSellerId())) {
+				logger.info("请选择商家");
+				return Results.failure("请选择商家");
+			}
+			// 微信类型操作默认店铺
+			Result<Object> sr = this.wxChannlShops(model.getSellerId(), model.getInteractId(), mUserId);
+			String shopsID = sr.getData().toString();
+			if (StringUtil.isNotBlank(shopsID)) {
+				model.setShopId(shopsID);
+			}
+			if (StringUtil.isBlank(model.getShopId())) {
+				logger.info("请选择店铺");
+				return Results.failure("请选择店铺");
+			}
+
 			if (0 == model.getType()) {
-				if (StringUtil.isBlank(model.getSellerId())) {
-					logger.info("请选择商家");
-					return Results.failure("请选择商家");
-				}
-				if (StringUtil.isBlank(model.getShopId())) {
-					logger.info("请选择店铺");
-					return Results.failure("请选择店铺");
-				}
 				if (StringUtil.isBlank(model.getName())) {
 					logger.info("请填写商品名称");
 					return Results.failure("请填写商品名称");
@@ -264,16 +285,12 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 				interactGoods.setUserDayNumber(model.getUserDayNumber());
 			} else {
 				if (StringUtil.isBlank(model.getName())) {
-					logger.info("请填写商品名称");
-					return Results.failure("请填写商品名称");
+					logger.info("请填写优惠券名称");
+					return Results.failure("请填写优惠券名称");
 				}
 				if (StringUtil.isBlank(model.getCode())) {
-					logger.info("请填写商品编码");
-					return Results.failure("请填写商品编码");
-				}
-				if (StringUtil.isBlank(model.getShopId())) {
-					logger.info("请选择店铺");
-					return Results.failure("请选择店铺");
+					logger.info("请填写优惠券ID");
+					return Results.failure("请填写优惠券ID");
 				}
 				if (null == model.getIsAlone()) {
 					logger.info("请选择是否关联商品");
