@@ -169,7 +169,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 					}
 					// 保存接口
 					int lackNum = 0;
-					alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_DROPGOODS, machineCode, lackNum, localStr, inno72CheckUserPhones);
+					alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_DROPGOODS, machineCode, text, inno72CheckUserPhones);
 				}
 
 			}
@@ -266,7 +266,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 									msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId2(),
 											"machineAlarm-RedisReceiver");
 								}
-								alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_LACKGOODS,machineCode,surPlusNum,localStr,inno72CheckUserPhones);
+								alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_LACKGOODS,machineCode,text,inno72CheckUserPhones);
 								pushFlag = false;
 							}
 						}

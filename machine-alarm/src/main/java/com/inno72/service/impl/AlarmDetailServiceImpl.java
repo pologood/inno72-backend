@@ -220,7 +220,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 										text = "网络异常，提醒方式：钉钉，内容："+text;
 										StringUtil.logger(CommonConstants.LOG_TYPE_HEART,machineCode,text);
 									}
-									alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_HEART,machineCode,0,localeStr,inno72CheckUserPhones);
+									alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_HEART,machineCode,text,inno72CheckUserPhones);
 								}
 							}
 						}
@@ -241,7 +241,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 									this.sendSms(param,machineCode,"sms_alarm_connect",inno72CheckUserPhones);
 								}
 								if(machineStatus==4){
-									alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_NET,machineCode,0,localeStr,inno72CheckUserPhones);
+									alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_NET,machineCode,text,inno72CheckUserPhones);
 								}
 								text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时联系巡检人员。";
 							}else if(level == 2){
