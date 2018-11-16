@@ -37,15 +37,15 @@ public class CheckSignInController {
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView list(@RequestParam(required = false) String code,
-			@RequestParam(required = false) String keyword, String startTime, String endTime) {
-		List<Inno72CheckUserVo> list = checkSignInService.findByPage(code, keyword, startTime, endTime);
+			@RequestParam(required = false) String keyword, String status, String startTime, String endTime) {
+		List<Inno72CheckUserVo> list = checkSignInService.findByPage(code, keyword, status, startTime, endTime);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 
 	@RequestMapping(value = "/userExcel", method = { RequestMethod.POST, RequestMethod.GET })
 	public void userExcel(HttpServletResponse response, @RequestParam(required = false) String code,
-			@RequestParam(required = false) String keyword, String startTime, String endTime) {
-		checkSignInService.getExportExcel(code, keyword, startTime, endTime, response);
+			@RequestParam(required = false) String keyword, String status, String startTime, String endTime) {
+		checkSignInService.getExportExcel(code, keyword, status, startTime, endTime, response);
 
 		return;
 	}

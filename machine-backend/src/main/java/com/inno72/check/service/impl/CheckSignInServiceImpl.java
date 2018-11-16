@@ -40,7 +40,8 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
 			"createTime" };
 
 	@Override
-	public List<Inno72CheckUserVo> findByPage(String code, String keyword, String startTime, String endTime) {
+	public List<Inno72CheckUserVo> findByPage(String code, String keyword, String status, String startTime,
+			String endTime) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		if (StringUtil.isNotEmpty(code)) {
@@ -55,6 +56,7 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
 			params.put("endTime", endTime + " 23:59:59");
 		}
 		params.put("keyword", keyword);
+		params.put("status", status);
 
 		return inno72CheckSignInMapper.selectSignInByPage(params);
 	}
@@ -63,7 +65,7 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
 	 * 导出excel表格
 	 */
 	@Override
-	public void getExportExcel(String code, String keyword, String startTime, String endTime,
+	public void getExportExcel(String code, String keyword, String status, String startTime, String endTime,
 			HttpServletResponse response) {
 
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -79,6 +81,7 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
 			params.put("endTime", endTime + " 23:59:59");
 		}
 		params.put("keyword", keyword);
+		params.put("status", status);
 		List<Inno72CheckUserVo> list = inno72CheckSignInMapper.selectSignInExportList(params);
 		int size = list.size();
 		if (list != null && size > 0) {

@@ -14,9 +14,10 @@ import com.inno72.common.Service;
  */
 public interface CheckSignInService extends Service<Inno72CheckSignIn> {
 
-	void getExportExcel(String code, String keyword, String startTime, String endTime, HttpServletResponse response);
+	void getExportExcel(String code, String keyword, String status, String startTime, String endTime,
+			HttpServletResponse response);
 
-	List<Inno72CheckUserVo> findByPage(String code, String keyword, String startTime, String endTime);
+	List<Inno72CheckUserVo> findByPage(String code, String keyword, String status, String startTime, String endTime);
 
 	Result<String> updateStatus(String id, String status);
 
