@@ -167,10 +167,11 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 						StringUtil.logger(CommonConstants.LOG_TYPE_DROPGOODS, machineCode, "掉货异常，提醒方式：短信和钉钉，内容："+text);
 						log.info("发送掉货异常埋点日志", CommonConstants.LOG_TYPE_DROPGOODS, machineCode, text);
 					}
+					// 保存接口
+					int lackNum = 0;
+					alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_DROPGOODS, machineCode, lackNum, localStr, inno72CheckUserPhones);
 				}
-				// 保存接口
-				int lackNum = 0;
-				alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_DROPGOODS, machineCode, lackNum, localStr, inno72CheckUserPhones);
+
 			}
 			Update update = new Update();
 			update.set("handle",1);
