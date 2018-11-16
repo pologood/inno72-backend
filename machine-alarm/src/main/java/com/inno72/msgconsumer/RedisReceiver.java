@@ -233,10 +233,10 @@ public class RedisReceiver {
 					StringUtil.logger(CommonConstants.LOG_TYPE_DROPGOODS, machineCode, "掉货异常，提醒方式：短信和钉钉，内容："+text);
 					log.info("发送掉货异常埋点日志", CommonConstants.LOG_TYPE_DROPGOODS, machineCode, text);
 				}
+				// 保存接口
+				alarmMsgService.saveAlarmMsg(system, machineCode,text, inno72CheckUserPhones);
 			}
-			// 保存接口
-			int lackNum = 0;
-			alarmMsgService.saveAlarmMsg(system, machineCode,text, inno72CheckUserPhones);
+
 		}
 
 	}
