@@ -114,7 +114,7 @@
 			FROM
 				inno72_machine m
 			LEFT JOIN inno72_locale locale ON locale.id = m.locale_id
-			LEFT JOIN inno72_admin_area area on area.code=l.area_code
+			LEFT JOIN inno72_admin_area area on area.code=locale.area_code
 			LEFT JOIN (
 				SELECT
 					apm.machine_id,a.NAME AS activityName,
