@@ -14,14 +14,18 @@
   </resultMap>
   
   <select id="selectMachineTimeByPage" resultType="java.util.Map" parameterType="java.util.Map">
-  	SELECT
+  	SELECT 
 		m.id,
 		m.machine_code AS machineCode,
 		CONCAT(area.province,area.city,area.district,IFNULL(l.mall,""),IFNULL( l.name,'')) AS locale,
-		date_format( MIN( d.create_time ), '%Y-%m-%d %H:%i:%s' ) AS firstTime,
-		date_format( MAX( d.create_time ), '%Y-%m-%d %H:%i:%s' ) AS lastTime
-	FROM
-		inno72_machine_locale_detail d 
+		date_format(dd.firstTime, '%Y-%m-%d %H:%i:%s' ) AS firstTime,
+		date_format(dd.lastTime, '%Y-%m-%d %H:%i:%s' ) AS lastTime,
+		,
+	FROM (
+		SELECT d.machine_id,MIN( d.create_time ) AS firstTime,MAX( d.create_time ) AS lastTime 
+		FROM inno72_machine_locale_detail d GROUP BY	d.machine_id
+	) dd 
+	LEFT JOIN inno72_machine_locale_detail d ON dd.machine_id=d.machine_id AND dd.lastTime=d.create_time
 	LEFT JOIN inno72_machine m ON m.id = d.machine_id
 	LEFT JOIN inno72_locale l ON l.id = d.locale
 	LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
