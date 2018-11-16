@@ -138,6 +138,7 @@
 		SELECT m.machine_code, m.id, locale.area_code FROM inno72_machine m
 		LEFT JOIN inno72_locale locale ON locale.id = m.locale_id WHERE
 		m.machine_status in (4,9)
+		<if test="machineCode !=null and machineCode !='' ">and m.machine_code = #{machineCode}  </if>
 		) m ON LEFT ( m.area_code,#{num}) = LEFT ( a.CODE,#{num})
 		WHERE 1=1
 		<if test="code !=null and code !='' ">and a.parent_code = #{code}  </if>
@@ -162,6 +163,7 @@
 		WHERE
 		m.machine_status in (4,9)
 		and LEFT(locale.area_code,#{num}) =#{code}
+		<if test="machineCode !=null and machineCode !='' ">and m.machine_code = #{machineCode}  </if>
 	</select>
 
 	<select id="selectPhoneByMachineCode" parameterType="String"

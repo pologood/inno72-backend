@@ -330,9 +330,10 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	}
 
 	@Override
-	public List<Inno72AdminAreaVo> selectAreaMachineList(String code, String level) {
+	public List<Inno72AdminAreaVo> selectAreaMachineList(String code, String level, String machineCode) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("code", code);
+		params.put("machineCode", machineCode);
 
 		if (StringUtil.isNotBlank(level)) {
 			if (level.equals("1")) {
