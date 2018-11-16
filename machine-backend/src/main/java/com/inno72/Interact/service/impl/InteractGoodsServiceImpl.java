@@ -89,9 +89,8 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 			}
 			// 微信类型操作默认店铺
 			Result<Object> sr = this.wxChannlShops(model.getSellerId(), model.getInteractId(), mUserId);
-			String shopsID = sr.getData().toString();
-			if (StringUtil.isNotBlank(shopsID)) {
-				model.setShopId(shopsID);
+			if (sr.getCode() == 0) {
+				model.setShopId(sr.getData().toString());
 			}
 
 			if (StringUtil.isBlank(model.getShopId())) {
@@ -204,29 +203,26 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 				// 已添加 已添加返回ID
 				Inno72Shops params = new Inno72Shops();
 				params.setSellerId(merchantId);
-				Inno72Shops shops = null;
-				shops = inno72ShopsMapper.select(params).get(0);
-				if (shops != null) {
-					return Results.warn("", 0, shops.getId());
-				} else {
+				Inno72Shops shops = inno72ShopsMapper.select(params).get(0);
+				if (shops == null) {
 					Inno72Merchant merchant = inno72MerchantMapper.selectByPrimaryKey(merchantId);
 					shops = new Inno72Shops();
 					shops.setShopName(merchant.getMerchantName() + "店铺");
 					shops.setShopCode(merchant.getMerchantCode() + "DP");
-
-					shops.setId(StringUtil.getUUID());
+					shops.setId(merchantId);
+					shops.setSellerId(merchantId);
 					shops.setIsDelete(0);
 					shops.setCreateId(mUserId);
 					shops.setUpdateId(mUserId);
 					shops.setCreateTime(LocalDateTime.now());
 					shops.setUpdateTime(LocalDateTime.now());
-
+					
+					inno72ShopsMapper.insertSelective(shops);
 				}
 				return Results.warn("店铺ID", 0, shops.getId());
 			} else {
 				return Results.failure("无需操作店铺");
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.info(e.getMessage());
@@ -259,9 +255,8 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 			}
 			// 微信类型操作默认店铺
 			Result<Object> sr = this.wxChannlShops(model.getSellerId(), model.getInteractId(), mUserId);
-			String shopsID = sr.getData().toString();
-			if (StringUtil.isNotBlank(shopsID)) {
-				model.setShopId(shopsID);
+			if (sr.getCode() == 0) {
+				model.setShopId(sr.getData().toString());
 			}
 			if (StringUtil.isBlank(model.getShopId())) {
 				logger.info("请选择店铺");
