@@ -101,23 +101,12 @@ public class RedisReceiver {
 				param.put("localStr", localStr);
 				if (alarmFlag) {
 					List<GoodsBean> goodsBeanList = channelGoodsAlarmBean.getGoodsBeanList();
-					if (goodsName.length() > 3) {
-						goodsInfo += goodsName.substring(goodsName.length() - 3, goodsName.length()) + "剩" + surPlusNum
-								+ "，";
-					} else {
-						goodsInfo += goodsName + "剩" + surPlusNum + "，";
-					}
+					goodsInfo += goodsName + "剩" + surPlusNum + "，";
 					if (goodsBeanList != null && goodsBeanList.size() > 0) {
 						for (GoodsBean goodsBean : goodsBeanList) {
 							String goods = goodsBean.getGoodsName();
 							if (StringUtil.isNotEmpty(goods) && !goods.equals(goodsName)) {
-								int goodsSize = goods.length();
-								if (goodsSize > 3) {
-									goodsInfo += goods.substring(goodsSize - 3, goodsSize);
-								} else {
-									goodsInfo += goods;
-								}
-								goodsInfo += "剩" + goodsBean.getTotalCount() + "，";
+								goodsInfo += goods+"剩" + goodsBean.getTotalCount() + "，";
 							}
 						}
 						if (goodsInfo.lastIndexOf("，") == goodsInfo.length() - 1) {
@@ -143,9 +132,9 @@ public class RedisReceiver {
 									+ "请及时联系巡检人员补货";
 							param.put("text", StringUtil.setText(text, active));
 							if (group != null) {
-								text = "缺货报警，提醒方式：钉钉和短信，内容：您好，" + localStr + "，机器编号：" + machineCode + "," + goodsName
+								text = "您好，" + localStr + "，机器编号：" + machineCode + "," + goodsName
 										+ "数量已少于" + surPlusNum + "，请及时补货。";
-								StringUtil.logger(CommonConstants.LOG_TYPE_LACKGOODS, machineCode, text);
+								StringUtil.logger(CommonConstants.LOG_TYPE_LACKGOODS, machineCode, "缺货报警，提醒方式：钉钉和短信，内容："+text);
 								log.info("发送缺货" + surPlusNum + "报警日志，日志内容为：{}", machineCode, text);
 								msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId2(),
 										"machineAlarm-RedisReceiver");
@@ -155,15 +144,15 @@ public class RedisReceiver {
 									+ "请及时联系巡检人员补货";
 							param.put("text", StringUtil.setText(text, active));
 							if (group != null) {
-								text = "缺货报警，提醒方式：钉钉，内容：您好，" + localStr + "，机器编号：" + machineCode + "," + goodsName + "数量已少于"
+								text = "您好，" + localStr + "，机器编号：" + machineCode + "," + goodsName + "数量已少于"
 										+ surPlusNum + "，请及时补货。";
-								StringUtil.logger(CommonConstants.LOG_TYPE_LACKGOODS, machineCode, text);
+								StringUtil.logger(CommonConstants.LOG_TYPE_LACKGOODS, machineCode, "缺货报警，提醒方式：钉钉，内容："+text);
 								log.info("发送缺货" + surPlusNum + "报警日志，日志内容为：{}", machineCode, text);
 								msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId2(),
 										"machineAlarm-RedisReceiver");
 							}
 						}
-						alarmMsgService.saveAlarmMsg(system,machineCode,surPlusNum,localStr,inno72CheckUserPhones);
+						alarmMsgService.saveAlarmMsg(system,machineCode,text,inno72CheckUserPhones);
 					}
 
 				}
@@ -241,15 +230,13 @@ public class RedisReceiver {
 					log.info("发送钉钉消息{}", JSON.toJSON(ddMaram));
 					msgUtil.sendDDTextByGroup("dingding_alarm_common", ddMaram, group.getGroupId1(),
 							"machineAlarm-RedisReceiver");
-					text = "掉货异常，提醒方式：短信和钉钉，内容：您好，" + localStr + "机器编号：" + machineCode + "," + channelNum
-							+ "掉货异常，货道已被锁定，请及时联系巡检人员。";
-					StringUtil.logger(CommonConstants.LOG_TYPE_DROPGOODS, machineCode, text);
+					StringUtil.logger(CommonConstants.LOG_TYPE_DROPGOODS, machineCode, "掉货异常，提醒方式：短信和钉钉，内容："+text);
 					log.info("发送掉货异常埋点日志", CommonConstants.LOG_TYPE_DROPGOODS, machineCode, text);
 				}
+				// 保存接口
+				alarmMsgService.saveAlarmMsg(system, machineCode,text, inno72CheckUserPhones);
 			}
-			// 保存接口
-			int lackNum = 0;
-			alarmMsgService.saveAlarmMsg(system, machineCode, lackNum, localStr, inno72CheckUserPhones);
+
 		}
 
 	}
