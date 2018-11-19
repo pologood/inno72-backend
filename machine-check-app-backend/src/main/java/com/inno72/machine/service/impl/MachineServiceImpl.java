@@ -270,6 +270,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		sl.add(bean);
 		msg.setData(sl);
 		String url = machineCheckAppBackendProperties.get("sendAppMsgUrl");
+		logger.info("切换app上传参数：{}",JSON.toJSON(msg));
 		logger.info("切换APP获取环境配置Url:"+url);
 		try {
 			String result = HttpClient.post(url, JSON.toJSONString(msg));
