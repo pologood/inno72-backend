@@ -1,5 +1,7 @@
 package com.inno72.machine.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.inno72.alarmMsg.model.Inno72AlarmMsg;
 import com.inno72.check.mapper.Inno72CheckUserMachineMapper;
 import com.inno72.check.mapper.Inno72CheckUserMapper;
@@ -15,9 +17,15 @@ import com.inno72.machine.model.Inno72AdminArea;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
+import com.inno72.machine.vo.CutAppVo;
+import com.inno72.machine.vo.MachineStartAppBean;
+import com.inno72.machine.vo.SendMessageBean;
 import com.inno72.machine.vo.SupplyChannelVo;
 import com.inno72.machine.vo.SupplyRequestVo;
+import com.inno72.plugin.http.HttpClient;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
@@ -48,6 +56,11 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
     @Resource
     private Inno72CheckUserMapper inno72CheckUserMapper;
+
+    @Resource
+    private MachineCheckAppBackendProperties machineCheckAppBackendProperties;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Override
     public Result<String> setMachine(SupplyRequestVo vo) {
         String localeId = vo.getLocaleId();
@@ -240,6 +253,42 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		}
 		Inno72Machine machine = inno72MachineMapper.getMachineByCode(machineCode);
 		return ResultGenerator.genSuccessResult(machine);
+	}
+
+	@Override
+	public Result<String> cutApp(CutAppVo vo) {
+    	String machineCode = vo.getMachineCode();
+		SendMessageBean msg = new SendMessageBean();
+		msg.setEventType(2);
+		msg.setSubEventType(1);
+		msg.setMachineId(machineCode);
+		List<MachineStartAppBean> sl = new ArrayList<>();
+		MachineStartAppBean bean = new MachineStartAppBean();
+		bean.setStartStatus(2);
+		bean.setAppPackageName(vo.getAppPackageName());
+		bean.setAppType(2);
+		msg.setData(sl);
+		String url = machineCheckAppBackendProperties.get("sendAppMsgUrl");
+		logger.info("切换APP获取环境配置Url:"+url);
+		try {
+			String result = HttpClient.post(url, JSON.toJSONString(msg));
+			logger.info("切换APP执行结果："+result);
+			if (!StringUtil.isEmpty(result)) {
+				JSONObject $_result = JSON.parseObject(result);
+				if ($_result.getInteger("code") == 0) {
+					String r = $_result.getJSONObject("data").getString(machineCode);
+					if (!"发送成功".equals(r)) {
+						return Results.failure(r);
+					}
+				} else {
+					return Results.failure($_result.getString("msg"));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Results.failure("发送失败");
+		}
+		return ResultGenerator.genSuccessResult();
 	}
 
 }

@@ -7,6 +7,7 @@ import com.inno72.machine.model.Inno72AdminArea;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
+import com.inno72.machine.vo.CutAppVo;
 import com.inno72.machine.vo.SupplyRequestVo;
 
 import org.slf4j.Logger;
@@ -103,6 +104,14 @@ public class MachineController {
 		Result<Inno72Machine> result = machineService.getMachine(inno72Machine);
 		return result;
 
+	}
+
+	@RequestMapping(value="/cutApp")
+	public Result<String> cutApp(@RequestBody CutAppVo vo){
+		logger.info("切换APP获取参数：{}",JSON.toJSON(vo));
+		Result<String> result = machineService.cutApp(vo);
+		logger.info("切换APP返回页面结果{}",JSON.toJSON(result));
+		return result;
 	}
 
 

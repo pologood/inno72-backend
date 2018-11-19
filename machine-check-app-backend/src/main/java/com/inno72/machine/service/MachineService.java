@@ -5,6 +5,7 @@ import com.inno72.common.Service;
 import com.inno72.machine.model.Inno72AdminArea;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Machine;
+import com.inno72.machine.vo.CutAppVo;
 import com.inno72.machine.vo.SupplyRequestVo;
 
 import java.util.List;
@@ -25,4 +26,6 @@ public interface MachineService extends Service<Inno72Machine> {
     Result<Map<String,Object>> selectMachineLocale(Inno72Machine inno72Machine);
 
 	Result<Inno72Machine> getMachine(Inno72Machine inno72Machine);
+
+	Result<String> cutApp(CutAppVo vo);
 }
