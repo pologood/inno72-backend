@@ -267,6 +267,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		bean.setStartStatus(2);
 		bean.setAppPackageName(vo.getAppPackageName());
 		bean.setAppType(2);
+		sl.add(bean);
 		msg.setData(sl);
 		String url = machineCheckAppBackendProperties.get("sendAppMsgUrl");
 		logger.info("切换APP获取环境配置Url:"+url);
