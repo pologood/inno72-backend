@@ -93,56 +93,56 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
     public List<Inno72Machine> getMachineList() {
         String chekUserId = UserUtil.getUser().getId();
         List<Inno72Machine> list = inno72MachineMapper.machineList(chekUserId);
-        if(list != null && list.size()>0){
-            list.forEach(inno72Machine -> {
-                List<FaultVo> faultVoList = inno72Machine.getFaultVoList();
-                if(faultVoList != null && faultVoList.size()>0){
-                    inno72Machine.setFaultStatus(-1);
-                }else{
-                    inno72Machine.setFaultStatus(1);
-                }
-                inno72Machine.setFaultVoList(null);
-                List<Inno72CheckSignIn> signInList = inno72Machine.getSignInList();
-                if(signInList != null && signInList.size()>0){
-                    inno72Machine.setSignInStatus(1);
-                }else{
-                    inno72Machine.setSignInStatus(-1);
-                }
-                inno72Machine.setSignInList(null);
-
-				Integer lackGoodsStatus = 0;
-				List<SupplyChannelVo> supplyChannelVoList = inno72Machine.getSupplyChannelVoList();
-				if (supplyChannelVoList != null && supplyChannelVoList.size() > 0) {
-					Map<String, Integer> map = new HashMap<>();
-					for (SupplyChannelVo supplyChannelVo : supplyChannelVoList) {
-						String goodsId = supplyChannelVo.getGoodsId();
-						if (StringUtil.isNotEmpty(goodsId)) {
-							int goodsCount = supplyChannelVo.getGoodsCount();
-							if (map.containsKey(goodsId)) {
-								int count = map.get(goodsId);
-								count += goodsCount;
-								map.put(goodsId, count);
-							} else {
-								map.put(goodsId, goodsCount);
-							}
-						}
-					}
-					for (Integer value : map.values()) {
-						if (value < 10) {
-							lackGoodsStatus = 1;
-							break;
-						}
-					}
-				}
-				inno72Machine.setLackGoodsStatus(lackGoodsStatus);
-				inno72Machine.setSupplyChannelVoList(null);
-				List<Inno72AlarmMsg> alarmMsgList = inno72Machine.getAlarmMsgList();
-				if(alarmMsgList != null && alarmMsgList.size()>0){
-					inno72Machine.setNoReadCount(alarmMsgList.size());
-					inno72Machine.setAlarmMsgList(null);
-				}
-            });
-        }
+//        if(list != null && list.size()>0){
+//            list.forEach(inno72Machine -> {
+//                List<FaultVo> faultVoList = inno72Machine.getFaultVoList();
+//                if(faultVoList != null && faultVoList.size()>0){
+//                    inno72Machine.setFaultStatus(-1);
+//                }else{
+//                    inno72Machine.setFaultStatus(1);
+//                }
+//                inno72Machine.setFaultVoList(null);
+//                List<Inno72CheckSignIn> signInList = inno72Machine.getSignInList();
+//                if(signInList != null && signInList.size()>0){
+//                    inno72Machine.setSignInStatus(1);
+//                }else{
+//                    inno72Machine.setSignInStatus(-1);
+//                }
+//                inno72Machine.setSignInList(null);
+//
+//				Integer lackGoodsStatus = 0;
+//				List<SupplyChannelVo> supplyChannelVoList = inno72Machine.getSupplyChannelVoList();
+//				if (supplyChannelVoList != null && supplyChannelVoList.size() > 0) {
+//					Map<String, Integer> map = new HashMap<>();
+//					for (SupplyChannelVo supplyChannelVo : supplyChannelVoList) {
+//						String goodsId = supplyChannelVo.getGoodsId();
+//						if (StringUtil.isNotEmpty(goodsId)) {
+//							int goodsCount = supplyChannelVo.getGoodsCount();
+//							if (map.containsKey(goodsId)) {
+//								int count = map.get(goodsId);
+//								count += goodsCount;
+//								map.put(goodsId, count);
+//							} else {
+//								map.put(goodsId, goodsCount);
+//							}
+//						}
+//					}
+//					for (Integer value : map.values()) {
+//						if (value < 10) {
+//							lackGoodsStatus = 1;
+//							break;
+//						}
+//					}
+//				}
+//				inno72Machine.setLackGoodsStatus(lackGoodsStatus);
+//				inno72Machine.setSupplyChannelVoList(null);
+//				List<Inno72AlarmMsg> alarmMsgList = inno72Machine.getAlarmMsgList();
+//				if(alarmMsgList != null && alarmMsgList.size()>0){
+//					inno72Machine.setNoReadCount(alarmMsgList.size());
+//					inno72Machine.setAlarmMsgList(null);
+//				}
+//            });
+//        }
 		List<Inno72Machine> list1 = new ArrayList<>();
 		List<Inno72Machine> list2 = new ArrayList<>();
 		List<Inno72Machine> list3 = new ArrayList<>();
