@@ -80,13 +80,13 @@
       <if test="channelId != null">
         and t1.channel_id = #{channelId}
       </if>
-      <if test="orderType != null">
+      <if test="orderType != null and orderType !=''">
         and t1.order_type = #{orderType}
       </if>
       <if test="goodsStatus != null">
         and t1.goods_status = #{goodsStatus}
       </if>
-      <if test="payStatus != null">
+      <if test="payStatus != null and payStatus !=''">
         and t1.pay_status = #{payStatus}
       </if>
       <if test="keyword != null">
