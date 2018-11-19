@@ -264,7 +264,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		msg.setMachineId(machineCode);
 		List<MachineStartAppBean> sl = new ArrayList<>();
 		MachineStartAppBean bean = new MachineStartAppBean();
-		bean.setStartStatus(2);
+		bean.setStartStatus(1);
 		bean.setAppPackageName(vo.getAppPackageName());
 		bean.setAppType(2);
 		sl.add(bean);
