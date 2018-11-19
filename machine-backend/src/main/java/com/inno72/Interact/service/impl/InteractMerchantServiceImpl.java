@@ -115,6 +115,24 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 	}
 
 	@Override
+	public List<Map<String, Object>> getMerchantUserList(String keyword) {
+		logger.info("---------------------获取客户列表-------------------");
+		return inno72InteractMerchantMapper.getMerchantUserList(keyword);
+
+	}
+
+	@Override
+	public List<Map<String, Object>> checkMerchant(String merchantAccountId, String channel) {
+		logger.info("---------------------获取客户下商户列表-------------------");
+
+		Map<String, Object> pm = new HashMap<>();
+		pm.put("merchantAccountId", merchantAccountId);
+		pm.put("channel", channel);
+		return inno72InteractMerchantMapper.getMerchantList(pm);
+
+	}
+
+	@Override
 	public Inno72Merchant findMerchantsById(String id) {
 		return inno72MerchantMapper.selectByPrimaryKey(id);
 	}

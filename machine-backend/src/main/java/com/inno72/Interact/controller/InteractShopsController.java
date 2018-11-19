@@ -1,6 +1,7 @@
 package com.inno72.Interact.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -31,6 +32,13 @@ import tk.mybatis.mapper.entity.Condition;
 public class InteractShopsController {
 	@Resource
 	private InteractShopsService interactShopsService;
+
+	@RequestMapping(value = "/checkShops", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Map<String, Object>>> checkShops(String sellerId) {
+		List<Map<String, Object>> list = interactShopsService.checkShops(sellerId);
+
+		return ResultGenerator.genSuccessResult(list);
+	}
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> add(@RequestBody InteractShopsVo interactShops) {

@@ -1,6 +1,7 @@
 package com.inno72.Interact.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +29,20 @@ import com.inno72.project.model.Inno72Merchant;
 public class InteractMerchantController {
 	@Resource
 	private InteractMerchantService interactMerchantService;
+
+	@RequestMapping(value = "/checkMerchantUser", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Map<String, Object>>> checkMerchantUser(String keyword) {
+		List<Map<String, Object>> list = interactMerchantService.getMerchantUserList(keyword);
+
+		return ResultGenerator.genSuccessResult(list);
+	}
+
+	@RequestMapping(value = "/checkMerchant", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Map<String, Object>>> checkMerchant(String merchantAccountId, String channel) {
+		List<Map<String, Object>> list = interactMerchantService.checkMerchant(merchantAccountId, channel);
+
+		return ResultGenerator.genSuccessResult(list);
+	}
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<Object> add(@RequestBody InteractMerchantVo interactMerchant) {

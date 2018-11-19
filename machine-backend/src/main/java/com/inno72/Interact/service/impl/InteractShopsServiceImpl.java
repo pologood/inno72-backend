@@ -1,6 +1,7 @@
 package com.inno72.Interact.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,12 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 	private Inno72InteractGoodsMapper inno72InteractGoodsMapper;
 
 	@Override
+	public List<Map<String, Object>> checkShops(String sellerId) {
+		logger.info("---------------------获取要添加店铺列表-------------------");
+		return inno72InteractShopsMapper.getShopsList(sellerId);
+	}
+
+	@Override
 	public Result<String> save(InteractShopsVo model) {
 
 		try {
@@ -63,6 +70,7 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 				logger.info("请添加店铺");
 				return Results.failure("请添加店铺");
 			}
+			List<Inno72InteractShops> insertList = new ArrayList<>();
 			for (ShopsVo shopsVo : shops) {
 				Inno72InteractShops interactShops = new Inno72InteractShops();
 				interactShops.setId(StringUtil.getUUID());
@@ -70,8 +78,17 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 				interactShops.setShopsId(shopsVo.getId());
 				interactShops.setIsVip(model.getIsVip());
 			}
+			// 判断是否已添加
+			Inno72InteractShops having = new Inno72InteractShops();
+			having.setInteractId(model.getInteractId());
+			List<Inno72InteractShops> havingList = inno72InteractShopsMapper.select(having);
+			boolean fg = havingList.removeAll(insertList);
+			if (fg) {
+				logger.info("添加店铺中部分已添加过");
+				return Results.failure("添加店铺中部分已添加过");
+			}
 
-			// inno72InteractShopsMapper.insert(interactShops);
+			inno72InteractShopsMapper.insertInteractShopsList(insertList);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.info(e.getMessage());

@@ -3,6 +3,8 @@ package com.inno72.Interact.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.inno72.Interact.model.Inno72InteractShops;
 import com.inno72.Interact.vo.ShopsVo;
 import com.inno72.Interact.vo.TreeVo;
@@ -16,4 +18,8 @@ public interface Inno72InteractShopsMapper extends Mapper<Inno72InteractShops> {
 	List<ShopsVo> selectMerchantShops(Map<String, Object> params);
 
 	List<TreeVo> selectMerchantShopsTree(Map<String, Object> params);
+
+	List<Map<String, Object>> getShopsList(@Param("keyword") String keyword);
+
+	int insertInteractShopsList(@Param("list") List<Inno72InteractShops> list);
 }

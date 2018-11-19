@@ -19,4 +19,8 @@ public interface Inno72InteractMerchantMapper extends Mapper<Inno72InteractMerch
 
 	List<Inno72NeedExportStore> findMachineSellerId(Map<String, Object> params);
 
+	List<Map<String, Object>> getMerchantUserList(@Param("keyword") String keyword);
+
+	List<Map<String, Object>> getMerchantList(Map<String, Object> params);
+
 }

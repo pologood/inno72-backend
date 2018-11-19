@@ -31,6 +31,28 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   
+  
+  <!-- 获取客户下商户 -->
+  <select id="getShopsList" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+			s.id,
+			s.shop_code,
+			s.shop_name 
+		FROM
+			inno72_shops s
+		<where>
+          <if test="sellerId != null and sellerId != ''">AND s.seller_id=#{sellerId}</if>
+       </where>
+  </select>
+  
+  <insert id="insertInteractShopsList" parameterType="java.util.List">
+        insert into inno72_interact_shops (id,interact_id,shops_id,is_vip)
+        values
+        <foreach collection="list" item="t" index="index" separator=",">
+            (#{t.id}, #{t.interactId},#{t.shopsId},#{t.isVip})
+        </foreach>
+  </insert>
+  
   <select id="selectInteractShopsById" parameterType="String" resultMap="InteractShopsVoResultMap">
 		SELECT
 			s.*,

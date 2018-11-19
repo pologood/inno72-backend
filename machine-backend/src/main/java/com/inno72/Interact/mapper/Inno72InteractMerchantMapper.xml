@@ -22,6 +22,35 @@
     <result column="merchant_code" jdbcType="VARCHAR" property="merchantCode" />
     <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
   </resultMap>
+  <!-- 获取客户 -->
+  <select id="getMerchantUserList" parameterType="String" resultType="java.util.Map">
+		SELECT
+			m.id,
+			m.seller_id AS merchant_code,
+			m.merchant_name 
+		FROM
+			inno72_merchant_user m
+		<where>
+          <if test="keyword !=null and keyword !='' ">
+			and ( m.seller_id LIKE '%${keyword}%' 
+		  	or m.merchant_name LIKE '%${keyword}%'
+			)
+		 </if>
+       </where>
+  </select>
+  <!-- 获取客户下商户 -->
+  <select id="getMerchantList" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+			m.id,
+			m.merchant_code,
+			m.merchant_name 
+		FROM
+			inno72_merchant m
+		<where>
+          <if test="merchantAccountId != null and merchantAccountId != ''">AND m.merchant_account_id=#{merchantAccountId}</if>
+          <if test="channel != null and channel != ''">AND m.channel_id=#{channel}</if>
+       </where>
+  </select>
   
   <select id="selectMerchantByInteractId" parameterType="String" resultMap="InteractMerchantResultMap">
 		SELECT
@@ -37,13 +66,12 @@
   
   
   <insert id="insertInteractMerchantList" parameterType="java.util.List">
-        insert into inno72_interact_machine_goods (id,interact_id,merchant_id,)
+        insert into inno72_interact_merchant (id,interact_id,merchant_id)
         values
         <foreach collection="list" item="t" index="index" separator=",">
             (#{t.id}, #{t.interactId},#{t.merchantId})
         </foreach>
   </insert>
-  
   
   <select id="findMachineSellerId" resultType="com.inno72.Interact.vo.Inno72NeedExportStore">
   	SELECT *,machine_code AS machineCode, seller_id AS sellerId,CONCAT(seller_id,"-",machine_code) AS shopName 
