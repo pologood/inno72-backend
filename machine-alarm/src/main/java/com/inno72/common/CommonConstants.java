@@ -23,6 +23,9 @@ public class CommonConstants {
 	// 网络
 	public final static String SYS_MACHINE_NET = "machineCloseNet";
 
+	//无心跳
+	public final static String SYS_MACHINE_HEART = "machineNoHeart";
+
 	// 商品缺货类型
 	public final static int LACKGOODS_TWENTYPERCENT = 2;
 

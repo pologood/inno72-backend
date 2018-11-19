@@ -30,11 +30,14 @@ public class Inno72AlarmMsg {
     @Column(name="system")
     private String system;
 
+	@Column(name="main_type")
+    private int mainType;
+
     /**
      * 类型
      */
-    @Column(name = "type")
-    private int type;
+    @Column(name = "child_type")
+    private int childType;
 
     /**
      * 详情
@@ -56,67 +59,108 @@ public class Inno72AlarmMsg {
     @Column(name = "machine_code")
     private String machineCode;
 
-    @Transient
-    private Integer isRead;
+	/**
+	 * 系统
+	 */
+	@Column(name="read_user_id")
+	private String readUserId;
 
-	@Transient
-    private List<Inno72CheckUserMachine> inno72CheckUserMachineList;
+	/**
+	 * 类型
+	 */
+	@Column(name = "is_read")
+	private Integer isRead;
 
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	/**
+	 * 创建时间
+	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
+	private LocalDateTime readTime;
 
-    public String getTitle() {
-        return title;
-    }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	/**
+	 * 业务ID
+	 */
+	@Column(name = "service_id")
+	private String serviceId;
 
-    public String getSystem() {
-        return system;
-    }
+	private int [] mainTypes;
 
-    public void setSystem(String system) {
-        this.system = system;
-    }
 
-    public int getType() {
-        return type;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setType(int type) {
-        this.type = type;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public String getDetail() {
-        return detail;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public void setDetail(String detail) {
-        this.detail = detail;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
+	public String getSystem() {
+		return system;
+	}
 
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
+	public void setSystem(String system) {
+		this.system = system;
+	}
 
-    public String getMachineCode() {
-        return machineCode;
-    }
+	public int getMainType() {
+		return mainType;
+	}
 
-    public void setMachineCode(String machineCode) {
-        this.machineCode = machineCode;
-    }
+	public void setMainType(int mainType) {
+		this.mainType = mainType;
+	}
+
+	public int getChildType() {
+		return childType;
+	}
+
+	public void setChildType(int childType) {
+		this.childType = childType;
+	}
+
+	public String getDetail() {
+		return detail;
+	}
+
+	public void setDetail(String detail) {
+		this.detail = detail;
+	}
+
+	public LocalDateTime getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(LocalDateTime createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getMachineCode() {
+		return machineCode;
+	}
+
+	public void setMachineCode(String machineCode) {
+		this.machineCode = machineCode;
+	}
+
+	public String getReadUserId() {
+		return readUserId;
+	}
+
+	public void setReadUserId(String readUserId) {
+		this.readUserId = readUserId;
+	}
 
 	public Integer getIsRead() {
 		return isRead;
@@ -126,11 +170,28 @@ public class Inno72AlarmMsg {
 		this.isRead = isRead;
 	}
 
-	public List<Inno72CheckUserMachine> getInno72CheckUserMachineList() {
-		return inno72CheckUserMachineList;
+	public LocalDateTime getReadTime() {
+		return readTime;
 	}
 
-	public void setInno72CheckUserMachineList(List<Inno72CheckUserMachine> inno72CheckUserMachineList) {
-		this.inno72CheckUserMachineList = inno72CheckUserMachineList;
+	public void setReadTime(LocalDateTime readTime) {
+		this.readTime = readTime;
 	}
+
+	public String getServiceId() {
+		return serviceId;
+	}
+
+	public void setServiceId(String serviceId) {
+		this.serviceId = serviceId;
+	}
+
+	public int[] getMainTypes() {
+		return mainTypes;
+	}
+
+	public void setMainTypes(int[] mainTypes) {
+		this.mainTypes = mainTypes;
+	}
+
 }

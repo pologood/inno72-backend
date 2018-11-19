@@ -15,5 +15,7 @@ public interface AlarmMsgService extends Service<Inno72AlarmMsg> {
 
 	Result<String> initData();
 
-	Result<Integer> unReadCount();
+	Result<Integer> unReadCount(Inno72AlarmMsg alarmMsg);
+
+	Result<String> readAll(Inno72AlarmMsg alarmMsg);
 }

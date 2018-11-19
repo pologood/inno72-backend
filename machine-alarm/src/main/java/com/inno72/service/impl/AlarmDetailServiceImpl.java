@@ -165,6 +165,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 				Map<String,String> param = new HashMap<>();
 				String localeStr = bean.getLocaleStr();
 				String machineCode = bean.getMachineCode();
+				List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
 				Inno72Machine machine = machineService.findByCode(machineCode);
 				int machineStatus = machine.getMachineStatus();
 				String areaCode = machine.getAreaCode();
@@ -185,12 +186,8 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 					}
 					if(type == 1 && machineStatus==4){
 						if(level == 1){
-							text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续1分钟"+pageInfo+"，请及时联系巡检人员。";
-						}else if(level == 2){
 							text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续5分钟"+pageInfo+"，请及时联系巡检人员。";
-						}else if(level == 3){
-							text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续10分钟"+pageInfo+"，请及时联系巡检人员。";
-						}else if(level == 4){
+						}else if(level == 2){
 							text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续30分钟"+pageInfo+"，请及时联系巡检人员。";
 						}
 						param.put("text",StringUtil.setText(text,active));
@@ -211,12 +208,11 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 							alarmSendBean.setLocaleStr(localeStr);
 							alarmSendBean.setCreateTime(new Date());
 							mongoUtil.save(alarmSendBean,"AlarmSendBean");
-							text = "网络异常，提醒方式：钉钉，内容："+text;
-							StringUtil.logger(CommonConstants.LOG_TYPE_HEART,machineCode,text);
+							StringUtil.logger(CommonConstants.LOG_TYPE_HEART,machineCode, "网络异常，提醒方式：钉钉，内容："+text);
 						}
+						alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_HEART,machineCode,text,inno72CheckUserPhones);
 					}else if(type == 2){
 						if(level == 1){
-							List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
 							if (StringUtil.senSmsActive(active)) {
 								text = "10分钟";
 								param.put("text",text);
@@ -229,8 +225,10 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 								}
 								this.sendSms(param,machineCode,"sms_alarm_connect",inno72CheckUserPhones);
 							}
-							alarmMsgService.saveAlarmMsg(CommonConstants.MACHINE_NET_EXCEPTION,CommonConstants.SYS_MACHINE_NET,machineCode,0,localeStr,inno72CheckUserPhones);
 							text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时联系巡检人员。";
+							if(machineStatus==4){
+								alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_NET,machineCode,text,inno72CheckUserPhones);
+							}
 						}else if(level == 2){
 							text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续30分钟未连接成功，请及时联系巡检人员。";
 						}
@@ -252,8 +250,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 							alarmSendBean.setLocaleStr(localeStr);
 							alarmSendBean.setCreateTime(new Date());
 							mongoUtil.save(alarmSendBean,"AlarmSendBean");
-							text = "网络异常，提醒方式：钉钉，内容："+text;
-							StringUtil.logger(CommonConstants.LOG_TYPE_CONNECT,machineCode,text);
+							StringUtil.logger(CommonConstants.LOG_TYPE_CONNECT,machineCode,"网络异常，提醒方式：钉钉，内容："+text);
 						}
 					}
 					Query removeQuery = new Query();
@@ -309,25 +306,11 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 			mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
 			logger.info("超过1分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
 			redisUtil.set(key,"2");
-		}else if("2".equals(value) && sub>=5){//间隔时间大于5分钟
+		}else if("2".equals(value) && sub>=3){//间隔时间大于5分钟
 			exceptionBean.setLevel(2);
 			mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
 			logger.info("超过5分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
 			redisUtil.set(key,"3");
-		}else if("3".equals(value) && sub>=10){//间隔大于10分钟
-			exceptionBean.setLevel(3);
-			mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
-			logger.info("超过10分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
-			redisUtil.set(key,"4");
-		}else if("4".equals(value) && sub>=30){//间隔大于30分钟
-			String heartTimeKey = CommonConstants.MACHINE_ALARM_HEART_TIME_BEF+bean.getMachineId();
-			String heartTimeValue = redisUtil.get(heartTimeKey);
-			if(StringUtil.isEmpty(heartTimeValue)){//redis为空时发送
-				exceptionBean.setLevel(4);
-				mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
-				logger.info("超过30分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
-				redisUtil.setex(heartTimeKey,60*30,"1");//有效时间半个小时
-			}
 		}
 	}
 

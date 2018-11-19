@@ -109,7 +109,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	private AppLogService appLogService;
 	@Autowired
 	private MachineLocaleDetailService machineLocaleDetailService;
-
 	@Autowired
 	private MsgUtil msgUtil;
 
@@ -486,10 +485,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		List<Inno72Machine> machines = inno72MachineMapper.selectByCondition(condition1);
 		vo.setOffline(machines.size());
 		vo.setDropGoodsSwitchException(findExceptionMachine(2).getData().size());
-		vo.setChannelException(0);
-
 		vo.setChannelException(findExceptionMachine(4).getData().size());
-
+		vo.setLockCount(findExceptionMachine(5).getData().size());
 		List<MachineExceptionVo> stockOutVos = inno72MachineMapper.findStockOutMachines();
 		vo.setStockout(stockOutVos == null ? 0 : stockOutVos.size());
 		Condition condition = new Condition(Inno72CheckFault.class);
@@ -599,6 +596,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 				}
 			}
 			return Results.success(result);
+		} else if (type == 5) {
+			List<MachineExceptionVo> exceptionVos = inno72MachineMapper.findMachineLocked();
+			return Results.success(exceptionVos);
 		} else {
 			return Results.failure("参数传入错误");
 		}

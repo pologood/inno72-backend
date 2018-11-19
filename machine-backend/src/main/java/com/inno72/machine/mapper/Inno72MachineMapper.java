@@ -27,4 +27,6 @@ public interface Inno72MachineMapper extends Mapper<Inno72Machine> {
 
 	Inno72Machine findMachineInfoById(String machineId);
 
+	List<MachineExceptionVo> findMachineLocked();
+
 }

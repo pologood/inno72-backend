@@ -1,5 +1,6 @@
 package com.inno72.machine.service.impl;
 
+import com.inno72.alarmMsg.model.Inno72AlarmMsg;
 import com.inno72.check.mapper.Inno72CheckUserMachineMapper;
 import com.inno72.check.mapper.Inno72CheckUserMapper;
 import com.inno72.check.model.Inno72CheckSignIn;

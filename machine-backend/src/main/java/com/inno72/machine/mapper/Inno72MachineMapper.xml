@@ -68,11 +68,12 @@
 		<if test="code !=null and code !='' ">and LEFT(l.area_code,#{num})='${code}'</if>
 		<if test="machineCode !=null and machineCode !=''">
 			AND (m.machine_code LIKE '%${machineCode}%' or l.mall LIKE
-			'%${machineCode}%' or l.name LIKE '%${machineCode}%' or l.tag like '%${machineCode}%' )
+			'%${machineCode}%' or l.name LIKE '%${machineCode}%' or l.tag like
+			'%${machineCode}%' )
 		</if>
 		<if test="machineType !=null and machineType !='' ">and l.type=#{machineType}</if>
 		<if test="machineStatus !=null and machineStatus !=''">and m.machine_status=#{machineStatus}</if>
-		
+
 		<if test="startTime !=null and startTime !='' ">
 			<![CDATA[AND (STR_TO_DATE(#{startTime}, '%Y-%m-%d')  <=STR_TO_DATE(DATE_FORMAT(m.inside_time,"%Y-%m-%d") ,'%Y-%m-%d')
 			 AND STR_TO_DATE(#{endTime}, '%Y-%m-%d') >= STR_TO_DATE(DATE_FORMAT(m.inside_time,"%Y-%m-%d") ,'%Y-%m-%d') ) ]]>
@@ -166,41 +167,36 @@
 	</select>
 
 	<select id="findStockOutMachines" resultMap="ExceptionVoResultMap">
-		select m.id,m.machine_code
+		select distinct am.machine_id as id ,m.machine_code
 		,if(aa.province=aa.city,CONCAT_WS('-',aa.province,aa.district,l.mall),
 		CONCAT_WS('-',aa.province,aa.city,aa.district,l.mall))
-		local from (
-		select apm.machine_id,apg.goods_id,(
-		select IFNULL(
-		sum(sc.goods_count),0) gc from inno72_supply_channel sc left
-		join
-		inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id
-		where
-		sc.machine_id=apm.machine_id and scg.goods_id=apg.goods_id) gc
+		local
 		from
-		inno72_activity_plan ap left join inno72_activity_plan_machine
-		apm on
-		ap.id=apm.activity_plan_id
-		left join inno72_activity_plan_goods apg on
-		ap.id=apg.activity_plan_id
-		where NOW() BETWEEN ap.start_time and
-		ap.end_time and ap.is_delete!=1
-		order by apm.machine_id
-		) a left join
-		inno72_machine m on a.machine_id=m.id
-		LEFT JOIN inno72_locale l ON l.id
-		= m.locale_id
-		LEFT JOIN inno72_admin_area aa on aa.code=l.area_code
-		where m.id is not null group by
-		a.machine_id HAVING sum(a.gc)<![CDATA[<=]]>15
-
-
+		view_machine_goods am
+		left join inno72_machine m on am.machine_id=m.id
+		LEFT JOIN inno72_locale l
+		ON l.id= m.locale_id
+		LEFT JOIN
+		inno72_admin_area aa on aa.code=l.area_code
+		left join (
+		select
+		machine_id,goods_id,sum(goods_count) goods_count
+		from
+		inno72_supply_channel sc
+		left join inno72_supply_channel_goods scg on
+		sc.id=scg.supply_channel_id
+		group by sc.machine_id,scg.goods_id
+		) scg on
+		am.machine_id=scg.machine_id and am.goods_id=scg.goods_id
+		where
+		IFNULL(scg.goods_count,0)<![CDATA[<=]]>15
 	</select>
 
 	<resultMap id="ExceptionVoResultMap" type="com.inno72.machine.vo.MachineExceptionVo">
 		<result column="id" jdbcType="VARCHAR" property="id" />
 		<result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
 		<result column="local" jdbcType="VARCHAR" property="local" />
+		<result column="lock_count" jdbcType="INTEGER" property="lockCount" />
 	</resultMap>
 
 	<select id="findMachines" resultMap="ExceptionVoResultMap">
@@ -225,23 +221,44 @@
 	</resultMap>
 
 	<select id="findMachineStockoutInfo" resultMap="StockoutInfoResultMap">
-		select g.name
-		good_name,(
-		select IFNULL( sum(sc.goods_count),0) gc from
-		inno72_supply_channel sc left
-		join inno72_supply_channel_goods scg on
+
+		select g.name as
+		good_name,IFNULL(scg.goods_count,0) as good_count
+		from
+		view_machine_goods am
+		left join inno72_goods g on am.goods_id=g.id
+		left
+		join (
+		select machine_id,goods_id,sum(goods_count) goods_count
+		from
+		inno72_supply_channel sc
+		left join inno72_supply_channel_goods scg on
 		sc.id=scg.supply_channel_id
-		where sc.machine_id=apm.machine_id and
-		scg.goods_id=apg.goods_id)
-		good_count from inno72_activity_plan ap left
-		join
-		inno72_activity_plan_machine apm on ap.id=apm.activity_plan_id
-		left join inno72_activity_plan_goods apg on ap.id=apg.activity_plan_id
-		left join inno72_goods g on apg.goods_id=g.id
-		where NOW() BETWEEN
-		ap.start_time and ap.end_time and ap.is_delete!=1 and
-		apm.machine_id =
-		#{machineId}
+		group by sc.machine_id,scg.goods_id
+		) scg on
+		am.machine_id=scg.machine_id and am.goods_id=scg.goods_id
+		where
+		am.machine_id=#{machineId}
+
+	</select>
+
+	<select id="findMachineLocked" resultMap="ExceptionVoResultMap">
+
+		select m.id
+		,m.machine_code,count(*)
+		lock_count,if(aa.province=aa.city,CONCAT_WS('-',aa.province,aa.district,l.mall),
+		CONCAT_WS('-',aa.province,aa.city,aa.district,l.mall))
+		local
+		from inno72_machine m left join inno72_supply_channel sc
+		on m.id=sc.machine_id and sc.is_delete=1
+		LEFT JOIN inno72_locale l
+		ON l.id= m.locale_id
+		LEFT JOIN
+		inno72_admin_area aa
+		on aa.code=l.area_code
+		where sc.id is not null
+		group by m.id order by lock_count desc
+
 	</select>
 
 </mapper>

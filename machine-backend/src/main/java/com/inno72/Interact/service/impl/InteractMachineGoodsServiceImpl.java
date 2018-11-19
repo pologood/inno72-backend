@@ -1,6 +1,5 @@
 package com.inno72.Interact.service.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +73,6 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 				logger.info("请选择商品");
 				return Results.failure("请选择商品");
 			}
-			List<MachineGoods> machineGoodsList = new ArrayList<>();
 
 			for (String machineId : machines) {
 				Inno72InteractMachine interactMachine = new Inno72InteractMachine();
@@ -101,9 +99,6 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 					MachineGoods mG = new MachineGoods();
 					mG.setMachineCode(base.getMachineCode());
 					mG.setGoodsId(machineGoods.getGoodsId());
-
-					machineGoodsList.add(mG);
-
 				}
 
 				Inno72InteractMachineGoods del = new Inno72InteractMachineGoods();
