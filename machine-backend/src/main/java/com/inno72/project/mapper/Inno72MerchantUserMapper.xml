@@ -17,4 +17,12 @@
         <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime"/>
         <result column="last_updator" jdbcType="VARCHAR" property="lastUpdator"/>
     </resultMap>
+    <select id="selectByPage"  parameterType="java.util.Map" resultMap="BaseResultMap">
+      select * from inno72_merchant_user
+      <where>
+        <if test="keyword !=null and keyword !='' and keyword !='undefined'">
+            ( merchant_id LIKE '%${keyword}%' or login_name LIKE '%${keyword}%' or merchant_name LIKE '%${keyword}%' or phone LIKE '%${keyword}%' )
+        </if>
+      </where>
+    </select>
 </mapper>

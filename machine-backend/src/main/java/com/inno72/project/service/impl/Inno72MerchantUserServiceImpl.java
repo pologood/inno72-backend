@@ -2,6 +2,9 @@ package com.inno72.project.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -25,6 +28,7 @@ import com.inno72.common.datetime.LocalDateTimeUtil;
 import com.inno72.project.mapper.Inno72MerchantUserMapper;
 import com.inno72.project.model.Inno72MerchantUser;
 import com.inno72.project.service.Inno72MerchantUserService;
+import com.inno72.project.vo.Inno72MerchantUserVo;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.system.model.Inno72User;
 
@@ -47,8 +51,15 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 
 	@Override
 	public Result saveOrUpdate(Inno72MerchantUser user){
+		Inno72MerchantUser curUser = inno72MerchantUserMapper.selectByPrimaryKey(user.getId());
+		if (curUser == null){
+			return Results.failure("用户不存在!");
+		}
 		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			return Results.failure("未找到用户登录信息");
+		}
 		LOGGER.info("保存商户用户 user - {}, 操作用户 - {}", JSON.toJSONString(user), JSON.toJSONString(mUser));
 		String id = user.getId();
 		if (StringUtil.isEmpty(id)){
@@ -102,6 +113,40 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 		user.setLastUpdateTime(LocalDateTime.now());
 		user.setLastUpdator(mUser.getName());
 		user.setId(id);
+		return Results.success();
+	}
+
+	@Override
+	public List<Inno72MerchantUserVo> findByPage(String keyword) {
+		Map<String, Object> params = new HashMap<>();
+		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
+		params.put("keyword", keyword);
+
+		return inno72MerchantUserMapper.selectByPage(params);
+	}
+
+	@Override
+	public Result resetPwd(Inno72MerchantUser user) {
+
+		if (user == null || StringUtil.isEmpty(user.getId())){
+			return Results.failure("参数不全!");
+		}
+
+		Inno72MerchantUser curUser = inno72MerchantUserMapper.selectByPrimaryKey(user.getId());
+		if (curUser == null){
+			return Results.failure("用户不存在!");
+		}
+		SessionData session = SessionUtil.sessionData.get();
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			return Results.failure("未找到用户登录信息");
+		}
+		curUser.setPassword(Encrypt.md5AndSha(user.getPhone()));
+		curUser.setLastUpdator(mUser.getName());
+		curUser.setLastUpdateTime(LocalDateTime.now());
+
+		inno72MerchantUserMapper.updateByPrimaryKeySelective(curUser);
+
 		return Results.success();
 	}
 

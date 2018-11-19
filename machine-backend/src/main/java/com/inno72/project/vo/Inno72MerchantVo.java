@@ -6,6 +6,16 @@ public class Inno72MerchantVo extends Inno72Merchant{
 	
     private String channelName;
 
+    private String status;
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	public String getChannelName() {
 		return channelName;
 	}

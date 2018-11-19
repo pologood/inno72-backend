@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
@@ -19,6 +20,7 @@ import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.common.UploadUtil;
 import com.inno72.project.mapper.Inno72MerchantMapper;
 import com.inno72.project.model.Inno72Merchant;
 import com.inno72.project.service.MerchantService;
@@ -138,6 +140,16 @@ public class MerchantServiceImpl extends AbstractService<Inno72Merchant> impleme
 		params.put("code", code);
 
 		return inno72MerchantMapper.selectByPage(params);
+	}
+
+	@Override
+	public Result<String> uploadImage(MultipartFile file) {
+		if (file.getSize() > 0) {
+			// 调用上传图片
+			return UploadUtil.uploadImage(file, "wechat");
+		}
+		logger.info("[out-uploadImg]-空");
+		return Results.success("");
 	}
 
 	@Override

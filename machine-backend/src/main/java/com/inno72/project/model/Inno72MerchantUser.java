@@ -52,6 +52,13 @@ public class Inno72MerchantUser {
 	@Length(max = 50, message = "商户名称不成超过50个字!")
 	private String merchantName;
 
+
+	/**
+	 * 行业
+	 */
+	@Column(name = "industry")
+	private String industry;
+
 	/**
 	 * 验证手机号
 	 */
