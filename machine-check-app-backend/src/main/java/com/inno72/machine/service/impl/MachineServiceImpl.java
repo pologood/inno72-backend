@@ -270,10 +270,12 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		sl.add(bean);
 		msg.setData(sl);
 		String url = machineCheckAppBackendProperties.get("sendAppMsgUrl");
-		logger.info("切换app上传参数：{}",JSON.toJSONString(msg));
 		logger.info("切换APP获取环境配置Url:"+url);
+		List<SendMessageBean> msgList = new ArrayList<>();
+		logger.info("切换app上传参数：{}",JSON.toJSONString(msgList));
+		msgList.add(msg);
 		try {
-			String result = HttpClient.post(url, JSON.toJSONString(msg));
+			String result = HttpClient.post(url, JSON.toJSONString(msgList));
 			logger.info("切换APP执行结果："+result);
 			if (!StringUtil.isEmpty(result)) {
 				JSONObject $_result = JSON.parseObject(result);
