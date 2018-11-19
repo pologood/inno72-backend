@@ -117,43 +117,26 @@
 	</select>
 
 	<select id="machineList" resultMap="BaseResultMap">
-		select
-		m.*,
-		scg.goods_id goodsId,
-		cf.code faultCode,
-		cf.id faultId,
-		cf.status faultStatus,
-		cf.type faultType,
-		CONCAT(
-		aa.province,
-		aa.city,
-		aa.district,
-		if(aa.circle='其他' or aa.circle is null,'',aa.circle),IFNULL(l.mall,""),IFNULL( l.name,'')
-		) AS localeStr,
-		csi.id signInId,
-		csi.create_time cTime,
-		sc.code channelCode,
-		sc.name channelName,
-		sc.status channelStatus,
-		sc.machine_id,
-		sc.parent_code,
-		sc.volume_count,
-		sc.goods_count,
-		am.id alarmMsgId
-		from inno72_machine m
-		inner join inno72_check_user_machine cum on cum.machine_id=m.id
-		inner join inno72_locale l on m.locale_id=l.id
-		inner join inno72_admin_area aa on aa.code=l.area_code
-		left join inno72_check_fault cf on m.id=cf.machine_id and cf.status in (1,2)
-		left join inno72_check_sign_in csi on m.id=csi.machine_id
-		and date_format(csi.create_time,'%Y%M%D') = date_format(CURRENT_DATE,'%Y%M%D')
-		and csi.check_user_id=#{checkUserId,jdbcType=VARCHAR}
-		left join view_machine_goods mg on mg.machine_id=m.id
-		left join inno72_supply_channel sc on m.id = sc.machine_id
-		left join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id and scg.goods_id=mg.goods_id
-		left join inno72_alarm_msg am on m.machine_code=am.machine_code and am.is_read=0
-		where (m.machine_status=4 or m.machine_status=9) and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
-		and sc.status=0 and sc.is_delete=0
+
+        select
+        m.machine_code,m.id machineId,
+        (select count(*) from inno72_check_fault cf where cf.machine_id=m.id and cf.status in (1,2)) faultCount,
+        (select count(*) from inno72_check_sign_in csi where csi.machine_id=m.id and date_format(csi.create_time,'%Y%M%D') = date_format(CURRENT_DATE,'%Y%M%D')
+        and csi.check_user_id=#{checkUserId,jdbcType=VARCHAR}) signCount,
+        (select count(*) from inno72_alarm_msg am where am.machine_code=m.machine_code and am.is_read=0) amCount
+        ,IFNULL(cc.machine_id,1) lackGoodsStatus
+        from inno72_machine m
+        inner join inno72_check_user_machine cum on cum.machine_id=m.id
+        inner join inno72_locale l on m.locale_id=l.id
+        inner join inno72_admin_area aa on aa.code=l.area_code
+        left join (	select  distinct  sc.machine_id  from  view_machine_goods mg
+        inner join inno72_supply_channel sc on mg.machine_id = sc.machine_id
+        inner join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id and scg.goods_id=mg.goods_id
+        where sc.status=0 and sc.is_delete=0
+        group by sc.machine_id,scg.goods_id HAVING sum(sc.goods_count)<![CDATA[<]]>10 ) cc
+        on m.id=cc.machine_id
+        where (m.machine_status=4 or m.machine_status=9) and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
+
 	</select>
 
 	<select id="selectByParam" resultMap="BaseResultMap">

@@ -90,7 +90,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
     }
 
     @Override
-    public Result<List<Inno72Machine>> getMachineList() {
+    public List<Inno72Machine> getMachineList() {
         String chekUserId = UserUtil.getUser().getId();
         List<Inno72Machine> list = inno72MachineMapper.machineList(chekUserId);
         if(list != null && list.size()>0){
@@ -165,7 +165,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		resultList.addAll(list2);
 		resultList.addAll(list3);
 		resultList.addAll(list4);
-        return ResultGenerator.genSuccessResult(resultList);
+        return resultList;
     }
 
     /**

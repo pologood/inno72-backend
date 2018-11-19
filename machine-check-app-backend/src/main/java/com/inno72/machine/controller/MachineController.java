@@ -46,9 +46,9 @@ public class MachineController {
 	@RequestMapping(value = "list", method = {RequestMethod.POST})
 	public Result<List<Inno72Machine>> list() {
 		logger.info("查询管理的机器接口");
-		Result<List<Inno72Machine>> result = machineService.getMachineList();
-		logger.info("查询管理的机器接口结果{}", JSON.toJSON(result));
-		return result;
+		List<Inno72Machine> list = machineService.getMachineList();
+		logger.info("查询管理的机器接口结果{}", JSON.toJSON(list));
+		return ResultGenerator.genSuccessResult(list);
 
 	}
 

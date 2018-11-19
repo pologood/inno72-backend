@@ -80,6 +80,10 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 						pagination.setPageNo(pageNo);
 						Pagination.threadLocal.set(pagination);
 					}
+					if(name.equals("pageSize")){
+						Pagination pagination = Pagination.threadLocal.get();
+						pagination.setPageSize(Integer.parseInt(name));
+					}
 				}
 
 			}

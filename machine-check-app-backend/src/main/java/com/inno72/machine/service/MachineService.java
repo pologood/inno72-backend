@@ -14,7 +14,7 @@ public interface MachineService extends Service<Inno72Machine> {
 
     Result<String> setMachine(SupplyRequestVo vo);
 
-    Result<List<Inno72Machine>> getMachineList();
+    List<Inno72Machine> getMachineList();
 
     Result<List<Inno72AdminArea>> findFirstLevelArea();
 
