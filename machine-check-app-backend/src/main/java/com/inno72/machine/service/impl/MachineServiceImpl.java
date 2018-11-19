@@ -92,7 +92,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
     @Override
     public List<Inno72Machine> getMachineList() {
         String chekUserId = UserUtil.getUser().getId();
-        List<Inno72Machine> list = inno72MachineMapper.machineList(chekUserId);
+        List<Inno72Machine> list = inno72MachineMapper.machineListByPage(chekUserId);
 //        if(list != null && list.size()>0){
 //            list.forEach(inno72Machine -> {
 //                List<FaultVo> faultVoList = inno72Machine.getFaultVoList();

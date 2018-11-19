@@ -3,6 +3,7 @@ package com.inno72.machine.controller;
 import com.alibaba.fastjson.JSON;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
+import com.inno72.common.ResultPages;
 import com.inno72.common.UserUtil;
 import com.inno72.machine.model.Inno72AdminArea;
 import com.inno72.machine.model.Inno72Locale;
@@ -13,6 +14,7 @@ import com.inno72.machine.vo.SupplyRequestVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 
@@ -44,11 +46,11 @@ public class MachineController {
 	 * 查询管理的机器
 	 */
 	@RequestMapping(value = "list", method = {RequestMethod.POST})
-	public Result<List<Inno72Machine>> list() {
+	public ModelAndView list() {
 		logger.info("查询管理的机器接口");
 		List<Inno72Machine> list = machineService.getMachineList();
 		logger.info("查询管理的机器接口结果{}", JSON.toJSON(list));
-		return ResultGenerator.genSuccessResult(list);
+		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 
 	}
 
