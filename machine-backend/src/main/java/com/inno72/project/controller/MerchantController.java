@@ -32,7 +32,7 @@ public class MerchantController {
     private MerchantService merchantService;
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> add(@Valid Inno72Merchant merchant,BindingResult bindingResult) {
+    public Result<String> add(@Valid Inno72Merchant merchant, BindingResult bindingResult) {
     	try {
     		if(bindingResult.hasErrors()){
     			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
