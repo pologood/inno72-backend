@@ -50,7 +50,6 @@
 	<resultMap id="faultVoList" type="com.inno72.check.vo.FaultVo">
 		<result column="faultId" jdbcType="VARCHAR" property="id"/>
 		<result column="faultCode" jdbcType="VARCHAR" property="code"/>
-		<result column="faultStatus" jdbcType="INTEGER" property="status"/>
 		<result column="faultType" jdbcType="VARCHAR" property="type"/>
 	</resultMap>
 
