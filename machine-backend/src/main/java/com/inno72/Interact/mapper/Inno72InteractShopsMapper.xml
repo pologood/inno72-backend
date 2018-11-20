@@ -36,8 +36,8 @@
   <select id="getShopsList" parameterType="java.util.Map" resultType="java.util.Map">
 		SELECT
 			s.id,
-			s.shop_code,
-			s.shop_name 
+			s.shop_code AS shopCode,
+			s.shop_name AS shopName
 		FROM
 			inno72_shops s
 		<where>

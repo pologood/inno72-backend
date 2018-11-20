@@ -77,6 +77,8 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 				interactShops.setInteractId(model.getInteractId());
 				interactShops.setShopsId(shopsVo.getId());
 				interactShops.setIsVip(model.getIsVip());
+
+				insertList.add(interactShops);
 			}
 			// 判断是否已添加
 			Inno72InteractShops having = new Inno72InteractShops();

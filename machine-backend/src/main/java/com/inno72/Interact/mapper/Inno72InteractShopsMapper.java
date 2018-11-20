@@ -19,7 +19,7 @@ public interface Inno72InteractShopsMapper extends Mapper<Inno72InteractShops> {
 
 	List<TreeVo> selectMerchantShopsTree(Map<String, Object> params);
 
-	List<Map<String, Object>> getShopsList(@Param("keyword") String keyword);
+	List<Map<String, Object>> getShopsList(@Param("sellerId") String sellerId);
 
 	int insertInteractShopsList(@Param("list") List<Inno72InteractShops> list);
 }
