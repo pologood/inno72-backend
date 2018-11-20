@@ -2,6 +2,7 @@ package com.inno72.project.controller;
 
 import javax.annotation.Resource;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,7 @@ import com.inno72.project.service.Inno72DictionaryService;
  */
 @RestController
 @RequestMapping("/project/dictionary")
+@CrossOrigin
 public class DictionaryController {
 	@Resource
 	private Inno72DictionaryService inno72DictionaryService;
