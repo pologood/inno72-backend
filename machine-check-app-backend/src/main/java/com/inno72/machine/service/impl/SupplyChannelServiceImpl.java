@@ -337,9 +337,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			@Override
 			public int compare(Inno72Machine o1, Inno72Machine o2) {
 				if(o1.getLackGoodsStatus()>o2.getLackGoodsStatus()){
-					return 1;
+					return -1;
 				}
-				return -1;
+				return 1;
 			}
 		});
 		logger.info("机器缺货返回数据：{}", JSON.toJSON(machineList));
