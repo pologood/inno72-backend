@@ -51,10 +51,11 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 
 	@Override
 	public Result saveOrUpdate(Inno72MerchantUser user){
-		Inno72MerchantUser curUser = inno72MerchantUserMapper.selectByPrimaryKey(user.getId());
-		if (curUser == null){
-			return Results.failure("用户不存在!");
-		}
+
+		LOGGER.info("---------------------保存或修改商户-------------------");
+
+		LOGGER.info("user parameter -> {}", JSON.toJSONString(user));
+
 		SessionData session = SessionUtil.sessionData.get();
 		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
 		if (mUser == null) {
@@ -80,6 +81,12 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 			LOGGER.info("保存用户 [{}] 完成", user);
 
 		}else {
+
+			Inno72MerchantUser curUser = inno72MerchantUserMapper.selectByPrimaryKey(id);
+			if (curUser == null){
+				return Results.failure("用户不存在!");
+			}
+
 			user.setLastUpdateTime(LocalDateTime.now());
 			user.setLastUpdator(mUser.getName());
 
@@ -99,6 +106,11 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 
 	@Override
 	public Result alterStatus(String id, String status) {
+
+		LOGGER.info("---------------------修改商户状态-------------------");
+
+		LOGGER.info("id status parameter -> {}", id, status);
+
 		if (StringUtil.isEmpty(id) || StringUtil.isEmpty(status)){
 			return Results.failure("修改失败!");
 		}
@@ -118,6 +130,11 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 
 	@Override
 	public List<Inno72MerchantUserVo> findByPage(String keyword) {
+
+		LOGGER.info("---------------------查询商户列表-------------------");
+
+		LOGGER.info("keyword parameter -> {}", keyword);
+
 		Map<String, Object> params = new HashMap<>();
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		params.put("keyword", keyword);
@@ -127,6 +144,10 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 
 	@Override
 	public Result resetPwd(Inno72MerchantUser user) {
+
+		LOGGER.info("---------------------修改商户密码-------------------");
+
+		LOGGER.info("user parameter -> {}", JSON.toJSONString(user));
 
 		if (user == null || StringUtil.isEmpty(user.getId())){
 			return Results.failure("参数不全!");

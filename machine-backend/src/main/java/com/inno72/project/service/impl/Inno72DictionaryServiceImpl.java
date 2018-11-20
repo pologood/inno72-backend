@@ -6,9 +6,12 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
@@ -23,6 +26,7 @@ import com.inno72.project.service.Inno72DictionaryService;
 @Service
 @Transactional
 public class Inno72DictionaryServiceImpl extends AbstractService<Inno72Dictionary> implements Inno72DictionaryService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Inno72DictionaryServiceImpl.class);
 	@Resource
 	private Inno72DictionaryMapper inno72DictionaryMapper;
 
@@ -39,22 +43,15 @@ public class Inno72DictionaryServiceImpl extends AbstractService<Inno72Dictionar
 				result.put("channel", this.getDictionary(Inno72Dictionary.CHANNEL));
 
 		}
-
+		LOGGER.info("字典数据 code - {}, result - {}", JSON.toJSONString(result));
 		return Results.success(result);
 	}
 
 	private List<Map<String, String>> getDictionary(String code){
-
-		return inno72DictionaryMapper.findDictionary(code);
-
-	}
-
-
-	private List<Map<String, String>> findChannelDictionary(String code){
-
-		return inno72DictionaryMapper.findChannelDictionary(code);
+		List<Map<String, String>> dictionary = inno72DictionaryMapper.findDictionary(code);
+		LOGGER.info("字典数据 code - {}, result - {}", JSON.toJSONString(dictionary));
+		return dictionary;
 
 	}
-
 
 }
