@@ -13,6 +13,8 @@ public class Inno72ShopsVo extends Inno72Shops {
 
 	private String channelName;
 
+	private String channelId;
+
 	private String status;
 
 }
