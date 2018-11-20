@@ -33,10 +33,10 @@ public class Inno72DictionaryServiceImpl extends AbstractService<Inno72Dictionar
 			case Inno72Dictionary.INDUSTRY:
 				result.put("industry", this.getDictionary(Inno72Dictionary.INDUSTRY));
 			case Inno72Dictionary.CHANNEL:
-				result.put("channel", this.findChannelDictionary(Inno72Dictionary.CHANNEL));
+				result.put("channel", this.getDictionary(Inno72Dictionary.CHANNEL));
 			default:
 				result.put("industry", this.getDictionary(Inno72Dictionary.INDUSTRY));
-				result.put("channel", this.findChannelDictionary(Inno72Dictionary.CHANNEL));
+				result.put("channel", this.getDictionary(Inno72Dictionary.CHANNEL));
 
 		}
 
