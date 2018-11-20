@@ -44,7 +44,7 @@ public class Inno72MerchantUser {
 	/**
 	 * 密码
 	 */
-	@NotNull
+	@Column(name = "password")
 	private String password;
 
 	/**
