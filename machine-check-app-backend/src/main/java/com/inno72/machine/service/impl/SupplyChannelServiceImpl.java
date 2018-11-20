@@ -480,18 +480,15 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		}
 		Inno72CheckUser checkUser = UserUtil.getUser();
 		StringBuffer ids = new StringBuffer();
-		mapList.forEach(map -> {
-			String id = map.get("id").toString();
-			ids.append("\"");
-			ids.append(id);
-			ids.append("\"");
-			ids.append(",");
-		});
-		String supplyChannelIds = ids.substring(0, ids.length() - 1);
-		List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectByIds(supplyChannelIds);
+		String [] suuplyChannelArray = new String[mapList.size()];
+		for(int i=0;i<mapList.size();i++){
+			suuplyChannelArray[i]=mapList.get(i).get("id").toString();
+		}
+		List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectSupplyAndGoods(suuplyChannelArray);
 		if (supplyChannelList != null && supplyChannelList.size() > 0) {
 			String machineId = supplyChannelList.get(0).getMachineId();
 			Inno72Machine machine = inno72MachineMapper.getMachineById(machineId);
+			String machineCode = machine.getMachineCode();
 			String batchNo = StringUtil.getUUID();
 			LocalDateTime now = LocalDateTime.now();
 			StringBuffer detail = new StringBuffer("");
@@ -500,6 +497,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				String supplyChannelId = supplyChannel.getId();
 				for(Map<String, Object> map:mapList){
 					String id = map.get("id").toString();
+					String dataGoodsId = supplyChannel.getGoodsId();//数据库查到的商品ID
 					if (id.equals(supplyChannelId)) {
 						Object goodsCount = map.get("goodsCount");
 						int afterGoodsCount = 0;
@@ -509,27 +507,22 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 						int beforeGoodsCount = supplyChannel.getGoodsCount();
 						supplyChannel.setUpdateTime(now);
 						Object goodsId = map.get("goodsId");
-						String goodsIdStr = "";
+						String goodsIdStr = "";//APP传入
 						if (goodsId != null) {
 							goodsIdStr = map.get("goodsId").toString();
 						}
-						supplyChannel.setGoodsId(goodsIdStr);
 						supplyChannel.setGoodsCount(afterGoodsCount);
 						supplyChannel.setIsDelete(0);
 						inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
-						if((beforeGoodsCount !=0 || afterGoodsCount != 0) && beforeGoodsCount != afterGoodsCount ){
-							detail.append("为"+supplyChannel.getCode()+"货道补货，补货数量为"+afterGoodsCount+"；");
-						}
-						Condition condition = new Condition(Inno72SupplyChannelGoods.class);
-						condition.createCriteria().andEqualTo("supplyChannelId", supplyChannel.getId());
-						inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
-						Inno72SupplyChannelGoods goods = new Inno72SupplyChannelGoods();
-						if (StringUtil.isNotEmpty(goodsIdStr)) {
-							goods.setGoodsId(supplyChannel.getGoodsId());
-							goods.setId(StringUtil.getUUID());
-							goods.setSupplyChannelId(supplyChannelId);
-							inno72SupplyChannelGoodsMapper.insertSelective(goods);
-							if(beforeGoodsCount != afterGoodsCount){
+						int supplyCount = 0;
+						String code = supplyChannel.getCode();
+						if(StringUtil.isNotEmpty(dataGoodsId)){
+							if(dataGoodsId.equals(goodsIdStr) && afterGoodsCount != beforeGoodsCount){
+								if(afterGoodsCount>beforeGoodsCount){
+									supplyCount = afterGoodsCount-beforeGoodsCount;
+								}else {
+									supplyCount = afterGoodsCount;
+								}
 								Inno72SupplyChannelHistory history = new Inno72SupplyChannelHistory();
 								history.setId(StringUtil.getUUID());
 								history.setBeforeCount(beforeGoodsCount);
@@ -539,10 +532,85 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 								history.setMachineId(supplyChannel.getMachineId());
 								history.setUserId(UserUtil.getUser().getId());
 								history.setCreateTime(now);
+								history.setType(1);
 								history.setGoodsId(goodsIdStr);
+								history.setSupplyCount(supplyCount);
+								history.setSupplyType(1);
 								inno72SupplyChannelHistoryMapper.insertSelective(history);
+								detail.append("为"+machineCode+"机器"+code+"货道补货，补货数量为"+supplyCount+"；");
 								historyCount++;
+							}else if(!dataGoodsId.equals(goodsIdStr)){
+								Condition condition = new Condition(Inno72SupplyChannelGoods.class);
+								condition.createCriteria().andEqualTo("supplyChannelId", supplyChannel.getId());
+								inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
+								Inno72SupplyChannelHistory history = new Inno72SupplyChannelHistory();
+								history.setId(StringUtil.getUUID());
+								history.setBeforeCount(beforeGoodsCount);
+								history.setAfterCount(0);
+								history.setBatchNo(batchNo);
+								history.setSupplyChannelId(supplyChannelId);
+								history.setMachineId(supplyChannel.getMachineId());
+								history.setUserId(UserUtil.getUser().getId());
+								history.setCreateTime(now);
+								history.setType(1);
+								history.setGoodsId(dataGoodsId);
+								supplyCount = -beforeGoodsCount;
+								history.setSupplyCount(supplyCount);
+								history.setSupplyType(2);
+								inno72SupplyChannelHistoryMapper.insertSelective(history);
+								detail.append("为"+machineCode+"机器"+code+"货道补货，补货数量为"+supplyCount+"；");
+								historyCount++;
+								if (StringUtil.isNotEmpty(goodsIdStr)) {
+									Inno72SupplyChannelGoods goods = new Inno72SupplyChannelGoods();
+									goods.setGoodsId(goodsIdStr);
+									goods.setId(StringUtil.getUUID());
+									goods.setSupplyChannelId(supplyChannelId);
+									inno72SupplyChannelGoodsMapper.insertSelective(goods);
+									Inno72SupplyChannelHistory newHistory = new Inno72SupplyChannelHistory();
+									newHistory.setId(StringUtil.getUUID());
+									newHistory.setBeforeCount(0);
+									newHistory.setAfterCount(afterGoodsCount);
+									newHistory.setBatchNo(batchNo);
+									newHistory.setSupplyChannelId(supplyChannelId);
+									newHistory.setMachineId(supplyChannel.getMachineId());
+									newHistory.setUserId(UserUtil.getUser().getId());
+									newHistory.setCreateTime(now);
+									newHistory.setType(1);
+									newHistory.setGoodsId(goodsIdStr);
+									supplyCount = afterGoodsCount;
+									newHistory.setSupplyCount(supplyCount);
+									newHistory.setSupplyType(1);
+									inno72SupplyChannelHistoryMapper.insertSelective(newHistory);
+									detail.append("为"+machineCode+"机器"+code+"货道补货，补货数量为"+supplyCount+"；");
+									historyCount++;
+								}
 							}
+						}else if(StringUtil.isNotEmpty(goodsIdStr)){
+							Condition condition = new Condition(Inno72SupplyChannelGoods.class);
+							condition.createCriteria().andEqualTo("supplyChannelId", supplyChannel.getId());
+							inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
+							Inno72SupplyChannelGoods goods = new Inno72SupplyChannelGoods();
+							goods.setGoodsId(goodsIdStr);
+							goods.setId(StringUtil.getUUID());
+							goods.setSupplyChannelId(supplyChannelId);
+							inno72SupplyChannelGoodsMapper.insertSelective(goods);
+							Inno72SupplyChannelHistory history = new Inno72SupplyChannelHistory();
+							history.setId(StringUtil.getUUID());
+							history.setBeforeCount(0);
+							history.setAfterCount(afterGoodsCount);
+							history.setBatchNo(batchNo);
+							history.setSupplyChannelId(supplyChannelId);
+							history.setMachineId(supplyChannel.getMachineId());
+							history.setUserId(UserUtil.getUser().getId());
+							history.setCreateTime(now);
+							history.setType(1);
+							history.setGoodsId(goodsIdStr);
+							supplyCount = afterGoodsCount;
+							history.setSupplyCount(supplyCount);
+							history.setSupplyType(1);
+							inno72SupplyChannelHistoryMapper.insertSelective(history);
+							detail.append("为"+machineCode+"机器"+code+"货道补货，补货数量为"+supplyCount+"；");
+							historyCount++;
 						}
 					}
 				}

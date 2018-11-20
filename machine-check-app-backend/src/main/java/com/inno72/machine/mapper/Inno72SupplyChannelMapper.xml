@@ -334,4 +334,18 @@
         where machine_id=#{machineId}
         and code = #{code}
     </update>
+
+    <select id="selectSupplyAndGoods" resultMap="BaseResultMap">
+        select sc.*,scg.goods_id goodsId
+        from inno72_supply_channel sc
+        left join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id
+        <where>
+            <if test="suuplyChannelArray != null">
+                and
+                <foreach collection="suuplyChannelArray" index="index" item="item" open="(" close=")" separator="or">
+                    sc.id=#{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
 </mapper>

@@ -15,6 +15,8 @@
     <result column="type" jdbcType="INTEGER" property="type" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="goods_id" jdbcType="VARCHAR" property="goodsId"/>
+    <result column="supply_count" jdbcType="INTEGER" property="supplyCount"/>
+    <result column="supply_type" jdbcType="INTEGER" property="supplyType"/>
     <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
     <result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
     <result column="subCount" jdbcType="INTEGER" property="subCount"/>
