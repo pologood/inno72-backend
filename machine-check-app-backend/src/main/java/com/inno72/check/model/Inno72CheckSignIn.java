@@ -44,6 +44,7 @@ public class Inno72CheckSignIn {
 	/**
 	 * 状态（0.有效，1.无效）
 	 */
+	@Column(name = "status")
 	private Integer status;
 
 	/**
