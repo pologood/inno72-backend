@@ -202,6 +202,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 				// 已添加 已添加返回ID
 				Inno72Shops params = new Inno72Shops();
 				params.setSellerId(merchantId);
+				params.setIsDelete(0);
 				List<Inno72Shops> shopsList = inno72ShopsMapper.select(params);
 				if (shopsList.size() == 0) {
 					Inno72Shops shops = new Inno72Shops();
