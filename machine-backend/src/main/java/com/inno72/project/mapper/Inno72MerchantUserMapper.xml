@@ -27,4 +27,7 @@
         </if>
       </where>
     </select>
+    <select id="selectByLoginName" resultType="java.lang.Integer">
+        select count(*) from inno72_merchant_user where login_name = #{loginName}
+    </select>
 </mapper>

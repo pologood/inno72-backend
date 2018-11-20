@@ -69,6 +69,16 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 			if (valid.getCode() == Result.FAILURE){
 				return valid;
 			}
+			if (user.getLoginStatus().equals("1")){
+				if (StringUtil.isEmpty(user.getPhone()) || StringUtil.isEmpty(user.getLoginName())){
+					return Results.failure("请设置用户手机号码!");
+				}
+				int loginNameSize = inno72MerchantUserMapper.selectByLoginName(user.getLoginName());
+				if (loginNameSize > 0){
+					return Results.failure("登录账号重复!");
+				}
+				user.setPassword(Encrypt.md5AndSha(user.getPhone()));
+			}
 			user.setMerchantId(genMerchantCode());
 			user.setCreateTime(LocalDateTime.now());
 			user.setCreator(mUser.getName());
@@ -180,7 +190,7 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 		while(merchantCode.length() < 4){
 			merchantCode.insert(0, "0");
 		}
-		return merchantCode.toString();
+		return yyyyMMdd + merchantCode.toString();
 	}
 
 }
