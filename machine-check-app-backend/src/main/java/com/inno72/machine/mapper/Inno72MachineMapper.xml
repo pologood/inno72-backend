@@ -22,6 +22,7 @@
         <result column="faultStatus" jdbcType="INTEGER" property="faultStatus"/>
         <result column="signInStatus" jdbcType="INTEGER" property="signInStatus"/>
         <result column="noReadCount" jdbcType="INTEGER" property="noReadCount"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
         <result column="lackGoodsStatus" jdbcType="INTEGER" property="lackGoodsStatus"/>
 		<association property="supplyChannelVoList" resultMap="supplyChannelVoList"/>
 		<association property="checkUserVoList" resultMap="checkUserVoList"/>
@@ -204,6 +205,7 @@
     <select id="getMachineById" resultMap="BaseResultMap">
 		select
 		m.*,
+		l.area_code,
 		CONCAT(
 		aa.province,
 		aa.city,

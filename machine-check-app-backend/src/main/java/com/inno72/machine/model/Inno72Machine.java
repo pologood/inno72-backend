@@ -132,6 +132,9 @@ public class Inno72Machine {
 	private String keyword;
 
 	@Transient
+	private String areaCode;
+
+	@Transient
 	private List<SupplyChannelVo> supplyChannelVoList;
 
 	@Transient
@@ -505,5 +508,13 @@ public class Inno72Machine {
 
 	public void setKeyword(String keyword) {
 		this.keyword = keyword;
+	}
+
+	public String getAreaCode() {
+		return areaCode;
+	}
+
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
 	}
 }
