@@ -63,6 +63,12 @@ public class Inno72MerchantUser {
 	private String industry;
 
 	/**
+	 * 行业
+	 */
+	@Column(name = "industry_code")
+	private String industryCode;
+
+	/**
 	 * 验证手机号
 	 */
 	private String phone;
