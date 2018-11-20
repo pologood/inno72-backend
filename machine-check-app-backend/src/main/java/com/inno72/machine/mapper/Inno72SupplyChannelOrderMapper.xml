@@ -65,7 +65,7 @@
     <select id="selectOrderByMonth" resultMap="WorkOrderVoList">
         select
         co.create_time,
-        DATE_FORMAT(co.create_time,'%Y-%m-%d') creatDate,
+        DATE_FORMAT(co.create_time,'%Y-%m-%d') createDate,
         co.machine_id,
         m.machine_code
         from inno72_supply_channel_order co
