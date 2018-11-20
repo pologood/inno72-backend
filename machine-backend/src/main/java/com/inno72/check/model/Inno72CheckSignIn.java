@@ -1,7 +1,13 @@
 package com.inno72.check.model;
 
 import java.time.LocalDateTime;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters.LocalDateTimeConverter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,126 +17,162 @@ import com.inno72.common.datetime.CustomLocalDateTimeSerializer;
 
 @Table(name = "inno72_check_sign_in")
 public class Inno72CheckSignIn {
-    /**
-     * 主键
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+	/**
+	 * 主键
+	 */
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private String id;
 
-    /**
-     * 巡检人员ID
-     */
-    @Column(name = "check_user_id")
-    private String checkUserId;
+	/**
+	 * 巡检人员ID
+	 */
+	@Column(name = "check_user_id")
+	private String checkUserId;
 
-    /**
-     * 机器ID
-     */
-    @Column(name = "machine_id")
-    private String machineId;
+	/**
+	 * 机器ID
+	 */
+	@Column(name = "machine_id")
+	private String machineId;
 
-    /**
-     * 签到项
-     */
-    private String type;
+	/**
+	 * 签到项
+	 */
+	private String type;
 
-    /**
-     * 创建时间
-     */
-    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Convert(converter = LocalDateTimeConverter.class)
-    @Column(name = "create_time")
-    private LocalDateTime createTime;
+	/**
+	 * 状态（0.有效，1.无效）
+	 */
+	private Integer status;
 
-    /**
-     * 获取主键
-     *
-     * @return id - 主键
-     */
-    public String getId() {
-        return id;
-    }
+	/**
+	 * 创建时间
+	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Convert(converter = LocalDateTimeConverter.class)
+	@Column(name = "create_time")
+	private LocalDateTime createTime;
 
-    /**
-     * 设置主键
-     *
-     * @param id 主键
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
+	/**
+	 * 更新时间
+	 */
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Convert(converter = LocalDateTimeConverter.class)
+	@Column(name = "update_time")
+	private LocalDateTime updateTime;
 
-    /**
-     * 获取巡检人员ID
-     *
-     * @return check_user_id - 巡检人员ID
-     */
-    public String getCheckUserId() {
-        return checkUserId;
-    }
+	/**
+	 * 获取主键
+	 *
+	 * @return id - 主键
+	 */
+	public String getId() {
+		return id;
+	}
 
-    /**
-     * 设置巡检人员ID
-     *
-     * @param checkUserId 巡检人员ID
-     */
-    public void setCheckUserId(String checkUserId) {
-        this.checkUserId = checkUserId;
-    }
+	/**
+	 * 设置主键
+	 *
+	 * @param id
+	 *            主键
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    /**
-     * 获取机器ID
-     *
-     * @return machine_id - 机器ID
-     */
-    public String getMachineId() {
-        return machineId;
-    }
+	/**
+	 * 获取巡检人员ID
+	 *
+	 * @return check_user_id - 巡检人员ID
+	 */
+	public String getCheckUserId() {
+		return checkUserId;
+	}
 
-    /**
-     * 设置机器ID
-     *
-     * @param machineId 机器ID
-     */
-    public void setMachineId(String machineId) {
-        this.machineId = machineId;
-    }
+	/**
+	 * 设置巡检人员ID
+	 *
+	 * @param checkUserId
+	 *            巡检人员ID
+	 */
+	public void setCheckUserId(String checkUserId) {
+		this.checkUserId = checkUserId;
+	}
 
-    /**
-     * 获取签到项
-     *
-     * @return type - 签到项
-     */
-    public String getType() {
-        return type;
-    }
+	/**
+	 * 获取机器ID
+	 *
+	 * @return machine_id - 机器ID
+	 */
+	public String getMachineId() {
+		return machineId;
+	}
 
-    /**
-     * 设置签到项
-     *
-     * @param type 签到项
-     */
-    public void setType(String type) {
-        this.type = type;
-    }
+	/**
+	 * 设置机器ID
+	 *
+	 * @param machineId
+	 *            机器ID
+	 */
+	public void setMachineId(String machineId) {
+		this.machineId = machineId;
+	}
 
-    /**
-     * 获取创建时间
-     *
-     * @return create_time - 创建时间
-     */
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
+	/**
+	 * 获取签到项
+	 *
+	 * @return type - 签到项
+	 */
+	public String getType() {
+		return type;
+	}
 
-    /**
-     * 设置创建时间
-     *
-     * @param createTime 创建时间
-     */
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
+	/**
+	 * 设置签到项
+	 *
+	 * @param type
+	 *            签到项
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	/**
+	 * 获取创建时间
+	 *
+	 * @return create_time - 创建时间
+	 */
+	public LocalDateTime getCreateTime() {
+		return createTime;
+	}
+
+	/**
+	 * 设置创建时间
+	 *
+	 * @param createTime
+	 *            创建时间
+	 */
+	public void setCreateTime(LocalDateTime createTime) {
+		this.createTime = createTime;
+	}
+
+	public LocalDateTime getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(LocalDateTime updateTime) {
+		this.updateTime = updateTime;
+	}
+
 }
