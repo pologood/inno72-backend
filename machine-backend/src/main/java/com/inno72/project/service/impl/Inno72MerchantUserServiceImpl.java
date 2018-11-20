@@ -125,6 +125,7 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 		user.setLastUpdateTime(LocalDateTime.now());
 		user.setLastUpdator(mUser.getName());
 		user.setId(id);
+		inno72MerchantUserMapper.updateByPrimaryKeySelective(user);
 		return Results.success();
 	}
 
