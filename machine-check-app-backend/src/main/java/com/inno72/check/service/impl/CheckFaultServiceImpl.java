@@ -282,6 +282,10 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		if (workType != null && workType != -1) {
 			map.put("workType", workType);
 		}
+		Integer urgentStatus = inno72CheckFault.getUrgentStatus();
+		if(urgentStatus != null){
+			map.put("urgentStatus",urgentStatus);
+		}
 
 		List<Inno72CheckFault> list = inno72CheckFaultMapper.selectForPage(map);
 		return list;

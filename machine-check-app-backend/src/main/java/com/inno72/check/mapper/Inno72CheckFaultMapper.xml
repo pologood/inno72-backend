@@ -59,6 +59,9 @@
     <if test="workType != null">
       and t1.work_type = #{workType}
     </if>
+    <if test="urgentStatus != null">
+      and t1.urgent_status = #{urgentStatus}
+    </if>
     order by t1.submit_time desc,t1.finish_time desc
   </select>
 
