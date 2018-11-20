@@ -152,53 +152,48 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			if (machines != null && machines.size() > 0) {
 				String title = "您负责的机器出现故障";
 				String appName = "machine_check_app_backend";
-				String smsCode = "sms_check_app_fault";
 				String faultType = checkFaultType.getName();
 
 				for (Inno72Machine machine : machines) {
 					String machineCode = machine.getMachineCode();
 					String localeStr = machine.getLocaleStr();
 					Map<String, String> params = new HashMap<>();
-					String messgeInfo = "【互动管家】您负责的机器，" + localeStr + "，" + machineCode + "出现故障，故障类型：" + faultType
+					String detail = "您负责的机器，" + localeStr + "，" + machineCode + "出现故障，故障类型：" + faultType
 							+ "，故障描述：" + remark + "，请及时处理。";
 					params.put("machineCode", machineCode);
 					params.put("machineId", machine.getId());
 					params.put("localeStr", localeStr);
 					params.put("faultType", faultType);
 					params.put("remark", remark);
-					params.put("msg", messgeInfo);
+					params.put("msg", detail);
 					List<CheckUserVo> checkUserList = machine.getCheckUserVoList();
 					List<String> userIdList = new ArrayList<>();
+					String androidStr = "";
+					String iosStr = "";
 					if (checkUserList != null && checkUserList.size() > 0) {
-						String active = System.getenv("spring_profiles_active");
 						for (CheckUserVo user : checkUserList) {
 							String phone = user.getPhone();
-							if (StringUtil.isNotEmpty(phone)) {
-								userIdList.add(user.getId());
-								String pushKey = "push:" + phone;
-								Set<Object> pushSet = redisUtil.smembers(pushKey);
-								if(pushSet != null && pushSet.size()>0){
-									for(Object set:pushSet){
-										String value = set.toString();
-										String setArray [] = value.split("_");
-										String loginType = setArray[0];
-										if(StringUtil.isNotEmpty(loginType)){
-											if(loginType.equals("android")){
-												msgUtil.sendPush("push_android_check_app", params, value, appName, title, messgeInfo);
-											}else if(loginType.equals("ios")){
-												msgUtil.sendPush("push_ios_check_app", params, value, appName, title, messgeInfo);
-											}
-											logger.info("发送push给"+loginType+"设备"+"标识为"+value);
-										}
-										if(StringUtil.senSmsActive(active)){
-											msgUtil.sendSMS(smsCode, params, phone, appName);
-										}
+							if(StringUtil.isNotEmpty(phone)){
+								String androidPushKey = "push:android:" + phone;
+								String iosPushKey = "push:ios:"+phone;
+								Set<Object> androidPushSet = redisUtil.smembers(androidPushKey);
+								Set<Object> iosPushSet = redisUtil.smembers(iosPushKey);
+								if(androidPushSet != null && androidPushSet.size()>0){
+									for(Object clientValue:androidPushSet){
+										String clientValueStr = clientValue.toString();
+										msgUtil.sendPush("push_android_check_app", params, clientValueStr, appName, title, detail);
+										logger.info("按别名发送安卓手机push，接收者为："+clientValueStr+",title为："+title+"，内容为："+detail);
 									}
 								}
-
+								if(iosPushSet != null && iosPushSet.size()>0){
+									for(Object clientValue:iosPushSet){
+										String clientValueStr = clientValue.toString();
+										msgUtil.sendPush("push_ios_check_app", params, clientValueStr, appName, "", title);
+										logger.info("按别名发送苹果手机push，接收者为："+clientValueStr+",title为："+title+"，内容为："+detail);
+									}
+								}
 							}
 						}
-
 					}
 					Inno72AlarmMsg alarmMsg = new Inno72AlarmMsg();
 					alarmMsg.setId(StringUtil.getUUID());
@@ -208,7 +203,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 					alarmMsg.setTitle(title);
 					alarmMsg.setMainType(2);
 					alarmMsg.setChildType(1);
-					alarmMsg.setDetail(messgeInfo);
+					alarmMsg.setDetail(detail);
 					inno72AlarmMsgMapper.insertSelective(alarmMsg);
 
 					Map<String, Object> paramsMap = new HashMap<>();

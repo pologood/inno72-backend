@@ -98,6 +98,27 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 		return ResultGenerator.genSuccessResult(unReadCount);
 	}
 
+	@Override
+	public Result<String> readAll(Inno72AlarmMsg alarmMsg) {
+		Inno72CheckUser user = UserUtil.getUser();
+		String machineCode = alarmMsg.getMachineCode();
+		if(StringUtil.isEmpty(machineCode)){
+			Results.failure("参数缺失");
+		}
+		Condition condition = new Condition(Inno72AlarmMsg.class);
+		condition.createCriteria()
+				.andEqualTo("machineCode",machineCode)
+				.andEqualTo("isRead",0);
+		List<Inno72AlarmMsg> list = inno72AlarmMsgMapper.selectByCondition(condition);
+		for(Inno72AlarmMsg msg:list){
+			msg.setIsRead(1);
+			msg.setReadTime(LocalDateTime.now());
+			msg.setReadUserId(user.getId());
+			inno72AlarmMsgMapper.updateByPrimaryKeySelective(msg);
+		}
+		return ResultGenerator.genSuccessResult();
+	}
+
 	public int saveDetail(String checkUserId,String alarmMsgId){
 		Map<String,Object> map = new HashMap<>();
 		map.put("checkUserId",checkUserId);

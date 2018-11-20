@@ -91,7 +91,9 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
     		loginType = "android";
 		}
         Condition condition = new Condition(Inno72CheckUser.class);
-        condition.createCriteria().andEqualTo("phone", phone).andEqualTo("isDelete",0);
+        condition.createCriteria().andEqualTo("phone", phone)
+				.andEqualTo("isDelete",0)
+				.andEqualTo("status",0);
         List<Inno72CheckUser> users = inno72CheckUserMapper.selectByCondition(condition);
         if (users == null || users.size() != 1) {
             return Results.failure("用户不存在");
@@ -116,7 +118,7 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
 		String clientId = checkUser.getClientId();
 		if(StringUtil.isNotEmpty(clientId)){
 			String pushKey = "push:"+loginType+":"+phone;
-			String pushValue = phone+"_"+clientId;
+			String pushValue = phone+"_"+clientId.substring(clientId.length()-10,clientId.length());
 			redisUtil.sadd(pushKey,pushValue);
 			user.setPushValue(pushValue);
 		}
@@ -161,9 +163,11 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         if (StringUtil.isNotBlank(oldToken)) {
             redisUtil.del(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + oldToken);
         }
+        logger.info("退出登录：{}",JSON.toJSON(user));
         String loginType = user.getLoginType();
         if(StringUtil.isNotEmpty(loginType)){
 			redisUtil.srem("push:"+loginType+":"+user.getPhone(),user.getPushValue());
+			logger.info("清除登录pushValue:{}"+user.getPushValue());
 		}
         return ResultGenerator.genSuccessResult();
     }

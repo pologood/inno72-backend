@@ -79,4 +79,15 @@ public class AlarmMsgController {
 		return result;
 	}
 
+	/**
+	 * 全部已读
+	 * @param alarmMsg
+	 * @return
+	 */
+	@RequestMapping(value="readAll")
+	public Result<String> readAll(@RequestBody Inno72AlarmMsg alarmMsg){
+		Result<String> result = alarmMsgService.readAll(alarmMsg);
+		return result;
+	}
+
 }
