@@ -56,30 +56,32 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 	}
 
 	@Override
-	public void saveAlarmMsg(String system, String machineCode, String detail,
+	public void saveAlarmMsg(String system, String machineCode,String textBeaf, String detail,
 			List<Inno72CheckUserPhone> inno72CheckUserPhones) {
 		String title = "";
 		int typeInt = 0;
 		Inno72AlarmMsg inno72AlarmMsg = new Inno72AlarmMsg();
+		String titleLast = "";
 		if ((CommonConstants.SYS_MACHINE_DROPGOODS).equals(system)) {
-			title = "您好，您负责的机器货道被锁定，请及时处理";
+			titleLast = "货道被锁定，请及时处理";
 			typeInt = 1;
 		} else if (CommonConstants.SYS_MACHINE_LACKGOODS.equals(system)) {
-			title = "您好，您负责的机器已缺货，请及时补货";
+			titleLast = "已缺货，请及时补货";
 			typeInt = 2;
 		} else if (CommonConstants.SYS_MACHINE_NET.equals(system)) {
-			title = "您好，您负责的机器出现网络异常，请及时处理";
+			titleLast = "出现网络异常，请及时处理";
 			typeInt = 3;
 		} else if (CommonConstants.SYS_MACHINE_HEART.equals(system)) {
-			title = "您好，您负责的机器出现页面异常，请及时处理";
+			titleLast = "出现页面异常，请及时处理";
 			typeInt = 4;
 		}
+		title = "您好，您负责的机器"+titleLast;
 		LocalDateTime nowTime = LocalDateTime.now();
 		String id = StringUtil.getUUID();
 		inno72AlarmMsg.setDetail(detail);
 		inno72AlarmMsg.setMainType(1);
 		inno72AlarmMsg.setChildType(typeInt);
-		inno72AlarmMsg.setTitle(title);
+		inno72AlarmMsg.setTitle(titleLast);
 		inno72AlarmMsg.setCreateTime(nowTime);
 		inno72AlarmMsg.setSystem(system);
 		inno72AlarmMsg.setMachineCode(machineCode);

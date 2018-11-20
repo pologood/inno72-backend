@@ -182,6 +182,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 					param.put("machineCode", machineCode);
 					param.put("localStr", localeStr);
 					String text = "";
+					String textBeaf = "您好，"+localeStr+"，机器编号："+machineCode+"，";
 					Query query = new Query();
 					query.addCriteria(Criteria.where("id").is(bean.getDetailId()));
 					AlarmDetailBean detailBean = mongoUtil.findOne(query,AlarmDetailBean.class,"AlarmDetailBean");
@@ -198,7 +199,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 							if(StringUtil.isNotEmpty(heart)){
 								String [] heartArray = heart.split(",");
 								if(level<=heartArray.length){
-									text = "您好，"+localeStr+"，机器编号："+machineCode+"，出现页面加载异常，已经持续"+heartArray[level-1]+"分钟"+pageInfo+"，请及时联系巡检人员。";
+									text = "出现页面加载异常，已经持续"+heartArray[level-1]+"分钟"+pageInfo+"，请及时联系巡检人员。";
 									param.put("text",StringUtil.setText(text,active));
 									if(group != null){
 										msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId1(), "machineAlarm-AlarmDetailService");
@@ -217,10 +218,9 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 										alarmSendBean.setLocaleStr(localeStr);
 										alarmSendBean.setCreateTime(new Date());
 										mongoUtil.save(alarmSendBean,"AlarmSendBean");
-										text = "网络异常，提醒方式：钉钉，内容："+text;
-										StringUtil.logger(CommonConstants.LOG_TYPE_HEART,machineCode,text);
+										StringUtil.logger(CommonConstants.LOG_TYPE_HEART,machineCode,"网络异常，提醒方式：钉钉，内容："+textBeaf+text);
 									}
-									alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_HEART,machineCode,text,inno72CheckUserPhones);
+									alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_HEART,machineCode,textBeaf,text,inno72CheckUserPhones);
 								}
 							}
 						}
@@ -228,32 +228,23 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 					}else if(type == 2){
 						if(connectParam != null){
 							if(level == 1){
-								if (StringUtil.senSmsActive(active)) {
-									text = "10分钟";
-									param.put("text",text);
-									String address = machine.getAddress();
-									if(StringUtil.isNotEmpty(address)){
-										if(address.length()>10){
-											address = address.substring(address.length()-10,address.length());
-										}
-										param.put("localStr",address);
-									}
-									this.sendSms(param,machineCode,"sms_alarm_connect",inno72CheckUserPhones);
-								}
 								if(machineStatus==4){
-									alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_NET,machineCode,text,inno72CheckUserPhones);
+									textBeaf = "您好，"+localeStr+"，机器编号："+machineCode+"，";
+									text = "网络已经连续10分钟未连接成功，请及时联系巡检人员。";
+									alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_NET,machineCode,textBeaf,text,inno72CheckUserPhones);
 								}
-								text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续10分钟未连接成功，请及时联系巡检人员。";
+
 							}else if(level == 2){
-								text = "您好，"+localeStr+"，机器编号："+machineCode+"，网络已经连续30分钟未连接成功，请及时联系巡检人员。";
+								textBeaf = "您好，"+localeStr+"，机器编号："+machineCode+"，";
+								text = "网络已经连续30分钟未连接成功，请及时联系巡检人员。";
 							}
-							param.put("text",StringUtil.setText(text,active));
+							param.put("text",StringUtil.setText(textBeaf+text,active));
 							if(group != null){
 								msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId1(), "machineAlarm-AlarmDetailService");
 								logger.info("网络连接异常发送钉钉消息："+group.getGroupId1());
 								AlarmSendBean alarmSendBean = new AlarmSendBean();
 								alarmSendBean.setId(StringUtil.getUUID());
-								alarmSendBean.setInfo(text);
+								alarmSendBean.setInfo(textBeaf+text);
 								alarmSendBean.setLevel(level);
 								alarmSendBean.setMachineId(bean.getMachineId());
 								alarmSendBean.setMachineCode(machineCode);
