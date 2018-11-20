@@ -173,6 +173,9 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 		if (mUser == null) {
 			return Results.failure("未找到用户登录信息");
 		}
+		if (StringUtil.isEmpty(curUser.getLoginName()) || StringUtil.isEmpty(curUser.getPhone())){
+			return Results.failure("请设置登录名和相关手机号码后再重置密码!");
+		}
 		curUser.setPassword(Encrypt.md5AndSha(curUser.getPhone()));
 		curUser.setLastUpdator(mUser.getName());
 		curUser.setLastUpdateTime(LocalDateTime.now());
