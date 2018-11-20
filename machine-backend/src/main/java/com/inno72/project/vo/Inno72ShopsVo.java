@@ -8,6 +8,8 @@ public class Inno72ShopsVo extends Inno72Shops {
 
 	private String sessionKey;
 
+	private String channelName;
+
 	public Integer getIsVip() {
 		return isVip;
 	}
@@ -24,4 +26,11 @@ public class Inno72ShopsVo extends Inno72Shops {
 		this.sessionKey = sessionKey;
 	}
 
+	public String getChannelName() {
+		return channelName;
+	}
+
+	public void setChannelName(String channelName) {
+		this.channelName = channelName;
+	}
 }

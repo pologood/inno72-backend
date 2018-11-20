@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.inno72.common.Mapper;
 import com.inno72.project.model.Inno72Shops;
+import com.inno72.project.vo.Inno72ShopsVo;
 
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72ShopsMapper extends Mapper<Inno72Shops> {
@@ -21,4 +22,5 @@ public interface Inno72ShopsMapper extends Mapper<Inno72Shops> {
 
 	int getCount(@Param("code") String code);
 
+	Inno72ShopsVo selectVoByPrimaryKey(String id);
 }

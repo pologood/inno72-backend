@@ -22,6 +22,7 @@ import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72ShopsMapper;
 import com.inno72.project.model.Inno72Shops;
 import com.inno72.project.service.ShopsService;
+import com.inno72.project.vo.Inno72ShopsVo;
 import com.inno72.system.model.Inno72User;
 
 import tk.mybatis.mapper.entity.Condition;
@@ -155,6 +156,12 @@ public class ShopsServiceImpl extends AbstractService<Inno72Shops> implements Sh
 		params.put("sellerId", sellerId);
 		params.put("keyword", keyword);
 		return inno72ShopsMapper.selectMerchantShops(params);
+	}
+
+	@Override
+	public Result<Inno72ShopsVo> findVoById(String id) {
+		logger.info("---------------------获取商户店铺详情-------------------");
+		return Results.success(inno72ShopsMapper.selectVoByPrimaryKey(id));
 	}
 
 }
