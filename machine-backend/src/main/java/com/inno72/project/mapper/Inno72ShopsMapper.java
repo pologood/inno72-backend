@@ -12,7 +12,7 @@ import com.inno72.project.vo.Inno72ShopsVo;
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72ShopsMapper extends Mapper<Inno72Shops> {
 
-	List<Inno72Shops> selectByPage(Map<String, Object> params);
+	List<Inno72ShopsVo> selectByPage(Map<String, Object> params);
 
 	List<Inno72Shops> selectActivityShops(Map<String, Object> params);
 

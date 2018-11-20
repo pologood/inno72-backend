@@ -109,7 +109,7 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 
 		LOGGER.info("---------------------修改商户状态-------------------");
 
-		LOGGER.info("id status parameter -> {}", id, status);
+		LOGGER.info("id status parameter -> {} {}", id, status);
 
 		if (StringUtil.isEmpty(id) || StringUtil.isEmpty(status)){
 			return Results.failure("修改失败!");

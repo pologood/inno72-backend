@@ -74,7 +74,7 @@ public class ShopsController {
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView list(@RequestParam(required = false) String code,
 			@RequestParam(required = false) String keyword) {
-		List<Inno72Shops> list = shopsService.findByPage(code, keyword);
+		List<Inno72ShopsVo> list = shopsService.findByPage(code, keyword);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 

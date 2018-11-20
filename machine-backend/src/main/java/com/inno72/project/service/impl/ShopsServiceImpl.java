@@ -120,7 +120,7 @@ public class ShopsServiceImpl extends AbstractService<Inno72Shops> implements Sh
 	}
 
 	@Override
-	public List<Inno72Shops> findByPage(String code, String keyword) {
+	public List<Inno72ShopsVo> findByPage(String code, String keyword) {
 		logger.info("---------------------店铺分页列表查询-------------------");
 		Map<String, Object> params = new HashMap<String, Object>();
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);

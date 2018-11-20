@@ -20,7 +20,7 @@ public interface ShopsService extends Service<Inno72Shops> {
 
 	List<Inno72Shops> getList(Inno72Shops model);
 
-	List<Inno72Shops> findByPage(String code, String keyword);
+	List<Inno72ShopsVo> findByPage(String code, String keyword);
 
 	List<Inno72Shops> selectActivityShops(String activityId, String keyword);
 

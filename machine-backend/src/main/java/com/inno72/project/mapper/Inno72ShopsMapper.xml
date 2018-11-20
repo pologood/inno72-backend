@@ -33,13 +33,14 @@
         <result column="remark" jdbcType="VARCHAR" property="remark" />
         <result column="merchant_account_id" jdbcType="VARCHAR" property="merchantAccountId" />
         <result column="channel_name" jdbcType="VARCHAR" property="channelName" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
         <result column="create_id" jdbcType="VARCHAR" property="createId" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="update_id" jdbcType="VARCHAR" property="updateId" />
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     </resultMap>
 
-    <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+    <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseVoResultMap">
         SELECT
         s.id,
         s.shop_name,
@@ -54,9 +55,11 @@
         s.create_id,
         s.update_id,
         s.create_time,
-        s.update_time
+        s.update_time,
+        u.login_status as status
         FROM
         inno72_shops s LEFT JOIN inno72_merchant m on m.id = s.seller_id
+        left join inno72_merchant_user u on u.id = m.merchant_account_id
         WHERE s.is_delete = 0
         <if test="code !=null and code !='' and code !='undefined'">and s.seller_id = #{code}</if>
         <if test="keyword !=null and keyword !='' and keyword !='undefined'">
