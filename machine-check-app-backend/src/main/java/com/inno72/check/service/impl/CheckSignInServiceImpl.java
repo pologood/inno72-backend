@@ -92,7 +92,7 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
 			int type = vo.getType();
 			if (!signVoMap.containsKey(date)) {
 				signVoMap.put(date, vo);
-			} else if (type == 2) {
+			} else if (type == 1) {
 				signVoMap.put(date, vo);
 			}
 		}
