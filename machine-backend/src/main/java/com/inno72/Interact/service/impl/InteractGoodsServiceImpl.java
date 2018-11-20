@@ -34,7 +34,6 @@ import com.inno72.project.mapper.Inno72MerchantMapper;
 import com.inno72.project.mapper.Inno72ShopsMapper;
 import com.inno72.project.model.Inno72Coupon;
 import com.inno72.project.model.Inno72Goods;
-import com.inno72.project.model.Inno72Merchant;
 import com.inno72.project.model.Inno72Shops;
 import com.inno72.system.model.Inno72User;
 
@@ -194,21 +193,20 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 	}
 
 	// 微信渠道添加虚拟店铺
-	public Result<Object> wxChannlShops(String merchantId, String merchantIdss, String mUserId) {
+	public Result<Object> wxChannlShops(String merchantId, String interactId, String mUserId) {
 
 		try {
 			// 判断是是否微信渠道，微信则添加店铺
-			Inno72Interact m = inno72InteractMapper.selectByPrimaryKey(merchantId);
+			Inno72Interact m = inno72InteractMapper.selectByPrimaryKey(interactId);
 			if (m.getPaiyangType() == 2) {
 				// 已添加 已添加返回ID
 				Inno72Shops params = new Inno72Shops();
 				params.setSellerId(merchantId);
-				Inno72Shops shops = inno72ShopsMapper.select(params).get(0);
-				if (shops == null) {
-					Inno72Merchant merchant = inno72MerchantMapper.selectByPrimaryKey(merchantId);
-					shops = new Inno72Shops();
-					shops.setShopName(merchant.getMerchantName() + "店铺");
-					shops.setShopCode(merchant.getMerchantCode() + "DP");
+				List<Inno72Shops> shopsList = inno72ShopsMapper.select(params);
+				if (shopsList.size() == 0) {
+					Inno72Shops shops = new Inno72Shops();
+					shops.setShopName("微店");
+					shops.setShopCode("VD");
 					shops.setId(merchantId);
 					shops.setSellerId(merchantId);
 					shops.setIsDelete(0);
@@ -216,10 +214,11 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					shops.setUpdateId(mUserId);
 					shops.setCreateTime(LocalDateTime.now());
 					shops.setUpdateTime(LocalDateTime.now());
-					
+
 					inno72ShopsMapper.insertSelective(shops);
+					return Results.warn("微店ID", 0, shops.getId());
 				}
-				return Results.warn("店铺ID", 0, shops.getId());
+				return Results.warn("微店ID", 0, shopsList.get(0).getId());
 			} else {
 				return Results.failure("无需操作店铺");
 			}
