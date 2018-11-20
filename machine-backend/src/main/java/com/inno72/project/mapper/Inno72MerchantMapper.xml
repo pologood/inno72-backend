@@ -20,6 +20,7 @@
         <result column="merchant_account_id" jdbcType="VARCHAR" property="merchantAccountId"/>
         <result column="merchant_account_name" jdbcType="VARCHAR" property="merchantAccountName"/>
         <result column="wechat_qrcode_url" jdbcType="VARCHAR" property="wechatQrcodeUrl"/>
+        <result column="channel_name" jdbcType="VARCHAR" property="channelName"/>
     </resultMap>
 
     <resultMap id="BaseVoResultMap" type="com.inno72.project.vo.Inno72MerchantVo">
@@ -42,6 +43,7 @@
         <result column="merchant_account_name" jdbcType="VARCHAR" property="merchantAccountName"/>
         <result column="wechat_qrcode_url" jdbcType="VARCHAR" property="wechatQrcodeUrl"/>
         <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="channel_name" jdbcType="VARCHAR" property="channelName"/>
     </resultMap>
 
     <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseVoResultMap">
@@ -53,15 +55,15 @@
         m.merchant_account_name,
         m.brand_name,
         m.origin_flag,
-        c.channel_name as channel_id,
+        m.channel_id,
+        m.channel_name,
         m.sell_session_key,
         m.is_delete,
         m.create_time,
         m.update_time,
-        i.login_status as status
+        u.login_status as status
         FROM
         inno72_merchant m
-        LEFT JOIN inno72_channel c ON c.Id = m.channel_id
         LEFT JOIN inno72_merchant_user u ON u.id = m.merchant_account_id
         where m.is_delete = 0
         <if test="code !=null and code !=''">and m.channel_id = #{code}</if>

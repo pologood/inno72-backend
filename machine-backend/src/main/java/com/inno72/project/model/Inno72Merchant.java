@@ -70,6 +70,13 @@ public class Inno72Merchant {
 	private String channelId;
 
 	/**
+	 * 商户所属渠道
+	 */
+	@NotBlank(message = "请选择所属渠道")
+	@Column(name = "channel_name")
+	private String channelName;
+
+	/**
 	 * 新零售sessionKey
 	 */
 	@Column(name = "sell_session_key")
@@ -327,5 +334,13 @@ public class Inno72Merchant {
 
 	public void setWechatQrcodeUrl(String wechatQrcodeUrl) {
 		this.wechatQrcodeUrl = wechatQrcodeUrl;
+	}
+
+	public String getChannelName() {
+		return channelName;
+	}
+
+	public void setChannelName(String channelName) {
+		this.channelName = channelName;
 	}
 }
