@@ -24,12 +24,6 @@ public class Inno72Shops {
 	private String id;
 
 	/**
-	 * 商户ID
-	 */
-	@Column(name = "merchant_account_id")
-	private String merchantAccountId;
-
-	/**
 	 * 店铺名称
 	 */
 	@NotBlank(message = "请填写店铺名称")
@@ -307,11 +301,4 @@ public class Inno72Shops {
 		this.updateTime = updateTime;
 	}
 
-	public String getMerchantAccountId() {
-		return merchantAccountId;
-	}
-
-	public void setMerchantAccountId(String merchantAccountId) {
-		this.merchantAccountId = merchantAccountId;
-	}
 }

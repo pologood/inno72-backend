@@ -13,7 +13,6 @@
         <result column="focus_session_key" jdbcType="VARCHAR" property="focusSessionKey" />
         <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
         <result column="remark" jdbcType="VARCHAR" property="remark" />
-        <result column="merchant_account_id" jdbcType="VARCHAR" property="merchantAccountId" />
         <result column="create_id" jdbcType="VARCHAR" property="createId" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="update_id" jdbcType="VARCHAR" property="updateId" />
