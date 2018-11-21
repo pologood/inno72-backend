@@ -91,7 +91,7 @@
         co.id batchNo,
         co.create_time,
         goods.name goodsName,
-        sum((sch.after_count-sch.before_count)) subCount
+        sum(sch.supply_count) subCount
         from inno72_supply_channel_order co
         left join inno72_supply_channel_history sch on co.id=sch.batch_no
         inner join inno72_goods goods on sch.goods_id=goods.id
