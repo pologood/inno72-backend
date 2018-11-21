@@ -45,7 +45,6 @@ public class Inno72Merchant {
 	/**
 	 * 商户名称
 	 */
-	@NotBlank(message = "请填写品牌名称")
 	@Column(name = "brand_name")
 	private String brandName;
 
