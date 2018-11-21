@@ -55,6 +55,16 @@
     LEFT JOIN inno72_locale t4 ON t4.id = t1.locale_id
     LEFT JOIN inno72_admin_area t5 ON t5.CODE = t4.area_code
     where t2.check_user_id = #{checkUserId}
+    <if test="keyword != null">
+        and (t1.machine_code like '%${keyword}%'
+          or t5.province like '%${keyword}%'
+          or t5.city like '%${keyword}%'
+          or t5.district like '%${keyword}%'
+          or t5.circle like '%${keyword}%'
+          or t4.mall like '%${keyword}%'
+          or t4.name like '%${keyword}%'
+        )
+    </if>
     order by t3.create_time desc
   </select>
 

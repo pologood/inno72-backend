@@ -12,7 +12,7 @@ import com.inno72.common.Mapper;
 public interface Inno72CheckSignInMapper extends Mapper<Inno72CheckSignIn> {
 	List<Inno72CheckSignIn> selectByMonth(Map<String, Object> map);
 
-	List<MachineSignInVo> selectMachineSignList(String id);
+	List<MachineSignInVo> selectMachineSignList(Map<String,Object> map);
 
 	List<SignVo> selectMonth(Map<String, Object> map);
 

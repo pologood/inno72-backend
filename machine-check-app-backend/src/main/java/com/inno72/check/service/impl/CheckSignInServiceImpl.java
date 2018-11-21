@@ -117,8 +117,14 @@ public class CheckSignInServiceImpl extends AbstractService<Inno72CheckSignIn> i
 	}
 
 	@Override
-	public Result<List<MachineSignInVo>> findMachineSignList() {
-		List<MachineSignInVo> list = checkSignInMapper.selectMachineSignList(UserUtil.getUser().getId());
+	public Result<List<MachineSignInVo>> findMachineSignList(Inno72Machine machine) {
+		String keyword = machine.getKeyword();
+		Map<String,Object> map = new HashMap<>();
+		map.put("checkUserId",UserUtil.getUser().getId());
+		if(StringUtil.isNotEmpty(keyword)){
+			map.put("keyword",keyword);
+		}
+		List<MachineSignInVo> list = checkSignInMapper.selectMachineSignList(map);
 		if (list != null && list.size() > 0) {
 			for (MachineSignInVo vo : list) {
 				List<Inno72CheckSignIn> signInList = vo.getSignInList();
