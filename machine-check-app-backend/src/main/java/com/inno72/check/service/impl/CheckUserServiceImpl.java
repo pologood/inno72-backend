@@ -131,7 +131,7 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         // 缓存用户登录sessionData
         redisUtil.set(userInfoKey, JsonUtil.toJson(sessionData));
         redisUtil.expire(userInfoKey, CommonConstants.SESSION_DATA_EXP);
-		redisUtil.sadd(CommonConstants.USER_LOGIN_CACHE_KEY_PREF+user.getId(),token);
+		redisUtil.sadd(CommonConstants.USER_LOGIN_USER_TOKEY_PREF+user.getId(),token);
         return Results.success(sessionData);
 
     }
