@@ -28,6 +28,7 @@
           WARNING - @mbg.generated
         -->
         <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="merchant_id" jdbcType="VARCHAR" property="merchantId" />
         <result column="merchant_code" jdbcType="VARCHAR" property="merchantCode" />
         <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
         <result column="origin_flag" jdbcType="VARCHAR" property="originFlag" />
@@ -53,6 +54,7 @@
         m.merchant_name,
         m.merchant_account_id,
         m.merchant_account_name,
+        u.merchant_id,
         m.brand_name,
         m.origin_flag,
         m.channel_id,
@@ -68,7 +70,12 @@
         where m.is_delete = 0
         <if test="code !=null and code !=''">and m.channel_id = #{code}</if>
         <if test="keyword !=null and keyword !='' and keyword !='undefined'">
-            and ( m.merchant_code LIKE '%${keyword}%' or m.merchant_name LIKE '%${keyword}%' or m.brand_name LIKE '%${keyword}%' or m.origin_flag LIKE '%${keyword}%' )
+            and ( m.merchant_code LIKE '%${keyword}%'
+            or m.merchant_name LIKE '%${keyword}%'
+            or m.brand_name LIKE '%${keyword}%'
+            or m.channel_name LIKE '%${keyword}%'
+            or u.merchant_id LIKE '%${keyword}%'
+            )
         </if>
         ORDER BY m.update_time DESC
     </select>
