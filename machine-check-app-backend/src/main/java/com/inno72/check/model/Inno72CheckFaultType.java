@@ -54,6 +54,9 @@ public class Inno72CheckFaultType {
 	@Transient
 	private String type;
 
+	@Transient
+	private List<ChildFaultType> childFaultTypeList;
+
     public String getCode() {
         return code;
     }
@@ -140,5 +143,13 @@ public class Inno72CheckFaultType {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public List<ChildFaultType> getChildFaultTypeList() {
+		return childFaultTypeList;
+	}
+
+	public void setChildFaultTypeList(List<ChildFaultType> childFaultTypeList) {
+		this.childFaultTypeList = childFaultTypeList;
 	}
 }

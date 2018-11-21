@@ -15,7 +15,19 @@
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     <result column="submit_type" jdbcType="INTEGER" property="submitType" />
+    <association property="childFaultTypeList" resultMap="childFaultTypeList"/>
   </resultMap>
 
+  <resultMap id="childFaultTypeList" type="com.inno72.check.model.ChildFaultType">
+      <result column="childCode" jdbcType="VARCHAR" property="childCode"/>
+      <result column="childName" jdbcType="VARCHAR" property="childName"/>
+      <result column="childLevel" jdbcType="INTEGER" property="childLevel"/>
+  </resultMap>
+  <select id="selectFaultInfo" resultMap="BaseResultMap">
+      select cft1.code,cft1.name,cft1.level,cft1.submit_type,
+      cft2.code childCode,cft2.name childName,cft2.level childLevel
+      from inno72_check_fault_type cft1
+      left join inno72_check_fault_type cft2 on cft1.code=cft2.parent_code
+  </select>
 
 </mapper>

@@ -8,4 +8,5 @@ import java.util.Map;
 
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72CheckFaultTypeMapper extends Mapper<Inno72CheckFaultType> {
+	List<Inno72CheckFaultType> selectFaultInfo();
 }

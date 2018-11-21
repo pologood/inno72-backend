@@ -417,4 +417,10 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		return ResultGenerator.genSuccessResult();
 	}
 
+	@Override
+	public Result<List<Inno72CheckFaultType>> selectFaultInfo() {
+		List<Inno72CheckFaultType> list = inno72CheckFaultTypeMapper.selectFaultInfo();
+		return ResultGenerator.genSuccessResult(list);
+	}
+
 }
