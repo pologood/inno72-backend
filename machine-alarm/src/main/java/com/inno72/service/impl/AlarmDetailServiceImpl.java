@@ -232,33 +232,34 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 									textBeaf = "您好，"+localeStr+"，机器编号："+machineCode+"，";
 									text = "网络已经连续10分钟未连接成功，请及时联系巡检人员。";
 									alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_NET,machineCode,textBeaf,text,inno72CheckUserPhones);
+									param.put("text",StringUtil.setText(textBeaf+text,active));
+									if(group != null){
+										msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId1(), "machineAlarm-AlarmDetailService");
+										logger.info("网络连接异常发送钉钉消息："+group.getGroupId1());
+										AlarmSendBean alarmSendBean = new AlarmSendBean();
+										alarmSendBean.setId(StringUtil.getUUID());
+										alarmSendBean.setInfo(textBeaf+text);
+										alarmSendBean.setLevel(level);
+										alarmSendBean.setMachineId(bean.getMachineId());
+										alarmSendBean.setMachineCode(machineCode);
+										alarmSendBean.setType(type);
+										if(detailBean != null){
+											alarmSendBean.setRemark(detailBean.getRemark());
+											alarmSendBean.setPageInfo(detailBean.getPageInfo());
+										}
+										alarmSendBean.setLocaleStr(localeStr);
+										alarmSendBean.setCreateTime(new Date());
+										mongoUtil.save(alarmSendBean,"AlarmSendBean");
+										text = "网络异常，提醒方式：钉钉，内容："+text;
+										StringUtil.logger(CommonConstants.LOG_TYPE_CONNECT,machineCode,text);
+									}
 								}
 
 							}else if(level == 2){
 								textBeaf = "您好，"+localeStr+"，机器编号："+machineCode+"，";
 								text = "网络已经连续30分钟未连接成功，请及时联系巡检人员。";
 							}
-							param.put("text",StringUtil.setText(textBeaf+text,active));
-							if(group != null){
-								msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId1(), "machineAlarm-AlarmDetailService");
-								logger.info("网络连接异常发送钉钉消息："+group.getGroupId1());
-								AlarmSendBean alarmSendBean = new AlarmSendBean();
-								alarmSendBean.setId(StringUtil.getUUID());
-								alarmSendBean.setInfo(textBeaf+text);
-								alarmSendBean.setLevel(level);
-								alarmSendBean.setMachineId(bean.getMachineId());
-								alarmSendBean.setMachineCode(machineCode);
-								alarmSendBean.setType(type);
-								if(detailBean != null){
-									alarmSendBean.setRemark(detailBean.getRemark());
-									alarmSendBean.setPageInfo(detailBean.getPageInfo());
-								}
-								alarmSendBean.setLocaleStr(localeStr);
-								alarmSendBean.setCreateTime(new Date());
-								mongoUtil.save(alarmSendBean,"AlarmSendBean");
-								text = "网络异常，提醒方式：钉钉，内容："+text;
-								StringUtil.logger(CommonConstants.LOG_TYPE_CONNECT,machineCode,text);
-							}
+
 						}
 					}
 					Query removeQuery = new Query();
