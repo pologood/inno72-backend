@@ -200,7 +200,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 								String [] heartArray = heart.split(",");
 								if(level<=heartArray.length){
 									text = "出现页面加载异常，已经持续"+heartArray[level-1]+"分钟"+pageInfo+"，请及时联系巡检人员。";
-									param.put("text",StringUtil.setText(text,active));
+									param.put("text",StringUtil.setText(textBeaf+text,active));
 									if(group != null){
 										msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId1(), "machineAlarm-AlarmDetailService");
 										logger.info("心跳异常发送钉钉消息："+group.getGroupId1());
