@@ -354,7 +354,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 		exceptionBean.setMachineCode(bean.getMachineCode());
 		exceptionBean.setLocaleStr(bean.getLocaleStr());
 		exceptionBean.setCreateTime(now);
-		if(StringUtil.isEmpty(value) && sub>=10){//间隔时间大于10分钟
+		if(StringUtil.isEmpty(value) && sub>=1){//间隔时间大于10分钟
 			exceptionBean.setLevel(1);
 			mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
 			logger.info("超过10分钟未发送连接的机器，编号为：{}",bean.getMachineCode());
