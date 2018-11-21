@@ -242,5 +242,6 @@
             or m.machine_code like '%${keyword}%'
             )
         </if>
+        order by m.update_time desc
     </select>
 </mapper>
