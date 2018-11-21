@@ -135,6 +135,9 @@ public class Inno72Machine {
 	private String areaCode;
 
 	@Transient
+	private String activityName;
+
+	@Transient
 	private List<SupplyChannelVo> supplyChannelVoList;
 
 	@Transient
@@ -516,5 +519,13 @@ public class Inno72Machine {
 
 	public void setAreaCode(String areaCode) {
 		this.areaCode = areaCode;
+	}
+
+	public String getActivityName() {
+		return activityName;
+	}
+
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
 	}
 }
