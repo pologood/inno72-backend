@@ -21,4 +21,6 @@ public interface Inno72MerchantUserService extends Service<Inno72MerchantUser> {
 	List<Inno72MerchantUserVo> findByPage(String keyword);
 
 	Result resetPwd(Inno72MerchantUser user);
+
+	Result<List<Inno72MerchantUser>> getList(Inno72MerchantUser user);
 }

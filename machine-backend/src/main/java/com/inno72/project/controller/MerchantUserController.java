@@ -78,6 +78,16 @@ public class MerchantUserController {
 		return inno72MerchantUserService.alterStatus(id, status);
 	}
 
+
+	/**
+	 * 查询商户列表
+	 * @return
+	 */
+	@RequestMapping(value = "/inno72/merchant/user/getList")
+	public Result<List<Inno72MerchantUser>> getList(Inno72MerchantUser user){
+		return inno72MerchantUserService.getList(user);
+	}
+
 	/**
 	 * 分页查询
 	 *

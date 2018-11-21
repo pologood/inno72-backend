@@ -26,11 +26,14 @@ import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.common.datetime.LocalDateTimeUtil;
 import com.inno72.project.mapper.Inno72MerchantUserMapper;
+import com.inno72.project.model.Inno72Merchant;
 import com.inno72.project.model.Inno72MerchantUser;
 import com.inno72.project.service.Inno72MerchantUserService;
 import com.inno72.project.vo.Inno72MerchantUserVo;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.system.model.Inno72User;
+
+import tk.mybatis.mapper.entity.Condition;
 
 
 /**
@@ -183,6 +186,13 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 		inno72MerchantUserMapper.updateByPrimaryKeySelective(curUser);
 
 		return Results.success();
+	}
+
+	@Override
+	public Result<List<Inno72MerchantUser>> getList(Inno72MerchantUser model) {
+		Condition condition = new Condition(Inno72MerchantUser.class);
+		condition.createCriteria().andEqualTo(model);
+		return Results.success(super.findByCondition(condition));
 	}
 
 	private String genMerchantCode(){
