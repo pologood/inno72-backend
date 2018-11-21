@@ -268,6 +268,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 								}
 								alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_LACKGOODS,machineCode,textBeaf,text,inno72CheckUserPhones);
 								pushFlag = false;
+								break;
 							}
 						}
 					}
