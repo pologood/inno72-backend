@@ -21,6 +21,7 @@
         <result column="monitor_start" jdbcType="VARCHAR" property="monitorStart"/>
         <result column="monitor_end" jdbcType="VARCHAR" property="monitorEnd"/>
         <result column="areaCode" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
         <association property="checkUserList" resultMap="checkUserList"/>
     </resultMap>
 
