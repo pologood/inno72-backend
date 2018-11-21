@@ -6,11 +6,15 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.inno72.model.Inno72CheckUser;
 import com.inno72.service.CheckUserService;
 
+@Configuration
+@EnableScheduling
 public class CheckSmsTask {
 	@Resource
 	private CheckUserService checkUserService;
