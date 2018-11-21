@@ -228,6 +228,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 						}
 					}
 					Boolean pushFlag = false;
+					log.info("缺货报警剩余商品数量"+surPlusNum);
 					String info = alarmParam.getParam();
 					if(StringUtil.isNotEmpty(info)){
 						String[] infoArray = info.split(",");
