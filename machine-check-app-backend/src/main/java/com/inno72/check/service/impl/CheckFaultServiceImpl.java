@@ -227,18 +227,28 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 
 	@Override
 	public Result<String> finish(Inno72CheckFault checkFault) {
+		Inno72CheckFault dataFault = inno72CheckFaultMapper.selectByPrimaryKey(checkFault.getId());
+		Inno72CheckUser user = UserUtil.getUser();
+		String userId = user.getId();
+		if(dataFault == null){
+			return Results.failure("数据有误");
+		}
+		String receiveId = dataFault.getReceiveId();
+		if(!userId.equals(receiveId)){
+			return Results.failure("您没有权限操作");
+		}
 		Inno72CheckFault upCheckFault = new Inno72CheckFault();
 		upCheckFault.setId(checkFault.getId());
 		upCheckFault.setFinishRemark(checkFault.getFinishRemark());
 		upCheckFault.setFinishTime(LocalDateTime.now());
 		upCheckFault.setStatus(3);// 已完成
-		upCheckFault.setFinishId(UserUtil.getUser().getId());
-		upCheckFault.setFinishUser(UserUtil.getUser().getName());
+		upCheckFault.setFinishId(receiveId);
+		upCheckFault.setFinishUser(user.getName());
 		upCheckFault.setUpdateTime(LocalDateTime.now());
 		inno72CheckFaultMapper.updateByPrimaryKeySelective(upCheckFault);
 		Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
 		String remarkId = StringUtil.getUUID();
-		Inno72CheckUser user = UserUtil.getUser();
+
 		faultRemark.setId(remarkId);
 		faultRemark.setUserId(user.getId());
 		faultRemark.setName(user.getName());
