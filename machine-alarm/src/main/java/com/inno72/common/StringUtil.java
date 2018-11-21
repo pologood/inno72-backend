@@ -99,12 +99,12 @@ public class StringUtil {
 	}
 
 	public static Boolean senSmsActive(String active) {
-		return true;
-//		if (StringUtil.isNotEmpty(active) && (active.equals("prod") || active.equals("stage"))) {
-//			return true;
-//		} else {
-//			return false;
-//		}
+//		return true;
+		if (StringUtil.isNotEmpty(active) && (active.equals("prod") || active.equals("stage"))) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
