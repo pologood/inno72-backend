@@ -370,7 +370,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 					inno72Goods.setSupplyChannelVoList(null);
 					inno72Goods.setImg(ImageUtil.getLongImageUrl(inno72Goods.getImg()));
 					inno72Goods.setTotalGoodsCount(totalGoodsCount);
-					resultList.add(inno72Goods);
+					if(totalVolumeCount != totalGoodsCount){
+						resultList.add(inno72Goods);
+					}
 				}
 			}
 		}
