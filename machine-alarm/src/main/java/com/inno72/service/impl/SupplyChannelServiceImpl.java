@@ -232,7 +232,6 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 					String info = alarmParam.getParam();
 					if(StringUtil.isNotEmpty(info)){
 						String[] infoArray = info.split(",");
-						log.info("缺货报警色织param"+infoArray);
 						String lackKey = "lackGoods:"+machineCode+":"+lackGoodsBean.getGoodsId();
 						for(int i=0;i<infoArray.length;i++){
 							int count = Integer.parseInt(infoArray[i]);
