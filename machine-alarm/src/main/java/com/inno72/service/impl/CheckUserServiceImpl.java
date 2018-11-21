@@ -64,23 +64,27 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 
 	@Override
 	public void sendSmsToCheck(List<Inno72CheckUser> checkUserList) {
-		Map<String, String> params = new HashMap<>();
-    	for(Inno72CheckUser checkUser:checkUserList){
-			String phone = checkUser.getPhone();
-			int unReadCount = checkUser.getUnReadCount();
-			if(StringUtil.isNotEmpty(phone) && unReadCount>0){
-				String text = "【互动管家】尊敬的用户，您的互动管家中有"+unReadCount+"条未处理的消息 请尽快处理！";
-				params.put("msg",text);
-				msgUtil.sendSMS("check_msg_count_sms",params,phone,"machineAlarm-RedisReceiver");
-				Inno72Sms inno72Sms = new Inno72Sms();
-				inno72Sms.setId(StringUtil.getUUID());
-				inno72Sms.setUserType(1);
-				inno72Sms.setPhone(phone);
-				inno72Sms.setText(text);
-				inno72Sms.setCreateTime(LocalDateTime.now());
-				inno72SmsMapper.insertSelective(inno72Sms);
+		String active = System.getenv("spring_profiles_active");
+		if(StringUtil.senSmsActive(active)){
+			Map<String, String> params = new HashMap<>();
+			for(Inno72CheckUser checkUser:checkUserList){
+				String phone = checkUser.getPhone();
+				int unReadCount = checkUser.getUnReadCount();
+				if(StringUtil.isNotEmpty(phone) && unReadCount>0){
+					String text = "【互动管家】尊敬的用户，您的互动管家中有"+unReadCount+"条未处理的消息 请尽快处理！";
+					params.put("msg",text);
+					msgUtil.sendSMS("check_msg_count_sms",params,phone,"machineAlarm-RedisReceiver");
+					Inno72Sms inno72Sms = new Inno72Sms();
+					inno72Sms.setId(StringUtil.getUUID());
+					inno72Sms.setUserType(1);
+					inno72Sms.setPhone(phone);
+					inno72Sms.setText(text);
+					inno72Sms.setCreateTime(LocalDateTime.now());
+					inno72SmsMapper.insertSelective(inno72Sms);
+				}
 			}
 		}
+
 	}
 
 	@Override
