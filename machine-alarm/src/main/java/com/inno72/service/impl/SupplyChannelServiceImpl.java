@@ -112,32 +112,32 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		String active = System.getenv("spring_profiles_active");
 		Inno72AlarmParam alarmParam = alarmParamService.findByAlarmType(1);
 		for(AlarmDropGoodsBean dropGoodsBean:list){
-			if(alarmParam != null){
-				String machineCode = dropGoodsBean.getMachineCode();
-				Inno72Machine machine = machineService.findByCode(machineCode);
-				Inno72AlarmGroup group = alarmGroupService.selectByParam(machine.getAreaCode());
-				Boolean alarmFlag = setAlarmFlag(machine);
-				log.info("继续执行掉货异常报警。。。。");
+			String machineCode = dropGoodsBean.getMachineCode();
+			Inno72Machine machine = machineService.findByCode(machineCode);
+			Inno72AlarmGroup group = alarmGroupService.selectByParam(machine.getAreaCode());
+			Boolean alarmFlag = setAlarmFlag(machine);
+			log.info("继续执行掉货异常报警。。。。");
 
-				List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
-				String channelNum = dropGoodsBean.getChannelNum();
-				String[] channelArray = null;
-				if (StringUtil.isNotEmpty(channelNum)) {
-					channelArray = channelNum.split(",");
+			List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
+			String channelNum = dropGoodsBean.getChannelNum();
+			String[] channelArray = null;
+			if (StringUtil.isNotEmpty(channelNum)) {
+				channelArray = channelNum.split(",");
+			}
+			String localStr = machine.getLocaleStr();
+			List<Inno72SupplyChannel> supplyChannelList = this.selectByParam(machine.getId(),
+					channelArray);
+			String goodsId = null;
+			String goodsName = null;
+			if (supplyChannelList != null && supplyChannelList.size() > 0) {
+				for (Inno72SupplyChannel inno72SupplyChannel : supplyChannelList) {
+					inno72SupplyChannel.setIsDelete(1);
+					goodsName = inno72SupplyChannel.getGoodsName();
+					goodsId = inno72SupplyChannel.getGoodsId();
+					this.closeSupply(inno72SupplyChannel);// 锁货道
 				}
-				String localStr = machine.getLocaleStr();
-				List<Inno72SupplyChannel> supplyChannelList = this.selectByParam(machine.getId(),
-						channelArray);
-				String goodsId = null;
-				String goodsName = null;
-				if (supplyChannelList != null && supplyChannelList.size() > 0) {
-					for (Inno72SupplyChannel inno72SupplyChannel : supplyChannelList) {
-						inno72SupplyChannel.setIsDelete(1);
-						goodsName = inno72SupplyChannel.getGoodsName();
-						goodsId = inno72SupplyChannel.getGoodsId();
-						this.closeSupply(inno72SupplyChannel);// 锁货道
-					}
-				}
+			}
+			if(alarmParam != null){
 				List<Inno72SupplyChannel> normalSupplyList = this.selectNormalSupply(machine.getId(),
 						goodsId);
 				if (alarmFlag) {
