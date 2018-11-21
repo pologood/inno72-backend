@@ -255,6 +255,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 								redisUtil.sadd(lackKey,count);
 								break;
 							}
+							log.info("缺货发送报警标记"+pushFlag);
 							if(pushFlag){
 								String textBeaf = "您好，" + machine.getLocaleStr() + "，机器编号：" + machineCode + "，";
 								text =  goodsInfo+ "请及时联系巡检人员补货";
