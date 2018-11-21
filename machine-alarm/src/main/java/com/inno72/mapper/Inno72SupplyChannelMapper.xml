@@ -92,7 +92,7 @@
         LEFT JOIN inno72_machine m ON sc.machine_id = m.id
         LEFT JOIN inno72_locale l ON l.id = m.locale_id
         LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code
-        LEFT JOIN view_machine_goods vmg on vmg.machine_id=m.id
+        LEFT JOIN view_machine_goods vmg on vmg.machine_id=m.id and vmg.goods_id=scg.goods_id
         WHERE
         m.machine_status = 4
         AND scg.goods_id = #{goodsId}
