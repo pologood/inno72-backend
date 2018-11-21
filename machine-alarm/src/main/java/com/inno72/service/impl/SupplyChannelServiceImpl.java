@@ -245,17 +245,14 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 										redisUtil.srem(lackKey,count);
 									}
 								}
-								break;
 							}else if(surPlusNum < count){
 								if(!flag){
 									redisUtil.sadd(lackKey,count);
 									pushFlag = true;
-									break;
 								}
 							}else{
 								pushFlag = true;
 								redisUtil.sadd(lackKey,count);
-								break;
 							}
 							log.info("缺货发送报警标记"+pushFlag);
 							if(pushFlag){
