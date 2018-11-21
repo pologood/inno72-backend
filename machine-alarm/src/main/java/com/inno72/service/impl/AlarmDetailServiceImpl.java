@@ -20,6 +20,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.DateUtil;
 import com.inno72.common.StringUtil;
@@ -162,6 +163,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 	@Override
 	public void sendExceptionMachineAlarm() {
 		List<AlarmExceptionMachineBean> list = mongoUtil.find(new Query(),AlarmExceptionMachineBean.class,"AlarmExceptionMachineBean");
+		logger.info("发送网络或心跳获取MongoDB数据"+JSON.toJSONString(list));
 		String active = System.getenv("spring_profiles_active");
 		if(list != null && list.size()>0){
 			Map<String,Object> paramMap = new HashMap<>();
