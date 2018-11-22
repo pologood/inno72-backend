@@ -82,6 +82,6 @@
     left join inno72_check_fault_remark t4 on t1.id=t4.fault_id
     left join inno72_check_fault_image t5 on t4.id=t5.remark_id
     left join inno72_check_fault_type t6 on t1.type=t6.code
-    where t1.id = #{faultId} order by t4.create_time desc,t5.sort
+    where t1.id = #{faultId} order by t4.create_time,t5.sort
   </select>
 </mapper>
