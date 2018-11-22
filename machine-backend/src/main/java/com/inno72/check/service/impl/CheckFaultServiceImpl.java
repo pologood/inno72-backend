@@ -108,6 +108,18 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			model.setTitle(title + urgentType + typeStr);
 
 			inno72CheckFaultMapper.insert(model);
+
+			Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
+			faultRemark.setId(StringUtil.getUUID());
+			faultRemark.setFaultId(model.getId());
+			faultRemark.setRemark(model.getRemark());
+			faultRemark.setUserId(mUserId);
+			faultRemark.setName(mUser.getName());
+			faultRemark.setType(2);
+			faultRemark.setCreateTime(LocalDateTime.now());
+			faultRemark.setIsDelete(0);
+			inno72CheckFaultRemarkMapper.insert(faultRemark);
+
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 			return Results.failure("操作失败");
