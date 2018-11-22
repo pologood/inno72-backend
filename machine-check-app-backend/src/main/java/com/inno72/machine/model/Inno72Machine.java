@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Table(name = "inno72_machine")
-public class Inno72Machine {
+public class Inno72Machine implements Comparable<Inno72Machine>{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private String id;
@@ -151,6 +151,14 @@ public class Inno72Machine {
 
 	@Transient
 	private List<Inno72AlarmMsg> alarmMsgList;
+
+	@Override
+	public int compareTo(Inno72Machine o) {
+		if(o.getLackGoodsStatus()>this.getLackGoodsStatus()){
+			return -1;
+		}
+		return 1;
+	}
 
 	public enum Machine_Status {
 		// 在厂测试
