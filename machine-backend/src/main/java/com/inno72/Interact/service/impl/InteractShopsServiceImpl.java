@@ -61,10 +61,7 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
-			if (null == model.getIsVip()) {
-				logger.info("选择是否入会");
-				return Results.failure("选择是否入会");
-			}
+
 			List<ShopsVo> shops = model.getShops();
 			if (shops.size() == 0) {
 				logger.info("请添加店铺");
