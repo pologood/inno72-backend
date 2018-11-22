@@ -216,6 +216,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 				Inno72CheckFault checkFault = inno72CheckFaultMapper.selectByPrimaryKey(id);
 				checkFault.setSubmitUser(mUser.getName());
 				checkFault.setSubmitId(userId);
+				checkFault.setStatus(2);
 				checkFault.setSubmitTime(LocalDateTime.now());
 				checkFault.setReceiveId(receiveUser.getId());
 				checkFault.setReceiveUser(receiveUser.getName());
