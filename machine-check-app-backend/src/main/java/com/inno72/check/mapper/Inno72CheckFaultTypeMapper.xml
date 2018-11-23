@@ -28,6 +28,7 @@
       cft2.code childCode,cft2.name childName,cft2.level childLevel
       from inno72_check_fault_type cft1
       left join inno72_check_fault_type cft2 on cft1.code=cft2.parent_code
+      where cft1.level=1
   </select>
 
 </mapper>
