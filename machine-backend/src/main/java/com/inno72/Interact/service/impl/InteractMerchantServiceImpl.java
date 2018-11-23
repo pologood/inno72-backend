@@ -110,6 +110,30 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 	}
 
 	@Override
+	public Result<String> update(String interactId, String merchantId, Integer isFocus) {
+		try {
+			SessionData session = SessionUtil.sessionData.get();
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+
+			Inno72InteractMerchant interactMerchant = new Inno72InteractMerchant();
+			interactMerchant.setMerchantId(merchantId);
+			interactMerchant.setInteractId(interactId);
+
+			interactMerchant.setIsFocus(isFocus);
+			inno72InteractMerchantMapper.updateByPrimaryKeySelective(interactMerchant);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+		return Results.success("操作成功");
+	}
+
+	@Override
 	public List<MerchantVo> getList(String interactId) {
 		logger.info("---------------------获取活动下商户列表-------------------");
 		return inno72InteractMerchantMapper.selectMerchantByInteractId(interactId);

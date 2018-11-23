@@ -31,4 +31,6 @@ public interface InteractMerchantService extends Service<Inno72InteractMerchant>
 
 	List<Map<String, Object>> checkMerchant(String interactId, String merchantAccountId);
 
+	Result<String> update(String interactId, String merchantId, Integer isFocus);
+
 }

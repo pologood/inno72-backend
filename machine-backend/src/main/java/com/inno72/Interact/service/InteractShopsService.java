@@ -24,4 +24,6 @@ public interface InteractShopsService extends Service<Inno72InteractShops> {
 
 	List<Map<String, Object>> checkShops(String sellerId);
 
+	Result<String> update(String interactId, String shopsId, Integer isVip);
+
 }

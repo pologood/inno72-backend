@@ -97,6 +97,30 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 	}
 
 	@Override
+	public Result<String> update(String interactId, String shopsId, Integer isVip) {
+		try {
+			SessionData session = SessionUtil.sessionData.get();
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+
+			Inno72InteractShops interactShops = new Inno72InteractShops();
+			interactShops.setShopsId(shopsId);
+			interactShops.setInteractId(interactId);
+
+			interactShops.setIsVip(isVip);
+			inno72InteractShopsMapper.updateByPrimaryKeySelective(interactShops);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+		return Results.success("操作成功");
+	}
+
+	@Override
 	public List<ShopsVo> getList(String interactId, String merchantId) {
 		logger.info("---------------------获取商户下店铺列表-------------------");
 

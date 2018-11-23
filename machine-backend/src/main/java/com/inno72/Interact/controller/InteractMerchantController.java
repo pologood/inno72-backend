@@ -49,6 +49,11 @@ public class InteractMerchantController {
 		return interactMerchantService.save(interactMerchant);
 	}
 
+	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> update(String interactId, String merchantId, Integer isFocus) {
+		return interactMerchantService.update(interactId, merchantId, isFocus);
+	}
+
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<Inno72Merchant> detail(@RequestParam String id) {
 		Inno72Merchant interactMerchant = interactMerchantService.findMerchantsById(id);

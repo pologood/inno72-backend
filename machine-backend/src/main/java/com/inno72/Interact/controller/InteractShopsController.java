@@ -45,6 +45,11 @@ public class InteractShopsController {
 		return interactShopsService.save(interactShops);
 	}
 
+	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> update(String interactId, String shopsId, Integer isVip) {
+		return interactShopsService.update(interactId, shopsId, isVip);
+	}
+
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> delete(String interactId, String shopsId) {
 		return interactShopsService.deleteById(interactId, shopsId);
