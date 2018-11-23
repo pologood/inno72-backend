@@ -12,7 +12,7 @@ public class InteractMerchantVo {
 	/**
 	 * 添加的商户
 	 */
-	private List<Merchant> merchants;
+	private List<MerchantVo> merchants;
 
 	public String getInteractId() {
 		return interactId;
@@ -22,11 +22,11 @@ public class InteractMerchantVo {
 		this.interactId = interactId;
 	}
 
-	public List<Merchant> getMerchants() {
+	public List<MerchantVo> getMerchants() {
 		return merchants;
 	}
 
-	public void setMerchants(List<Merchant> merchants) {
+	public void setMerchants(List<MerchantVo> merchants) {
 		this.merchants = merchants;
 	}
 

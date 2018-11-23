@@ -25,6 +25,11 @@ public class Inno72Interact {
 	private String name;
 
 	/**
+	 * 活动渠道
+	 */
+	private String channel;
+
+	/**
 	 * 派样类型：0普通派样，1新零售
 	 */
 	private Integer paiyangType;
@@ -143,6 +148,14 @@ public class Inno72Interact {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
 	}
 
 	public Integer getPaiyangType() {

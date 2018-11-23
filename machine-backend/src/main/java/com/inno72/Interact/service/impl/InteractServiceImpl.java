@@ -29,7 +29,7 @@ import com.inno72.Interact.vo.Inno72InteractVo;
 import com.inno72.Interact.vo.InteractListVo;
 import com.inno72.Interact.vo.InteractRuleVo;
 import com.inno72.Interact.vo.MachineVo;
-import com.inno72.Interact.vo.Merchant;
+import com.inno72.Interact.vo.MerchantVo;
 import com.inno72.Interact.vo.TreeVo;
 import com.inno72.common.AbstractService;
 import com.inno72.common.CommonConstants;
@@ -101,13 +101,20 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			model.setCreateTime(LocalDateTime.now());
 			model.setUpdateTime(LocalDateTime.now());
 
+			if (StringUtil.isBlank(model.getName())) {
+				logger.info("请填写互派名称");
+				return Results.failure("请填写互派名称");
+			}
 			if (type == 1) {
 				// 下一步
-				if (StringUtil.isBlank(model.getName())) {
-					logger.info("请填写互派名称");
-					return Results.failure("请填写互派名称");
+				if (StringUtil.isBlank(model.getChannel())) {
+					logger.info("请选择渠道");
+					return Results.failure("请选择渠道");
 				}
-
+				if (null == model.getPaiyangType()) {
+					logger.info("请选择活动类型");
+					return Results.failure("请选择活动类型");
+				}
 				if (StringUtil.isBlank(model.getGameId())) {
 					logger.info("请选择游戏");
 					return Results.failure("请选择游戏");
@@ -153,7 +160,15 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 				// 下一步
 				if (StringUtil.isBlank(model.getName())) {
 					logger.info("请填写互派名称");
-					return Results.failure("请填写互派名称");
+					return Results.failure("请选择渠道");
+				}
+				if (StringUtil.isBlank(model.getChannel())) {
+					logger.info("请选择渠道");
+					return Results.failure("请选择渠道");
+				}
+				if (null == model.getPaiyangType()) {
+					logger.info("请选择活动类型");
+					return Results.failure("请选择活动类型");
 				}
 
 				if (StringUtil.isBlank(model.getPlanCode())) {
@@ -371,11 +386,11 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 	@Override
 	public List<TreeVo> merchantTree(String interactId) {
 
-		List<Merchant> merchantList = inno72InteractMerchantMapper.selectMerchantByInteractId(interactId);
+		List<MerchantVo> merchantList = inno72InteractMerchantMapper.selectMerchantByInteractId(interactId);
 
 		List<TreeVo> firstList = new ArrayList<>();
 
-		for (Merchant interactMerchantVo : merchantList) {
+		for (MerchantVo interactMerchantVo : merchantList) {
 
 			TreeVo first = new TreeVo();
 			first.setKey(interactMerchantVo.getId());

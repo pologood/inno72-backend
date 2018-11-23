@@ -15,15 +15,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inno72.Interact.mapper.Inno72InteractMapper;
 import com.inno72.Interact.mapper.Inno72InteractMerchantMapper;
+import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.model.Inno72InteractMerchant;
 import com.inno72.Interact.service.InteractMerchantService;
 import com.inno72.Interact.vo.Inno72NeedExportStore;
 import com.inno72.Interact.vo.InteractMerchantVo;
-import com.inno72.Interact.vo.Merchant;
+import com.inno72.Interact.vo.MerchantVo;
 import com.inno72.common.AbstractService;
 import com.inno72.common.ExportExcel;
-import com.inno72.common.MachineBackendProperties;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
@@ -47,13 +48,13 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 
 	private static Logger logger = LoggerFactory.getLogger(InteractMerchantServiceImpl.class);
 	@Resource
+	private Inno72InteractMapper inno72InteractMapper;
+	@Resource
 	private Inno72InteractMerchantMapper inno72InteractMerchantMapper;
 	@Resource
 	private Inno72MerchantMapper inno72MerchantMapper;
 	@Resource
 	private Inno72ShopsMapper inno72ShopsMapper;
-	@Resource
-	private MachineBackendProperties machineBackendProperties;
 
 	// 表格
 	public static final String[] USERCHARGE = { "省份名(prov_name)", "市名称(city_name)", "区域名称(area_name)",
@@ -75,17 +76,18 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
-			List<Merchant> Merchants = model.getMerchants();
-			if (Merchants.size() == 0) {
+			List<MerchantVo> merchants = model.getMerchants();
+			if (merchants.size() == 0) {
 				logger.info("请添加商户");
 				return Results.failure("请添加商户");
 			}
 			List<Inno72InteractMerchant> insertList = new ArrayList<>();
-			for (Merchant merchant : Merchants) {
+			for (MerchantVo merchant : merchants) {
 				Inno72InteractMerchant interactMerchant = new Inno72InteractMerchant();
 				interactMerchant.setId(StringUtil.getUUID());
 				interactMerchant.setInteractId(model.getInteractId());
 				interactMerchant.setMerchantId(merchant.getId());
+				interactMerchant.setIsFocus(merchant.getIsFocus());
 
 				insertList.add(interactMerchant);
 			}
@@ -108,7 +110,7 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 	}
 
 	@Override
-	public List<Merchant> getList(String interactId) {
+	public List<MerchantVo> getList(String interactId) {
 		logger.info("---------------------获取活动下商户列表-------------------");
 		return inno72InteractMerchantMapper.selectMerchantByInteractId(interactId);
 
@@ -122,12 +124,12 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 	}
 
 	@Override
-	public List<Map<String, Object>> checkMerchant(String merchantAccountId, String channel) {
+	public List<Map<String, Object>> checkMerchant(String interactId, String merchantAccountId) {
 		logger.info("---------------------获取客户下商户列表-------------------");
-
+		Inno72Interact interact = inno72InteractMapper.selectByPrimaryKey(interactId);
 		Map<String, Object> pm = new HashMap<>();
 		pm.put("merchantAccountId", merchantAccountId);
-		pm.put("channel", channel);
+		pm.put("channel", interact.getChannel());
 		return inno72InteractMerchantMapper.getMerchantList(pm);
 
 	}

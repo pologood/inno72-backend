@@ -25,6 +25,12 @@ public class Inno72InteractMerchant {
 	private String merchantId;
 
 	/**
+	 * 是否关注：0不关注，1关注，2强制关注
+	 */
+	@Column(name = "is_focus")
+	private Integer isFocus;
+
+	/**
 	 * @return id
 	 */
 	public String getId() {
@@ -74,6 +80,14 @@ public class Inno72InteractMerchant {
 	 */
 	public void setMerchantId(String merchantId) {
 		this.merchantId = merchantId;
+	}
+
+	public Integer getIsFocus() {
+		return isFocus;
+	}
+
+	public void setIsFocus(Integer isFocus) {
+		this.isFocus = isFocus;
 	}
 
 	@Override

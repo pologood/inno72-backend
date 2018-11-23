@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.inno72.Interact.service.InteractMerchantService;
 import com.inno72.Interact.vo.InteractMerchantVo;
-import com.inno72.Interact.vo.Merchant;
+import com.inno72.Interact.vo.MerchantVo;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.project.model.Inno72Merchant;
@@ -38,8 +38,8 @@ public class InteractMerchantController {
 	}
 
 	@RequestMapping(value = "/checkMerchant", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Map<String, Object>>> checkMerchant(String merchantAccountId, String channel) {
-		List<Map<String, Object>> list = interactMerchantService.checkMerchant(merchantAccountId, channel);
+	public Result<List<Map<String, Object>>> checkMerchant(String interactId, String merchantAccountId) {
+		List<Map<String, Object>> list = interactMerchantService.checkMerchant(interactId, merchantAccountId);
 
 		return ResultGenerator.genSuccessResult(list);
 	}
@@ -61,8 +61,8 @@ public class InteractMerchantController {
 	}
 
 	@RequestMapping(value = "/getList", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Merchant>> getList(String interactId) {
-		List<Merchant> list = interactMerchantService.getList(interactId);
+	public Result<List<MerchantVo>> getList(String interactId) {
+		List<MerchantVo> list = interactMerchantService.getList(interactId);
 
 		return ResultGenerator.genSuccessResult(list);
 	}

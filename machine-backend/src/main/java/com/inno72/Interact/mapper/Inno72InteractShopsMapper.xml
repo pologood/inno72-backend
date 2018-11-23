@@ -66,6 +66,7 @@
   <select id="selectMerchantShops" parameterType="java.util.Map" resultMap="InteractShopsVoResultMap">
 	 	SELECT
 			s.*,
+			isp.is_vip,
 			m.merchant_name 
 		FROM
 			inno72_interact_shops isp
