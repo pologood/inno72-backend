@@ -154,7 +154,9 @@ public class Inno72Machine implements Comparable<Inno72Machine>{
 
 	@Override
 	public int compareTo(Inno72Machine o) {
-		if(o.getLackGoodsStatus()>this.getLackGoodsStatus()){
+		if(o.getLackGoodsStatus() == this.getLackGoodsStatus()){
+			return 0;
+		}else if(o.getLackGoodsStatus()>this.getLackGoodsStatus()){
 			return -1;
 		}
 		return 1;
