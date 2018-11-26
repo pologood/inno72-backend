@@ -20,7 +20,6 @@ import com.inno72.Interact.model.Inno72InteractMachineGoods;
 import com.inno72.Interact.service.InteractMachineGoodsService;
 import com.inno72.Interact.vo.Inno72InteractMachineGoodsVo;
 import com.inno72.Interact.vo.InteractMachineGoods;
-import com.inno72.Interact.vo.MachineGoods;
 import com.inno72.common.AbstractService;
 import com.inno72.common.DateUtil;
 import com.inno72.common.MachineBackendProperties;
@@ -95,10 +94,6 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 					} else {
 						machineGoods.setEndTime(DateUtil.toDateTime(machineGoods.getEndTimeStr(), DateUtil.DF_FULL_S1));
 					}
-
-					MachineGoods mG = new MachineGoods();
-					mG.setMachineCode(base.getMachineCode());
-					mG.setGoodsId(machineGoods.getGoodsId());
 				}
 
 				Inno72InteractMachineGoods del = new Inno72InteractMachineGoods();

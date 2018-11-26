@@ -17,8 +17,6 @@ public interface Inno72MachineMapper extends Mapper<Inno72Machine> {
 
 	List<MachineListVo1> findMachinePlan(Map<String, Object> param);
 
-	List<MachineListVo1> findMachineInteract(Map<String, Object> param);
-
 	List<String> findMachineByMachineStatus(int machineStatus);
 
 	List<MachineExceptionVo> findStockOutMachines();

@@ -25,4 +25,6 @@ public interface CheckFaultService extends Service<Inno72CheckFault> {
     Result<List<Inno72CheckFaultType>> getTypeList(Inno72CheckFaultType inno72CheckFaultType);
 
     Result<String> receive(Inno72CheckFault inno72CheckFault);
+
+	Result<List<Inno72CheckFaultType>> selectFaultInfo();
 }

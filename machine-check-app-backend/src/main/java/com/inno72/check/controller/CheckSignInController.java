@@ -6,6 +6,8 @@ import com.inno72.check.service.CheckSignInService;
 import com.inno72.check.vo.MachineSignInVo;
 import com.inno72.check.vo.SignVo;
 import com.inno72.common.Result;
+import com.inno72.machine.model.Inno72Machine;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -50,9 +52,9 @@ public class CheckSignInController {
      * 查询机器打卡状态
      */
     @RequestMapping(value="machineList", method = {RequestMethod.POST})
-    public Result<List<MachineSignInVo>> machineSignInList(){
+    public Result<List<MachineSignInVo>> machineSignInList(@RequestBody Inno72Machine machine){
         logger.info("查询机器打卡状态");
-        Result<List<MachineSignInVo>> result = checkSignInService.findMachineSignList();
+        Result<List<MachineSignInVo>> result = checkSignInService.findMachineSignList(machine);
         logger.info("查询机器打卡状态结果{}",JSON.toJSON(result));
         return result;
     }

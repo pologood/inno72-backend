@@ -22,6 +22,7 @@
     <result column="machine_code" jdbcType="VARCHAR" property="machineCode"/>
     <result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="createDate" jdbcType="VARCHAR" property="createDate"/>
     <collection property="historyList" resultMap="historyList"></collection>
   </resultMap>
 
@@ -64,6 +65,7 @@
     <select id="selectOrderByMonth" resultMap="WorkOrderVoList">
         select
         co.create_time,
+        DATE_FORMAT(co.create_time,'%Y-%m-%d') createDate,
         co.machine_id,
         m.machine_code
         from inno72_supply_channel_order co
@@ -87,8 +89,9 @@
     <select id="selectWorkOrderDetail" resultMap="WorkOrderVoList">
         select
         co.id batchNo,
+        co.create_time,
         goods.name goodsName,
-        sum((sch.after_count-sch.before_count)) subCount
+        sum(sch.supply_count) subCount
         from inno72_supply_channel_order co
         left join inno72_supply_channel_history sch on co.id=sch.batch_no
         inner join inno72_goods goods on sch.goods_id=goods.id

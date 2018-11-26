@@ -21,7 +21,12 @@
         <result column="monitor_start" jdbcType="VARCHAR" property="monitorStart"/>
         <result column="monitor_end" jdbcType="VARCHAR" property="monitorEnd"/>
         <result column="areaCode" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
+        <association property="checkUserList" resultMap="checkUserList"/>
+    </resultMap>
 
+    <resultMap id="checkUserList" type="com.inno72.model.Inno72CheckUser">
+        <result column="checkUserId" jdbcType="VARCHAR" property="id"/>
     </resultMap>
 
     <select id="findMachineByMachineStatus" parameterType="Integer" resultType="com.inno72.model.Inno72Machine">
@@ -91,5 +96,30 @@
 		where (m.machine_status=4 or m.machine_status=9)
         and l.monitor=0
 
+    </select>
+
+    <select id="selectSignMachineList" resultMap="BaseResultMap">
+        select a.id, machine_code,cu.id checkUserId from
+        (
+        (select m.id,m.machine_code from inno72_machine m inner join inno72_activity_plan_machine apm on m.id=apm.machine_id
+        inner join inno72_activity_plan ap  on apm.activity_plan_id=ap.id
+        left join inno72_check_sign_in csi on m.id=csi.machine_id and DATE_FORMAT(csi.create_time,'%Y-%m-%d')=#{findTime}
+        where csi.create_time is null and  (#{findTime} BETWEEN ap.start_time and ap.end_time) group by m.id)
+        UNION ALL
+        (select m.id,m.machine_code
+        from inno72_machine m
+        inner join inno72_interact_machine im on m.id=im.machine_id
+        inner join inno72_interact_machine_time imt on im.id=imt.interact_machine_id
+        left join inno72_check_sign_in csi on m.id=csi.machine_id and DATE_FORMAT(csi.create_time,'%Y-%m-%d')=#{findTime}
+        where csi.create_time is null and (#{findTime} BETWEEN imt.start_time and imt.end_time)
+        )
+        UNION ALL
+        (select m.id,m.machine_code from inno72_machine m
+        left join inno72_check_sign_in csi on m.id=csi.machine_id and DATE_FORMAT(csi.create_time,'%Y-%m-%d')=#{findTime}
+        where csi.create_time is null and m.machine_status=9)
+        )
+        a left join inno72_check_user_machine cum on a.id=cum.machine_id
+        left join inno72_check_user cu on cu.id=cum.check_user_id
+        where cu.is_delete=0 and cu.status=0
     </select>
 </mapper>

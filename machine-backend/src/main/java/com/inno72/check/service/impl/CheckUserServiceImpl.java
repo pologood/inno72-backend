@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -265,17 +266,28 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 			model.setUpdateTime(LocalDateTime.now());
 			super.update(model);
 			if (1 == status) {
-				// 获取用户token使用
-				String userTokenKey = "machine-check-app-backend:login_user_token:" + model.getId();
-				// 获取用户之前登录的token
-				String oldToken = redisUtil.get(userTokenKey);
-				// 清除之前的登录信息
-				if (StringUtil.isNotBlank(oldToken)) {
-					redisUtil.del("machine-check-app-backend:login_user:" + oldToken);
-					// 记录被踢出
-					redisUtil.sadd("machine-check-app-backend:checkout_user_token_set:", oldToken);
-					redisUtil.del("machine-check-app-backend:sms_code:" + model.getPhone());
+
+				// 删除推送报警
+				String iosPushKey = "push:ios:" + model.getPhone();
+				String androidPushKey = "push:android:" + model.getPhone();
+				long l = redisUtil.del(iosPushKey);
+				logger.info("删除push:ios:" + iosPushKey + l);
+				long m = redisUtil.del(androidPushKey);
+				logger.info("删除push:android:" + iosPushKey + m);
+				// 删除
+				long n = redisUtil.del("machine-check-app-backend:phone:" + model.getPhone());
+				logger.info("删除phone：" + n);
+				// 删除登陆token
+				Set<Object> userKeySet = redisUtil
+						.smembers(CommonConstants.CHECK_USER_LOGIN_USER_TOKEY_PREF + model.getId());
+				if (userKeySet != null && userKeySet.size() > 0) {
+					for (Object userKeyO : userKeySet) {
+						String userToken = userKeyO.toString();
+						redisUtil.del(CommonConstants.CHECK_USER_LOGIN_CACHE_KEY_PREF + userToken);
+					}
 				}
+				redisUtil.del(CommonConstants.CHECK_USER_LOGIN_USER_TOKEY_PREF + model.getId());
+				logger.info("删除CommonConstants.CHECK_USER_LOGIN_USER_TOKEY_PREF" + model.getId());
 			}
 
 		} catch (Exception e) {
@@ -330,9 +342,10 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	}
 
 	@Override
-	public List<Inno72AdminAreaVo> selectAreaMachineList(String code, String level) {
+	public List<Inno72AdminAreaVo> selectAreaMachineList(String code, String level, String machineCode) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("code", code);
+		params.put("machineCode", machineCode);
 
 		if (StringUtil.isNotBlank(level)) {
 			if (level.equals("1")) {
