@@ -35,12 +35,14 @@ public class DictionaryServiceImpl extends AbstractService<Inno72Dictionary> imp
 		switch (type) {
 		case Inno72Dictionary.INDUSTRY:
 			result.put("industry", this.getDictionary(Inno72Dictionary.INDUSTRY));
+			break;
 		case Inno72Dictionary.CHANNEL:
 			result.put("channel", this.getDictionary(Inno72Dictionary.CHANNEL));
+			break;
 		default:
 			result.put("industry", this.getDictionary(Inno72Dictionary.INDUSTRY));
 			result.put("channel", this.getDictionary(Inno72Dictionary.CHANNEL));
-
+			break;
 		}
 		LOGGER.info("字典数据 code - {}, result - {}", JSON.toJSONString(result));
 		return Results.success(result);
