@@ -17,4 +17,6 @@ public class Inno72ShopsVo extends Inno72Shops {
 
 	private String status;
 
+	private String merchantAccountId;
+
 }
