@@ -100,7 +100,7 @@ public class StringUtil {
 
 	public static Boolean senSmsActive(String active) {
 //		return true;
-		if (StringUtil.isNotEmpty(active) && (active.equals("prod") || active.equals("stage"))) {
+		if (StringUtil.isNotEmpty(active) && (active.equals("prod") || active.equals("stage") || active.equals("test"))) {
 			return true;
 		} else {
 			return false;
