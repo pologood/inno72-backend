@@ -300,4 +300,5 @@ public class Inno72Shops {
 	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
 	}
+
 }

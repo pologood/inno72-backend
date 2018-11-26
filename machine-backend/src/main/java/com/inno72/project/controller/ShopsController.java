@@ -18,6 +18,7 @@ import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.project.model.Inno72Shops;
 import com.inno72.project.service.ShopsService;
+import com.inno72.project.vo.Inno72ShopsVo;
 
 /**
  * Created by CodeGenerator on 2018/07/04.
@@ -66,15 +67,14 @@ public class ShopsController {
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<Inno72Shops> detail(@RequestParam String id) {
-		Inno72Shops shops = shopsService.findById(id);
-		return ResultGenerator.genSuccessResult(shops);
+	public Result<Inno72ShopsVo> detail(@RequestParam String id) {
+		return shopsService.findVoById(id);
 	}
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView list(@RequestParam(required = false) String code,
 			@RequestParam(required = false) String keyword) {
-		List<Inno72Shops> list = shopsService.findByPage(code, keyword);
+		List<Inno72ShopsVo> list = shopsService.findByPage(code, keyword);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 

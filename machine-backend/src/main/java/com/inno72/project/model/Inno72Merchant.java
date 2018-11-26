@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,16 +23,28 @@ public class Inno72Merchant {
 	private String id;
 
 	/**
+	 * 商户主键
+	 */
+	@NotNull(message = "请选择商户")
+	@Column(name = "merchant_account_id")
+	private String merchantAccountId;
+	/**
+	 * 商户主键
+	 */
+	@NotNull(message = "请选择商户")
+	@Column(name = "merchant_account_name")
+	private String merchantAccountName;
+
+	/**
 	 * 商户号
 	 */
-	@NotBlank(message = "请填写商户编码")
+	@NotBlank(message = "请填写商家编码")
 	@Column(name = "merchant_code")
 	private String merchantCode;
 
 	/**
 	 * 商户名称
 	 */
-	@NotBlank(message = "请填写品牌名称")
 	@Column(name = "brand_name")
 	private String brandName;
 
@@ -44,7 +57,7 @@ public class Inno72Merchant {
 	/**
 	 * 商户名称
 	 */
-	@NotBlank(message = "请填写商户名称")
+	@NotBlank(message = "请填写商家名称")
 	@Column(name = "merchant_name")
 	private String merchantName;
 
@@ -56,10 +69,23 @@ public class Inno72Merchant {
 	private String channelId;
 
 	/**
+	 * 商户所属渠道
+	 */
+	@NotBlank(message = "请选择所属渠道")
+	@Column(name = "channel_name")
+	private String channelName;
+
+	/**
 	 * 新零售sessionKey
 	 */
 	@Column(name = "sell_session_key")
 	private String sellSessionKey;
+
+	/**
+	 * 微信公众号二维码
+	 */
+	@Column(name = "wechat_qrcode_url")
+	private String wechatQrcodeUrl;
 
 	/**
 	 * 商户可用状态0:可用，1:不可用
@@ -283,5 +309,37 @@ public class Inno72Merchant {
 	 */
 	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public String getMerchantAccountId() {
+		return merchantAccountId;
+	}
+
+	public void setMerchantAccountId(String merchantAccountId) {
+		this.merchantAccountId = merchantAccountId;
+	}
+
+	public String getMerchantAccountName() {
+		return merchantAccountName;
+	}
+
+	public void setMerchantAccountName(String merchantAccountName) {
+		this.merchantAccountName = merchantAccountName;
+	}
+
+	public String getWechatQrcodeUrl() {
+		return wechatQrcodeUrl;
+	}
+
+	public void setWechatQrcodeUrl(String wechatQrcodeUrl) {
+		this.wechatQrcodeUrl = wechatQrcodeUrl;
+	}
+
+	public String getChannelName() {
+		return channelName;
+	}
+
+	public void setChannelName(String channelName) {
+		this.channelName = channelName;
 	}
 }
