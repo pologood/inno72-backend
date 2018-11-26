@@ -99,7 +99,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 				checkFault.setMachineId(machineId);
 				checkFault.setWorkType(1);//
 				checkFault.setSource(1);// 巡检
-				checkFault.setUrgentStatus(1);// 日常
+				checkFault.setUrgentStatus(2);// 日常
 				checkFault.setSubmitId(checkUser.getId());
 				checkFault.setSubmitUserType(1);// 巡检人员
 				checkFault.setStatus(2);// 处理中
@@ -114,7 +114,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 				}
 				Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
 				String machineCode = machine.getMachineCode();
-				checkFault.setTitle(machineCode + "出现普通" + typeName + "的故障，请尽快处理");
+				checkFault.setTitle(machineCode + "出现紧急" + typeName + "的故障，请尽快处理");
 				inno72CheckFaultMapper.insertSelective(checkFault);
 				Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
 				faultRemark.setRemark(remark);
@@ -158,14 +158,14 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 					String machineCode = machine.getMachineCode();
 					String localeStr = machine.getLocaleStr();
 					Map<String, String> params = new HashMap<>();
-					String messgeInfo = "【互动管家】您负责的机器，" + localeStr + "，" + machineCode + "出现故障，故障类型：" + faultType
+					String detail = "您负责的机器，" + localeStr + "，" + machineCode + "出现故障，故障类型：" + faultType
 							+ "，故障描述：" + remark + "，请及时处理。";
 					params.put("machineCode", machineCode);
 					params.put("machineId", machine.getId());
 					params.put("localeStr", localeStr);
 					params.put("faultType", faultType);
 					params.put("remark", remark);
-					params.put("msg", messgeInfo);
+					params.put("msg", detail);
 					List<CheckUserVo> checkUserList = machine.getCheckUserVoList();
 					List<String> userIdList = new ArrayList<>();
 					String androidStr = "";
@@ -179,27 +179,21 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 								Set<Object> androidPushSet = redisUtil.smembers(androidPushKey);
 								Set<Object> iosPushSet = redisUtil.smembers(iosPushKey);
 								if(androidPushSet != null && androidPushSet.size()>0){
-									androidStr+=phone+",";
+									for(Object clientValue:androidPushSet){
+										String clientValueStr = clientValue.toString();
+										msgUtil.sendPush("push_android_check_app", params, clientValueStr, appName, title, detail);
+										logger.info("按别名发送安卓手机push，接收者为："+clientValueStr+",title为："+title+"，内容为："+detail);
+									}
 								}
 								if(iosPushSet != null && iosPushSet.size()>0){
-									iosStr+=phone+",";
+									for(Object clientValue:iosPushSet){
+										String clientValueStr = clientValue.toString();
+										msgUtil.sendPush("push_ios_check_app", params, clientValueStr, appName, "", title);
+										logger.info("按别名发送苹果手机push，接收者为："+clientValueStr+",title为："+title+"，内容为："+detail);
+									}
 								}
 							}
 						}
-
-						if(StringUtil.isNotEmpty(androidStr)){
-							androidStr = androidStr.substring(0,androidStr.length()-1);
-							params.put("tags",androidStr);
-							msgUtil.sendPush("push_android_check_app", params, null, appName, title, messgeInfo);
-							logger.info("按标签发送安卓push，接收者为："+androidStr);
-						}
-						if(StringUtil.isNotEmpty(iosStr)){
-							iosStr = iosStr.substring(0,iosStr.length()-1);
-							params.put("tags",iosStr);
-							msgUtil.sendPush("push_ios_check_app", params, null, appName, title, messgeInfo);
-							logger.info("按标签发送苹果手机push，接收者为："+iosStr);
-						}
-
 					}
 					Inno72AlarmMsg alarmMsg = new Inno72AlarmMsg();
 					alarmMsg.setId(StringUtil.getUUID());
@@ -209,7 +203,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 					alarmMsg.setTitle(title);
 					alarmMsg.setMainType(2);
 					alarmMsg.setChildType(1);
-					alarmMsg.setDetail(messgeInfo);
+					alarmMsg.setDetail(detail);
 					inno72AlarmMsgMapper.insertSelective(alarmMsg);
 
 					Map<String, Object> paramsMap = new HashMap<>();
@@ -233,18 +227,28 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 
 	@Override
 	public Result<String> finish(Inno72CheckFault checkFault) {
+		Inno72CheckFault dataFault = inno72CheckFaultMapper.selectByPrimaryKey(checkFault.getId());
+		Inno72CheckUser user = UserUtil.getUser();
+		String userId = user.getId();
+		if(dataFault == null){
+			return Results.failure("数据有误");
+		}
+		String receiveId = dataFault.getReceiveId();
+		if(!userId.equals(receiveId)){
+			return Results.failure("您没有权限操作");
+		}
 		Inno72CheckFault upCheckFault = new Inno72CheckFault();
 		upCheckFault.setId(checkFault.getId());
 		upCheckFault.setFinishRemark(checkFault.getFinishRemark());
 		upCheckFault.setFinishTime(LocalDateTime.now());
 		upCheckFault.setStatus(3);// 已完成
-		upCheckFault.setFinishId(UserUtil.getUser().getId());
-		upCheckFault.setFinishUser(UserUtil.getUser().getName());
+		upCheckFault.setFinishId(receiveId);
+		upCheckFault.setFinishUser(user.getName());
 		upCheckFault.setUpdateTime(LocalDateTime.now());
 		inno72CheckFaultMapper.updateByPrimaryKeySelective(upCheckFault);
 		Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
 		String remarkId = StringUtil.getUUID();
-		Inno72CheckUser user = UserUtil.getUser();
+
 		faultRemark.setId(remarkId);
 		faultRemark.setUserId(user.getId());
 		faultRemark.setName(user.getName());
@@ -287,6 +291,10 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		Integer workType = inno72CheckFault.getWorkType();
 		if (workType != null && workType != -1) {
 			map.put("workType", workType);
+		}
+		Integer urgentStatus = inno72CheckFault.getUrgentStatus();
+		if(urgentStatus != null){
+			map.put("urgentStatus",urgentStatus);
 		}
 
 		List<Inno72CheckFault> list = inno72CheckFaultMapper.selectForPage(map);
@@ -407,6 +415,12 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			StringUtil.logger(CommonConstants.LOG_TYPE_SET_WORK,machine.getMachineCode(),"用户"+checkUser.getName()+"，在互动管家中处理工单，工单ID"+inno72CheckFault.getCode());
 		}
 		return ResultGenerator.genSuccessResult();
+	}
+
+	@Override
+	public Result<List<Inno72CheckFaultType>> selectFaultInfo() {
+		List<Inno72CheckFaultType> list = inno72CheckFaultTypeMapper.selectFaultInfo();
+		return ResultGenerator.genSuccessResult(list);
 	}
 
 }

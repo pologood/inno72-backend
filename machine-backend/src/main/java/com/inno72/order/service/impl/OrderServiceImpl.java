@@ -12,7 +12,6 @@ import com.inno72.common.StringUtil;
 import com.inno72.order.mapper.Inno72OrderGoodsMapper;
 import com.inno72.order.mapper.Inno72OrderMapper;
 import com.inno72.order.model.Inno72Order;
-import com.inno72.order.model.Inno72OrderGoods;
 import com.inno72.order.service.OrderService;
 
 @Service

@@ -118,7 +118,7 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
 		String clientId = checkUser.getClientId();
 		if(StringUtil.isNotEmpty(clientId)){
 			String pushKey = "push:"+loginType+":"+phone;
-			String pushValue = phone+"_"+clientId;
+			String pushValue = phone+"_"+clientId.substring(clientId.length()-10,clientId.length());
 			redisUtil.sadd(pushKey,pushValue);
 			user.setPushValue(pushValue);
 		}
@@ -131,7 +131,7 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         // 缓存用户登录sessionData
         redisUtil.set(userInfoKey, JsonUtil.toJson(sessionData));
         redisUtil.expire(userInfoKey, CommonConstants.SESSION_DATA_EXP);
-
+		redisUtil.sadd(CommonConstants.USER_LOGIN_USER_TOKEY_PREF+user.getId(),token);
         return Results.success(sessionData);
 
     }
@@ -163,9 +163,11 @@ public class  CheckUserServiceImpl extends AbstractService<Inno72CheckUser> impl
         if (StringUtil.isNotBlank(oldToken)) {
             redisUtil.del(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + oldToken);
         }
+        logger.info("退出登录：{}",JSON.toJSON(user));
         String loginType = user.getLoginType();
         if(StringUtil.isNotEmpty(loginType)){
 			redisUtil.srem("push:"+loginType+":"+user.getPhone(),user.getPushValue());
+			logger.info("清除登录pushValue:{}"+user.getPushValue());
 		}
         return ResultGenerator.genSuccessResult();
     }

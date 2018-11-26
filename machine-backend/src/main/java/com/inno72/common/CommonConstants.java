@@ -18,6 +18,11 @@ public class CommonConstants {
 	/** 被踢出用户集合 **/
 	public static final String CHECK_OUT_USER_TOKEN_SET_KEY = "machine-backend:checkout_user_token_set";
 
+	/** 巡检用户登录TOKEN_缓存KEY前缀 **/
+	public static final String CHECK_USER_LOGIN_CACHE_KEY_PREF = "machine-check-app-backend:login_user:";
+	public static final String CHECK_USER_LOGIN_TOKEN_CACHE_KEY_PREF = "machine-check-app-backend:login_user_token:";
+	public static final String CHECK_USER_LOGIN_USER_TOKEY_PREF = "machine-check-app-backend:user_key:";
+
 	/** 用户sessionData有效期 **/
 	public static final int SESSION_DATA_EXP = 3600 * 24;
 

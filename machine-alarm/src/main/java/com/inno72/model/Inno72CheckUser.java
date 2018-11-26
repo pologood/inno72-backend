@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -110,6 +111,9 @@ public class Inno72CheckUser {
      */
     @Column(name = "remark")
     private String remark;
+
+    @Transient
+    private Integer unReadCount;
 
     /**
      * 获取主键
@@ -331,5 +335,11 @@ public class Inno72CheckUser {
         this.remark = remark;
     }
 
+	public Integer getUnReadCount() {
+		return unReadCount;
+	}
 
+	public void setUnReadCount(Integer unReadCount) {
+		this.unReadCount = unReadCount;
+	}
 }

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Table(name = "inno72_machine")
-public class Inno72Machine {
+public class Inno72Machine implements Comparable<Inno72Machine>{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private String id;
@@ -129,6 +129,15 @@ public class Inno72Machine {
 	private int noReadCount;
 
 	@Transient
+	private String keyword;
+
+	@Transient
+	private String areaCode;
+
+	@Transient
+	private String activityName;
+
+	@Transient
 	private List<SupplyChannelVo> supplyChannelVoList;
 
 	@Transient
@@ -142,6 +151,16 @@ public class Inno72Machine {
 
 	@Transient
 	private List<Inno72AlarmMsg> alarmMsgList;
+
+	@Override
+	public int compareTo(Inno72Machine o) {
+		if(o.getLackGoodsStatus() == this.getLackGoodsStatus()){
+			return 0;
+		}else if(o.getLackGoodsStatus()>this.getLackGoodsStatus()){
+			return -1;
+		}
+		return 1;
+	}
 
 	public enum Machine_Status {
 		// 在厂测试
@@ -494,5 +513,29 @@ public class Inno72Machine {
 
 	public void setNoReadCount(int noReadCount) {
 		this.noReadCount = noReadCount;
+	}
+
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+
+	public String getAreaCode() {
+		return areaCode;
+	}
+
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
+	}
+
+	public String getActivityName() {
+		return activityName;
+	}
+
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
 	}
 }

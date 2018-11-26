@@ -23,7 +23,7 @@ public interface CheckUserService extends Service<Inno72CheckUser> {
 
 	List<Inno72CheckUserVo> findByPage(String keyword);
 
-	List<Inno72AdminAreaVo> selectAreaMachineList(String code, String level);
+	List<Inno72AdminAreaVo> selectAreaMachineList(String code, String level, String machineCode);
 
 	Inno72CheckUserVo findDetail(String id);
 

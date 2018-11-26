@@ -49,4 +49,55 @@
              </foreach>
          </if>
     </select>
+
+    <select id="selectLockGoodsList" resultType="com.inno72.model.GoodsBean">
+        select * from (
+        SELECT
+        sum( sc.goods_count ) totalCount,
+        goods.NAME goodsName,
+        goods.id goodsId
+        FROM
+        inno72_supply_channel sc
+        INNER JOIN inno72_supply_channel_goods scg ON sc.id = scg.supply_channel_id
+        INNER JOIN inno72_goods goods ON scg.goods_id = goods.id
+        LEFT JOIN inno72_machine m ON sc.machine_id = m.id
+        LEFT JOIN view_machine_goods vmg on vmg.machine_id=m.id and vmg.goods_id=scg.goods_id
+        WHERE
+        m.machine_status = 4
+        AND m.machine_code = #{machineCode}
+        AND sc.is_delete = 0
+        GROUP BY
+        goods.id
+        ) a where a.totalCount is not null
+    </select>
+
+    <select id="selectLockGoods" resultMap="BaseResultMap">
+        select * from (
+        SELECT
+        sum( sc.goods_count ) goods_count,
+        goods.name goodsName,
+        m.machine_code machineCode,
+        CONCAT(
+            aa.province,
+            aa.city,
+            aa.district,
+            IF(aa.circle = '其他' OR aa.circle IS NULL,'',aa.circle),
+            IFNULL(l.mall,""),
+            IFNULL(l.name,"")
+        ) AS localeStr
+        FROM
+        inno72_supply_channel sc
+        INNER JOIN inno72_supply_channel_goods scg ON sc.id = scg.supply_channel_id
+        INNER JOIN inno72_goods goods ON scg.goods_id = goods.id
+        LEFT JOIN inno72_machine m ON sc.machine_id = m.id
+        LEFT JOIN inno72_locale l ON l.id = m.locale_id
+        LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code
+        LEFT JOIN view_machine_goods vmg on vmg.machine_id=m.id and vmg.goods_id=scg.goods_id
+        WHERE
+        m.machine_status = 4
+        AND scg.goods_id = #{goodsId}
+        AND sc.is_delete = 0
+        AND m.machine_code = #{machineCode}
+        ) a where a.goods_count is not null
+    </select>
 </mapper>

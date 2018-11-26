@@ -10,6 +10,7 @@
     <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
     <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="status" jdbcType="INTEGER" property="status"/>
   </resultMap>
   <resultMap id="MachineSignList" type="com.inno72.check.vo.MachineSignInVo">
     <result column="machineId" jdbcType="VARCHAR" property="machineId"/>
@@ -22,6 +23,14 @@
     select id,check_user_id,machine_id,type,create_time
     from inno72_check_sign_in
     where DATE_FORMAT(create_time,'%Y%M') = DATE_FORMAT(#{createTime},'%Y%M')
+    and machine_id=#{machineId} and check_user_id=#{checkUserId}
+    and status=0
+  </select>
+  
+  <select id="selectDaySignInNum" resultType="int">
+    select count(1)
+    from inno72_check_sign_in
+    where DATE_FORMAT(create_time,'%Y-%m-%d') = DATE_FORMAT(CURRENT_DATE,'%Y-%m-%d')
     and machine_id=#{machineId} and check_user_id=#{checkUserId}
   </select>
 
@@ -42,9 +51,20 @@
     left join inno72_check_sign_in t3 on t2.machine_id=t3.machine_id
     and date_format(t3.create_time,'%Y%M%D') = date_format(CURRENT_DATE,'%Y%M%D')
     and t3.check_user_id=#{checkUserId,jdbcType=VARCHAR}
+    and t3.status=0
     LEFT JOIN inno72_locale t4 ON t4.id = t1.locale_id
     LEFT JOIN inno72_admin_area t5 ON t5.CODE = t4.area_code
     where t2.check_user_id = #{checkUserId}
+    <if test="keyword != null">
+        and (t1.machine_code like '%${keyword}%'
+          or t5.province like '%${keyword}%'
+          or t5.city like '%${keyword}%'
+          or t5.district like '%${keyword}%'
+          or t5.circle like '%${keyword}%'
+          or t4.mall like '%${keyword}%'
+          or t4.name like '%${keyword}%'
+        )
+    </if>
     order by t3.create_time desc
   </select>
 
@@ -52,13 +72,16 @@
         <result column="checkUserId" jdbcType="VARCHAR" property="checkUserId"/>
         <result column="machineId" jdbcType="VARCHAR" property="machineId"/>
         <result column="signDateStr" jdbcType="VARCHAR" property="signDateStr"/>
+        <result column="signTimeStr" jdbcType="VARCHAR" property="signTimeStr"/>
         <result column="type" jdbcType="INTEGER" property="type"/>
     </resultMap>
     <select id="selectMonth" resultMap="signVoList">
-        select csi.check_user_id checkUserId,DATE_FORMAT(csi.create_time,'%Y-%m-%d') signDateStr ,1 AS type,csi.machine_id machineId from inno72_check_sign_in csi
-        where csi.check_user_id=#{checkUserId} and csi.machine_id=#{machineId} and DATE_FORMAT(csi.create_time,'%Y%m')=DATE_FORMAT(#{signDateStr},'%Y%m')
+        select csi.check_user_id checkUserId,DATE_FORMAT(csi.create_time,'%Y-%m-%d') signDateStr ,1 AS type,csi.machine_id machineId,DATE_FORMAT(csi.create_time, '%H:%i:%s') as signTimeStr
+        from inno72_check_sign_in csi
+        where csi.status=0 and csi.check_user_id=#{checkUserId} and csi.machine_id=#{machineId} and DATE_FORMAT(csi.create_time,'%Y%m')=DATE_FORMAT(#{signDateStr},'%Y%m')
         UNION all
-        select cf.submit_id checkUserId,DATE_FORMAT(cf.submit_time,'%Y-%m-%d') signDateStr ,2 AS type,cf.machine_id machineId from inno72_check_fault cf
+        select cf.submit_id checkUserId,DATE_FORMAT(cf.submit_time,'%Y-%m-%d') signDateStr ,2 AS type,cf.machine_id machineId,DATE_FORMAT(cf.submit_time, '%H:%i:%s') as signTimeStr
+        from inno72_check_fault cf
         where cf.submit_id=#{checkUserId} and cf.machine_id=#{machineId} and DATE_FORMAT(cf.submit_time,'%Y%m')=DATE_FORMAT(#{signDateStr},'%Y%m')
     </select>
 </mapper>

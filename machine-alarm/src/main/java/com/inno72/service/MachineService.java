@@ -15,4 +15,6 @@ public interface MachineService extends Service<Inno72Machine> {
 
 
     List<Inno72Machine> findAlarmAllMachine();
+
+	void getSignMachineList();
 }

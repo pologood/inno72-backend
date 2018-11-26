@@ -8,6 +8,8 @@ public class SignVo {
 
 	private String signDateStr;
 
+	private String signTimeStr;
+
 	private int type;
 
 	public String getCheckUserId() {
@@ -34,9 +36,18 @@ public class SignVo {
 		this.signDateStr = signDateStr;
 	}
 
+	public String getSignTimeStr() {
+		return signTimeStr;
+	}
+
+	public void setSignTimeStr(String signTimeStr) {
+		this.signTimeStr = signTimeStr;
+	}
+
 	public int getType() {
 		return type;
 	}
+
 
 	public void setType(int type) {
 		this.type = type;

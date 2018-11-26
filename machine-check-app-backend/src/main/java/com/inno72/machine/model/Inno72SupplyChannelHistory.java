@@ -43,6 +43,12 @@ public class Inno72SupplyChannelHistory {
 
     @Column(name = "goods_id")
     private String goodsId;
+
+    @Column(name = "supply_count")
+    private int supplyCount;
+
+    @Column(name="supply_type")
+    private int supplyType;
     @Transient
     private String machineCode;
 
@@ -166,4 +172,20 @@ public class Inno72SupplyChannelHistory {
     public void setGoodsName(String goodsName) {
         this.goodsName = goodsName;
     }
+
+	public int getSupplyCount() {
+		return supplyCount;
+	}
+
+	public void setSupplyCount(int supplyCount) {
+		this.supplyCount = supplyCount;
+	}
+
+	public int getSupplyType() {
+		return supplyType;
+	}
+
+	public void setSupplyType(int supplyType) {
+		this.supplyType = supplyType;
+	}
 }

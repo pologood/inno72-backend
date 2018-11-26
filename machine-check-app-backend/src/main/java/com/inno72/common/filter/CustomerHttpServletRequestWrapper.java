@@ -44,9 +44,20 @@ public class CustomerHttpServletRequestWrapper extends HttpServletRequestWrapper
 							}
 							Pagination pagination = new Pagination();
 							pagination.setPageNo(pageNo);
+
+							Object pageSizeObj = t.get("pageSize");
+							if(pageSizeObj != null){
+								Integer pageSize = Integer.parseInt(pageSizeObj.toString());
+								if(pageSize != null){
+									if(pageSize>0){
+										pagination.setPageSize(pageSize);
+									}
+								}
+							}
 							Pagination.threadLocal.set(pagination);
 						}
 					}
+
 				}
 			}
 

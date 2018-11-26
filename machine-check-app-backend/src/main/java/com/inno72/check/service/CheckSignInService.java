@@ -6,6 +6,7 @@ import com.inno72.check.vo.MachineSignInVo;
 import com.inno72.check.vo.SignVo;
 import com.inno72.common.Result;
 import com.inno72.common.Service;
+import com.inno72.machine.model.Inno72Machine;
 
 import java.util.List;
 
@@ -16,5 +17,5 @@ public interface CheckSignInService extends Service<Inno72CheckSignIn> {
 
     Result<List<SignVo>> findByMonth(SignVo signVo);
 
-    Result<List<MachineSignInVo>> findMachineSignList();
+    Result<List<MachineSignInVo>> findMachineSignList(Inno72Machine machine);
 }

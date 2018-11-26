@@ -94,9 +94,9 @@ public class CheckUserController {
 	}
 
 	@RequestMapping(value = "/selectAreaMachines", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72AdminAreaVo>> selectMachines(String code, String level) {
+	public Result<List<Inno72AdminAreaVo>> selectMachines(String code, String level, String machineCode) {
 
-		List<Inno72AdminAreaVo> list = checkUserService.selectAreaMachineList(code, level);
+		List<Inno72AdminAreaVo> list = checkUserService.selectAreaMachineList(code, level, machineCode);
 		return ResultGenerator.genSuccessResult(list);
 	}
 
