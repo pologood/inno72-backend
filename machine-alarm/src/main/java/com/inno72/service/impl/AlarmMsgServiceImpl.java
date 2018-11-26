@@ -80,6 +80,8 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 		String appName = "machine_alarm";
 		String androidStr = "";
 		String iosStr = "";
+		String text = JSON.toJSONString(inno72AlarmMsg);
+		params.put("msg",text);
 		for(Inno72CheckUserPhone checkUserPhone:inno72CheckUserPhones){
 			String phone = checkUserPhone.getPhone();
 			if(StringUtil.isNotEmpty(phone)){
@@ -88,27 +90,20 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 				Set<Object> androidPushSet = redisUtil.smembers(androidPushKey);
 				Set<Object> iosPushSet = redisUtil.smembers(iosPushKey);
 				if(androidPushSet != null && androidPushSet.size()>0){
-					androidStr+=phone+",";
+					for(Object clientValue:androidPushSet){
+						String clientValueStr = clientValue.toString();
+						msgUtil.sendPush("push_android_check_app", params, clientValueStr, appName, title, detail);
+						logger.info("按别名发送安卓手机push，接收者为："+clientValueStr+",title为："+title+"，内容为："+detail);
+					}
 				}
 				if(iosPushSet != null && iosPushSet.size()>0){
-					iosStr+=phone+",";
+					for(Object clientValue:iosPushSet){
+						String clientValueStr = clientValue.toString();
+						msgUtil.sendPush("push_ios_check_app", params, clientValueStr, appName, "", title);
+						logger.info("按别名发送苹果手机push，接收者为："+clientValueStr+",title为："+title+"，内容为："+detail);
+					}
 				}
 			}
-		}
-
-		String text = JSON.toJSONString(inno72AlarmMsg);
-		params.put("msg",text);
-		if(StringUtil.isNotEmpty(androidStr)){
-			androidStr = androidStr.substring(0,androidStr.length()-1);
-			params.put("tags",androidStr);
-			msgUtil.sendPush("push_android_check_app", params, null, appName, title, detail);
-			logger.info("按标签发送安卓push，接收者为："+androidStr);
-		}
-		if(StringUtil.isNotEmpty(iosStr)){
-			iosStr = iosStr.substring(0,iosStr.length()-1);
-			params.put("tags",iosStr);
-			msgUtil.sendPush("push_ios_check_app", params, null, appName, title, detail);
-			logger.info("按标签发送苹果手机push，接收者为："+iosStr);
 		}
 	}
 }

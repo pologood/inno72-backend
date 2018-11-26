@@ -1,93 +1,144 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.inno72.project.mapper.Inno72ShopsMapper">
-  <resultMap id="BaseResultMap" type="com.inno72.project.model.Inno72Shops">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
-    <result column="shop_code" jdbcType="VARCHAR" property="shopCode" />
-    <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
-    <result column="session_key" jdbcType="VARCHAR" property="sessionKey" />
-    <result column="focus_session_key" jdbcType="VARCHAR" property="focusSessionKey" />
-    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
-    <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="create_id" jdbcType="VARCHAR" property="createId" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-  </resultMap>
-  
-  <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
-	 	SELECT
-	 		s.id,
-			s.shop_name,
-			s.shop_code,
-			m.merchant_name as seller_id,
-			s.session_key,
-			s.focus_session_key,
-			s.is_delete,
-			s.remark,
-			s.create_id,
-			s.update_id,
-			s.create_time,
-			s.update_time
-		FROM
-			inno72_shops s LEFT JOIN inno72_merchant m on m.id = s.seller_id	
-		WHERE s.is_delete = 0
-		<if test="code !=null and code !='' and code !='undefined'">and s.seller_id = #{code}</if>
-		<if test="keyword !=null and keyword !='' and keyword !='undefined'">
-			and ( s.shop_name LIKE '%${keyword}%' or s.shop_code LIKE '%${keyword}%' )
-		</if>
-		ORDER BY s.update_time DESC
-  </select>
-  
-  <select id="selectActivityShops" parameterType="java.util.Map" resultMap="BaseResultMap">
-	 	SELECT
-			s.id,
-			CONCAT(IFNULL( m.merchant_name,''), '-', IFNULL( s.shop_name,'') ) AS shop_name,
-			s.shop_code
-		FROM
-			inno72_shops s
-			LEFT JOIN inno72_activity_shops acs ON s.id = acs.shops_id
-			LEFT JOIN inno72_merchant m ON m.id = s.seller_id 
-		WHERE s.is_delete=0
-		<if test="activityId !=null and activityId !='' ">and acs.activity_id = #{activityId}</if>
-		<if test="keyword !=null and keyword !='' ">
-			and ( s.shop_name LIKE '%${keyword}%' 
-				or s.shop_code LIKE '%${keyword}%' 
-				or m.merchant_name LIKE '%${keyword}%'
-				or m.merchant_code LIKE '%${keyword}%' )
-		</if>
-  </select>
-  <select id="selectMerchantShops" parameterType="java.util.Map" resultMap="BaseResultMap">
-	 	SELECT
-			s.id,
-			m.merchant_name AS seller_id,
-			CONCAT(IFNULL( m.merchant_name,''), '-', IFNULL( s.shop_name,'') ) AS shop_name,
-			s.shop_code
-		FROM
-			inno72_shops s
-			LEFT JOIN inno72_merchant m ON m.id = s.seller_id 
-		WHERE s.is_delete=0
-		<if test="sellerId !=null and sellerId !='' ">and s.seller_id = #{sellerId}</if>
-		<if test="keyword !=null and keyword !='' ">
-			and ( s.shop_name LIKE '%${keyword}%' 
-				or s.shop_code LIKE '%${keyword}%' 
-				or m.merchant_name LIKE '%${keyword}%'
-				or m.merchant_code LIKE '%${keyword}%' )
-		</if>
-  </select>
-  
-  <select id="selectIsUseing" parameterType="String" resultType="int">
+    <resultMap id="BaseResultMap" type="com.inno72.project.model.Inno72Shops">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
+        <result column="shop_code" jdbcType="VARCHAR" property="shopCode" />
+        <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
+        <result column="session_key" jdbcType="VARCHAR" property="sessionKey" />
+        <result column="focus_session_key" jdbcType="VARCHAR" property="focusSessionKey" />
+        <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="create_id" jdbcType="VARCHAR" property="createId" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+    <resultMap id="BaseVoResultMap" type="com.inno72.project.vo.Inno72ShopsVo">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
+        <result column="shop_code" jdbcType="VARCHAR" property="shopCode" />
+        <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
+        <result column="session_key" jdbcType="VARCHAR" property="sessionKey" />
+        <result column="focus_session_key" jdbcType="VARCHAR" property="focusSessionKey" />
+        <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="merchant_account_id" jdbcType="VARCHAR" property="merchantAccountId" />
+        <result column="channel_name" jdbcType="VARCHAR" property="channelName" />
+        <result column="channel_id" jdbcType="VARCHAR" property="channelId" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="create_id" jdbcType="VARCHAR" property="createId" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+
+    <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseVoResultMap">
+        SELECT
+        s.id,
+        s.shop_name,
+        s.shop_code,
+        m.merchant_name as seller_id,
+        m.merchant_account_id,
+        m.channel_name,
+        s.session_key,
+        s.focus_session_key,
+        s.is_delete,
+        s.remark,
+        s.create_id,
+        s.update_id,
+        s.create_time,
+        s.update_time,
+        u.login_status as status
+        FROM
+        inno72_shops s LEFT JOIN inno72_merchant m on m.id = s.seller_id
+        left join inno72_merchant_user u on u.id = m.merchant_account_id
+        WHERE s.is_delete = 0 and s.id != s.shop_code
+        <if test="code !=null and code !='' and code !='undefined'">and s.seller_id = #{code}</if>
+        <if test="keyword !=null and keyword !='' and keyword !='undefined'">
+            and ( s.shop_name LIKE '%${keyword}%' or s.shop_code LIKE '%${keyword}%' )
+        </if>
+        ORDER BY s.update_time DESC
+    </select>
+
+    <select id="selectActivityShops" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
+        s.id,
+        CONCAT(IFNULL( m.merchant_name,''), '-', IFNULL( s.shop_name,'') ) AS shop_name,
+        s.shop_code
+        FROM
+        inno72_shops s
+        LEFT JOIN inno72_activity_shops acs ON s.id = acs.shops_id
+        LEFT JOIN inno72_merchant m ON m.id = s.seller_id
+        WHERE s.is_delete=0 and s.id != s.shop_code
+        <if test="activityId !=null and activityId !='' ">and acs.activity_id = #{activityId}</if>
+        <if test="keyword !=null and keyword !='' ">
+            and ( s.shop_name LIKE '%${keyword}%'
+            or s.shop_code LIKE '%${keyword}%'
+            or m.merchant_name LIKE '%${keyword}%'
+            or m.merchant_code LIKE '%${keyword}%' )
+        </if>
+    </select>
+    <select id="selectMerchantShops" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
+        s.id,
+        m.merchant_name AS seller_id,
+        CONCAT(IFNULL( m.merchant_name,''), '-', IFNULL( s.shop_name,'') ) AS shop_name,
+        s.shop_code
+        FROM
+        inno72_shops s
+        LEFT JOIN inno72_merchant m ON m.id = s.seller_id
+        WHERE s.is_delete=0  and s.id != s.shop_code
+        <if test="sellerId !=null and sellerId !='' ">and s.seller_id = #{sellerId}</if>
+        <if test="keyword !=null and keyword !='' ">
+            and ( s.shop_name LIKE '%${keyword}%'
+            or s.shop_code LIKE '%${keyword}%'
+            or m.merchant_name LIKE '%${keyword}%'
+            or m.merchant_code LIKE '%${keyword}%' )
+        </if>
+    </select>
+
+    <select id="selectIsUseing" parameterType="String" resultType="int">
 		SELECT count(1) FROM inno72_activity where shop_id=#{id} and is_delete = 0
-  </select>
-  
-  <select id="getCount" parameterType="String" resultType="int">
-		SELECT count(1) FROM inno72_shops s where s.is_delete = 0
-		<if test="code !=null and code !=''">and s.shop_code =#{code} </if>
-  </select>
-  
-  
+    </select>
+
+    <select id="getCount" parameterType="String" resultType="int">
+        SELECT count(1) FROM inno72_shops s where s.is_delete = 0
+        <if test="code !=null and code !=''">and s.shop_code =#{code} </if>
+    </select>
+    <select id="selectVoByPrimaryKey" resultMap="BaseVoResultMap" parameterType="string">
+        SELECT
+        s.id,
+        s.shop_name,
+        s.shop_code,
+        m.merchant_name as seller_id,
+        m.merchant_account_id,
+        m.channel_name,
+        m.channel_id,
+        s.session_key,
+        s.focus_session_key,
+        s.is_delete,
+        s.remark,
+        s.create_id,
+        s.update_id,
+        s.create_time,
+        s.update_time,
+        u.login_status as status
+        FROM
+        inno72_shops s LEFT JOIN inno72_merchant m on m.id = s.seller_id
+         left join inno72_merchant_user u on u.id = m.merchant_account_id
+        WHERE
+        s.is_delete = 0
+        and
+        s.id = #{id}
+    </select>
+
+
 </mapper>

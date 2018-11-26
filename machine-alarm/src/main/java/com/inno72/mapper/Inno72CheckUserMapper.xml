@@ -16,7 +16,7 @@
         <result column="head_image" jdbcType="VARCHAR" property="headImage"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_id" jdbcType="VARCHAR" property="createId"/>
-        <result column="update_time" jdbcType="TIMESTAMP" property="update_time"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_id" jdbcType="VARCHAR" property="updateId"/>
         <result column="is_delete" jdbcType="INTEGER" property="isDelete"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
