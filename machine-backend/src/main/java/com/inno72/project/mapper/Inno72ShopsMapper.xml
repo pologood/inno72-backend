@@ -60,7 +60,7 @@
         FROM
         inno72_shops s LEFT JOIN inno72_merchant m on m.id = s.seller_id
         left join inno72_merchant_user u on u.id = m.merchant_account_id
-        WHERE s.is_delete = 0
+        WHERE s.is_delete = 0 and s.id != s.shop_code
         <if test="code !=null and code !='' and code !='undefined'">and s.seller_id = #{code}</if>
         <if test="keyword !=null and keyword !='' and keyword !='undefined'">
             and ( s.shop_name LIKE '%${keyword}%' or s.shop_code LIKE '%${keyword}%' )
@@ -77,7 +77,7 @@
         inno72_shops s
         LEFT JOIN inno72_activity_shops acs ON s.id = acs.shops_id
         LEFT JOIN inno72_merchant m ON m.id = s.seller_id
-        WHERE s.is_delete=0
+        WHERE s.is_delete=0 and s.id != s.shop_code
         <if test="activityId !=null and activityId !='' ">and acs.activity_id = #{activityId}</if>
         <if test="keyword !=null and keyword !='' ">
             and ( s.shop_name LIKE '%${keyword}%'
@@ -95,7 +95,7 @@
         FROM
         inno72_shops s
         LEFT JOIN inno72_merchant m ON m.id = s.seller_id
-        WHERE s.is_delete=0
+        WHERE s.is_delete=0  and s.id != s.shop_code
         <if test="sellerId !=null and sellerId !='' ">and s.seller_id = #{sellerId}</if>
         <if test="keyword !=null and keyword !='' ">
             and ( s.shop_name LIKE '%${keyword}%'
