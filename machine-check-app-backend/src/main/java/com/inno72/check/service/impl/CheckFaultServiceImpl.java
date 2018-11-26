@@ -99,7 +99,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 				checkFault.setMachineId(machineId);
 				checkFault.setWorkType(1);//
 				checkFault.setSource(1);// 巡检
-				checkFault.setUrgentStatus(1);// 日常
+				checkFault.setUrgentStatus(2);// 日常
 				checkFault.setSubmitId(checkUser.getId());
 				checkFault.setSubmitUserType(1);// 巡检人员
 				checkFault.setStatus(2);// 处理中
