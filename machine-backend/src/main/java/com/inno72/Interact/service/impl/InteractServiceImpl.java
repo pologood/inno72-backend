@@ -160,7 +160,7 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 				// 下一步
 				if (StringUtil.isBlank(model.getName())) {
 					logger.info("请填写互派名称");
-					return Results.failure("请选择渠道");
+					return Results.failure("请填写互派名称");
 				}
 				if (StringUtil.isBlank(model.getChannel())) {
 					logger.info("请选择渠道");

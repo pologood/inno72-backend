@@ -1,6 +1,5 @@
 package com.inno72.Interact.service.impl;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +27,6 @@ import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72ShopsMapper;
-import com.inno72.project.model.Inno72Shops;
 import com.inno72.system.model.Inno72User;
 
 /**
@@ -148,8 +146,6 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
-			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-
 			// 查询店铺下是否存在商品
 			Map<String, Object> pm = new HashMap<>();
 			pm.put("interactId", interactId);
@@ -159,12 +155,12 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 				logger.info("店铺下存在商品，不能删除");
 				return Results.failure("店铺下存在商品，不能删除");
 			}
-			Inno72Shops shops = new Inno72Shops();
-			shops.setId(shopsId);
-			shops.setIsDelete(1);
-			shops.setUpdateId(mUserId);
-			shops.setUpdateTime(LocalDateTime.now());
-			inno72ShopsMapper.updateByPrimaryKeySelective(shops);
+			/*
+			 * Inno72Shops shops = new Inno72Shops(); shops.setId(shopsId);
+			 * shops.setIsDelete(1); shops.setUpdateId(mUserId);
+			 * shops.setUpdateTime(LocalDateTime.now());
+			 * inno72ShopsMapper.updateByPrimaryKeySelective(shops);
+			 */
 			// 中间表 关联关系
 			Inno72InteractShops interactShops = new Inno72InteractShops();
 			interactShops.setShopsId(shopsId);

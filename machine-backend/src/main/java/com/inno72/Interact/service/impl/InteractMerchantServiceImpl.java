@@ -1,6 +1,5 @@
 package com.inno72.Interact.service.impl;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,12 +14,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inno72.Interact.mapper.Inno72InteractGoodsMapper;
 import com.inno72.Interact.mapper.Inno72InteractMapper;
 import com.inno72.Interact.mapper.Inno72InteractMerchantMapper;
 import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.model.Inno72InteractMerchant;
 import com.inno72.Interact.service.InteractMerchantService;
 import com.inno72.Interact.vo.Inno72NeedExportStore;
+import com.inno72.Interact.vo.InteractGoodsVo;
 import com.inno72.Interact.vo.InteractMerchantVo;
 import com.inno72.Interact.vo.MerchantVo;
 import com.inno72.common.AbstractService;
@@ -55,6 +56,9 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 	private Inno72MerchantMapper inno72MerchantMapper;
 	@Resource
 	private Inno72ShopsMapper inno72ShopsMapper;
+
+	@Resource
+	private Inno72InteractGoodsMapper inno72InteractGoodsMapper;
 
 	// 表格
 	public static final String[] USERCHARGE = { "省份名(prov_name)", "市名称(city_name)", "区域名称(area_name)",
@@ -173,27 +177,41 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 				return Results.failure("未找到用户登录信息");
 			}
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-
-			// 查询店铺下是否存在店铺
-			Inno72Shops inno72Shops = new Inno72Shops();
-			inno72Shops.setIsDelete(0);
-			inno72Shops.setSellerId(merchantId);
-			Condition condition = new Condition(Inno72Shops.class);
-			condition.createCriteria().andEqualTo(inno72Shops);
-			List<Inno72Shops> shops = inno72ShopsMapper.selectByCondition(condition);
-
-			if (shops != null && shops.size() > 0) {
-				logger.info("商户下存在店铺，不能删除");
-				return Results.failure("商户下存在店铺，不能删除");
-			}
-
+			// 先判断是否微信渠道（微信渠道判断是否存在商品，非微信渠道判断是否存在店铺）
 			Inno72Merchant merchant = new Inno72Merchant();
 			merchant.setId(merchantId);
-			merchant.setIsDelete(1);
-			merchant.setUpdateId(mUserId);
-			merchant.setUpdateTime(LocalDateTime.now());
-			inno72MerchantMapper.updateByPrimaryKeySelective(merchant);
-
+			merchant = inno72MerchantMapper.selectByPrimaryKey(merchantId);
+			if (merchant.getChannelId().endsWith("002002")) {
+				// 查询店铺下是否存在商品(微信公众号商户下店铺商户ID与店铺ID相等)
+				Map<String, Object> pm = new HashMap<>();
+				pm.put("interactId", interactId);
+				pm.put("shopsId", merchantId);
+				List<InteractGoodsVo> goods = inno72InteractGoodsMapper.selectGoods(pm);
+				if (goods != null && goods.size() > 0) {
+					logger.info("商户下存在商品，不能删除");
+					return Results.failure("商户下存在商品，不能删除");
+				}
+				// 删除公众号下虚拟店铺
+				/*
+				 * Inno72Shops inno72Shops = new Inno72Shops();
+				 * inno72Shops.setId(merchantId);
+				 * inno72Shops.setSellerId(merchantId);
+				 * inno72Shops.setIsDelete(1); inno72Shops.setUpdateId(mUserId);
+				 * inno72ShopsMapper.updateByPrimaryKeySelective(inno72Shops);
+				 */
+			} else {
+				// 查询店铺下是否存在店铺
+				Inno72Shops inno72Shops = new Inno72Shops();
+				inno72Shops.setIsDelete(0);
+				inno72Shops.setSellerId(merchantId);
+				Condition condition = new Condition(Inno72Shops.class);
+				condition.createCriteria().andEqualTo(inno72Shops);
+				List<Inno72Shops> shops = inno72ShopsMapper.selectByCondition(condition);
+				if (shops != null && shops.size() > 0) {
+					logger.info("商户下存在店铺，不能删除");
+					return Results.failure("商户下存在店铺，不能删除");
+				}
+			}
 			// 中间表
 			Inno72InteractMerchant interactMerchant = new Inno72InteractMerchant();
 			interactMerchant.setMerchantId(merchantId);
