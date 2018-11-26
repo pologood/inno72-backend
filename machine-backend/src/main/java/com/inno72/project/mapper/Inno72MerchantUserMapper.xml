@@ -26,6 +26,7 @@
             ( merchant_id LIKE '%${keyword}%' or login_name LIKE '%${keyword}%' or merchant_name LIKE '%${keyword}%' or phone LIKE '%${keyword}%' )
         </if>
       </where>
+        order by last_update_time desc
     </select>
     <select id="selectByLoginName" resultType="java.lang.Integer">
         select count(*) from inno72_merchant_user where login_name = #{loginName}
