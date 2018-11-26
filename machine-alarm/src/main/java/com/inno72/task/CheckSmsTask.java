@@ -18,8 +18,8 @@ import com.inno72.service.CheckUserService;
 public class CheckSmsTask {
 	@Resource
 	private CheckUserService checkUserService;
-//	@Scheduled(cron = "0 0/1 * * * ?")
-	@Scheduled(cron = "0 0 10,11,12,13,14,15,16,17,18,19,20 * * ? ")
+	@Scheduled(cron = "0 0/2 * * * ?")
+//	@Scheduled(cron = "0 0 10,11,12,13,14,15,16,17,18,19,20 * * ? ")
 	public void sendSmsToCheckUser(){
 		Map<String,Object> map = new HashMap<>();
 		List<Inno72CheckUser> checkUserList = checkUserService.selectUnReadByParam(map);
