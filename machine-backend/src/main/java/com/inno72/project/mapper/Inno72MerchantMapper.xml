@@ -72,6 +72,7 @@
         <if test="keyword !=null and keyword !='' and keyword !='undefined'">
             and ( m.merchant_code LIKE '%${keyword}%'
             or m.merchant_name LIKE '%${keyword}%'
+            or m.brand_name LIKE '%${keyword}%'
             or m.merchant_account_name LIKE '%${keyword}%'
             or u.merchant_id LIKE '%${keyword}%'
             or m.channel_name LIKE '%${keyword}%'
