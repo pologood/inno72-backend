@@ -117,4 +117,11 @@ public class CheckFaultController {
         Result<String> result = checkFaultService.receive(inno72CheckFault);
         return result;
     }
+
+
+    @RequestMapping(value = "faultInfo")
+    public Result<List<Inno72CheckFaultType>> faultInfo(){
+    	Result<List<Inno72CheckFaultType>> result = checkFaultService.selectFaultInfo();
+    	return result;
+	}
 }

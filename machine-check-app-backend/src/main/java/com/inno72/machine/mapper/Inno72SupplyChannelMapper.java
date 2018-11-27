@@ -35,4 +35,6 @@ public interface Inno72SupplyChannelMapper extends Mapper<Inno72SupplyChannel> {
 	List<Inno72SupplyChannel> selectExceptionList(String machineId);
 
 	int updateOpen(Map<String,Object> map);
+
+	List<Inno72SupplyChannel> selectSupplyAndGoods(@Param("suuplyChannelArray") String[] suuplyChannelArray);
 }

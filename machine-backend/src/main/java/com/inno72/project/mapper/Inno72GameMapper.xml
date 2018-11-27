@@ -11,7 +11,10 @@
      <result column="min_goods_num" jdbcType="INTEGER" property="minGoodsNum" />
     <result column="version" jdbcType="VARCHAR" property="version" />
     <result column="version_inno72" jdbcType="VARCHAR" property="versionInno72" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_see" jdbcType="INTEGER" property="isSee" />
+    <result column="is_set" jdbcType="INTEGER" property="isSet" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -29,6 +32,9 @@
 			g.min_goods_num,
 			g.version,
 			g.version_inno72,
+			g.code,
+			g.is_set,
+			g.is_see,
 			g.remark,
 			g.is_delete,
 			g.create_id,

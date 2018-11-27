@@ -1,6 +1,7 @@
 package com.inno72.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -100,6 +101,8 @@ public class Inno72Machine {
     private String localeStr;
 
     private String areaCode;
+
+    private List<Inno72CheckUser> checkUserList;
 
     public Integer getOpenStatus() {
         return openStatus;
@@ -382,5 +385,13 @@ public class Inno72Machine {
 
 	public void setAreaCode(String areaCode) {
 		this.areaCode = areaCode;
+	}
+
+	public List<Inno72CheckUser> getCheckUserList() {
+		return checkUserList;
+	}
+
+	public void setCheckUserList(List<Inno72CheckUser> checkUserList) {
+		this.checkUserList = checkUserList;
 	}
 }

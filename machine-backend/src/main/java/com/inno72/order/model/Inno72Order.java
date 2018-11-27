@@ -101,7 +101,7 @@ public class Inno72Order {
 	private String payStatus;
 
 	@Column(name = "goods_status")
-	private int goodsStatus;
+	private Integer goodsStatus;
 
 	/**
 	 * 支付时间
@@ -283,11 +283,11 @@ public class Inno72Order {
 		this.payStatus = payStatus;
 	}
 
-	public int getGoodsStatus() {
+	public Integer getGoodsStatus() {
 		return goodsStatus;
 	}
 
-	public void setGoodsStatus(int goodsStatus) {
+	public void setGoodsStatus(Integer goodsStatus) {
 		this.goodsStatus = goodsStatus;
 	}
 

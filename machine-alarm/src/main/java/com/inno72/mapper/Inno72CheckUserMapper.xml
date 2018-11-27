@@ -20,6 +20,7 @@
         <result column="update_id" jdbcType="VARCHAR" property="updateId"/>
         <result column="is_delete" jdbcType="INTEGER" property="isDelete"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="unReadCount" jdbcType="INTEGER" property="unReadCount"/>
     </resultMap>
 
     <select id="selectPhoneByMachineCode" parameterType="String" resultType="com.inno72.model.Inno72CheckUserPhone">
@@ -36,5 +37,14 @@
 		and icu.is_delete=0 and icu.status=0
   </select>
 
+    <select id="selectUnReadByParam" resultMap="BaseResultMap">
+        select cu.phone,count(am.id ) unReadCount
+        from inno72_check_user cu
+        left join inno72_check_user_machine cum on cum.check_user_id = cu.id
+        left join inno72_machine m on cum.machine_id = m.id
+        left join inno72_alarm_msg am on m.machine_code=am.machine_code and am.is_read=0
+        where cu.is_delete=0 and status=0
+        group by cu.id having count(am.id)>0
+    </select>
 
 </mapper>

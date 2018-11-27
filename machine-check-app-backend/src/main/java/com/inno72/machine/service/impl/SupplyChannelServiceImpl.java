@@ -1,16 +1,22 @@
 package com.inno72.machine.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.DataFormatException;
 
 import javax.annotation.Resource;
 
+import com.inno72.check.vo.SignVo;
+import com.inno72.common.DateUtil;
 import com.inno72.machine.mapper.Inno72MachineBatchDetailMapper;
 import com.inno72.machine.model.Inno72MachineBatchDetail;
 import com.inno72.machine.vo.SupplyRequestVo;
@@ -53,6 +59,8 @@ import com.inno72.model.AlarmMessageBean;
 import com.inno72.model.ChannelGoodsAlarmBean;
 import com.inno72.model.GoodsBean;
 import com.inno72.model.MachineDropGoodsBean;
+import com.inno72.plugin.statistic.Statistic;
+import com.inno72.plugin.statistic.constant.StatisticEnum;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.utils.page.Pagination;
 import com.mongodb.DBCollection;
@@ -93,6 +101,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 
 	@Resource
 	private Inno72MachineBatchDetailMapper inno72MachineBatchDetailMapper;
+
+	@Resource
+	private Statistic statistic;
 
 	@Override
 	public Result<String> merge(Inno72SupplyChannel supplyChannel) {
@@ -323,15 +334,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				machine.setSupplyChannelVoList(null);
 			}
 		}
-		machineList.sort(new Comparator<Inno72Machine>() {
-			@Override
-			public int compare(Inno72Machine o1, Inno72Machine o2) {
-				if(o1.getLackGoodsStatus()>o2.getLackGoodsStatus()){
-					return 1;
-				}
-				return -1;
-			}
-		});
+		Collections.sort(machineList);
 		logger.info("机器缺货返回数据：{}", JSON.toJSON(machineList));
 		return ResultGenerator.genSuccessResult(machineList);
 	}
@@ -360,7 +363,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 					inno72Goods.setSupplyChannelVoList(null);
 					inno72Goods.setImg(ImageUtil.getLongImageUrl(inno72Goods.getImg()));
 					inno72Goods.setTotalGoodsCount(totalGoodsCount);
-					resultList.add(inno72Goods);
+					if(totalVolumeCount != totalGoodsCount){
+						resultList.add(inno72Goods);
+					}
 				}
 			}
 		}
@@ -477,73 +482,172 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		}
 		Inno72CheckUser checkUser = UserUtil.getUser();
 		StringBuffer ids = new StringBuffer();
-		mapList.forEach(map -> {
-			String id = map.get("id").toString();
-			ids.append("\"");
-			ids.append(id);
-			ids.append("\"");
-			ids.append(",");
-		});
-		String supplyChannelIds = ids.substring(0, ids.length() - 1);
-		List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectByIds(supplyChannelIds);
+		String [] suuplyChannelArray = new String[mapList.size()];
+		for(int i=0;i<mapList.size();i++){
+			suuplyChannelArray[i]=mapList.get(i).get("id").toString();
+		}
+		List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectSupplyAndGoods(suuplyChannelArray);
 		if (supplyChannelList != null && supplyChannelList.size() > 0) {
 			String machineId = supplyChannelList.get(0).getMachineId();
 			Inno72Machine machine = inno72MachineMapper.getMachineById(machineId);
+			String machineCode = machine.getMachineCode();
 			String batchNo = StringUtil.getUUID();
 			LocalDateTime now = LocalDateTime.now();
 			StringBuffer detail = new StringBuffer("");
 			int historyCount = 0;
-			for(Inno72SupplyChannel supplyChannel:supplyChannelList){
-				String supplyChannelId = supplyChannel.getId();
-				for(Map<String, Object> map:mapList){
-					String id = map.get("id").toString();
-					if (id.equals(supplyChannelId)) {
-						Object goodsCount = map.get("goodsCount");
-						int afterGoodsCount = 0;
-						if (goodsCount != null) {
-							afterGoodsCount = Integer.parseInt(map.get("goodsCount").toString());
-						}
-						int beforeGoodsCount = supplyChannel.getGoodsCount();
-						supplyChannel.setUpdateTime(now);
-						Object goodsId = map.get("goodsId");
-						String goodsIdStr = "";
-						if (goodsId != null) {
-							goodsIdStr = map.get("goodsId").toString();
-						}
-						supplyChannel.setGoodsId(goodsIdStr);
-						supplyChannel.setGoodsCount(afterGoodsCount);
-						supplyChannel.setIsDelete(0);
-						inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
-						if((beforeGoodsCount !=0 || afterGoodsCount != 0) && beforeGoodsCount != afterGoodsCount ){
-							detail.append("为"+supplyChannel.getCode()+"货道补货，补货数量为"+afterGoodsCount+"；");
-						}
-						Condition condition = new Condition(Inno72SupplyChannelGoods.class);
-						condition.createCriteria().andEqualTo("supplyChannelId", supplyChannel.getId());
-						inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
-						Inno72SupplyChannelGoods goods = new Inno72SupplyChannelGoods();
-						if (StringUtil.isNotEmpty(goodsIdStr)) {
-							goods.setGoodsId(supplyChannel.getGoodsId());
-							goods.setId(StringUtil.getUUID());
-							goods.setSupplyChannelId(supplyChannelId);
-							inno72SupplyChannelGoodsMapper.insertSelective(goods);
-							if(beforeGoodsCount != afterGoodsCount){
+			try{
+				for(Inno72SupplyChannel supplyChannel:supplyChannelList){
+					String supplyChannelId = supplyChannel.getId();
+					for(Map<String, Object> map:mapList){
+						String id = map.get("id").toString();
+						String dataGoodsId = supplyChannel.getGoodsId();//数据库查到的商品ID
+						if (id.equals(supplyChannelId)) {
+							Object goodsCount = map.get("goodsCount");
+							int afterGoodsCount = 0;
+							if (goodsCount != null) {
+								afterGoodsCount = Integer.parseInt(map.get("goodsCount").toString());
+							}
+							int beforeGoodsCount = supplyChannel.getGoodsCount();
+							supplyChannel.setUpdateTime(now);
+							Object goodsId = map.get("goodsId");
+							String goodsIdStr = "";//APP传入
+							if (goodsId != null) {
+								goodsIdStr = map.get("goodsId").toString();
+							}
+							supplyChannel.setGoodsCount(afterGoodsCount);
+							supplyChannel.setIsDelete(0);
+							inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
+							int supplyCount = 0;
+							String code = supplyChannel.getCode();
+							Map<String, Object> infos = new HashMap<>();
+							infos.put("machineCode",machineCode);
+							infos.put("channelId",code);
+							infos.put("localId",machine.getLocaleId());
+							infos.put("userId",checkUser.getId());
+							infos.put("areaId",machine.getAreaCode());
+							if(StringUtil.isNotEmpty(dataGoodsId)){
+								if(dataGoodsId.equals(goodsIdStr) && afterGoodsCount != beforeGoodsCount){
+									if(afterGoodsCount>beforeGoodsCount){
+										supplyCount = afterGoodsCount-beforeGoodsCount;
+									}else {
+										supplyCount = afterGoodsCount;
+									}
+									Inno72SupplyChannelHistory history = new Inno72SupplyChannelHistory();
+									history.setId(StringUtil.getUUID());
+									history.setBeforeCount(beforeGoodsCount);
+									history.setAfterCount(afterGoodsCount);
+									history.setBatchNo(batchNo);
+									history.setSupplyChannelId(supplyChannelId);
+									history.setMachineId(supplyChannel.getMachineId());
+									history.setUserId(UserUtil.getUser().getId());
+									history.setCreateTime(now);
+									history.setType(1);
+									history.setGoodsId(goodsIdStr);
+									history.setSupplyCount(supplyCount);
+									history.setSupplyType(1);
+									inno72SupplyChannelHistoryMapper.insertSelective(history);
+									infos.put("goodsId",goodsIdStr);
+									infos.put("beforeNum",beforeGoodsCount);
+									infos.put("afterNum",afterGoodsCount);
+									infos.put("time",new Date());
+									statistic.put(StatisticEnum.REPLENISHMENT,infos);
+									detail.append("为"+machineCode+"机器"+code+"货道补货，补货数量为"+supplyCount+"；");
+									historyCount++;
+								}else if(!dataGoodsId.equals(goodsIdStr)){
+									Condition condition = new Condition(Inno72SupplyChannelGoods.class);
+									condition.createCriteria().andEqualTo("supplyChannelId", supplyChannel.getId());
+									inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
+									Inno72SupplyChannelHistory history = new Inno72SupplyChannelHistory();
+									history.setId(StringUtil.getUUID());
+									history.setBeforeCount(beforeGoodsCount);
+									history.setAfterCount(0);
+									history.setBatchNo(batchNo);
+									history.setSupplyChannelId(supplyChannelId);
+									history.setMachineId(supplyChannel.getMachineId());
+									history.setUserId(UserUtil.getUser().getId());
+									history.setCreateTime(now);
+									history.setType(1);
+									history.setGoodsId(dataGoodsId);
+									supplyCount = -beforeGoodsCount;
+									history.setSupplyCount(supplyCount);
+									history.setSupplyType(2);
+									inno72SupplyChannelHistoryMapper.insertSelective(history);
+									infos.put("goodsId",dataGoodsId);
+									infos.put("beforeNum",beforeGoodsCount);
+									infos.put("afterNum",0);
+									infos.put("time",new Date());
+									statistic.put(StatisticEnum.REPLENISHMENT,infos);
+									detail.append("为"+machineCode+"机器"+code+"货道补货，补货数量为"+supplyCount+"；");
+									historyCount++;
+									if (StringUtil.isNotEmpty(goodsIdStr)) {
+										Inno72SupplyChannelGoods goods = new Inno72SupplyChannelGoods();
+										goods.setGoodsId(goodsIdStr);
+										goods.setId(StringUtil.getUUID());
+										goods.setSupplyChannelId(supplyChannelId);
+										inno72SupplyChannelGoodsMapper.insertSelective(goods);
+										Inno72SupplyChannelHistory newHistory = new Inno72SupplyChannelHistory();
+										newHistory.setId(StringUtil.getUUID());
+										newHistory.setBeforeCount(0);
+										newHistory.setAfterCount(afterGoodsCount);
+										newHistory.setBatchNo(batchNo);
+										newHistory.setSupplyChannelId(supplyChannelId);
+										newHistory.setMachineId(supplyChannel.getMachineId());
+										newHistory.setUserId(UserUtil.getUser().getId());
+										newHistory.setCreateTime(now);
+										newHistory.setType(1);
+										newHistory.setGoodsId(goodsIdStr);
+										supplyCount = afterGoodsCount;
+										newHistory.setSupplyCount(supplyCount);
+										newHistory.setSupplyType(1);
+										inno72SupplyChannelHistoryMapper.insertSelective(newHistory);
+										infos.put("goodsId",goodsIdStr);
+										infos.put("beforeNum",0);
+										infos.put("afterNum",afterGoodsCount);
+										infos.put("time",new Date());
+										statistic.put(StatisticEnum.REPLENISHMENT,infos);
+										detail.append("为"+machineCode+"机器"+code+"货道补货，补货数量为"+supplyCount+"；");
+										historyCount++;
+									}
+								}
+							}else if(StringUtil.isNotEmpty(goodsIdStr)){
+								Condition condition = new Condition(Inno72SupplyChannelGoods.class);
+								condition.createCriteria().andEqualTo("supplyChannelId", supplyChannel.getId());
+								inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
+								Inno72SupplyChannelGoods goods = new Inno72SupplyChannelGoods();
+								goods.setGoodsId(goodsIdStr);
+								goods.setId(StringUtil.getUUID());
+								goods.setSupplyChannelId(supplyChannelId);
+								inno72SupplyChannelGoodsMapper.insertSelective(goods);
 								Inno72SupplyChannelHistory history = new Inno72SupplyChannelHistory();
 								history.setId(StringUtil.getUUID());
-								history.setBeforeCount(beforeGoodsCount);
+								history.setBeforeCount(0);
 								history.setAfterCount(afterGoodsCount);
 								history.setBatchNo(batchNo);
 								history.setSupplyChannelId(supplyChannelId);
 								history.setMachineId(supplyChannel.getMachineId());
 								history.setUserId(UserUtil.getUser().getId());
 								history.setCreateTime(now);
+								history.setType(1);
 								history.setGoodsId(goodsIdStr);
+								supplyCount = afterGoodsCount;
+								history.setSupplyCount(supplyCount);
+								history.setSupplyType(1);
 								inno72SupplyChannelHistoryMapper.insertSelective(history);
+								infos.put("goodsId",goodsIdStr);
+								infos.put("beforeNum",0);
+								infos.put("afterNum",afterGoodsCount);
+								infos.put("time",new Date());
+								statistic.put(StatisticEnum.REPLENISHMENT,infos);
+								detail.append("为"+machineCode+"机器"+code+"货道补货，补货数量为"+supplyCount+"；");
 								historyCount++;
 							}
 						}
 					}
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+
 			if(historyCount>0){
 				Inno72SupplyChannelOrder order = new Inno72SupplyChannelOrder();
 				order.setId(batchNo);
@@ -695,7 +799,31 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		map.put("machineId",machineId);
 		map.put("findTime",findTime);
 		List<WorkOrderVo> list = inno72SupplyChannelOrderMapper.selectOrderByMonth(map);
-		return ResultGenerator.genSuccessResult(list);
+		List<WorkOrderVo> resultList = new ArrayList<>();
+		LocalDate localDate = DateUtil.toDate(findTime,DateUtil.DF_ONLY_YMD_S1);
+		List<String> dateList = DateUtil.getMonthFullDay(localDate);
+
+		Map<String,WorkOrderVo> workOrderMap = new HashMap<>();
+		for(WorkOrderVo orderVo:list){
+			String date = orderVo.getCreateDate();
+			if(!workOrderMap.containsKey(date)){
+				workOrderMap.put(date,orderVo);
+			}
+		}
+		for(String key:dateList){
+			WorkOrderVo workOrderVo = null;
+			if(!workOrderMap.containsKey(key)){
+				workOrderVo = new WorkOrderVo();
+				workOrderVo.setCreateDate(key);
+				workOrderVo.setSupplyFlag(0);
+			}else{
+				workOrderVo = workOrderMap.get(key);
+				workOrderVo.setSupplyFlag(1);
+			}
+			workOrderVo.setMachineId(machineId);
+			resultList.add(workOrderVo);
+		}
+		return ResultGenerator.genSuccessResult(resultList);
 	}
 
 	@Override

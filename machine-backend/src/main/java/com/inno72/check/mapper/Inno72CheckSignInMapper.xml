@@ -17,6 +17,7 @@
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="enterprise" jdbcType="VARCHAR" property="enterprise" />
     <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
      <result column="localeName" jdbcType="VARCHAR" property="localeName" />
@@ -29,6 +30,7 @@
 			u.phone,
 			u.enterprise,
 			m.machine_code,
+			sin.status,
 			sin.create_time,
 			CONCAT( area.province, area.city, area.district,IFNULL( l.mall,""),IFNULL( l.name,"")) AS localeName
 		FROM
@@ -39,10 +41,16 @@
 			LEFT JOIN inno72_admin_area area ON area.code = l.area_code
 			where 1=1
 			<if test="code !=null and code !=''">and LEFT(l.area_code,#{num}) = #{code}</if>
+			<if test="status !=null and status !=''">and sin.status = #{status}</if>
 			<if test="keyword !=null and keyword !='' ">
 				AND ( u.name LIKE '%${keyword}%' 
 				or u.phone LIKE '%${keyword}%' 
 				or u.enterprise LIKE '%${keyword}%'
+				or m.machine_code LIKE '%${keyword}%'
+				or area.province LIKE '%${keyword}%'
+				or area.city LIKE '%${keyword}%'
+				or l.mall LIKE '%${keyword}%'
+				or l.name LIKE '%${keyword}%'
 				)
 			</if>
 			<if test="startTime !=null and startTime !='' ">
@@ -68,6 +76,7 @@
 			LEFT JOIN inno72_admin_area area ON area.code = l.area_code
 			where 1=1
 			<if test="code !=null and code !=''">and LEFT(l.area_code,#{num}) = #{code}</if>
+			<if test="status !=null and status !=''">and sin.status = #{status}</if>
 			<if test="keyword !=null and keyword !='' ">
 				AND ( u.name LIKE '%${keyword}%' 
 				or u.phone LIKE '%${keyword}%' 

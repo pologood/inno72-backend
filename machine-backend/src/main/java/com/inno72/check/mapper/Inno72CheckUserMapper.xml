@@ -18,7 +18,7 @@
 		<result column="status" jdbcType="INTEGER" property="status" />
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
 		<result column="create_id" jdbcType="VARCHAR" property="createId" />
-		<result column="update_time" jdbcType="TIMESTAMP" property="update_time" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
 		<result column="update_id" jdbcType="VARCHAR" property="updateId" />
 		<result column="is_delete" jdbcType="INTEGER" property="isDelete" />
 		<result column="remark" jdbcType="VARCHAR" property="remark" />
@@ -28,30 +28,35 @@
 
 	<select id="selectCheckUserByPage" parameterType="String"
 		resultMap="BaseVoResultMap">
-		SELECT
-		u.id,
-		u.name,
-		u.phone,
-		u.card_no,
-		u.enterprise,
-		u.sex,
-		u.head_image,
-		u.status,
-		a.city as area,
-		u.is_delete
-		from inno72_check_user u
-		LEFT JOIN inno72_admin_area a ON a.code = u.area
-		LEFT JOIN inno72_check_user_machine um on um.check_user_id = u.id
-		LEFT JOIN inno72_machine m on m.id=um.machine_id
-		LEFT JOIN inno72_locale l ON l.id=m.locale_id
-		WHERE u.is_delete=0 and 9=9
+		SELECT * FROM (
+			SELECT
+				u.id,
+				u.name,
+				u.phone,
+				u.card_no,
+				u.enterprise,
+				u.sex,
+				u.head_image,
+				u.status,
+				a.city as area,
+				u.is_delete,
+				u.update_time,
+				GROUP_CONCAT(m.machine_code) AS machine_code
+			from inno72_check_user u
+			LEFT JOIN inno72_admin_area a ON a.code = u.area
+			LEFT JOIN inno72_check_user_machine um on um.check_user_id = u.id
+			LEFT JOIN inno72_machine m on m.id=um.machine_id
+			LEFT JOIN inno72_locale l ON l.id=m.locale_id
+			WHERE u.is_delete=0 and 9=9
+			GROUP BY u.id
+		) uu where 1=1
 		<if test="keyword !=null and keyword !=''">
-			and ( u.name LIKE '%${keyword}%'
-			or u.phone LIKE '%${keyword}%'
-			or u.enterprise LIKE '%${keyword}%' )
+			and ( uu.name LIKE '%${keyword}%'
+			or uu.phone LIKE '%${keyword}%'
+			or uu.enterprise LIKE '%${keyword}%'
+			or uu.machine_code LIKE '%${keyword}%' )
 		</if>
-		GROUP BY u.id
-		ORDER BY u.update_time DESC
+		ORDER BY uu.`status`,uu.update_time DESC
 	</select>
 
 	<select id="checkCardNoIsExist" parameterType="String"
@@ -133,6 +138,7 @@
 		SELECT m.machine_code, m.id, locale.area_code FROM inno72_machine m
 		LEFT JOIN inno72_locale locale ON locale.id = m.locale_id WHERE
 		m.machine_status in (4,9)
+		<if test="machineCode !=null and machineCode !='' ">and m.machine_code = #{machineCode}  </if>
 		) m ON LEFT ( m.area_code,#{num}) = LEFT ( a.CODE,#{num})
 		WHERE 1=1
 		<if test="code !=null and code !='' ">and a.parent_code = #{code}  </if>
@@ -157,6 +163,7 @@
 		WHERE
 		m.machine_status in (4,9)
 		and LEFT(locale.area_code,#{num}) =#{code}
+		<if test="machineCode !=null and machineCode !='' ">and m.machine_code = #{machineCode}  </if>
 	</select>
 
 	<select id="selectPhoneByMachineCode" parameterType="String"

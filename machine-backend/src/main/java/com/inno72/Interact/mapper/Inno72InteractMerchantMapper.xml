@@ -26,7 +26,7 @@
   <select id="getMerchantUserList" parameterType="String" resultType="java.util.Map">
 		SELECT
 			m.id,
-			m.seller_id AS merchantCode,
+			m.merchant_id AS merchantCode,
 			m.merchant_name AS merchantName
 		FROM
 			inno72_merchant_user m

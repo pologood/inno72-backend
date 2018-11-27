@@ -47,7 +47,8 @@
   </resultMap>
   <select id="selectForPage" resultMap="BaseResultMap">
     select t1.*,
-    t4.name typeName
+    t2.machine_code machineCode,
+    IFNULL(t4.name,"") typeName
     from inno72_check_fault t1
     left join inno72_machine t2 on t1.machine_id=t2.id
     left join inno72_check_user_machine t3 on t2.id=t3.machine_id
@@ -58,6 +59,9 @@
     </if>
     <if test="workType != null">
       and t1.work_type = #{workType}
+    </if>
+    <if test="urgentStatus != null">
+      and t1.urgent_status = #{urgentStatus}
     </if>
     order by t1.submit_time desc,t1.finish_time desc
   </select>
@@ -78,6 +82,6 @@
     left join inno72_check_fault_remark t4 on t1.id=t4.fault_id
     left join inno72_check_fault_image t5 on t4.id=t5.remark_id
     left join inno72_check_fault_type t6 on t1.type=t6.code
-    where t1.id = #{faultId} order by t4.create_time desc,t5.sort
+    where t1.id = #{faultId} order by t4.create_time,t5.sort
   </select>
 </mapper>

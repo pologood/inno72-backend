@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inno72.Interact.mapper.Inno72InteractGameRuleMapper;
 import com.inno72.Interact.mapper.Inno72InteractGoodsMapper;
 import com.inno72.Interact.mapper.Inno72InteractMachineGoodsMapper;
 import com.inno72.Interact.mapper.Inno72InteractMachineMapper;
@@ -21,6 +22,7 @@ import com.inno72.Interact.mapper.Inno72InteractMapper;
 import com.inno72.Interact.mapper.Inno72InteractMerchantMapper;
 import com.inno72.Interact.mapper.Inno72InteractShopsMapper;
 import com.inno72.Interact.model.Inno72Interact;
+import com.inno72.Interact.model.Inno72InteractGameRule;
 import com.inno72.Interact.model.Inno72InteractGoods;
 import com.inno72.Interact.model.Inno72InteractMachine;
 import com.inno72.Interact.service.InteractService;
@@ -70,6 +72,9 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 
 	@Resource
 	private Inno72InteractMachineGoodsMapper inno72InteractMachineGoodsMapper;
+
+	@Resource
+	private Inno72InteractGameRuleMapper inno72InteractGameRuleMapper;
 
 	@Override
 	public List<InteractListVo> findByPage(String keyword, Integer status, String orderBy) {
@@ -255,7 +260,23 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 				logger.info("参数错误");
 				return Results.failure("参数错误");
 			}
-
+			// 互动--组装掉货规则数据
+			List<Inno72InteractGameRule> insertGameRuleList = new ArrayList<>();
+			if (interact.getPaiyangType() == Integer.getInteger("1")) {
+				List<Inno72InteractGameRule> gameRule = interactRule.getGameRule();
+				if (null != gameRule && gameRule.size() > 0) {
+					for (Inno72InteractGameRule inno72InteractGameRule : gameRule) {
+						inno72InteractGameRule.setId(StringUtil.getUUID());
+						inno72InteractGameRule.setInteractId(interactRule.getId());
+						if (insertGameRuleList.contains(inno72InteractGameRule)) {
+							logger.info("添加规则有重复");
+							return Results.failure("添加规则有重复");
+						}
+						insertGameRuleList.add(inno72InteractGameRule);
+					}
+				}
+			}
+			// 数量规则
 			List<Map<String, Object>> goodsRule = interactRule.getGoodsRule();
 			if (null != goodsRule && goodsRule.size() > 0) {
 				for (Map<String, Object> map : goodsRule) {
@@ -266,7 +287,6 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 						return Results.failure("填写商品规则");
 					}
 				}
-
 				for (Map<String, Object> map : goodsRule) {
 					String goodsId = map.get("goodsId").toString();
 					Integer userDayNumber = (Integer) map.get("userDayNumber");
@@ -276,19 +296,26 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 
 					Condition condition = new Condition(Inno72InteractGoods.class);
 					condition.createCriteria().andEqualTo(interactGoods);
-
 					interactGoods.setUserDayNumber(userDayNumber);
 					inno72InteractGoodsMapper.updateByConditionSelective(interactGoods, condition);
-
 				}
 			}
+			// 插入掉货规则(先删除)
+			if (interact.getPaiyangType() == Integer.getInteger("1")) {
+				Inno72InteractGameRule old = new Inno72InteractGameRule();
+				old.setInteractId(interactRule.getId());
+				inno72InteractGameRuleMapper.delete(old);
+				if (null != insertGameRuleList && insertGameRuleList.size() > 0) {
+					inno72InteractGameRuleMapper.insertInteractGameRuleList(insertGameRuleList);
+				}
+			}
+			// 活动运行时间
 			if (interact.getStatus() == 0 && interact.getRunTime().isBefore(LocalDateTime.now())) {
 				interact.setRunTime(LocalDateTime.now());
 			}
+			// 更新活动规则
 			inno72InteractMapper.updateByPrimaryKeySelective(interact);
-
 			return Results.success();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.info(e.getMessage());

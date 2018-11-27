@@ -55,6 +55,8 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 		int isRead = msg.getIsRead();
 		if(isRead != 1){
 			msg.setIsRead(1);
+			msg.setReadTime(LocalDateTime.now());
+			msg.setReadUserId(UserUtil.getUser().getId());
 			inno72AlarmMsgMapper.updateByPrimaryKeySelective(msg);
 		}
 		return ResultGenerator.genSuccessResult();

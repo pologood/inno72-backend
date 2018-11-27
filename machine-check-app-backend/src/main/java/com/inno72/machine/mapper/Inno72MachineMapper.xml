@@ -19,7 +19,12 @@
 		<result column="address" jdbcType="VARCHAR" property="address" />
 		<result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
         <result column="wifi_pwd" jdbcType="VARCHAR" property="wifiPwd"/>
+        <result column="faultStatus" jdbcType="INTEGER" property="faultStatus"/>
+        <result column="signInStatus" jdbcType="INTEGER" property="signInStatus"/>
         <result column="noReadCount" jdbcType="INTEGER" property="noReadCount"/>
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="lackGoodsStatus" jdbcType="INTEGER" property="lackGoodsStatus"/>
+        <result column="activityName" jdbcType="VARCHAR" property="activityName"/>
 		<association property="supplyChannelVoList" resultMap="supplyChannelVoList"/>
 		<association property="checkUserVoList" resultMap="checkUserVoList"/>
 		<association property="faultVoList" resultMap="faultVoList"/>
@@ -47,7 +52,6 @@
 	<resultMap id="faultVoList" type="com.inno72.check.vo.FaultVo">
 		<result column="faultId" jdbcType="VARCHAR" property="id"/>
 		<result column="faultCode" jdbcType="VARCHAR" property="code"/>
-		<result column="faultStatus" jdbcType="INTEGER" property="status"/>
 		<result column="faultType" jdbcType="VARCHAR" property="type"/>
 	</resultMap>
 
@@ -116,42 +120,33 @@
 		and scg.goods_id=#{goodsId}
 	</select>
 
-	<select id="machineList" resultMap="BaseResultMap">
-		select
-		m.*,
-		scg.goods_id goodsId,
-		cf.code faultCode,
-		cf.id faultId,
-		cf.status faultStatus,
-		cf.type faultType,
-		CONCAT(
+	<select id="machineListByPage" resultMap="BaseResultMap">
+        select * from
+        (select
+        m.*,
+        CONCAT(
 		aa.province,
 		aa.city,
 		aa.district,
 		if(aa.circle='其他' or aa.circle is null,'',aa.circle),IFNULL(l.mall,""),IFNULL( l.name,'')
 		) AS localeStr,
-		csi.id signInId,
-		csi.create_time cTime,
-		sc.code channelCode,
-		sc.name channelName,
-		sc.status channelStatus,
-		sc.machine_id,
-		sc.parent_code,
-		sc.volume_count,
-		sc.goods_count,
-		(select count(*) from inno72_alarm_msg am where machine_code=m.machine_code and am.is_read=0)  noReadCount
-		from inno72_machine m
-		inner join inno72_check_user_machine cum on cum.machine_id=m.id
-		inner join inno72_locale l on m.locale_id=l.id
-		inner join inno72_admin_area aa on aa.code=l.area_code
-		left join inno72_check_fault cf on m.id=cf.machine_id and cf.status in (1,2)
-		left join inno72_check_sign_in csi on m.id=csi.machine_id
-		and date_format(csi.create_time,'%Y%M%D') = date_format(CURRENT_DATE,'%Y%M%D')
-		and csi.check_user_id=#{checkUserId,jdbcType=VARCHAR}
-		left join view_machine_goods mg on mg.machine_id=m.id
-		left join inno72_supply_channel sc on m.id = sc.machine_id and sc.status=0 and sc.is_delete=0
-		left join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id and scg.goods_id=mg.goods_id
-		where (m.machine_status=4 or m.machine_status=9) and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
+        if((select count(*) from inno72_check_fault cf where cf.machine_id=m.id and cf.status in (1,2)) <![CDATA[>]]> 0 ,-1,1) faultStatus,
+		if((select count(*) from inno72_check_sign_in csi where csi.machine_id=m.id and date_format(csi.create_time,'%Y%M%D') = date_format(CURRENT_DATE,'%Y%M%D')
+		and csi.check_user_id=#{checkUserId,jdbcType=VARCHAR}) <![CDATA[>]]> 0,1,-1) signInStatus,
+		(select count(*) from inno72_alarm_msg am where am.machine_code=m.machine_code and am.is_read=0) noReadCount,
+		if(cc.machine_id is not null,1,0)  lackGoodsStatus
+        from inno72_machine m
+        inner join inno72_check_user_machine cum on cum.machine_id=m.id
+        inner join inno72_locale l on m.locale_id=l.id
+        inner join inno72_admin_area aa on aa.code=l.area_code
+        left join (	select  distinct  sc.machine_id  from  view_machine_goods mg
+        inner join inno72_supply_channel sc on mg.machine_id = sc.machine_id
+        inner join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id and scg.goods_id=mg.goods_id
+        where sc.status=0 and sc.is_delete=0
+        group by sc.machine_id,scg.goods_id HAVING sum(sc.goods_count)<![CDATA[<]]>10 ) cc
+        on m.id=cc.machine_id
+        where (m.machine_status=4 or m.machine_status=9) and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
+        ) mm
 	</select>
 
 	<select id="selectByParam" resultMap="BaseResultMap">
@@ -179,6 +174,16 @@
 			</foreach>
 
 		</if>
+        <if test="keyword != null">
+            and (
+            aa.city like '%${keyword}%'
+            or aa.district like '%${keyword}%'
+            or aa.circle like '%${keyword}%'
+            or l.mall like '%${keyword}%'
+            or l.name like '%${keyword}%'
+            or m.machine_code like '%${keyword}%'
+            )
+        </if>
 	</select>
 	<select id="getMachineByCode" resultMap="BaseResultMap">
 		select
@@ -188,10 +193,12 @@
 		aa.city,
 		aa.district,
 		if(aa.circle='其他' or aa.circle is null,'',aa.circle),IFNULL(l.mall,""),IFNULL( l.name,'')
-		) AS localeStr
+		) AS localeStr,
+		vam.activity_name activityName
 		from inno72_machine m
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
 		LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code
+		left join view_activity_machine vam on m.id=vam.machine_id
 		where m.machine_code=#{machineCode}
 		limit 1
 	</select>
@@ -199,6 +206,7 @@
     <select id="getMachineById" resultMap="BaseResultMap">
 		select
 		m.*,
+		l.area_code,
 		CONCAT(
 		aa.province,
 		aa.city,
@@ -211,4 +219,32 @@
 		where m.id=#{machineId}
 		limit 1
 	</select>
+
+    <select id="selectMachineByParam" resultMap="BaseResultMap">
+        select
+        m.*,
+        CONCAT(
+        aa.province,
+        aa.city,
+        aa.district,
+        if(aa.circle='其他' or aa.circle is null,'',aa.circle),IFNULL(l.mall,""),IFNULL( l.name,'')
+        ) AS localeStr
+        from inno72_machine m
+        inner join inno72_check_user_machine cum on m.id=cum.machine_id
+        inner join inno72_check_user cu on cum.check_user_id=cu.id
+        inner join inno72_locale l on l.id=m.locale_id
+        inner join inno72_admin_area aa on aa.code = l.area_code
+        where m.machine_status=4 and cu.id=#{checkUserId,jdbcType=VARCHAR}
+        <if test="keyword != null">
+            and (
+            aa.city like '%${keyword}%'
+            or aa.district like '%${keyword}%'
+            or aa.circle like '%${keyword}%'
+            or l.mall like '%${keyword}%'
+            or l.name like '%${keyword}%'
+            or m.machine_code like '%${keyword}%'
+            )
+        </if>
+        order by m.update_time desc
+    </select>
 </mapper>

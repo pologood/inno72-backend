@@ -46,8 +46,10 @@ import com.inno72.machine.model.Inno72App;
 import com.inno72.machine.model.Inno72AppLog;
 import com.inno72.machine.model.Inno72AppScreenShot;
 import com.inno72.machine.model.Inno72Machine;
+import com.inno72.machine.model.Inno72MachineLocaleDetail;
 import com.inno72.machine.service.AppLogService;
 import com.inno72.machine.service.AppService;
+import com.inno72.machine.service.MachineLocaleDetailService;
 import com.inno72.machine.service.MachineService;
 import com.inno72.machine.service.SupplyChannelService;
 import com.inno72.machine.vo.AppStatus;
@@ -106,6 +108,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	@Autowired
 	private AppLogService appLogService;
 	@Autowired
+	private MachineLocaleDetailService machineLocaleDetailService;
+	@Autowired
 	private MsgUtil msgUtil;
 
 	@Override
@@ -147,14 +151,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		}
 
 		List<MachineListVo1> machines = inno72MachineMapper.findMachinePlan(param);
-		List<MachineListVo1> interactMachines = inno72MachineMapper.findMachineInteract(param);
 
-		for (MachineListVo1 machine : machines) {
-			if (interactMachines.contains(machine)) {
-				int index = interactMachines.indexOf(machine);
-				machine.getPlanTime().addAll(interactMachines.get(index).getPlanTime());
-			}
-		}
 		return machines;
 	}
 
@@ -173,6 +170,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (machine.getMachineStatus() < 2) {
 			return Results.failure("机器没有初始化不能修改点位");
 		}
+		String old = machine.getLocaleId();
 		machine.setLocaleId(localeId);
 		machine.setAddress(address);
 		if (machine.getMachineStatus() != 9) {
@@ -185,6 +183,13 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (result != 1) {
 			return Results.failure("修改点位失败");
 		}
+		Inno72MachineLocaleDetail model = new Inno72MachineLocaleDetail();
+		model.setId(StringUtil.getUUID());
+		model.setCreateId(mUser.getId());
+		model.setLocale(localeId);
+		model.setOldLocale(old);
+		model.setMachineId(id);
+		machineLocaleDetailService.save(model);
 		return Results.success();
 
 	}

@@ -21,6 +21,10 @@ public class WorkOrderVo {
 
     private String localeStr;
 
+    private String createDate;
+
+    private int supplyFlag;
+
 
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -80,7 +84,23 @@ public class WorkOrderVo {
         return machineId;
     }
 
-    public void setMachineId(String machineId) {
+	public int getSupplyFlag() {
+		return supplyFlag;
+	}
+
+	public void setSupplyFlag(int supplyFlag) {
+		this.supplyFlag = supplyFlag;
+	}
+
+	public String getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(String createDate) {
+		this.createDate = createDate;
+	}
+
+	public void setMachineId(String machineId) {
         this.machineId = machineId;
     }
 
@@ -91,4 +111,6 @@ public class WorkOrderVo {
     public void setHistoryList(List<Inno72SupplyChannelHistory> historyList) {
         this.historyList = historyList;
     }
+
+
 }
