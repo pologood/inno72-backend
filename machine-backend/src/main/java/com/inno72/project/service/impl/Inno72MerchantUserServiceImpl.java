@@ -80,7 +80,7 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 				if (loginNameSize > 0){
 					return Results.failure("登录账号重复!");
 				}
-				user.setPassword(Encrypt.md5AndSha(user.getPhone()));
+				user.setPassword(Encrypt.md5AndSha("000000"));
 			}
 			user.setMerchantId(genMerchantCode());
 			user.setCreateTime(LocalDateTime.now());
@@ -179,7 +179,7 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 		if (StringUtil.isEmpty(curUser.getLoginName()) || StringUtil.isEmpty(curUser.getPhone())){
 			return Results.failure("请设置登录名和相关手机号码后再重置密码!");
 		}
-		curUser.setPassword(Encrypt.md5AndSha(curUser.getPhone()));
+		curUser.setPassword(Encrypt.md5AndSha("000000"));
 		curUser.setLastUpdator(mUser.getName());
 		curUser.setLastUpdateTime(LocalDateTime.now());
 
