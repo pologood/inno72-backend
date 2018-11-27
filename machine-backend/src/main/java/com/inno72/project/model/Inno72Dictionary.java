@@ -5,8 +5,7 @@ import javax.persistence.*;
 @Table(name = "inno72_dictionary")
 public class Inno72Dictionary {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private String id;
 
     /**
      * 类型代码 
@@ -44,14 +43,14 @@ public class Inno72Dictionary {
     /**
      * @return id
      */
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
     /**
      * @param id
      */
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

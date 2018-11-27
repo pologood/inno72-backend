@@ -72,6 +72,13 @@ public class Inno72Merchant {
 	 * 商户所属渠道
 	 */
 	@NotBlank(message = "请选择所属渠道")
+	@Column(name = "channel_code")
+	private String channelCode;
+
+	/**
+	 * 商户所属渠道
+	 */
+	@NotBlank(message = "请选择所属渠道")
 	@Column(name = "channel_name")
 	private String channelName;
 
@@ -341,5 +348,13 @@ public class Inno72Merchant {
 
 	public void setChannelName(String channelName) {
 		this.channelName = channelName;
+	}
+
+	public String getChannelCode() {
+		return channelCode;
+	}
+
+	public void setChannelCode(String channelCode) {
+		this.channelCode = channelCode;
 	}
 }

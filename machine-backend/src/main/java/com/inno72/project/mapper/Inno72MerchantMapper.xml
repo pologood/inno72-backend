@@ -45,6 +45,7 @@
         <result column="wechat_qrcode_url" jdbcType="VARCHAR" property="wechatQrcodeUrl"/>
         <result column="status" jdbcType="VARCHAR" property="status"/>
         <result column="channel_name" jdbcType="VARCHAR" property="channelName"/>
+        <result column="channel_code" jdbcType="VARCHAR" property="channelCode"/>
     </resultMap>
 
     <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseVoResultMap">

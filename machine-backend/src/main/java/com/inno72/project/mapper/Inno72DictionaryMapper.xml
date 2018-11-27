@@ -5,7 +5,7 @@
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
     <result column="name" jdbcType="VARCHAR" property="name" />
@@ -14,12 +14,12 @@
     <result column="level" jdbcType="INTEGER" property="level" />
   </resultMap>
     <select id="findDictionary" resultType="java.util.Map" >
-      select `code` as `code`, `name` as `name` from inno72_dictionary
+      select id, `code` as `code`, `name` as `name` from inno72_dictionary
       where parent_code = #{code} and status = 1
       order by code asc
     </select>
     <select id="findChannelDictionary" resultType="java.util.Map">
-        select channel_code as `code`, channel_name as `name` from inno72_channel
+        select id, channel_code as `code`, channel_name as `name` from inno72_channel
         where is_delete = 0
     </select>
 </mapper>

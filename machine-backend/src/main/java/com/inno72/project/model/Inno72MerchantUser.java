@@ -30,12 +30,6 @@ public class Inno72MerchantUser {
 	private String merchantId;
 
 	/**
-	 * 商户id
-	 */
-	@Column(name = "seller_id")
-	private String sellerId;
-
-	/**
 	 * 登录名
 	 */
 	@Column(name = "login_name")
