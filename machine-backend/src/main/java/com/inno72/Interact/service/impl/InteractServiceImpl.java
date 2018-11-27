@@ -300,9 +300,14 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 					inno72InteractGoodsMapper.updateByConditionSelective(interactGoods, condition);
 				}
 			}
-			// 插入掉货规则
-			if (null != insertGameRuleList && insertGameRuleList.size() > 0) {
-				inno72InteractGameRuleMapper.insertInteractGameRuleList(insertGameRuleList);
+			// 插入掉货规则(先删除)
+			if (interact.getPaiyangType() == Integer.getInteger("1")) {
+				Inno72InteractGameRule old = new Inno72InteractGameRule();
+				old.setInteractId(interactRule.getId());
+				inno72InteractGameRuleMapper.delete(old);
+				if (null != insertGameRuleList && insertGameRuleList.size() > 0) {
+					inno72InteractGameRuleMapper.insertInteractGameRuleList(insertGameRuleList);
+				}
 			}
 			// 活动运行时间
 			if (interact.getStatus() == 0 && interact.getRunTime().isBefore(LocalDateTime.now())) {
