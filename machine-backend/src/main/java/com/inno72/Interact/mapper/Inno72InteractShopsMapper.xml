@@ -42,6 +42,10 @@
 			inno72_shops s
 		<where>
           <if test="sellerId != null and sellerId != ''">AND s.seller_id=#{sellerId}</if>
+       		and s.id not in ( 
+				SELECT isp.shops_id FROM inno72_interact_shops isp 
+				WHERE isp.interact_id=#{interactId}
+			)
        </where>
   </select>
   

@@ -49,6 +49,9 @@
 		<where>
           <if test="merchantAccountId != null and merchantAccountId != ''">AND m.merchant_account_id=#{merchantAccountId}</if>
           <if test="channel != null and channel != ''">AND m.channel_id=#{channel}</if>
+          and m.id not in (
+				SELECT m.id FROM inno72_interact_merchant im WHERE  im.interact_id = #{interactId}
+			)
        </where>
   </select>
   
