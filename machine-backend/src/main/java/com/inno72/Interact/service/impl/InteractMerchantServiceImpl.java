@@ -176,7 +176,6 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
-			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			// 先判断是否微信渠道（微信渠道判断是否存在商品，非微信渠道判断是否存在店铺）
 			Inno72Merchant merchant = new Inno72Merchant();
 			merchant.setId(merchantId);
