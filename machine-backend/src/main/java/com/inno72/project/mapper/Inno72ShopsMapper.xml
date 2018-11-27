@@ -45,7 +45,7 @@
         s.id,
         s.shop_name,
         s.shop_code,
-        m.merchant_name as seller_id,
+        m.merchant_code as seller_id,
         m.merchant_account_id,
         m.channel_name,
         s.session_key,
