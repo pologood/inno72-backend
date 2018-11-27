@@ -397,6 +397,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 			// 查看商品是否被关联
 			Inno72InteractMachineGoods machineGoods = new Inno72InteractMachineGoods();
 			machineGoods.setGoodsId(goodsId);
+			machineGoods.setType(1);
 			int n = inno72InteractMachineGoodsMapper.selectCount(machineGoods);
 
 			if (n > 0) {
