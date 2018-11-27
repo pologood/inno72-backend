@@ -102,38 +102,38 @@ public class Inno72InteractGameRule {
 	}
 
 	/**
-	 * 获取同一用户每天获得数量
+	 * 获取规则编号
 	 *
-	 * @return rule_code - 同一用户每天获得数量
+	 * @return rule_code - 规则编号
 	 */
 	public Integer getRuleCode() {
 		return ruleCode;
 	}
 
 	/**
-	 * 设置同一用户每天获得数量
+	 * 设置规则编号
 	 *
 	 * @param ruleCode
-	 *            同一用户每天获得数量
+	 *            规则编号
 	 */
 	public void setRuleCode(Integer ruleCode) {
 		this.ruleCode = ruleCode;
 	}
 
 	/**
-	 * 获取商品关联的优惠券
+	 * 获取规则描述
 	 *
-	 * @return rule_remark - 商品关联的优惠券
+	 * @return rule_remark - 规则描述
 	 */
 	public String getRuleRemark() {
 		return ruleRemark;
 	}
 
 	/**
-	 * 设置商品关联的优惠券
+	 * 设置规则描述
 	 *
 	 * @param ruleRemark
-	 *            商品关联的优惠券
+	 *            规则描述
 	 */
 	public void setRuleRemark(String ruleRemark) {
 		this.ruleRemark = ruleRemark;

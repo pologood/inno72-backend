@@ -160,6 +160,7 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 		Map<String, Object> pm = new HashMap<>();
 		pm.put("merchantAccountId", merchantAccountId);
 		pm.put("channel", interact.getChannel());
+		pm.put("interactId", interactId);
 		return inno72InteractMerchantMapper.getMerchantList(pm);
 
 	}

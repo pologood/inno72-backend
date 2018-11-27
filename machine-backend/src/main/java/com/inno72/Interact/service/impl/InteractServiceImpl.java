@@ -262,7 +262,7 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			}
 			// 互动--组装掉货规则数据
 			List<Inno72InteractGameRule> insertGameRuleList = new ArrayList<>();
-			if (interact.getPaiyangType() == Integer.getInteger("1")) {
+			if (interact.getPaiyangType() == 1) {
 				List<Inno72InteractGameRule> gameRule = interactRule.getGameRule();
 				if (null != gameRule && gameRule.size() > 0) {
 					for (Inno72InteractGameRule inno72InteractGameRule : gameRule) {
@@ -301,7 +301,7 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 				}
 			}
 			// 插入掉货规则(先删除)
-			if (interact.getPaiyangType() == Integer.getInteger("1")) {
+			if (interact.getPaiyangType() == 1) {
 				Inno72InteractGameRule old = new Inno72InteractGameRule();
 				old.setInteractId(interactRule.getId());
 				inno72InteractGameRuleMapper.delete(old);

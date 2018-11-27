@@ -44,9 +44,12 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 	private Inno72InteractGoodsMapper inno72InteractGoodsMapper;
 
 	@Override
-	public List<Map<String, Object>> checkShops(String sellerId) {
+	public List<Map<String, Object>> checkShops(String interactId, String sellerId) {
 		logger.info("---------------------获取要添加店铺列表-------------------");
-		return inno72InteractShopsMapper.getShopsList(sellerId);
+		Map<String, Object> pm = new HashMap<>();
+		pm.put("sellerId", sellerId);
+		pm.put("interactId", interactId);
+		return inno72InteractShopsMapper.getShopsList(pm);
 	}
 
 	@Override

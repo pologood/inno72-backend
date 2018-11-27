@@ -14,7 +14,7 @@
   </resultMap>
   
    <insert id="insertInteractGameRuleList" parameterType="java.util.List">
-        insert into inno72_interact_shops (id,interact_id,goods_id,rule_code,rule_remark,type)
+        insert into inno72_interact_game_rule (id,interact_id,goods_id,rule_code,rule_remark,type)
         values
         <foreach collection="list" item="t" index="index" separator=",">
             (#{t.id}, #{t.interactId},#{t.goodsId},#{t.ruleCode},#{t.ruleRemark},#{t.type})

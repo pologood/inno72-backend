@@ -22,7 +22,7 @@ public interface InteractShopsService extends Service<Inno72InteractShops> {
 
 	Result<String> deleteById(String interactId, String shopsId);
 
-	List<Map<String, Object>> checkShops(String sellerId);
+	List<Map<String, Object>> checkShops(String interactId, String sellerId);
 
 	Result<String> update(String interactId, String shopsId, Integer isVip);
 

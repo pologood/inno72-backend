@@ -34,8 +34,8 @@ public class InteractShopsController {
 	private InteractShopsService interactShopsService;
 
 	@RequestMapping(value = "/checkShops", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Map<String, Object>>> checkShops(String sellerId) {
-		List<Map<String, Object>> list = interactShopsService.checkShops(sellerId);
+	public Result<List<Map<String, Object>>> checkShops(String interactId, String sellerId) {
+		List<Map<String, Object>> list = interactShopsService.checkShops(interactId, sellerId);
 
 		return ResultGenerator.genSuccessResult(list);
 	}
