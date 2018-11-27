@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.inno72.Interact.mapper.Inno72InteractGoodsMapper;
 import com.inno72.Interact.mapper.Inno72InteractMapper;
 import com.inno72.Interact.mapper.Inno72InteractMerchantMapper;
+import com.inno72.Interact.mapper.Inno72InteractShopsMapper;
 import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.model.Inno72InteractMerchant;
 import com.inno72.Interact.service.InteractMerchantService;
@@ -24,6 +25,7 @@ import com.inno72.Interact.vo.Inno72NeedExportStore;
 import com.inno72.Interact.vo.InteractGoodsVo;
 import com.inno72.Interact.vo.InteractMerchantVo;
 import com.inno72.Interact.vo.MerchantVo;
+import com.inno72.Interact.vo.ShopsVo;
 import com.inno72.common.AbstractService;
 import com.inno72.common.ExportExcel;
 import com.inno72.common.Result;
@@ -34,10 +36,7 @@ import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72MerchantMapper;
 import com.inno72.project.mapper.Inno72ShopsMapper;
 import com.inno72.project.model.Inno72Merchant;
-import com.inno72.project.model.Inno72Shops;
 import com.inno72.system.model.Inno72User;
-
-import tk.mybatis.mapper.entity.Condition;
 
 /**
  * Created by CodeGenerator on 2018/09/19.
@@ -56,6 +55,9 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 	private Inno72MerchantMapper inno72MerchantMapper;
 	@Resource
 	private Inno72ShopsMapper inno72ShopsMapper;
+
+	@Resource
+	private Inno72InteractShopsMapper inno72InteractShopsMapper;
 
 	@Resource
 	private Inno72InteractGoodsMapper inno72InteractGoodsMapper;
@@ -199,13 +201,11 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 				 * inno72ShopsMapper.updateByPrimaryKeySelective(inno72Shops);
 				 */
 			} else {
-				// 查询店铺下是否存在店铺
-				Inno72Shops inno72Shops = new Inno72Shops();
-				inno72Shops.setIsDelete(0);
-				inno72Shops.setSellerId(merchantId);
-				Condition condition = new Condition(Inno72Shops.class);
-				condition.createCriteria().andEqualTo(inno72Shops);
-				List<Inno72Shops> shops = inno72ShopsMapper.selectByCondition(condition);
+				// 查询店铺下是否存在关联店铺
+				Map<String, Object> pm = new HashMap<>();
+				pm.put("interactId", interactId);
+				pm.put("sellerId", merchantId);
+				List<ShopsVo> shops = inno72InteractShopsMapper.selectMerchantShops(pm);
 				if (shops != null && shops.size() > 0) {
 					logger.info("商户下存在店铺，不能删除");
 					return Results.failure("商户下存在店铺，不能删除");
