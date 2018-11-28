@@ -51,50 +51,54 @@
   </sql>
 
   <select id="seleByParamForPage" resultMap="BaseResultMap">
-    select t1.id,t1.order_num,t1.user_id,t1.channel_id,t1.machine_id,
-    t1.order_time,t1.order_price,t1.order_type,t1.pay_status,t1.pay_time,
-    t1.shops_id,t1.shops_name,t1.goods_status,
-    t2.game_user_id,t2.nick_name,t2.mer_point_address,t6.machine_code,
-    ac.name activity_name,
-    t4.name gameName,
-    t5.goods_type goodsType,
-    t5.goods_id goodsId,
-    t5.goods_name goodsName,
-    t5.goods_code goodsCode,
-    t5.goods_price goodsPrice,
-    t5.status orderGoodsStatus
-    from inno72_order t1
-    left join inno72_machine t6 on t6.id = t1.machine_id
-    left join inno72_game_user_life t2 on t1.id=t2.order_id
-    left join inno72_activity_plan t3 on t1.inno72_activity_plan_id=t3.id
-    left join inno72_game t4 on t3.game_id= t4.id
-    left join inno72_order_goods t5 on t5.order_num=t1.order_num
-    left join inno72_activity ac on t1.inno72_activity_id = ac.id
+      select
+      o.id,o.user_id,o.channel_id,o.machine_id,
+      o.order_time,o.order_price,o.order_type,o.pay_status,o.pay_time,
+      o.shops_id,o.shops_name,o.goods_status,
+      gul.game_user_id,gul.nick_name,gul.mer_point_address,
+      m.machine_code,
+      og.goods_type goodsType,
+      og.goods_id goodsId,
+      og.goods_name goodsName,
+      og.goods_code goodsCode,
+      og.goods_price goodsPrice,
+      og.status orderGoodsStatus,
+      IFNULL(
+      (select name from  inno72_activity a where  o.inno72_activity_id = a.id) ,
+      (select i.name from inno72_interact i where o.inno72_activity_id=i.id )
+      ) activity_name,
+      IFNULL(
+      (select g.name from inno72_activity_plan ap left join inno72_game g on ap.game_id= g.id where  o.inno72_activity_plan_id=ap.id),
+      (select g.name from inno72_interact i left join inno72_game g on i.game_id=g.id where o.inno72_activity_id=i.id)
+      ) gameName
+      from inno72_order o
+      left join inno72_order_goods og on og.order_num=o.order_num
+      left join inno72_game_user_life gul on o.id=gul.order_id
+      left join inno72_machine m on m.id=o.machine_id
     <where>
       <if test="machineId != null">
-        and t1.machine_id = #{machineId}
+        and o.machine_id = #{machineId}
       </if>
       <if test="orderNum != null">
-        and t1.order_num = #{orderNum}
+        and o.order_num = #{orderNum}
       </if>
       <if test="channelId != null">
-        and t1.channel_id = #{channelId}
+        and o.channel_id = #{channelId}
       </if>
       <if test="orderType != null and orderType !=''">
-        and t1.order_type = #{orderType}
+        and o.order_type = #{orderType}
       </if>
       <if test="goodsStatus != null">
-        and t1.goods_status = #{goodsStatus}
+        and o.goods_status = #{goodsStatus}
       </if>
       <if test="payStatus != null and payStatus !=''">
-        and t1.pay_status = #{payStatus}
+        and o.pay_status = #{payStatus}
       </if>
       <if test="keyword != null">
-        and (t6.machine_code like CONCAT('%','${keyword}','%')
-        or ac.name like CONCAT('%','${keyword}','%')
-        or t1.order_num like CONCAT('%','${keyword}','%'))
+        and (m.machine_code like CONCAT('%','${keyword}','%')
+        or o.order_num like CONCAT('%','${keyword}','%'))
       </if>
     </where>
-    ORDER BY t1.order_time desc
+    ORDER BY o.order_time desc
   </select>
 </mapper>
