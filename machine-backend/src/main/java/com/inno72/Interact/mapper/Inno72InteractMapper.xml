@@ -71,7 +71,7 @@
 		LEFT JOIN inno72_dictionary dd ON dd.code = i.channel
 		LEFT JOIN (
 			SELECT m.interact_id,sum(mg.number) AS number,COUNT(DISTINCT mg.goods_id) AS goods_num,GROUP_CONCAT(m.machine_code) AS machine_code FROM inno72_interact_machine m
-			LEFT JOIN inno72_interact_machine_goods mg ON m.id=mg.interact_machine_id and mg.type=0
+			LEFT JOIN inno72_interact_machine_goods mg ON m.id=mg.interact_machine_id
 			GROUP BY m.interact_id
 		) ig on ig.interact_id =i.id
 		LEFT JOIN (
