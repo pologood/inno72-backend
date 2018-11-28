@@ -424,21 +424,31 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			TreeVo first = new TreeVo();
 			first.setKey(interactMerchantVo.getId());
 			first.setTitle(interactMerchantVo.getMerchantName());
-			Map<String, Object> params = new HashMap<String, Object>();
-			params.put("sellerId", interactMerchantVo.getId());
-			params.put("interactId", interactId);
-			List<TreeVo> secondList = inno72InteractShopsMapper.selectMerchantShopsTree(params);
-			first.setChildren(secondList);
 
-			for (TreeVo second : secondList) {
+			if (interactMerchantVo.getChannelCode().endsWith("002002")) {
+
 				Map<String, Object> p = new HashMap<String, Object>();
-				p.put("shopsId", second.getKey());
+				p.put("shopsId", interactMerchantVo.getId());
 				p.put("interactId", interactId);
-				List<TreeVo> thirdList = inno72InteractGoodsMapper.selectGoodsTree(p);
-				second.setChildren(thirdList);
+				List<TreeVo> secondList = inno72InteractGoodsMapper.selectGoodsTree(p);
+
+				first.setChildren(secondList);
+			} else {
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("sellerId", interactMerchantVo.getId());
+				params.put("interactId", interactId);
+				List<TreeVo> secondList = inno72InteractShopsMapper.selectMerchantShopsTree(params);
+				first.setChildren(secondList);
+
+				for (TreeVo second : secondList) {
+					Map<String, Object> p = new HashMap<String, Object>();
+					p.put("shopsId", second.getKey());
+					p.put("interactId", interactId);
+					List<TreeVo> thirdList = inno72InteractGoodsMapper.selectGoodsTree(p);
+					second.setChildren(thirdList);
+				}
 			}
 			firstList.add(first);
-
 		}
 
 		return firstList;

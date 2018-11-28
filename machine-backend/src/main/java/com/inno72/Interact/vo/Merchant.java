@@ -56,6 +56,13 @@ public class Merchant {
 	private String channelId;
 
 	/**
+	 * 商户所属渠道
+	 */
+	@NotBlank(message = "请选择所属渠道")
+	@Column(name = "channel_code")
+	private String channelCode;
+
+	/**
 	 * 新零售sessionKey
 	 */
 	@Column(name = "sell_session_key")
@@ -180,6 +187,14 @@ public class Merchant {
 	 */
 	public void setChannelId(String channelId) {
 		this.channelId = channelId;
+	}
+
+	public String getChannelCode() {
+		return channelCode;
+	}
+
+	public void setChannelCode(String channelCode) {
+		this.channelCode = channelCode;
 	}
 
 	public String getSellSessionKey() {
