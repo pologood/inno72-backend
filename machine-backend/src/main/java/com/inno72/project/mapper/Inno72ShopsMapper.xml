@@ -31,6 +31,7 @@
         <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
         <result column="remark" jdbcType="VARCHAR" property="remark" />
         <result column="merchant_account_id" jdbcType="VARCHAR" property="merchantAccountId" />
+        <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
         <result column="channel_name" jdbcType="VARCHAR" property="channelName" />
         <result column="channel_id" jdbcType="VARCHAR" property="channelId" />
         <result column="status" jdbcType="VARCHAR" property="status" />
@@ -60,7 +61,7 @@
         FROM
         inno72_shops s LEFT JOIN inno72_merchant m on m.id = s.seller_id
         left join inno72_merchant_user u on u.id = m.merchant_account_id
-        WHERE s.is_delete = 0 and s.id != s.shop_code
+        WHERE s.is_delete = 0 and s.id != s.seller_id
         <if test="code !=null and code !='' and code !='undefined'">and s.seller_id = #{code}</if>
         <if test="keyword !=null and keyword !='' and keyword !='undefined'">
             and ( s.shop_name LIKE '%${keyword}%' or s.shop_code LIKE '%${keyword}%' )
@@ -118,8 +119,9 @@
         s.id,
         s.shop_name,
         s.shop_code,
-        m.merchant_name as seller_id,
+        m.merchant_name,
         m.merchant_account_id,
+        s.seller_id,
         m.channel_name,
         m.channel_id,
         s.session_key,
