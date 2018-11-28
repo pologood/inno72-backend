@@ -426,12 +426,14 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			first.setTitle(interactMerchantVo.getMerchantName());
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("sellerId", interactMerchantVo.getId());
+			params.put("interactId", interactId);
 			List<TreeVo> secondList = inno72InteractShopsMapper.selectMerchantShopsTree(params);
 			first.setChildren(secondList);
 
 			for (TreeVo second : secondList) {
 				Map<String, Object> p = new HashMap<String, Object>();
 				p.put("shopsId", second.getKey());
+				p.put("interactId", interactId);
 				List<TreeVo> thirdList = inno72InteractGoodsMapper.selectGoodsTree(p);
 				second.setChildren(thirdList);
 			}
