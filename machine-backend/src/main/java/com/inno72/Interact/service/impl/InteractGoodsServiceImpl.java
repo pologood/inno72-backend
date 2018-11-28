@@ -394,15 +394,15 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 				return Results.failure("未找到用户登录信息");
 			}
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-			// 查看商品是否被关联
+
+			// 查看商品是否被机器关联
+			logger.info("删除商品判断是否关联机器");
 			Inno72InteractMachineGoods machineGoods = new Inno72InteractMachineGoods();
 			machineGoods.setGoodsId(goodsId);
-			machineGoods.setType(1);
 			int n = inno72InteractMachineGoodsMapper.selectCount(machineGoods);
-
 			if (n > 0) {
-				logger.info("当前商品已绑定优惠券，不可删除");
-				return Results.failure("当前商品已绑定优惠券，不可删除");
+				logger.info("已关联到机器，不可删除");
+				return Results.failure("已关联到机器，不可删除");
 			}
 
 			Inno72InteractGoods interactGoods = new Inno72InteractGoods();
