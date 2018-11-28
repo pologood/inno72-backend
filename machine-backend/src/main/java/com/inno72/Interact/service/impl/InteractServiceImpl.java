@@ -158,7 +158,21 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			model.setUpdateId(mUserId);
 			model.setUpdateTime(LocalDateTime.now());
-
+			// 获取更新前信息（如果已添加商户信息则不可更新类型和渠道）
+			Inno72Interact old = new Inno72Interact();
+			old.setId(model.getId());
+			old = inno72InteractMapper.selectOne(old);
+			List<MerchantVo> merchantList = inno72InteractMerchantMapper.selectMerchantByInteractId(model.getId());
+			if (merchantList != null && merchantList.size() > 0) {
+				if (model.getPaiyangType() != old.getPaiyangType() || model.getChannel() != old.getChannel()) {
+					logger.info("已添加商品信息，活动类型不可修改");
+					return Results.failure("已添加商品信息，活动类型不可修改");
+				}
+				if (model.getChannel() != old.getChannel()) {
+					logger.info("已添加商品信息，渠道不可修改");
+					return Results.failure("已添加商品信息，渠道不可修改");
+				}
+			}
 			if (type == 0) {
 				inno72InteractMapper.updateByPrimaryKeySelective(model);
 			} else if (type == 1) {
@@ -190,9 +204,7 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 				}
 				inno72InteractMapper.updateByPrimaryKeySelective(model);
 			} else if (type == 2) {
-				Inno72Interact old = new Inno72Interact();
-				old.setId(model.getId());
-				old = inno72InteractMapper.selectOne(old);
+
 				old.setStatus(2);
 				// 更新删除机器端资源缓存
 				logger.info("更新删除机器端资源缓存");
