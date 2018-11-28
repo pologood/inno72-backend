@@ -47,10 +47,6 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
     void findAndPushByTaskParam();
 
-    void findLockGoodsPush(SupplyRequestVo vo);
-
-	void setDropGoods(SupplyRequestVo vo);
-
 	Result<List<WorkOrderVo>> findOrderByMonth(SupplyRequestVo vo);
 
 	Result<List<Inno72SupplyChannel>> exceptionList(SupplyRequestVo vo);

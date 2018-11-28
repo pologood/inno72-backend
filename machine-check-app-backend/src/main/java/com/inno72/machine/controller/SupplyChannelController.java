@@ -184,23 +184,6 @@ public class SupplyChannelController {
 	}
 
 	/**
-	 * 查询商品缺货情况
-	 * @param vo
-	 */
-	@RequestMapping(value="findLockGoodsPush")
-	public void findLockGoodsPush(@RequestBody SupplyRequestVo vo){
-		logger.info("查询缺货货道并实时发送push接口:{}",JSON.toJSON(vo));
-		supplyChannelService.findLockGoodsPush(vo);
-	}
-
-
-
-	@RequestMapping(value="setDropGoods")
-	public void setDropGoods(@RequestBody SupplyRequestVo vo){
-		supplyChannelService.setDropGoods(vo);
-	}
-
-	/**
 	 * 查询异常货道
 	 * @param vo
 	 * @return

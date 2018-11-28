@@ -750,68 +750,6 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	}
 
 	@Override
-	public void findLockGoodsPush(SupplyRequestVo vo) {
-		String goodsId = vo.getGoodsId();
-		String machineId = vo.getMachineId();
-		Map<String,Object> map = new HashMap<>();
-		map.put("goodsId",goodsId);
-		map.put("machineId",machineId);
-		Inno72SupplyChannel supplyChannel = inno72SupplyChannelMapper.selectPaiyangLockGoods(map);
-		if(supplyChannel != null){
-			this.sendLockToAlarm(supplyChannel,machineId,1);
-		}else{
-			supplyChannel = inno72SupplyChannelMapper.selectLockGoods(map);
-			if(supplyChannel != null){
-				this.sendLockToAlarm(supplyChannel,machineId,2);
-			}
-		}
-
-	}
-
-	public void sendLockToAlarm(Inno72SupplyChannel supplyChannel,String machineId,int type){
-		List<GoodsBean> goodsBeanList = null;
-		if(type == 1){
-			goodsBeanList = inno72SupplyChannelMapper.selectPaiyangLockGoodsList(machineId);
-		}else if(type==2){
-			goodsBeanList = inno72SupplyChannelMapper.selectLockGoodsList(machineId);
-		}
-		int totalCount = supplyChannel.getGoodsCount();
-		logger.info("查询出商品货道信息{}",JSON.toJSON(supplyChannel));
-		if(totalCount == 20 || totalCount == 10 || totalCount == 5){
-			ChannelGoodsAlarmBean alarmBean = new ChannelGoodsAlarmBean();
-			alarmBean.setGoodsName(supplyChannel.getGoodsName());
-			alarmBean.setMachineCode(supplyChannel.getMachineCode());
-			alarmBean.setSurPlusNum(totalCount);
-			alarmBean.setLocaleStr(supplyChannel.getLocaleStr());
-			alarmBean.setGoodsBeanList(goodsBeanList);
-			AlarmMessageBean alarmMessageBean = new AlarmMessageBean();
-			alarmMessageBean.setSystem("machineLackGoods");
-			alarmMessageBean.setType("machineLackGoodsException");
-			alarmMessageBean.setData(alarmBean);
-			logger.info("货道缺货发送push{}", JSONObject.toJSONString(alarmMessageBean));
-			redisUtil.publish("moniterAlarm", JSONObject.toJSONString(alarmMessageBean));
-		}
-	}
-
-	/**
-	 * 发送掉货异常报警
-	 * @param vo
-	 */
-	@Override
-	public void setDropGoods(SupplyRequestVo vo) {
-		String machineCode = vo.getMachineCode();
-		String code = vo.getSupplyCode();
-		MachineDropGoodsBean machineDropGoodsBean = new MachineDropGoodsBean();
-		machineDropGoodsBean.setChannelNum(code);
-		machineDropGoodsBean.setMachineCode(machineCode);
-		AlarmMessageBean<MachineDropGoodsBean> alarmMessageBean = new AlarmMessageBean();
-		alarmMessageBean.setSystem("machineDropGoods");
-		alarmMessageBean.setType("machineDropGoodsException");
-		alarmMessageBean.setData(machineDropGoodsBean);
-		redisUtil.publish("moniterAlarm",JSONObject.toJSONString(alarmMessageBean));
-	}
-
-	@Override
 	public Result<List<WorkOrderVo>> findOrderByMonth(SupplyRequestVo vo) {
 		Inno72CheckUser checkUser = UserUtil.getUser();
 		String checkUserId = checkUser.getId();
