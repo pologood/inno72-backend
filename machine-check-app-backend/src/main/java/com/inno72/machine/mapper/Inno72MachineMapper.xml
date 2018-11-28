@@ -142,7 +142,7 @@
         left join (	select  distinct  sc.machine_id  from  view_machine_goods mg
         inner join inno72_supply_channel sc on mg.machine_id = sc.machine_id
         inner join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id and scg.goods_id=mg.goods_id
-        where sc.status=0 and sc.is_delete=0
+        where sc.status=0 and sc.is_delete=0 and sc.is_remove=0
         group by sc.machine_id,scg.goods_id HAVING sum(sc.goods_count)<![CDATA[<]]>10 ) cc
         on m.id=cc.machine_id
         where (m.machine_status=4 or m.machine_status=9) and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
