@@ -425,7 +425,7 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			first.setKey(interactMerchantVo.getId());
 			first.setTitle(interactMerchantVo.getMerchantName());
 
-			if (interactMerchantVo.getChannelCode().endsWith("002002")) {
+			if (interactMerchantVo.getChannelCode().endsWith(CommonConstants.WECHATCODE)) {
 
 				Map<String, Object> p = new HashMap<String, Object>();
 				p.put("shopsId", interactMerchantVo.getId());

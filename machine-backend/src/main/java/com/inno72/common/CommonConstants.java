@@ -58,4 +58,7 @@ public class CommonConstants {
 	public static final String REDIS_ACTIVITY_DEFAULT_PLAN_CACHE_KEY = "machine_default_plan:";
 
 	public static final String MERCHANT_CODE_REDIS_KEY = "inno72_merchant_service:merchant_code:";
+
+	/** 微信渠道码 **/
+	public final static String WECHATCODE = "002002";
 }

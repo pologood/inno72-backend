@@ -198,7 +198,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 		try {
 			// 判断是是否微信渠道，微信则添加店铺
 			Inno72Interact m = inno72InteractMapper.selectByPrimaryKey(interactId);
-			if (m.getChannel().equals("002002")) {
+			if (m.getChannel().equals(CommonConstants.WECHATCODE)) {
 				// 已添加 已添加返回ID
 				Inno72Shops params = new Inno72Shops();
 				params.setSellerId(merchantId);
