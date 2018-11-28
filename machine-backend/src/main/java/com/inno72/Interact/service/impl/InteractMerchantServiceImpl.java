@@ -128,7 +128,7 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 			Inno72InteractMerchant interactMerchant = new Inno72InteractMerchant();
 			interactMerchant.setMerchantId(merchantId);
 			interactMerchant.setInteractId(interactId);
-
+			interactMerchant = inno72InteractMerchantMapper.selectOne(interactMerchant);
 			interactMerchant.setIsFocus(isFocus);
 			inno72InteractMerchantMapper.updateByPrimaryKeySelective(interactMerchant);
 		} catch (Exception e) {

@@ -110,7 +110,7 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 			Inno72InteractShops interactShops = new Inno72InteractShops();
 			interactShops.setShopsId(shopsId);
 			interactShops.setInteractId(interactId);
-
+			interactShops = inno72InteractShopsMapper.selectOne(interactShops);
 			interactShops.setIsVip(isVip);
 			inno72InteractShopsMapper.updateByPrimaryKeySelective(interactShops);
 		} catch (Exception e) {
