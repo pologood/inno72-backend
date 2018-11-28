@@ -57,7 +57,8 @@
         s.update_id,
         s.create_time,
         s.update_time,
-        u.login_status as status
+        u.login_status as status,
+        m.merchant_name as merchant_name
         FROM
         inno72_shops s LEFT JOIN inno72_merchant m on m.id = s.seller_id
         left join inno72_merchant_user u on u.id = m.merchant_account_id
