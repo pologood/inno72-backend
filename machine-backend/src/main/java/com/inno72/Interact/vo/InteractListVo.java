@@ -6,6 +6,10 @@ public class InteractListVo {
 
 	private String name;
 
+	private String channel;
+
+	private String paiyangType;
+
 	private String gameName;
 
 	private Integer merchantNum;
@@ -40,6 +44,22 @@ public class InteractListVo {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
+
+	public String getPaiyangType() {
+		return paiyangType;
+	}
+
+	public void setPaiyangType(String paiyangType) {
+		this.paiyangType = paiyangType;
 	}
 
 	public String getGameName() {
