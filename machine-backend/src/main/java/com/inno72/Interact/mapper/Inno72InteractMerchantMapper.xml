@@ -21,6 +21,7 @@
     
     <result column="merchant_code" jdbcType="VARCHAR" property="merchantCode" />
     <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
+    <result column="channel_code" jdbcType="VARCHAR" property="channelCode" />
   </resultMap>
   <!-- 获取客户 -->
   <select id="getMerchantUserList" parameterType="String" resultType="java.util.Map">
@@ -60,6 +61,7 @@
 			m.id,
 			m.merchant_code,
 			m.merchant_name,
+			m.channel_code,
 			im.is_focus
 		FROM
 			inno72_interact_merchant im

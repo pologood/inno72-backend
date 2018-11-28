@@ -162,17 +162,7 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			Inno72Interact old = new Inno72Interact();
 			old.setId(model.getId());
 			old = inno72InteractMapper.selectOne(old);
-			List<MerchantVo> merchantList = inno72InteractMerchantMapper.selectMerchantByInteractId(model.getId());
-			if (merchantList != null && merchantList.size() > 0) {
-				if (model.getPaiyangType() != old.getPaiyangType() || model.getChannel() != old.getChannel()) {
-					logger.info("已添加商品信息，活动类型不可修改");
-					return Results.failure("已添加商品信息，活动类型不可修改");
-				}
-				if (model.getChannel() != old.getChannel()) {
-					logger.info("已添加商品信息，渠道不可修改");
-					return Results.failure("已添加商品信息，渠道不可修改");
-				}
-			}
+
 			if (type == 0) {
 				inno72InteractMapper.updateByPrimaryKeySelective(model);
 			} else if (type == 1) {
@@ -434,19 +424,31 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			TreeVo first = new TreeVo();
 			first.setKey(interactMerchantVo.getId());
 			first.setTitle(interactMerchantVo.getMerchantName());
-			Map<String, Object> params = new HashMap<String, Object>();
-			params.put("sellerId", interactMerchantVo.getId());
-			List<TreeVo> secondList = inno72InteractShopsMapper.selectMerchantShopsTree(params);
-			first.setChildren(secondList);
 
-			for (TreeVo second : secondList) {
+			if (interactMerchantVo.getChannelCode().endsWith(CommonConstants.WECHATCODE)) {
+
 				Map<String, Object> p = new HashMap<String, Object>();
-				p.put("shopsId", second.getKey());
-				List<TreeVo> thirdList = inno72InteractGoodsMapper.selectGoodsTree(p);
-				second.setChildren(thirdList);
+				p.put("shopsId", interactMerchantVo.getId());
+				p.put("interactId", interactId);
+				List<TreeVo> secondList = inno72InteractGoodsMapper.selectGoodsTree(p);
+
+				first.setChildren(secondList);
+			} else {
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("sellerId", interactMerchantVo.getId());
+				params.put("interactId", interactId);
+				List<TreeVo> secondList = inno72InteractShopsMapper.selectMerchantShopsTree(params);
+				first.setChildren(secondList);
+
+				for (TreeVo second : secondList) {
+					Map<String, Object> p = new HashMap<String, Object>();
+					p.put("shopsId", second.getKey());
+					p.put("interactId", interactId);
+					List<TreeVo> thirdList = inno72InteractGoodsMapper.selectGoodsTree(p);
+					second.setChildren(thirdList);
+				}
 			}
 			firstList.add(first);
-
 		}
 
 		return firstList;

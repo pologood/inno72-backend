@@ -27,6 +27,7 @@ import com.inno72.Interact.vo.InteractMerchantVo;
 import com.inno72.Interact.vo.MerchantVo;
 import com.inno72.Interact.vo.ShopsVo;
 import com.inno72.common.AbstractService;
+import com.inno72.common.CommonConstants;
 import com.inno72.common.ExportExcel;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
@@ -128,7 +129,7 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 			Inno72InteractMerchant interactMerchant = new Inno72InteractMerchant();
 			interactMerchant.setMerchantId(merchantId);
 			interactMerchant.setInteractId(interactId);
-
+			interactMerchant = inno72InteractMerchantMapper.selectOne(interactMerchant);
 			interactMerchant.setIsFocus(isFocus);
 			inno72InteractMerchantMapper.updateByPrimaryKeySelective(interactMerchant);
 		} catch (Exception e) {
@@ -183,7 +184,7 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 			Inno72Merchant merchant = new Inno72Merchant();
 			merchant.setId(merchantId);
 			merchant = inno72MerchantMapper.selectByPrimaryKey(merchantId);
-			if (merchant.getChannelId().endsWith("002002")) {
+			if (merchant.getChannelCode().endsWith(CommonConstants.WECHATCODE)) {
 				// 查询店铺下是否存在商品(微信公众号商户下店铺商户ID与店铺ID相等)
 				Map<String, Object> pm = new HashMap<>();
 				pm.put("interactId", interactId);

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ import com.inno72.common.ResultGenerator;
  */
 @RestController
 @RequestMapping("/interact/game/rule")
+@CrossOrigin
 public class InteractGameRuleController {
 	@Resource
 	private InteractGameRuleService interactGameRuleService;
