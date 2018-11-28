@@ -1,5 +1,6 @@
 package com.inno72.machine.service.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,9 +20,12 @@ import com.inno72.check.vo.SignVo;
 import com.inno72.common.DateUtil;
 import com.inno72.machine.mapper.Inno72MachineBatchDetailMapper;
 import com.inno72.machine.model.Inno72MachineBatchDetail;
+import com.inno72.machine.vo.SubmitSupplyChannel;
 import com.inno72.machine.vo.SupplyRequestVo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -144,9 +148,14 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			parentChannel.setGoodsCount(0);
 			parentChannel.setUpdateTime(LocalDateTime.now());
 			inno72SupplyChannelMapper.updateByParam(parentChannel);// 修改主货道
-			Condition childCondition = new Condition(Inno72SupplyChannel.class);
-			childCondition.createCriteria().andEqualTo("code", childCode.toString()).andEqualTo("machineId", machineId);
-			inno72SupplyChannelMapper.deleteByCondition(childCondition);// 删除子货道
+			Inno72SupplyChannel childChannel = new Inno72SupplyChannel();
+			childChannel.setCode(childCode.toString());
+			childChannel.setMachineId(machineId);
+			childChannel.setGoodsCount(0);
+			childChannel.setStatus(1);
+			childChannel.setUpdateTime(LocalDateTime.now());
+			childChannel.setIsRemove(1);
+			inno72SupplyChannelMapper.updateByParam(childChannel);
 			for (Inno72SupplyChannel supply : list) {
 				Condition condition = new Condition(Inno72SupplyChannelGoods.class);
 				condition.createCriteria().andEqualTo("supplyChannelId", supply.getId());
@@ -184,7 +193,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			Integer newCode = codeInteger + 1;
 			map.put("code", newCode.toString());
 			Inno72SupplyChannel childChannel = inno72SupplyChannelMapper.selectByParam(map);
-			if (childChannel != null) {
+			if (childChannel != null && childChannel.getIsRemove()==0) {
 				return Results.failure("该货道已拆分");
 			}
 			supplyChannel.setGoodsCount(0);
@@ -193,21 +202,27 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			Condition condition = new Condition(Inno72SupplyChannelGoods.class);
 			condition.createCriteria().andEqualTo("supplyChannelId", supplyChannel.getId());
 			inno72SupplyChannelGoodsMapper.deleteByCondition(condition);
-			childChannel = new Inno72SupplyChannel();
-			childChannel.setId(StringUtil.getUUID());
-
 			int volumeCount = batchDetail.getVolumeCount();
-			childChannel.setVolumeCount(volumeCount);
-			childChannel.setCode(newCode.toString());
-			childChannel.setCreateTime(LocalDateTime.now());
-			childChannel.setCreateId("系统");
-			childChannel.setUpdateTime(LocalDateTime.now());
-			childChannel.setUpdateId("系统");
-			childChannel.setName("货道" + newCode);
-			childChannel.setGoodsCount(0);
-			childChannel.setWorkStatus(0);
-			childChannel.setMachineId(supplyChannel.getMachineId());
-			inno72SupplyChannelMapper.insertSelective(childChannel);
+			if(childChannel != null){
+				childChannel.setIsRemove(0);
+				childChannel.setVolumeCount(volumeCount);
+				childChannel.setGoodsCount(0);
+				inno72SupplyChannelMapper.updateByParam(childChannel);
+			}else{
+				childChannel = new Inno72SupplyChannel();
+				childChannel.setId(StringUtil.getUUID());
+				childChannel.setVolumeCount(volumeCount);
+				childChannel.setCode(newCode.toString());
+				childChannel.setCreateTime(LocalDateTime.now());
+				childChannel.setCreateId("系统");
+				childChannel.setUpdateTime(LocalDateTime.now());
+				childChannel.setUpdateId("系统");
+				childChannel.setName("货道" + newCode);
+				childChannel.setGoodsCount(0);
+				childChannel.setWorkStatus(0);
+				childChannel.setMachineId(supplyChannel.getMachineId());
+				inno72SupplyChannelMapper.insertSelective(childChannel);
+			}
 			Inno72Machine machine = inno72MachineMapper.getMachineById(machineId);
 			String detail = "拆分货道：在"+machine.getLocaleStr()+"点位处的机器对"+code+"货道进行了拆分，拆分后变为"+code+"货道和"+newCode+"货道";
 			StringUtil.logger(CommonConstants.LOG_TYPE_SPLIT_CHANNEL,machine.getMachineCode(),detail);
@@ -656,6 +671,17 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				order.setType(1);
 				order.setUserId(checkUser.getId());
 				inno72SupplyChannelOrderMapper.insertSelective(order);
+				List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectAllSupply(machineId);
+				if(!list.isEmpty()){
+					for(Inno72SupplyChannel c:list){
+						SubmitSupplyChannel ssc = new SubmitSupplyChannel();
+						BeanUtils.copyProperties(c,ssc,SubmitSupplyChannel.class);
+						ssc.setSupplyChannelId(c.getId());
+						ssc.setNowTime(LocalDateTime.now());
+						ssc.setBatchNo(batchNo);
+						mongoTpl.save(ssc,"SubmitSupplyChannel");
+					}
+				}
 			}
 			String detailStr = detail.toString();
 			logger.info("补货添加日志：{}",detailStr);
@@ -855,46 +881,49 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		Map<String, Object> param = new HashMap<>();
 		param.put("machineCode", machineCode);
 		List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectListByParam(param);
+		Map<String,Inno72SupplyChannel> supplyChannelMap = new HashMap<>();
 		if(!list.isEmpty()){
-			Map<String,Inno72SupplyChannel> supplyChannelMap = new HashMap<>();
 			for(Inno72SupplyChannel sc:list){
 				supplyChannelMap.put(sc.getCode(),sc);
 			}
-			for(String supplyCode :paramList){
-				if(!supplyChannelMap.containsKey(supplyCode)){
-					int codeInt = Integer.parseInt(supplyCode);
-					int rowNo = codeInt/10;
-					rowNo++;
-					Map<String,Object> detailMap = new HashMap<>();
-					detailMap.put("rowNo",rowNo);
-					detailMap.put("machineCode",machineCode);
-					Inno72MachineBatchDetail batchDetail = inno72MachineBatchDetailMapper.selectByParam(detailMap);
-					if(batchDetail != null){
-						Inno72SupplyChannel supplyChannel = new Inno72SupplyChannel();
-						supplyChannel.setId(StringUtil.getUUID());
-						supplyChannel.setMachineId(machine.getId());
-						supplyChannel.setCode(supplyCode);
-						supplyChannel.setName("货道"+supplyCode);
-						supplyChannel.setStatus(0);
-						supplyChannel.setVolumeCount(batchDetail.getVolumeCount());
-						supplyChannel.setCreateId(checkUser.getId());
-						supplyChannel.setCreateTime(LocalDateTime.now());
-						supplyChannel.setUpdateId(checkUser.getId());
-						supplyChannel.setUpdateTime(LocalDateTime.now());
-						supplyChannel.setIsDelete(0);
-						supplyChannel.setWorkStatus(0);
-						inno72SupplyChannelMapper.insertSelective(supplyChannel);
-					}
-				}
-			}
-			for(String key:supplyChannelMap.keySet()){
-				if(!paramList.contains(key)){
-					Condition condition = new Condition(Inno72SupplyChannel.class);
-					condition.createCriteria().andEqualTo("machineId",machine.getId()).andEqualTo("code",key);
-					inno72SupplyChannelMapper.deleteByCondition(condition);
+		}
+		for(String supplyCode :paramList){
+			if(!supplyChannelMap.containsKey(supplyCode)){
+				int codeInt = Integer.parseInt(supplyCode);
+				int rowNo = codeInt/10;
+				rowNo++;
+				Map<String,Object> detailMap = new HashMap<>();
+				detailMap.put("rowNo",rowNo);
+				detailMap.put("machineCode",machineCode);
+				Inno72MachineBatchDetail batchDetail = inno72MachineBatchDetailMapper.selectByParam(detailMap);
+				if(batchDetail != null){
+					Inno72SupplyChannel supplyChannel = new Inno72SupplyChannel();
+					supplyChannel.setId(StringUtil.getUUID());
+					supplyChannel.setMachineId(machine.getId());
+					supplyChannel.setCode(supplyCode);
+					supplyChannel.setName("货道"+supplyCode);
+					supplyChannel.setStatus(0);
+					supplyChannel.setVolumeCount(batchDetail.getVolumeCount());
+					supplyChannel.setCreateId(checkUser.getId());
+					supplyChannel.setCreateTime(LocalDateTime.now());
+					supplyChannel.setUpdateId(checkUser.getId());
+					supplyChannel.setUpdateTime(LocalDateTime.now());
+					supplyChannel.setIsDelete(0);
+					supplyChannel.setWorkStatus(0);
+					inno72SupplyChannelMapper.insertSelective(supplyChannel);
 				}
 			}
 		}
+		for(String key:supplyChannelMap.keySet()){
+			if(!paramList.contains(key)){
+				Inno72SupplyChannel supplyChannel = new Inno72SupplyChannel();
+				supplyChannel.setMachineId(machine.getId());
+				supplyChannel.setCode(key);
+				supplyChannel.setIsRemove(1);
+				inno72SupplyChannelMapper.updateByParam(supplyChannel);
+			}
+		}
+
 		return ResultGenerator.genSuccessResult();
 	}
 

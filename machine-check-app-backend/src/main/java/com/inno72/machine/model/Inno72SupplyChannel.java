@@ -97,6 +97,9 @@ public class Inno72SupplyChannel {
 	@Column(name = "work_status")
 	private Integer workStatus;
 
+	@Column(name = "is_remove")
+	private Integer isRemove;
+
 	@Transient
 	private int goodsStatus;
 
@@ -348,6 +351,14 @@ public class Inno72SupplyChannel {
 	 */
 	public void setWorkStatus(Integer workStatus) {
 		this.workStatus = workStatus;
+	}
+
+	public Integer getIsRemove() {
+		return isRemove;
+	}
+
+	public void setIsRemove(Integer isRemove) {
+		this.isRemove = isRemove;
 	}
 
 	public LocalDateTime getCreateTime() {
