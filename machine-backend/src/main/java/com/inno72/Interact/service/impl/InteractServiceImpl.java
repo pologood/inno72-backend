@@ -162,17 +162,7 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			Inno72Interact old = new Inno72Interact();
 			old.setId(model.getId());
 			old = inno72InteractMapper.selectOne(old);
-			List<MerchantVo> merchantList = inno72InteractMerchantMapper.selectMerchantByInteractId(model.getId());
-			if (merchantList != null && merchantList.size() > 0) {
-				if (model.getPaiyangType() != old.getPaiyangType() || model.getChannel() != old.getChannel()) {
-					logger.info("已添加商品信息，活动类型不可修改");
-					return Results.failure("已添加商品信息，活动类型不可修改");
-				}
-				if (model.getChannel() != old.getChannel()) {
-					logger.info("已添加商品信息，渠道不可修改");
-					return Results.failure("已添加商品信息，渠道不可修改");
-				}
-			}
+
 			if (type == 0) {
 				inno72InteractMapper.updateByPrimaryKeySelective(model);
 			} else if (type == 1) {
