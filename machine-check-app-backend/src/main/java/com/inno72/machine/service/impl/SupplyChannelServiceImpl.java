@@ -842,9 +842,14 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 					supplyChannel.setName("货道"+supplyCode);
 					supplyChannel.setStatus(0);
 					supplyChannel.setVolumeCount(batchDetail.getVolumeCount());
-					supplyChannel.setCreateId(checkUser.getId());
+					if(checkUser != null){
+						supplyChannel.setCreateId(checkUser.getId());
+						supplyChannel.setUpdateId(checkUser.getId());
+					}else{
+						supplyChannel.setCreateId("系统");
+						supplyChannel.setUpdateId("系统");
+					}
 					supplyChannel.setCreateTime(LocalDateTime.now());
-					supplyChannel.setUpdateId(checkUser.getId());
 					supplyChannel.setUpdateTime(LocalDateTime.now());
 					supplyChannel.setIsDelete(0);
 					supplyChannel.setWorkStatus(0);
