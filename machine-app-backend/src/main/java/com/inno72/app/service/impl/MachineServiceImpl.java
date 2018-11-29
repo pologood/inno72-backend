@@ -341,7 +341,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		for (Inno72SupplyChannel channel : channels) {
 			list.add(channel.getCode());
 		}
-		param.put("paramList", list);
+		param.put("list", list);
 		String url = machineAppBackendProperties.get("updateMachineChannelsUrl");
 		logger.info("url:{}", url);
 		String result = HttpClient.post(url, JSON.toJSONString(param));
