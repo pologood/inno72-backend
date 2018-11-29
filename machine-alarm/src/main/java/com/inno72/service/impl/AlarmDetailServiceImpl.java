@@ -202,7 +202,8 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 								String [] heartArray = heart.split(",");
 								if(level<=heartArray.length){
 									text = "出现页面加载异常，已经持续"+heartArray[level-1]+"分钟"+pageInfo+"，请及时联系巡检人员。";
-									param.put("text",StringUtil.setText(textBeaf+text,active));
+									String ddStr = textBeaf+text;
+									param.put("text",StringUtil.setText(ddStr,active));
 									if(group != null){
 										msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId1(), "machineAlarm-AlarmDetailService");
 										logger.info("心跳异常发送钉钉消息："+group.getGroupId1());
@@ -220,7 +221,8 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 										alarmSendBean.setLocaleStr(localeStr);
 										alarmSendBean.setCreateTime(new Date());
 										mongoUtil.save(alarmSendBean,"AlarmSendBean");
-										StringUtil.logger(CommonConstants.LOG_TYPE_HEART,machineCode,"网络异常，提醒方式：钉钉，内容："+textBeaf+text);
+										String mdStr = "网络异常，提醒方式：钉钉，内容："+textBeaf+text;
+										StringUtil.logger(CommonConstants.LOG_TYPE_HEART,machineCode,mdStr);
 									}
 									alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_HEART,machineCode,textBeaf,text,inno72CheckUserPhones);
 								}
@@ -234,7 +236,8 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 									textBeaf = "您好，"+localeStr+"，机器编号："+machineCode+"，";
 									text = "网络已经连续10分钟未连接成功，请及时联系巡检人员。";
 									alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_NET,machineCode,textBeaf,text,inno72CheckUserPhones);
-									param.put("text",StringUtil.setText(textBeaf+text,active));
+									String ddStr = textBeaf+text;
+									param.put("text",StringUtil.setText(ddStr,active));
 									if(group != null){
 										msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId1(), "machineAlarm-AlarmDetailService");
 										logger.info("网络连接异常发送钉钉消息："+group.getGroupId1());
@@ -252,8 +255,8 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 										alarmSendBean.setLocaleStr(localeStr);
 										alarmSendBean.setCreateTime(new Date());
 										mongoUtil.save(alarmSendBean,"AlarmSendBean");
-										text = "网络异常，提醒方式：钉钉，内容："+text;
-										StringUtil.logger(CommonConstants.LOG_TYPE_CONNECT,machineCode,text);
+										String mdStr = "网络异常，提醒方式：钉钉，内容："+text;
+										StringUtil.logger(CommonConstants.LOG_TYPE_CONNECT,machineCode,mdStr);
 									}
 								}
 

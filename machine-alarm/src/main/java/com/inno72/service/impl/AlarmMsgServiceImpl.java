@@ -90,8 +90,6 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 		logger.info("存储消息" + title);
 		Map<String, String> params = new HashMap<>();
 		String appName = "machine_alarm";
-		String androidStr = "";
-		String iosStr = "";
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("detail", detail);
 		jsonObject.put("mainType", 1);
