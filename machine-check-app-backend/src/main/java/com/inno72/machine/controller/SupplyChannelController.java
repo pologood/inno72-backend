@@ -213,7 +213,9 @@ public class SupplyChannelController {
 	 */
 	@RequestMapping(value = "updateSupplyChannel")
 	public Result<String> updateSupplyChannel(@RequestBody Map<String,Object> map){
+		logger.info("APP同步货道参数："+JSON.toJSONString(map));
 		Result<String> result = supplyChannelService.updateSupplyChannel(map);
+		logger.info("APP同步货道返回："+JSON.toJSONString(result));
 		return result;
 	}
 
@@ -225,7 +227,9 @@ public class SupplyChannelController {
 	 */
 	@RequestMapping(value = "updateSupplyBackend")
 	public Result<String> updateSupplyBackend(@RequestBody Map<String,Object> map){
+		logger.info("后端同步货道参数："+JSON.toJSONString(map));
 		Result<String> result = supplyChannelService.updateSupplyChannel(map);
+		logger.info("后端同步货道返回："+JSON.toJSONString(result));
 		return result;
 	}
 }

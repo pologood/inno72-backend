@@ -825,47 +825,52 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				supplyChannelMap.put(sc.getCode(),sc);
 			}
 		}
-		for(String supplyCode :paramList){
-			if(!supplyChannelMap.containsKey(supplyCode)){
-				int codeInt = Integer.parseInt(supplyCode);
-				int rowNo = codeInt/10;
-				rowNo++;
-				Map<String,Object> detailMap = new HashMap<>();
-				detailMap.put("rowNo",rowNo);
-				detailMap.put("machineCode",machineCode);
-				Inno72MachineBatchDetail batchDetail = inno72MachineBatchDetailMapper.selectByParam(detailMap);
-				if(batchDetail != null){
-					Inno72SupplyChannel supplyChannel = new Inno72SupplyChannel();
-					supplyChannel.setId(StringUtil.getUUID());
-					supplyChannel.setMachineId(machine.getId());
-					supplyChannel.setCode(supplyCode);
-					supplyChannel.setName("货道"+supplyCode);
-					supplyChannel.setStatus(0);
-					supplyChannel.setVolumeCount(batchDetail.getVolumeCount());
-					if(checkUser != null){
-						supplyChannel.setCreateId(checkUser.getId());
-						supplyChannel.setUpdateId(checkUser.getId());
-					}else{
-						supplyChannel.setCreateId("系统");
-						supplyChannel.setUpdateId("系统");
+		if(!paramList.isEmpty()){
+			for(String supplyCode :paramList){
+				if(!supplyChannelMap.containsKey(supplyCode)){
+					int codeInt = Integer.parseInt(supplyCode);
+					int rowNo = codeInt/10;
+					rowNo++;
+					Map<String,Object> detailMap = new HashMap<>();
+					detailMap.put("rowNo",rowNo);
+					detailMap.put("machineCode",machineCode);
+					Inno72MachineBatchDetail batchDetail = inno72MachineBatchDetailMapper.selectByParam(detailMap);
+					if(batchDetail != null){
+						Inno72SupplyChannel supplyChannel = new Inno72SupplyChannel();
+						supplyChannel.setId(StringUtil.getUUID());
+						supplyChannel.setMachineId(machine.getId());
+						supplyChannel.setCode(supplyCode);
+						supplyChannel.setName("货道"+supplyCode);
+						supplyChannel.setStatus(0);
+						supplyChannel.setVolumeCount(batchDetail.getVolumeCount());
+						if(checkUser != null){
+							supplyChannel.setCreateId(checkUser.getId());
+							supplyChannel.setUpdateId(checkUser.getId());
+						}else{
+							supplyChannel.setCreateId("系统");
+							supplyChannel.setUpdateId("系统");
+						}
+						supplyChannel.setCreateTime(LocalDateTime.now());
+						supplyChannel.setUpdateTime(LocalDateTime.now());
+						supplyChannel.setIsDelete(0);
+						supplyChannel.setWorkStatus(0);
+						inno72SupplyChannelMapper.insertSelective(supplyChannel);
 					}
-					supplyChannel.setCreateTime(LocalDateTime.now());
-					supplyChannel.setUpdateTime(LocalDateTime.now());
-					supplyChannel.setIsDelete(0);
-					supplyChannel.setWorkStatus(0);
-					inno72SupplyChannelMapper.insertSelective(supplyChannel);
 				}
 			}
-		}
-		for(String key:supplyChannelMap.keySet()){
-			if(!paramList.contains(key)){
-				Inno72SupplyChannel supplyChannel = new Inno72SupplyChannel();
-				supplyChannel.setMachineId(machine.getId());
-				supplyChannel.setCode(key);
-				supplyChannel.setIsRemove(1);
-				inno72SupplyChannelMapper.updateByParam(supplyChannel);
+			for(String key:supplyChannelMap.keySet()){
+				if(!paramList.contains(key)){
+					Inno72SupplyChannel supplyChannel = new Inno72SupplyChannel();
+					supplyChannel.setMachineId(machine.getId());
+					supplyChannel.setCode(key);
+					supplyChannel.setIsRemove(1);
+					inno72SupplyChannelMapper.updateByParam(supplyChannel);
+				}
 			}
+		}else {
+			Results.failure("参数不合法");
 		}
+
 
 		return ResultGenerator.genSuccessResult();
 	}
