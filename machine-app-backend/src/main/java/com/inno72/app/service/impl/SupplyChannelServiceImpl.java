@@ -134,6 +134,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		channel.setCreateTime(LocalDateTime.now());
 		channel.setUpdateTime(LocalDateTime.now());
 		channel.setUpdateId("系统");
+		channel.setIsRemove(0);
 		String c = channel.getCode().length() == 1 ? "0" + channel.getCode() : channel.getCode();
 		String row = c.substring(0, 1);
 		Integer code = Integer.parseInt(row) + 1;
