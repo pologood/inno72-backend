@@ -323,7 +323,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 				if(StringUtil.isEmpty(value) && sub>=Integer.parseInt(heartArray[0])) {//间隔时间大于1分钟
 					exceptionBean.setLevel(1);
 					mongoUtil.save(exceptionBean,"AlarmExceptionMachineBean");
-					logger.info("超过1分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
+					logger.info("超过"+heartArray[0]+"分钟未发送心跳的机器，编号为：{}",bean.getMachineCode());
 					redisUtil.set(key,"2");
 				}else{
 					for(int i=1;i<heartArray.length;i++){
