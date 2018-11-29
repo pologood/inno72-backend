@@ -54,7 +54,7 @@
       select * from  (select
       o.id,o.user_id,o.channel_id,o.machine_id,
       o.order_time,o.order_price,o.order_type,o.pay_status,o.pay_time,
-      o.shops_id,o.shops_name,o.goods_status,
+      o.shops_id,o.shops_name,o.goods_status,o.order_num,
       guc.game_user_id,guc.user_nick nick_name,
       CONCAT(IFNULL( l.mall,""),IFNULL( l.name,""))
       mer_point_address,
