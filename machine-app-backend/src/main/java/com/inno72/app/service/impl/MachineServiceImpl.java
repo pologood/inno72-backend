@@ -301,7 +301,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			return Results.failure("machineCode传入错误");
 		}
 		Condition condition1 = new Condition(Inno72SupplyChannel.class);
-		condition1.createCriteria().andEqualTo("machineId", machines.get(0).getId());
+		condition1.createCriteria().andEqualTo("machineId", machines.get(0).getId()).andEqualTo("isRemove", 0);
 		condition1.setOrderByClause("code*1");
 		List<Inno72SupplyChannel> supplys = supplyChannelService.findByCondition(condition1);
 		if (supplys == null) {
@@ -335,9 +335,19 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if (machine == null) {
 			return Results.failure("machineCode传入错误");
 		}
-		Result<String> updateResult = supplyChannelService.updateChannel(machine.getId(), machineCode, channels);
-		if (updateResult.getCode() != Result.SUCCESS) {
-			return updateResult;
+		Map<String, Object> param = new HashMap<>();
+		param.put("machineCode", machineCode);
+		List<String> list = new ArrayList<>();
+		for (Inno72SupplyChannel channel : channels) {
+			list.add(channel.getCode());
+		}
+		param.put("paramList", list);
+		String url = machineAppBackendProperties.get("updateMachineChannelsUrl");
+		logger.info("url:{}", url);
+		String result = HttpClient.post(url, JSON.toJSONString(param));
+		int code = JSON.parseObject(result).getInteger("code");
+		if (code != 0) {
+			return Results.failure(JSON.parseObject(result).getString("msg"));
 		}
 		return Results.success();
 	}
