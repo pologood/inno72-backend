@@ -13,6 +13,12 @@
     <result column="type" jdbcType="INTEGER" property="type" />
   </resultMap>
   
+  <resultMap id="VoResultMap" type="com.inno72.Interact.vo.InteractGameRuleVo" extends="BaseResultMap">
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  
+  
+  
    <insert id="insertInteractGameRuleList" parameterType="java.util.List">
         insert into inno72_interact_game_rule (id,interact_id,goods_id,rule_code,rule_remark,type)
         values
@@ -20,4 +26,25 @@
             (#{t.id}, #{t.interactId},#{t.goodsId},#{t.ruleCode},#{t.ruleRemark},#{t.type})
         </foreach>
   </insert>
+  
+  
+  <select id="selectGameRule" parameterType="java.util.Map" resultMap="VoResultMap">
+		SELECT
+			gr.*,g.name
+		FROM
+			inno72_interact_game_rule gr 
+			LEFT JOIN inno72_goods g ON g.id = gr.goods_id 
+		WHERE gr.type =0
+		<if test="interactId !=null and interactId !='' ">and gr.interact_id = #{interactId} </if>
+		UNION
+		SELECT
+			gr.*,CONCAT(c.`name`,'（券）') AS name
+		FROM
+			inno72_interact_game_rule gr 
+			LEFT JOIN inno72_coupon c ON c.id = gr.goods_id 
+		WHERE gr.type =1 
+		<if test="interactId !=null and interactId !='' ">and gr.interact_id = #{interactId} </if>
+  </select>
+  
+  
 </mapper>
