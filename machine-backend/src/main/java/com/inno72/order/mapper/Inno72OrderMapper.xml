@@ -96,7 +96,9 @@
       </if>
       <if test="keyword != null">
         and (m.machine_code like CONCAT('%','${keyword}','%')
-        or o.order_num like CONCAT('%','${keyword}','%'))
+        or o.order_num like CONCAT('%','${keyword}','%')
+        or activity_name like CONCAT('%','${keyword}','%')
+        )
       </if>
     </where>
     ORDER BY o.order_time desc
