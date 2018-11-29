@@ -93,7 +93,7 @@
 		FROM inno72_admin_area a
 		LEFT JOIN (
 			SELECT m.machine_code, m.id, locale.area_code FROM inno72_machine m
-			LEFT JOIN inno72_locale locale ON locale.id = m.locale_id WHERE m.machine_status ='4'
+			LEFT JOIN inno72_locale locale ON locale.id = m.locale_id WHERE m.machine_status ='4' and machine_type !=2
 		) m ON LEFT ( m.area_code,#{num}) = LEFT ( a.CODE,#{num})
 		LEFT JOIN ( 
 			SELECT DISTINCT machine_id FROM (
@@ -153,7 +153,7 @@
 			) mm
 		) aa on m.id=aa.machine_id
 		WHERE LEFT(locale.area_code,#{num}) =#{code}
-		and m.machine_status ='4'
+		and m.machine_status ='4' and machine_type !=2
 		<if test="machineCode !=null and machineCode !='' ">and m.machine_code LIKE '%${machineCode}%'</if>
 	</select>
 	<!-- 查询时间段内排期的机器 -->
