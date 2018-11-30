@@ -178,6 +178,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 				List<Inno72CheckUserPhone> inno72CheckUserPhones = getInno72CheckUserPhones(machineCode);
 				Inno72Machine machine = machineService.findByCode(machineCode);
 				int machineStatus = machine.getMachineStatus();
+				int machineType = machine.getMachineType();
 				String areaCode = machine.getAreaCode();
 				if(StringUtil.isNotEmpty(areaCode)){
 					Inno72AlarmGroup group = alarmGroupService.selectByParam(machine.getAreaCode());
@@ -195,7 +196,7 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 							pageInfo = "，页面停留在"+pageInfo;
 						}
 					}
-					if(type == 1 && machineStatus==4){
+					if(type == 1 && machineStatus==4 && machineType != 2){
 						if(heartParam != null){
 							String heart = heartParam.getParam();
 							if(StringUtil.isNotEmpty(heart)){
