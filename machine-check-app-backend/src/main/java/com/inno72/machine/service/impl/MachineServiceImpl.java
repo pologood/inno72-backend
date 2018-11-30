@@ -34,6 +34,7 @@ import com.inno72.machine.model.Inno72AdminArea;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
+import com.inno72.machine.vo.CommonVo;
 import com.inno72.machine.vo.CutAppVo;
 import com.inno72.machine.vo.MachineStartAppBean;
 import com.inno72.machine.vo.SendMessageBean;
@@ -81,6 +82,12 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		Integer machineStatus = machine.getMachineStatus();
 		if (machineStatus.equals(3) || machineStatus.equals(4)) {
 			Inno72CheckUser checkUser = UserUtil.getUser();
+			if(StringUtil.isEmpty(machine.getLocaleId())){
+				Inno72Locale locale = inno72LocaleMapper.selectByPrimaryKey(localeId);
+				if(locale != null){
+					machine.setMachineType(locale.getType());
+				}
+			}
 			machine.setLocaleId(localeId);
 			machine.setMachineStatus(4);
 			machine.setUpdateId(checkUser.getId());
@@ -107,9 +114,15 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	}
 
 	@Override
-	public List<Inno72Machine> getMachineList() {
+	public List<Inno72Machine> getMachineList(CommonVo commonVo) {
+		String keyword = commonVo.getKeyword();
 		String chekUserId = UserUtil.getUser().getId();
-		List<Inno72Machine> list = inno72MachineMapper.machineListByPage(chekUserId);
+		Map<String,Object> map = new HashMap<>();
+		map.put("checkUserId",chekUserId);
+		if(StringUtil.isNotEmpty(keyword)){
+			map.put("keyword",keyword);
+		}
+		List<Inno72Machine> list = inno72MachineMapper.machineListByPage(map);
 		List<Inno72Machine> list1 = new ArrayList<>();
 		List<Inno72Machine> list2 = new ArrayList<>();
 		List<Inno72Machine> list3 = new ArrayList<>();

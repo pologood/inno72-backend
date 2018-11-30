@@ -19,6 +19,7 @@
 		<result column="address" jdbcType="VARCHAR" property="address" />
 		<result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
         <result column="wifi_pwd" jdbcType="VARCHAR" property="wifiPwd"/>
+        <result column="machine_type" jdbcType="INTEGER" property="machineType"/>
         <result column="faultStatus" jdbcType="INTEGER" property="faultStatus"/>
         <result column="signInStatus" jdbcType="INTEGER" property="signInStatus"/>
         <result column="noReadCount" jdbcType="INTEGER" property="noReadCount"/>
@@ -145,8 +146,20 @@
         where sc.status=0 and sc.is_delete=0 and sc.is_remove=0
         group by sc.machine_id,scg.goods_id HAVING sum(sc.goods_count)<![CDATA[<]]>10 ) cc
         on m.id=cc.machine_id
-        where (m.machine_status=4 or m.machine_status=9) and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
+        where m.machine_status=4 and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
+        <if test="keyword != null">
+            and (m.machine_code like '%${keyword}%'
+            or aa.province like '%${keyword}%'
+            or aa.city like '%${keyword}%'
+            or aa.district like '%${keyword}%'
+            or aa.circle like '%${keyword}%'
+            or l.mall like '%${keyword}%'
+            or l.name like '%${keyword}%'
+            )
+        </if>
         ) mm
+
+
 	</select>
 
 	<select id="selectByParam" resultMap="BaseResultMap">

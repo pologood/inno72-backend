@@ -23,6 +23,7 @@ import com.inno72.machine.model.Inno72AdminArea;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
+import com.inno72.machine.vo.CommonVo;
 import com.inno72.machine.vo.CutAppVo;
 import com.inno72.machine.vo.SupplyRequestVo;
 
@@ -51,9 +52,9 @@ public class MachineController {
 	 * 查询管理的机器
 	 */
 	@RequestMapping(value = "list", method = { RequestMethod.POST })
-	public ModelAndView list() {
+	public ModelAndView list(@RequestBody CommonVo commonVo) {
 		logger.info("查询管理的机器接口");
-		List<Inno72Machine> list = machineService.getMachineList();
+		List<Inno72Machine> list = machineService.getMachineList(commonVo);
 		logger.info("查询管理的机器接口结果{}", JSON.toJSON(list));
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 
