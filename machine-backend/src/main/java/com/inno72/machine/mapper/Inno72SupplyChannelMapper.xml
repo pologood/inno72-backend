@@ -37,7 +37,8 @@
 		sc.goods_count,sc.is_delete,sc.work_status,scs.result reason from
 		inno72_supply_channel sc
 		left join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id
-		left join inno72_goods g on scg.goods_id=g.id
+		left join inno72_goods g on scg.goods_id=g.id 
+				and g.id in (select goods_id from view_machine_goods where machine_id=#{id})
 		left join inno72_supply_channel_status scs on sc.work_status=scs.code
 		where sc.machine_id=#{id} and is_remove=0 
 		order by sc.code*1

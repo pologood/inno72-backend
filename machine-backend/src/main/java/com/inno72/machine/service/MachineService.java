@@ -27,7 +27,7 @@ public interface MachineService extends Service<Inno72Machine> {
 	Result<List<MachineNetInfo>> updateMachineListNetStatus(List<MachineNetInfo> list);
 
 	Result<List<MachineListVo>> findMachines(String machineCode, String localCode, String startTime, String endTime,
-			String machineType, String machineStatus);
+			String machineType, String machineStatus, String localType);
 
 	Result<String> updateLocale(String id, String localeId, String address);
 
@@ -75,4 +75,6 @@ public interface MachineService extends Service<Inno72Machine> {
 	Result<String> grabLog(String machineId, Integer logType, String startTime, String endTime);
 
 	Result<List<Inno72AppLog>> getLogs(String machineId);
+
+	Result<String> updateMachineType(String machineId, Integer machineType);
 }

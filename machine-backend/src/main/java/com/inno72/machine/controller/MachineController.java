@@ -152,9 +152,9 @@ public class MachineController {
 	 */
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView list(String machineCode, String localCode, String startTime, String endTime, String machineType,
-			String machineStatus) {
+			String machineStatus, String localType) {
 		Result<List<MachineListVo>> list = machineService.findMachines(machineCode, localCode, startTime, endTime,
-				machineType, machineStatus);
+				machineType, machineStatus, localType);
 		return ResultPages.page(list);
 	}
 
@@ -421,6 +421,19 @@ public class MachineController {
 	@RequestMapping(value = "/getLogs", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<List<Inno72AppLog>> getLogs(@RequestParam String machineId) {
 		return machineService.getLogs(machineId);
+
+	}
+
+	/**
+	 * 更新机器类型
+	 * 
+	 * @param machineId
+	 * @param machineType
+	 * @return
+	 */
+	@RequestMapping(value = "/updateMachineType", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> updateMachineType(@RequestParam String machineId, @RequestParam Integer machineType) {
+		return machineService.updateMachineType(machineId, machineType);
 
 	}
 
