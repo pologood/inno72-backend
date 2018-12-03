@@ -33,6 +33,9 @@ public class SystemStatus {
 	private String ping;
 	private String ping1;
 	private String count;
+	private String allTraffic;// 手机总流量
+	private String thatdayTraffic;// 当天流量
+	private String monthTraffic;// 当月流量
 
 	/**
 	 * 创建时间
@@ -142,6 +145,30 @@ public class SystemStatus {
 
 	public void setCount(String count) {
 		this.count = count;
+	}
+
+	public String getAllTraffic() {
+		return allTraffic;
+	}
+
+	public void setAllTraffic(String allTraffic) {
+		this.allTraffic = allTraffic;
+	}
+
+	public String getThatdayTraffic() {
+		return thatdayTraffic;
+	}
+
+	public void setThatdayTraffic(String thatdayTraffic) {
+		this.thatdayTraffic = thatdayTraffic;
+	}
+
+	public String getMonthTraffic() {
+		return monthTraffic;
+	}
+
+	public void setMonthTraffic(String monthTraffic) {
+		this.monthTraffic = monthTraffic;
 	}
 
 }
