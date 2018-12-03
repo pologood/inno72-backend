@@ -17,10 +17,12 @@ import com.inno72.Interact.mapper.Inno72InteractGameRuleMapper;
 import com.inno72.Interact.mapper.Inno72InteractGoodsMapper;
 import com.inno72.Interact.mapper.Inno72InteractMachineGoodsMapper;
 import com.inno72.Interact.mapper.Inno72InteractMapper;
+import com.inno72.Interact.mapper.Inno72InteractShopsMapper;
 import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.model.Inno72InteractGameRule;
 import com.inno72.Interact.model.Inno72InteractGoods;
 import com.inno72.Interact.model.Inno72InteractMachineGoods;
+import com.inno72.Interact.model.Inno72InteractShops;
 import com.inno72.Interact.service.InteractGoodsService;
 import com.inno72.Interact.vo.InteractGoodsVo;
 import com.inno72.common.AbstractService;
@@ -52,6 +54,8 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 	private Inno72CouponMapper inno72CouponMapper;
 	@Resource
 	private Inno72GoodsMapper inno72GoodsMapper;
+	@Resource
+	private Inno72InteractShopsMapper inno72InteractShopsMapper;
 
 	@Resource
 	private Inno72MerchantMapper inno72MerchantMapper;
@@ -221,6 +225,13 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					shops.setUpdateTime(LocalDateTime.now());
 
 					inno72ShopsMapper.insertSelective(shops);
+					// 活动关联店铺
+					Inno72InteractShops interactShops = new Inno72InteractShops();
+					interactShops.setId(StringUtil.getUUID());
+					interactShops.setInteractId(interactId);
+					interactShops.setShopsId(merchantId);
+					inno72InteractShopsMapper.insert(interactShops);
+
 					return Results.warn("微店ID", 0, shops.getId());
 				}
 				return Results.warn("微店ID", 0, shopsList.get(0).getId());

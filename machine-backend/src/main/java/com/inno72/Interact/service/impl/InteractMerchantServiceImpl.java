@@ -20,6 +20,7 @@ import com.inno72.Interact.mapper.Inno72InteractMerchantMapper;
 import com.inno72.Interact.mapper.Inno72InteractShopsMapper;
 import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.model.Inno72InteractMerchant;
+import com.inno72.Interact.model.Inno72InteractShops;
 import com.inno72.Interact.service.InteractMerchantService;
 import com.inno72.Interact.vo.Inno72NeedExportStore;
 import com.inno72.Interact.vo.InteractGoodsVo;
@@ -37,6 +38,7 @@ import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72MerchantMapper;
 import com.inno72.project.mapper.Inno72ShopsMapper;
 import com.inno72.project.model.Inno72Merchant;
+import com.inno72.project.model.Inno72Shops;
 import com.inno72.system.model.Inno72User;
 
 /**
@@ -180,6 +182,7 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
+			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			// 先判断是否微信渠道（微信渠道判断是否存在商品，非微信渠道判断是否存在店铺）
 			Inno72Merchant merchant = new Inno72Merchant();
 			merchant.setId(merchantId);
@@ -194,14 +197,18 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 					logger.info("商户下存在商品，不能删除");
 					return Results.failure("商户下存在商品，不能删除");
 				}
+				// 删除公众号下关联虚拟店铺
+				Inno72InteractShops interactShops = new Inno72InteractShops();
+				interactShops.setInteractId(interactId);
+				interactShops.setShopsId(merchantId);
+				inno72InteractShopsMapper.delete(interactShops);
 				// 删除公众号下虚拟店铺
-				/*
-				 * Inno72Shops inno72Shops = new Inno72Shops();
-				 * inno72Shops.setId(merchantId);
-				 * inno72Shops.setSellerId(merchantId);
-				 * inno72Shops.setIsDelete(1); inno72Shops.setUpdateId(mUserId);
-				 * inno72ShopsMapper.updateByPrimaryKeySelective(inno72Shops);
-				 */
+				Inno72Shops inno72Shops = new Inno72Shops();
+				inno72Shops.setId(merchantId);
+				inno72Shops.setSellerId(merchantId);
+				inno72Shops.setIsDelete(1);
+				inno72Shops.setUpdateId(mUserId);
+				inno72ShopsMapper.updateByPrimaryKeySelective(inno72Shops);
 			} else {
 				// 查询店铺下是否存在关联店铺
 				Map<String, Object> pm = new HashMap<>();
