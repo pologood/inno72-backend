@@ -18,7 +18,7 @@ public class CheckDropGoodsTask {
 	private SupplyChannelService supplyChannelService;
 
 
-	@Scheduled(cron = "0 0/1 * * * ?")
+	@Scheduled(cron = "0/5 * * * * ?")
 	public void sendDropGoods(){
 		List<AlarmDropGoodsBean> list = supplyChannelService.getDropGoodsList();
 		if(list != null && list.size()>0){
