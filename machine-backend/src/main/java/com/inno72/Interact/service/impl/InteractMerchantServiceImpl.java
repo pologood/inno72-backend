@@ -182,7 +182,6 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
-			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			// 先判断是否微信渠道（微信渠道判断是否存在商品，非微信渠道判断是否存在店铺）
 			Inno72Merchant merchant = new Inno72Merchant();
 			merchant.setId(merchantId);
@@ -206,9 +205,7 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 				Inno72Shops inno72Shops = new Inno72Shops();
 				inno72Shops.setId(merchantId);
 				inno72Shops.setSellerId(merchantId);
-				inno72Shops.setIsDelete(1);
-				inno72Shops.setUpdateId(mUserId);
-				inno72ShopsMapper.updateByPrimaryKeySelective(inno72Shops);
+				inno72ShopsMapper.delete(inno72Shops);
 			} else {
 				// 查询店铺下是否存在关联店铺
 				Map<String, Object> pm = new HashMap<>();
