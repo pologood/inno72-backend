@@ -7,6 +7,7 @@
     -->
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="type" jdbcType="INTEGER" property="type"/>
     <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
     <result column="mall" jdbcType="VARCHAR" property="mall" />
     <result column="manager" jdbcType="VARCHAR" property="manager" />

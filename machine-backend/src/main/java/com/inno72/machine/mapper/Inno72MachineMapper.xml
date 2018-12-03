@@ -152,7 +152,7 @@
 				<if test="state =='' ">and NOW() &lt; mt.end_time</if>
 			) mt ON mt.machine_id = m.id 
 			WHERE
-				m.machine_status = '4'
+				m.machine_status = '4' and machine_type !=2
 				<if test="startTime !=null and startTime !='' ">
 					<![CDATA[AND ( #{startTime} <= mt.end_time AND #{endTime} >= mt.start_time ) ]]>
 				</if>

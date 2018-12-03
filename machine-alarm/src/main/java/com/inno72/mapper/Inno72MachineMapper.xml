@@ -22,6 +22,7 @@
         <result column="monitor_end" jdbcType="VARCHAR" property="monitorEnd"/>
         <result column="areaCode" jdbcType="VARCHAR" property="areaCode"/>
         <result column="localeStr" jdbcType="VARCHAR" property="localeStr"/>
+        <result column="machine_type" jdbcType="INTEGER" property="machineType"/>
         <association property="checkUserList" resultMap="checkUserList"/>
     </resultMap>
 
@@ -48,6 +49,7 @@
         m.id,
 	    l.monitor open_status,
 	    m.machine_status,
+	    m.machine_type,
 	    l.monitor_start,
 	    l.monitor_end,
 	    if(a3.level=2,a3.code,a2.code) AS areaCode,
