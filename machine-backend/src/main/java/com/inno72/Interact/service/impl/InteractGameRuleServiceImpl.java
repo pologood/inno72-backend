@@ -1,6 +1,8 @@
 package com.inno72.Interact.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.inno72.Interact.mapper.Inno72InteractGameRuleMapper;
 import com.inno72.Interact.model.Inno72InteractGameRule;
 import com.inno72.Interact.service.InteractGameRuleService;
+import com.inno72.Interact.vo.InteractGameRuleVo;
 import com.inno72.common.AbstractService;
 
 /**
@@ -27,12 +30,13 @@ public class InteractGameRuleServiceImpl extends AbstractService<Inno72InteractG
 	private Inno72InteractGameRuleMapper inno72InteractGameRuleMapper;
 
 	@Override
-	public List<Inno72InteractGameRule> getGameRuleList(String interactId) {
+	public List<InteractGameRuleVo> getGameRuleList(String interactId) {
 		logger.info("---------------------获取游戏活动掉货规则-------------------");
 
-		Inno72InteractGameRule pm = new Inno72InteractGameRule();
-		pm.setInteractId(interactId);
-		return inno72InteractGameRuleMapper.select(pm);
+		Map<String, Object> pm = new HashMap<>();
+		pm.put("interactId", interactId);
+
+		return inno72InteractGameRuleMapper.selectGameRule(pm);
 
 	}
 
