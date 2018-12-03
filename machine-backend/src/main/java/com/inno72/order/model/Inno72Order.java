@@ -141,11 +141,11 @@ public class Inno72Order {
 
 	@Transient
 	private String keyword;
-
+	@Transient
 	private String areaCode;
-
+	@Transient
 	private Integer num;
-
+	@Transient
 	private String code;
 
 	/**
