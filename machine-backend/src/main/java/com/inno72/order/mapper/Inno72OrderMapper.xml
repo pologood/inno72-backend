@@ -101,6 +101,9 @@
               or activity_name like CONCAT('%','${keyword}','%')
               )
           </if>
+          <if test="areaCode != null">
+              and LEFT(l.area_code,#{num}) = LEFT(#{code},#{num})
+          </if>
       </where>
       ) k
 

@@ -30,6 +30,13 @@ public class OrderServiceImpl extends AbstractService<Inno72Order> implements Or
 		if (StringUtil.isEmpty(keyword)) {
 			order.setKeyword(null);
 		}
+		String areaCode = order.getAreaCode();
+		if(StringUtil.isNotEmpty(areaCode)){
+			int num = StringUtil.getAreaCodeNum(areaCode);
+			String likeCode = areaCode.substring(0, num);
+			order.setNum(num);
+			order.setCode(likeCode);
+		}
 		List<Inno72Order> orderList = inno72OrderMapper.seleByParamForPage(order);
 		return orderList;
 	}

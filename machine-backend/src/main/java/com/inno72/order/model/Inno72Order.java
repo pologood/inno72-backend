@@ -142,6 +142,12 @@ public class Inno72Order {
 	@Transient
 	private String keyword;
 
+	private String areaCode;
+
+	private Integer num;
+
+	private String code;
+
 	/**
 	 * 游戏ID
 	 */
@@ -439,7 +445,33 @@ public class Inno72Order {
 		return activityId;
 	}
 
+	public String getAreaCode() {
+		return areaCode;
+	}
+
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
+	}
+
+	public Integer getNum() {
+		return num;
+	}
+
+	public void setNum(Integer num) {
+		this.num = num;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
 	public void setActivityId(String activityId) {
 		this.activityId = activityId;
 	}
+
+
 }
