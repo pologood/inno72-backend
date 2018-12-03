@@ -31,6 +31,9 @@ public class SystemStatus {
 	private long sdFree;
 	private long sdTotle;
 	private String ping;
+	private String allTraffic;// 手机总流量
+	private String thatdayTraffic;// 当天流量
+	private String monthTraffic;// 当月流量
 	/**
 	 * 创建时间
 	 */
@@ -123,6 +126,30 @@ public class SystemStatus {
 
 	public void setSdTotle(long sdTotle) {
 		this.sdTotle = sdTotle;
+	}
+
+	public String getAllTraffic() {
+		return allTraffic;
+	}
+
+	public void setAllTraffic(String allTraffic) {
+		this.allTraffic = allTraffic;
+	}
+
+	public String getThatdayTraffic() {
+		return thatdayTraffic;
+	}
+
+	public void setThatdayTraffic(String thatdayTraffic) {
+		this.thatdayTraffic = thatdayTraffic;
+	}
+
+	public String getMonthTraffic() {
+		return monthTraffic;
+	}
+
+	public void setMonthTraffic(String monthTraffic) {
+		this.monthTraffic = monthTraffic;
 	}
 
 }
