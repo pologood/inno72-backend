@@ -20,6 +20,7 @@ import com.inno72.check.vo.SignVo;
 import com.inno72.common.DateUtil;
 import com.inno72.machine.mapper.Inno72MachineBatchDetailMapper;
 import com.inno72.machine.model.Inno72MachineBatchDetail;
+import com.inno72.machine.vo.CommonVo;
 import com.inno72.machine.vo.SubmitSupplyChannel;
 import com.inno72.machine.vo.SupplyRequestVo;
 
@@ -315,10 +316,16 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	}
 
 	@Override
-	public Result<List<Inno72Machine>> getMachineLackGoods() {
+	public Result<List<Inno72Machine>> getMachineLackGoods(CommonVo commonVo) {
 		Inno72CheckUser checkUser = UserUtil.getUser();
 		String checkUserId = checkUser.getId();
-		List<Inno72Machine> machineList = inno72MachineMapper.getMachine(checkUserId);
+		Map<String,Object> paramMap = new HashMap<>();
+		paramMap.put("checkUserId",checkUserId);
+		String keyword = commonVo.getKeyword();
+		if(StringUtil.isNotEmpty(keyword)){
+			paramMap.put("keyword",keyword);
+		}
+		List<Inno72Machine> machineList = inno72MachineMapper.getMachineLack(paramMap);
 		if (machineList != null && machineList.size() > 0) {
 			for (Inno72Machine machine : machineList) {
 				Integer lackGoodsStatus = 0;
@@ -355,10 +362,16 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	}
 
 	@Override
-	public Result<List<Inno72Goods>> getGoodsLack() {
+	public Result<List<Inno72Goods>> getGoodsLack(CommonVo commonVo) {
 		Inno72CheckUser checkUser = UserUtil.getUser();
 		String checkUserId = checkUser.getId();
-		List<Inno72Goods> inno72GoodsList = inno72GoodsMapper.getLackGoods(checkUserId);
+		Map<String,Object> paramMap = new HashMap<>();
+		paramMap.put("checkUserId",checkUserId);
+		String keyword = commonVo.getKeyword();
+		if(StringUtil.isNotEmpty(keyword)){
+			paramMap.put("keyword",keyword);
+		}
+		List<Inno72Goods> inno72GoodsList = inno72GoodsMapper.getLackGoods(paramMap);
 		logger.info("商品数据：{}", JSON.toJSON(inno72GoodsList));
 		List<Inno72Goods> resultList = new ArrayList<>();
 		if (inno72GoodsList != null && inno72GoodsList.size() > 0) {
@@ -798,14 +811,14 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 
 	@Override
 	public Result<String> openSupplyChannel(SupplyRequestVo vo) {
-		String supplyCode = vo.getSupplyCode();
 		String machineId = vo.getMachineId();
-		if(StringUtil.isEmpty(supplyCode) || StringUtil.isEmpty(machineId)){
+		if(StringUtil.isEmpty(machineId)){
 			return Results.failure("参数缺失");
 		}
 		Map<String,Object> map = new HashMap<>();
 		map.put("machineId",machineId);
-		map.put("code",supplyCode);
+		String userId = UserUtil.getUser().getId();
+		map.put("updateId",userId);
 		inno72SupplyChannelMapper.updateOpen(map);
 		return ResultGenerator.genSuccessResult();
 	}

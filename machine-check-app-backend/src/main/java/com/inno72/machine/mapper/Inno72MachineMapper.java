@@ -11,7 +11,7 @@ import java.util.Map;
 public interface Inno72MachineMapper extends Mapper<Inno72Machine> {
 
 
-	List<Inno72Machine> getMachine(String checkUserId);
+	List<Inno72Machine> getMachineLack(Map<String,Object> map);
 
 	List<Inno72Machine> getMachineByLackGoods(@Param("checkUserId") String checkUserId, @Param("goodsId") String goodsId);
 

@@ -65,7 +65,7 @@
         <result column="alarmMsgId" jdbcType="VARCHAR" property="id"/>
     </resultMap>
 
-	<select id="getMachine" resultMap="BaseResultMap">
+	<select id="getMachineLack" resultMap="BaseResultMap">
 		select m.*,
 		sc.code channelCode,
 		sc.name channelName,
@@ -89,6 +89,16 @@
         inner JOIN inno72_admin_area aa ON aa.CODE = l.area_code
         left join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id and mg.goods_id=scg.goods_id
 		where m.machine_status=4 and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
+		<if test="keyword != null">
+            and (m.machine_code like '%${keyword}%'
+            or aa.province like '%${keyword}%'
+            or aa.city like '%${keyword}%'
+            or aa.district like '%${keyword}%'
+            or aa.circle like '%${keyword}%'
+            or l.mall like '%${keyword}%'
+            or l.name like '%${keyword}%'
+            )
+        </if>
 	</select>
 
 
