@@ -71,6 +71,7 @@ public class CheckFaultTypeServiceImpl extends AbstractService<Inno72CheckFaultT
 			model.setUpdateTime(LocalDateTime.now());
 			// 子级解决方案
 			List<Inno72CheckFaultType> insertFaultTypeList = new ArrayList<>();
+			int i = 0;
 			for (Inno72CheckFaultType solutionType : solutions) {
 				String childcode = StringUtil.getUUID();
 				solutionType.setCode(childcode);
@@ -81,6 +82,7 @@ public class CheckFaultTypeServiceImpl extends AbstractService<Inno72CheckFaultT
 				solutionType.setUpdateId(mUserId);
 				solutionType.setCreateTime(LocalDateTime.now());
 				solutionType.setUpdateTime(LocalDateTime.now());
+				solutionType.setSeq(i++);
 				insertFaultTypeList.add(solutionType);
 			}
 			inno72CheckFaultTypeMapper.insertFaultTypeList(insertFaultTypeList);
@@ -119,6 +121,7 @@ public class CheckFaultTypeServiceImpl extends AbstractService<Inno72CheckFaultT
 			model.setUpdateTime(LocalDateTime.now());
 			// 子级解决方案
 			List<Inno72CheckFaultType> insertFaultTypeList = new ArrayList<>();
+			int i = 0;
 			for (Inno72CheckFaultType solutionType : solutions) {
 				String childcode = StringUtil.getUUID();
 				solutionType.setCode(childcode);
@@ -129,6 +132,7 @@ public class CheckFaultTypeServiceImpl extends AbstractService<Inno72CheckFaultT
 				solutionType.setUpdateId(mUserId);
 				solutionType.setCreateTime(LocalDateTime.now());
 				solutionType.setUpdateTime(LocalDateTime.now());
+				solutionType.setSeq(i++);
 				insertFaultTypeList.add(solutionType);
 			}
 			// 删除原来解决方案

@@ -53,6 +53,11 @@ public class Inno72CheckFaultType {
 	private Integer submitType;
 
 	/**
+	 * 排序
+	 */
+	@Column(name = "seq")
+	private Integer seq;
+	/**
 	 * 创建人
 	 */
 	@Column(name = "create_id")
@@ -183,6 +188,14 @@ public class Inno72CheckFaultType {
 
 	public void setSubmitType(Integer submitType) {
 		this.submitType = submitType;
+	}
+
+	public Integer getSeq() {
+		return seq;
+	}
+
+	public void setSeq(Integer seq) {
+		this.seq = seq;
 	}
 
 	/**
