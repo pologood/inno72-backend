@@ -273,4 +273,15 @@ public class Inno72CheckFaultType {
 	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Inno72CheckFaultType) {
+			Inno72CheckFaultType result = (Inno72CheckFaultType) obj;
+			if (this.code.equals(result.getCode())) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

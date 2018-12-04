@@ -38,7 +38,16 @@ public class CheckFaultTypeServiceImpl extends AbstractService<Inno72CheckFaultT
 
 	@Override
 	public List<Inno72CheckFaultType> findByPage(String keyword) {
-		return inno72CheckFaultTypeMapper.selectByPage(keyword);
+
+		List<Inno72CheckFaultType> list = inno72CheckFaultTypeMapper.selectByPage(keyword);
+		List<Inno72CheckFaultType> allList = inno72CheckFaultTypeMapper.selectAllList(keyword);
+		for (Inno72CheckFaultType inno72CheckFaultType : list) {
+			int ix = allList.indexOf(inno72CheckFaultType);
+			if (ix != -1) {
+				inno72CheckFaultType.setParentName(allList.get(ix).getParentName());
+			}
+		}
+		return list;
 	}
 
 	@Override
