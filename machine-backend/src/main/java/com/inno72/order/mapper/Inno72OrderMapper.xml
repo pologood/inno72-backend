@@ -50,7 +50,7 @@
 
   </sql>
 
-  <select id="seleByParamForPage" resultMap="BaseResultMap">
+  <select id="seleByParamForPg" resultMap="BaseResultMap">
       select * from  (select
       o.id,o.user_id,o.channel_id,o.machine_id,
       o.order_time,o.order_price,o.order_type,o.pay_status,o.pay_time,
@@ -108,6 +108,7 @@
       ) k
 
     ORDER BY k.order_time desc
+    limit #{pageParam},20
 
   </select>
 </mapper>
