@@ -80,12 +80,14 @@ public class OrderController {
 		page.setFirstPage(firstPage);
 		boolean lastPage = false;
 		int totalPage = 100;
+		int totalCount = 100*20;
 		if(list == null || list.size()<20){
 			lastPage = true;
 			totalPage = pageNo;
+			totalCount = (pageNo-1)*20+list.size();
 		}
 		page.setLastPage(lastPage);
-		page.setTotalCount(100*20);
+		page.setTotalCount(totalCount);
 		page.setNextPage(pageNo+1);
 		page.setPageSize(20);
 		page.setPrePage(pageNo);
