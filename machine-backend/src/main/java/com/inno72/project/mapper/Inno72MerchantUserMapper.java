@@ -12,4 +12,6 @@ public interface Inno72MerchantUserMapper extends Mapper<Inno72MerchantUser> {
 	List<Inno72MerchantUserVo> selectByPage(Map<String, Object> params);
 
 	int selectByLoginName(String loginName);
+
+	int selectMerchantId(String s);
 }

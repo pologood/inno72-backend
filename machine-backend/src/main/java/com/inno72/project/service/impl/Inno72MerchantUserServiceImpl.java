@@ -82,7 +82,15 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 				}
 				user.setPassword(Encrypt.md5AndSha("000000"));
 			}
-			user.setMerchantId(genMerchantCode());
+			String s = genMerchantCode();
+
+			int i = inno72MerchantUserMapper.selectMerchantId(s);
+			while (i > 0){
+				s = genMerchantCode();
+				i = inno72MerchantUserMapper.selectMerchantId(s);
+			}
+
+			user.setMerchantId(s);
 			user.setCreateTime(LocalDateTime.now());
 			user.setCreator(mUser.getName());
 			user.setLastUpdateTime(LocalDateTime.now());
@@ -196,6 +204,7 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 	}
 
 	private String genMerchantCode(){
+
 		String yyyyMMdd = LocalDateTimeUtil.transfer(LocalDateTime.now(), DateTimeFormatter.ofPattern("yyyyMMdd"));
 		String redisKye = CommonConstants.MERCHANT_CODE_REDIS_KEY + yyyyMMdd;
 		StringBuilder merchantCode = new StringBuilder(redisUtil.incr(redisKye) + "");
