@@ -29,21 +29,23 @@
   
   
   <select id="selectGameRule" parameterType="java.util.Map" resultMap="VoResultMap">
-		SELECT
-			gr.*,g.name
+  		SELECT
+			ig.goods_id,g.`name`,gr.rule_code,gr.rule_remark,ig.type
 		FROM
-			inno72_interact_game_rule gr 
-			LEFT JOIN inno72_goods g ON g.id = gr.goods_id 
-		WHERE gr.type =0
-		<if test="interactId !=null and interactId !='' ">and gr.interact_id = #{interactId} </if>
+			inno72_interact_goods ig 
+			LEFT JOIN inno72_interact_game_rule gr on gr.goods_id =ig.goods_id AND gr.interact_id =ig.interact_id
+			LEFT JOIN inno72_goods g ON g.id = ig.goods_id 
+		WHERE ig.type =0
+		<if test="interactId !=null and interactId !='' ">and ig.interact_id = #{interactId} </if>
 		UNION
 		SELECT
-			gr.*,CONCAT(c.`name`,'（券）') AS name
+			ig.goods_id,CONCAT(c.`name`,'（券）') AS name ,gr.rule_code,gr.rule_remark,ig.type
 		FROM
-			inno72_interact_game_rule gr 
-			LEFT JOIN inno72_coupon c ON c.id = gr.goods_id 
-		WHERE gr.type =1 
-		<if test="interactId !=null and interactId !='' ">and gr.interact_id = #{interactId} </if>
+			inno72_interact_goods ig 
+			LEFT JOIN inno72_interact_game_rule gr on gr.goods_id =ig.goods_id AND gr.interact_id =ig.interact_id
+			LEFT JOIN inno72_coupon c ON c.id = ig.goods_id 
+		WHERE ig.type =1
+		<if test="interactId !=null and interactId !='' ">and ig.interact_id = #{interactId} </if>
   </select>
   
   

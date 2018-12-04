@@ -100,9 +100,8 @@ public class InteractMachineGoodsServiceImpl extends AbstractService<Inno72Inter
 				del.setInteractMachineId(base.getId());
 				// 先删除之前活动机器上绑定的商品
 				inno72InteractMachineGoodsMapper.delete(del);
+				inno72InteractMachineGoodsMapper.insertInteractMachineGoodsList(goods);
 			}
-
-			inno72InteractMachineGoodsMapper.insertInteractMachineGoodsList(goods);
 
 		} catch (Exception e) {
 			e.printStackTrace();
