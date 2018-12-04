@@ -512,7 +512,6 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		if (list != null && list.size() > 0) {
 			int supplyFlag = 0;
 			String batchNo = StringUtil.getUUID();
-			List<Inno72SupplyChannelHistory> historyList = new ArrayList<>();
 			LocalDateTime now = LocalDateTime.now();
 			for (Inno72SupplyChannel supplyChannel : list) {
 				String goodsId = supplyChannel.getGoodsId();
@@ -706,6 +705,12 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		return ResultGenerator.genSuccessResult();
 	}
 
+	/**
+	 * 保存埋点
+	 * @param detail
+	 * @param userName
+	 * @param machineCode
+	 */
 	public void saveToLog(StringBuffer detail,String userName,String machineCode){
 		String detailStr = detail.toString();
 		logger.info("补货添加日志：{}",detailStr);
@@ -716,6 +721,13 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	}
 
 
+	/**
+	 * 插入补货记录主表和快照
+	 * @param batchNo
+	 * @param machineId
+	 * @param userId
+	 * @param now
+	 */
 	public void saveHistoryOrder(String batchNo,String machineId,String userId,LocalDateTime now){
 		Inno72SupplyChannelOrder order = new Inno72SupplyChannelOrder();
 		order.setId(batchNo);
@@ -724,6 +736,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		order.setType(1);
 		order.setUserId(userId);
 		inno72SupplyChannelOrderMapper.insertSelective(order);
+		logger.info("插入补货记录主表",JSON.toJSONString(order));
 		List<Inno72SupplyChannel> list = inno72SupplyChannelMapper.selectAllSupply(machineId);
 		if(!list.isEmpty()){
 			for(Inno72SupplyChannel c:list){
@@ -737,6 +750,15 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		}
 	}
 
+	/**
+	 * 插入BI
+	 * @param machine
+	 * @param code
+	 * @param goodsId
+	 * @param beforeNum
+	 * @param afterNum
+	 * @param userId
+	 */
 	public void saveStatistic(Inno72Machine machine,String code,String goodsId,int beforeNum,int afterNum,String userId){
 		try{
 			Map<String, Object> infos = new HashMap<>();
@@ -750,6 +772,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			infos.put("afterNum",afterNum);
 			infos.put("time",new Date());
 			statistic.put(StatisticEnum.REPLENISHMENT,infos);
+			logger.info("插入补货记录BI",JSON.toJSONString(infos));
 		}catch (Exception e){
 			e.printStackTrace();
 		}
