@@ -90,6 +90,13 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 				i = inno72MerchantUserMapper.selectMerchantId(s);
 			}
 
+			String loginName = user.getLoginName();
+			if (StringUtil.isNotEmpty(loginName)){
+				int i1 = inno72MerchantUserMapper.selectByLoginName(loginName);
+				if (i1 > 0){
+					return Results.failure("用户登录名重复");
+				}
+			}
 			user.setMerchantId(s);
 			user.setCreateTime(LocalDateTime.now());
 			user.setCreator(mUser.getName());
@@ -113,6 +120,15 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 
 			if (StringUtil.isNotEmpty(user.getPassword())){
 				user.setPassword(Encrypt.md5AndSha(user.getPassword()));
+			}
+			if ((StringUtil.isNotEmpty(user.getLoginName())
+					&& StringUtil.isNotEmpty(curUser.getLoginName())
+					&& !user.getLoginName().equals(curUser.getLoginName()))||
+					StringUtil.isNotEmpty(user.getLoginName()) && StringUtil.isEmpty(curUser.getLoginName())){
+				int i1 = inno72MerchantUserMapper.selectByLoginName(user.getLoginName());
+				if (i1 > 0){
+					return Results.failure("用户登录名重复");
+				}
 			}
 			inno72MerchantUserMapper.updateByPrimaryKeySelective(user);
 
