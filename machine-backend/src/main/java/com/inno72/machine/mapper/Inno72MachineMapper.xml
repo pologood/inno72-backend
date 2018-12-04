@@ -34,6 +34,7 @@
 		<result column="channel_status" jdbcType="VARCHAR" property="channelStatus" />
 		<result column="goods_status" jdbcType="VARCHAR" property="goodsStatus" />
 		<result column="machine_status" jdbcType="VARCHAR" property="machineStatus" />
+		<result column="local_type" jdbcType="VARCHAR" property="localType" />
 		<result column="machine_type" jdbcType="VARCHAR" property="machineType" />
 		<result column="inside_time" jdbcType="TIMESTAMP" property="insideTime" />
 		<association property="planTime" resultMap="planTimeResult" />
@@ -57,7 +58,7 @@
 		CONCAT(aa.province,
 		aa.city, aa.district,IFNULL( l.mall,""),IFNULL( l.name,""))
 		local_desc,
-		m.net_status,l.type as machine_type,m.inside_time
+		m.net_status,l.type as local_type,m.inside_time,m.machine_type 
 		from
 		inno72_machine m
 		left join inno72_locale l on
@@ -71,7 +72,8 @@
 			'%${machineCode}%' or l.name LIKE '%${machineCode}%' or l.tag like
 			'%${machineCode}%' )
 		</if>
-		<if test="machineType !=null and machineType !='' ">and l.type=#{machineType}</if>
+		<if test="machineType !=null and machineType !='' ">and m.machine_type=#{machineType}</if>
+		<if test="localType !=null and localType !='' ">and l.type=#{localType}</if>
 		<if test="machineStatus !=null and machineStatus !=''">and m.machine_status=#{machineStatus}</if>
 
 		<if test="startTime !=null and startTime !='' ">

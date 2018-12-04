@@ -104,6 +104,9 @@ public class Inno72Machine {
 	@Column(name = "inside_time")
 	private LocalDateTime insideTime;
 
+	@Column(name = "machine_type")
+	private Integer machineType;
+
 	@Transient
 	private String localStr;
 
@@ -394,6 +397,14 @@ public class Inno72Machine {
 
 	public void setInsideTime(LocalDateTime insideTime) {
 		this.insideTime = insideTime;
+	}
+
+	public Integer getMachineType() {
+		return machineType;
+	}
+
+	public void setMachineType(Integer machineType) {
+		this.machineType = machineType;
 	}
 
 }

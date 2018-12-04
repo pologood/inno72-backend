@@ -20,6 +20,7 @@ public class MachineListVo {
 	private Integer machineType;
 	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
 	private LocalDateTime insideTime;
+	private Integer localType;
 
 	private List<Map<String, Object>> planTime;
 
@@ -117,6 +118,14 @@ public class MachineListVo {
 
 	public void setInsideTime(LocalDateTime insideTime) {
 		this.insideTime = insideTime;
+	}
+
+	public Integer getLocalType() {
+		return localType;
+	}
+
+	public void setLocalType(Integer localType) {
+		this.localType = localType;
 	}
 
 }
