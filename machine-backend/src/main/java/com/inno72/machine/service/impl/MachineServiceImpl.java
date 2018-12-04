@@ -402,9 +402,11 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 				if (appPackageName.equals(status.getAppPackageName()) || app.getAppType() == 1) {
 					bean.setStartStatus(1);
 				} else {
+					bean.setStartStatus(2);
+				}
+				if (appPackageName.equals(status.getAppPackageName())) {
 					name2 = status.getAppName();
 					version2 = status.getVersionName();
-					bean.setStartStatus(2);
 				}
 				sl.add(bean);
 			}
