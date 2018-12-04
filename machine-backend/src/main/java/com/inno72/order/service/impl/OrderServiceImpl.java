@@ -37,7 +37,9 @@ public class OrderServiceImpl extends AbstractService<Inno72Order> implements Or
 			order.setNum(num);
 			order.setCode(likeCode);
 		}
-		List<Inno72Order> orderList = inno72OrderMapper.seleByParamForPage(order);
+		int pageNo = order.getPageNo();
+		order.setPageParam((pageNo-1)*20);
+		List<Inno72Order> orderList = inno72OrderMapper.seleByParamForPg(order);
 		return orderList;
 	}
 }

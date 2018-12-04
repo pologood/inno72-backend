@@ -169,6 +169,8 @@ public class Inno72Order {
 	@Transient
 	private int pageNo;
 
+	private int pageParam;
+
 	public String getId() {
 		return id;
 	}
@@ -474,4 +476,11 @@ public class Inno72Order {
 	}
 
 
+	public int getPageParam() {
+		return pageParam;
+	}
+
+	public void setPageParam(int pageParam) {
+		this.pageParam = pageParam;
+	}
 }
