@@ -15,6 +15,7 @@
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     <result column="submit_type" jdbcType="INTEGER" property="submitType" />
+    <result column="seq" jdbcType="INTEGER" property="seq"/>
     <association property="childFaultTypeList" resultMap="childFaultTypeList"/>
   </resultMap>
 
@@ -22,13 +23,15 @@
       <result column="childCode" jdbcType="VARCHAR" property="childCode"/>
       <result column="childName" jdbcType="VARCHAR" property="childName"/>
       <result column="childLevel" jdbcType="INTEGER" property="childLevel"/>
+      <result column="childSeq" jdbcType="INTEGER"  property="childSeq"/>
   </resultMap>
   <select id="selectFaultInfo" resultMap="BaseResultMap">
       select cft1.code,cft1.name,cft1.level,cft1.submit_type,
-      cft2.code childCode,cft2.name childName,cft2.level childLevel
+      cft2.code childCode,cft2.name childName,cft2.level childLevel,
+      cft2.seq childSeq
       from inno72_check_fault_type cft1
       left join inno72_check_fault_type cft2 on cft1.code=cft2.parent_code
-      where cft1.level=1
+      where cft1.level=1 order by cft2.seq
   </select>
 
 </mapper>
