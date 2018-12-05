@@ -153,10 +153,13 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 					ddMaram.put("machineCode", machineCode);
 					ddMaram.put("localStr", localStr);
 					String textBeaf = "您好，" + localStr + "，机器编号：" + machineCode + "，";
+					String title = "";
 					if (normalSupplyList != null && normalSupplyList.size() > 0) {// 有未被锁定的货道
 						text = channelNum + "掉货异常，货道已经被锁定，请及时联系巡检人员。";
+						title = channelNum + "掉货异常";
 					} else {// 货道全部被锁
 						text = goodsName + "所在的货道全部被锁定，请及时联系巡检人员处理。";
+						title = goodsName + "所在的货道全部被锁定";
 					}
 					String ddStr = textBeaf+text;
 					ddMaram.put("text", StringUtil.setText(ddStr, active));
@@ -172,7 +175,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 					}
 					// 保存接口
 					int lackNum = 0;
-					alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_DROPGOODS, machineCode, textBeaf,text, inno72CheckUserPhones);
+					alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_DROPGOODS, machineCode, title,textBeaf,text, inno72CheckUserPhones);
 				}
 
 			}
@@ -269,7 +272,8 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 									msgUtil.sendDDTextByGroup("dingding_alarm_common", param, group.getGroupId2(),
 											"machineAlarm-RedisReceiver");
 								}
-								alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_LACKGOODS,machineCode,textBeaf,text,inno72CheckUserPhones);
+								String title = goodsName+"少于"+surPlusNum+"个";
+								alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_LACKGOODS,machineCode,title,textBeaf,text,inno72CheckUserPhones);
 								pushFlag = false;
 								break;
 							}
