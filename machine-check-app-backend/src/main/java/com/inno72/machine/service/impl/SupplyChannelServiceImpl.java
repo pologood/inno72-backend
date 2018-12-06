@@ -716,7 +716,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		logger.info("补货添加日志：{}",detailStr);
 		if(!detailStr.equals("")){
 			logger.info("补货添加日志：{}","用户"+userName+detailStr);
-			StringUtil.logger(CommonConstants.LOG_TYPE_MACHINE_SUPPLY,machineCode,"用户"+userName+detailStr);
+			StringUtil.logger(CommonConstants.LOG_TYPE_MACHINE_SUPPLY,machineCode,"用户"+userName+"在巡检APP"+detailStr);
 		}
 	}
 
@@ -888,11 +888,16 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		if(StringUtil.isEmpty(machineId)){
 			return Results.failure("参数缺失");
 		}
+		Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+		String machineCode = machine.getMachineCode();
+		String userName = UserUtil.getUser().getName();
 		Map<String,Object> map = new HashMap<>();
 		map.put("machineId",machineId);
 		String userId = UserUtil.getUser().getId();
 		map.put("updateId",userId);
 		inno72SupplyChannelMapper.updateOpen(map);
+		StringUtil.logger(CommonConstants.LOG_TYPE_ENABLE_CHANNEL,machine.getMachineCode(),"用户"+userName+"在巡检APP启用了货道");
+		logger.info("用户"+userName+"对"+machineCode+"机器启用了货道");
 		return ResultGenerator.genSuccessResult();
 	}
 

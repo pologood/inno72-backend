@@ -63,4 +63,6 @@ public class CommonConstants {
 	/**日志：合并货道*/
 	public static final String LOG_TYPE_MERGE_CHANNEL = "46";
 
+	public static final String LOG_TYPE_ENABLE_CHANNEL = "13";
+
 }
