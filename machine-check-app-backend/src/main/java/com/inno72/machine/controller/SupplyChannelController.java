@@ -191,7 +191,9 @@ public class SupplyChannelController {
 	 */
 	@RequestMapping(value = "exceptionList" ,method = {RequestMethod.POST})
 	public Result<List<Inno72SupplyChannel>> exceptionList(@RequestBody SupplyRequestVo vo){
+		logger.info("查询异常货道接收参数：{}",JSON.toJSONString(vo));
 		Result<List<Inno72SupplyChannel>> result = supplyChannelService.exceptionList(vo);
+		logger.info("查询异常货道返回结果：{}",JSON.toJSONString(result));
 		return result;
 	}
 
@@ -202,7 +204,9 @@ public class SupplyChannelController {
 	 */
 	@RequestMapping(value = "openSupplyChannel" ,method = {RequestMethod.POST})
 	public Result<String> openSupplyChannel(@RequestBody SupplyRequestVo vo){
+		logger.info("启用货道接收参数：{}",JSON.toJSONString(vo));
 		Result<String> result = supplyChannelService.openSupplyChannel(vo);
+		logger.info("启用货道返回结果：{}",JSON.toJSONString(result));
 		return result;
 	}
 
