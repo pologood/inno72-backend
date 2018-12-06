@@ -20,4 +20,6 @@ public interface Inno72GoodsMapper extends Mapper<Inno72Goods> {
 	Inno72Goods selectById(@Param("id") String id);
 
 	List<Inno72Goods> selectByPage(Map<String, Object> params);
+
+	List<Inno72Goods> selectByShop(Map<String, Object> params);
 }
