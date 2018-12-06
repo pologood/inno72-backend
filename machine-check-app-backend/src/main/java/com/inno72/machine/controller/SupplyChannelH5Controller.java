@@ -8,6 +8,7 @@ import com.inno72.machine.model.Inno72Goods;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.model.Inno72SupplyChannel;
 import com.inno72.machine.service.SupplyChannelService;
+import com.inno72.machine.vo.CommonVo;
 import com.inno72.machine.vo.SupplyRequestVo;
 import com.inno72.machine.vo.WorkOrderVo;
 import org.slf4j.Logger;
@@ -44,18 +45,18 @@ public class SupplyChannelH5Controller {
 	 * 机器维度缺货
 	 */
 	@RequestMapping(value="machineLack",method = {RequestMethod.GET })
-	public Result<List<Inno72Machine>> getMachineLack(){
+	public Result<List<Inno72Machine>> getMachineLack(CommonVo commonVo){
 		logger.info("机器维度缺货H5接口");
-		return supplyChannelService.getMachineLackGoods();
+		return supplyChannelService.getMachineLackGoods(commonVo);
 	}
 
 	/**
 	 * 商品维度缺货
 	 */
 	@RequestMapping(value="goodsLack",method = {RequestMethod.GET })
-	public Result<List<Inno72Goods>> getGoodsLack(){
+	public Result<List<Inno72Goods>> getGoodsLack(CommonVo commonVo){
 		logger.info("商品维度缺货H5接口");
-		return supplyChannelService.getGoodsLack();
+		return supplyChannelService.getGoodsLack(commonVo);
 	}
 
 	/**

@@ -5,6 +5,7 @@ import com.inno72.common.Service;
 import com.inno72.machine.model.Inno72Goods;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.model.Inno72SupplyChannel;
+import com.inno72.machine.vo.CommonVo;
 import com.inno72.machine.vo.SupplyRequestVo;
 import com.inno72.machine.vo.WorkOrderVo;
 
@@ -27,9 +28,9 @@ public interface SupplyChannelService extends Service<Inno72SupplyChannel> {
 
 	Result<List<Inno72SupplyChannel>> getList(String machineId);
 
-    Result<List<Inno72Machine>> getMachineLackGoods();
+    Result<List<Inno72Machine>> getMachineLackGoods(CommonVo commonVo);
 
-	Result<List<Inno72Goods>> getGoodsLack();
+	Result<List<Inno72Goods>> getGoodsLack(CommonVo commonVo);
 
 	Result<List<Inno72Machine>> getMachineByLackGoods(String goodsId);
 

@@ -388,6 +388,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		if(submitType != null){
 			criteria.andEqualTo("submitType",submitType);
 		}
+		condition.setOrderByClause("seq");
 		List<Inno72CheckFaultType> list = inno72CheckFaultTypeMapper.selectByCondition(condition);
 		return ResultGenerator.genSuccessResult(list);
 	}

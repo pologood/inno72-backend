@@ -163,9 +163,9 @@ public class Inno72Machine implements Comparable<Inno72Machine>{
 		if(o.getLackGoodsStatus() == this.getLackGoodsStatus()){
 			return 0;
 		}else if(o.getLackGoodsStatus()>this.getLackGoodsStatus()){
-			return -1;
+			return 1;
 		}
-		return 1;
+		return -1;
 	}
 
 	public enum Machine_Status {

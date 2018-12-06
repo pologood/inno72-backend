@@ -119,7 +119,8 @@
 			inno72_admin_area a
 			LEFT JOIN (
 				SELECT m.machine_code,	m.id, locale.area_code FROM inno72_machine m
-				LEFT JOIN inno72_locale locale ON locale.id = m.locale_id WHERE m.machine_status in (4,9)
+				LEFT JOIN inno72_locale locale ON locale.id = m.locale_id WHERE m.machine_status =4
+				<if test="machineType !=null and machineType !='' ">and machine_type !=2 </if>
 			) m ON LEFT ( m.area_code,#{num}) = LEFT ( a.CODE,#{num})
 		WHERE 1=1
 		<if test="code !=null and code !='' ">and a.parent_code = #{code}  </if>
@@ -141,7 +142,8 @@
 			inno72_machine m
 			LEFT JOIN inno72_locale locale ON m.locale_id = locale.id
 			LEFT JOIN inno72_admin_area area ON area.CODE = locale.area_code
-		WHERE m.machine_status in (4,9)
+		WHERE m.machine_status = 4
+		<if test="machineType !=null and machineType !='' ">and machine_type !=2 </if>
 		<if test="machineCode !=null and machineCode !='' ">and m.machine_code = #{machineCode}  </if>
 		and LEFT(locale.area_code,#{num}) =#{code}
   </select>

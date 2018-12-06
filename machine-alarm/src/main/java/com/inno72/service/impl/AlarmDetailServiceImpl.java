@@ -225,7 +225,8 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 										String mdStr = "网络异常，提醒方式：钉钉，内容："+textBeaf+text;
 										StringUtil.logger(CommonConstants.LOG_TYPE_HEART,machineCode,mdStr);
 									}
-									alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_HEART,machineCode,textBeaf,text,inno72CheckUserPhones);
+									String title = "出现页面加载异常";
+									alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_HEART,machineCode,title,textBeaf,text,inno72CheckUserPhones);
 								}
 							}
 						}
@@ -236,7 +237,8 @@ public class AlarmDetailServiceImpl implements AlarmDetailService {
 								if(machineStatus==4){
 									textBeaf = "您好，"+localeStr+"，机器编号："+machineCode+"，";
 									text = "网络已经连续10分钟未连接成功，请及时联系巡检人员。";
-									alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_NET,machineCode,textBeaf,text,inno72CheckUserPhones);
+									String title = "网络已经连续10分钟未连接成功";
+									alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_NET,machineCode,title,textBeaf,text,inno72CheckUserPhones);
 									String ddStr = textBeaf+text;
 									param.put("text",StringUtil.setText(ddStr,active));
 									if(group != null){

@@ -9,6 +9,7 @@ import com.inno72.machine.model.Inno72Goods;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.model.Inno72SupplyChannel;
 import com.inno72.machine.service.SupplyChannelService;
+import com.inno72.machine.vo.CommonVo;
 import com.inno72.machine.vo.SupplyRequestVo;
 import com.inno72.machine.vo.WorkOrderVo;
 import org.slf4j.Logger;
@@ -82,18 +83,18 @@ public class SupplyChannelController {
 	 * 机器维度缺货
 	 */
 	@RequestMapping(value="machineLack",method = {RequestMethod.POST })
-	public Result<List<Inno72Machine>> getMachineLack(){
+	public Result<List<Inno72Machine>> getMachineLack(@RequestBody CommonVo commonVo){
 		logger.info("机器维度缺货接口");
-		return supplyChannelService.getMachineLackGoods();
+		return supplyChannelService.getMachineLackGoods(commonVo);
 	}
 
 	/**
 	 * 商品维度缺货
 	 */
 	@RequestMapping(value="goodsLack",method = {RequestMethod.POST })
-	public Result<List<Inno72Goods>> getGoodsLack(){
+	public Result<List<Inno72Goods>> getGoodsLack(@RequestBody CommonVo commonVo){
 		logger.info("商品维度缺货接口");
-		return supplyChannelService.getGoodsLack();
+		return supplyChannelService.getGoodsLack(commonVo);
 	}
 
 	/**
@@ -190,7 +191,9 @@ public class SupplyChannelController {
 	 */
 	@RequestMapping(value = "exceptionList" ,method = {RequestMethod.POST})
 	public Result<List<Inno72SupplyChannel>> exceptionList(@RequestBody SupplyRequestVo vo){
+		logger.info("查询异常货道接收参数：{}",JSON.toJSONString(vo));
 		Result<List<Inno72SupplyChannel>> result = supplyChannelService.exceptionList(vo);
+		logger.info("查询异常货道返回结果：{}",JSON.toJSONString(result));
 		return result;
 	}
 
@@ -201,7 +204,9 @@ public class SupplyChannelController {
 	 */
 	@RequestMapping(value = "openSupplyChannel" ,method = {RequestMethod.POST})
 	public Result<String> openSupplyChannel(@RequestBody SupplyRequestVo vo){
+		logger.info("启用货道接收参数：{}",JSON.toJSONString(vo));
 		Result<String> result = supplyChannelService.openSupplyChannel(vo);
+		logger.info("启用货道返回结果：{}",JSON.toJSONString(result));
 		return result;
 	}
 

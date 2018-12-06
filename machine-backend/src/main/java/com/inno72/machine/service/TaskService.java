@@ -20,7 +20,7 @@ public interface TaskService extends Service<Inno72Task> {
 
 	Result<String> delById(String id);
 
-	List<Inno72AdminAreaVo> selectAreaMachineList(String code, String level, String machineCode);
+	List<Inno72AdminAreaVo> selectAreaMachineList(String code, String level, String machineCode, String type);
 
 	Inno72TaskVo findDetail(String id);
 
