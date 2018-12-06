@@ -22,6 +22,7 @@
 		<result column="monitor_end" jdbcType="VARCHAR" property="monitorEnd" />
 		<result column="local_str" jdbcType="VARCHAR" property="localStr" />
 		<result column="inside_time" jdbcType="TIMESTAMP" property="insideTime" />
+		<result column="machine_type" jdbcType="INTEGER" property="machineType" />
 	</resultMap>
 
 
