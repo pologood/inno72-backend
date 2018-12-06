@@ -370,7 +370,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		}
 		Inno72Machine machine = machines.get(0);
 		machine.setDeviceId(deviceId);
-		machine.setMachineStatus(9);
+		machine.setMachineType(2);
 		machine.setUpdateTime(LocalDateTime.now());
 		inno72MachineMapper.updateByPrimaryKeySelective(machine);
 		return Results.success();
