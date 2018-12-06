@@ -150,6 +150,7 @@ public class SupplyChannelController {
 	public ModelAndView workOrderListByPage(@RequestBody SupplyRequestVo vo){
 		logger.info("查询工单列表接口参数：{}",JSON.toJSON(vo));
 		List<WorkOrderVo> list = supplyChannelService.findByPage(vo.getKeyword(),vo.getFindTime());
+		logger.info("查询工单列表返回结果：{}",JSON.toJSON(list));
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 
