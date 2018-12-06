@@ -18,7 +18,7 @@
 		<result column="address" jdbcType="VARCHAR" property="address" />
 		<result column="bluetooth_address" jdbcType="VARCHAR" property="bluetoothAddress" />
 		<result column="wifi_pwd" jdbcType="VARCHAR" property="wifiPwd" />
-
+		<result column="machine_type" jdbcType="INTEGER" property="machineType" />
 	</resultMap>
 	<select id="selectMachineLocale" parameterType="String"
 		resultType="java.lang.String">
