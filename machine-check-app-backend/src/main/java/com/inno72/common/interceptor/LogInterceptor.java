@@ -8,6 +8,9 @@ import com.inno72.common.StringUtil;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.utils.page.Pagination;
 import net.sf.json.JSONObject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -28,6 +31,7 @@ import java.util.*;
  */
 public class LogInterceptor extends HandlerInterceptorAdapter {
 
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Resource
 	private IRedisUtil redisUtil; // memcachedClient
 
@@ -169,6 +173,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 				|| requestMethod.equals("PUT")) {
 				// lf-None-Matoh 传入token
             String token = request.getHeader("lf-None-Matoh");
+			logger.info("用户token:{}",token);
             if (StringUtil.isEmpty(token)) {
                 Result<String> result = new Result<>();
                 result.setCode(999);
