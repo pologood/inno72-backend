@@ -303,7 +303,7 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 				}
 			}
 			// 插入掉货规则(先删除)
-			if (interact.getPaiyangType() == 1) {
+			if (interact.getPaiyangType() == 2) {
 				Inno72InteractGameRule old = new Inno72InteractGameRule();
 				old.setInteractId(interactRule.getId());
 				inno72InteractGameRuleMapper.delete(old);
