@@ -88,6 +88,9 @@ public class Inno72Machine {
 	@Column(name = "wifi_pwd")
 	private String wifiPwd;
 
+	@Column(name = "machine_type")
+	private Integer machineType;
+
 	public enum Machine_Status {
 		// 开机
 		START(1),
@@ -343,6 +346,14 @@ public class Inno72Machine {
 
 	public void setWifiPwd(String wifiPwd) {
 		this.wifiPwd = wifiPwd;
+	}
+
+	public Integer getMachineType() {
+		return machineType;
+	}
+
+	public void setMachineType(Integer machineType) {
+		this.machineType = machineType;
 	}
 
 }
