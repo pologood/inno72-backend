@@ -262,9 +262,9 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 				logger.info("参数错误");
 				return Results.failure("参数错误");
 			}
-			// 互动--组装掉货规则数据
+			// 派样类型：0派样，1互派，2互动，3新零售 互动--组装掉货规则数据
 			List<Inno72InteractGameRule> insertGameRuleList = new ArrayList<>();
-			if (interact.getPaiyangType() == 1) {
+			if (interact.getPaiyangType() == 2) {
 				List<Inno72InteractGameRule> gameRule = interactRule.getGameRule();
 				if (null != gameRule && gameRule.size() > 0) {
 					for (Inno72InteractGameRule inno72InteractGameRule : gameRule) {
