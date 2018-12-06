@@ -64,8 +64,8 @@ public class TaskController {
 	}
 
 	@RequestMapping(value = "/selectAreaMachines", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Inno72AdminAreaVo>> selectMachines(String code, String level, String machineCode) {
-		List<Inno72AdminAreaVo> list = taskService.selectAreaMachineList(code, level, machineCode);
+	public Result<List<Inno72AdminAreaVo>> selectMachines(String code, String level, String machineCode, String type) {
+		List<Inno72AdminAreaVo> list = taskService.selectAreaMachineList(code, level, machineCode, type);
 		return ResultGenerator.genSuccessResult(list);
 	}
 
