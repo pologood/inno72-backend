@@ -20,6 +20,12 @@ public class MachineExceptionVo implements Comparable<MachineExceptionVo> {
 	private String updateTime;
 	private Integer lockCount;
 
+	private long sdFree;
+	private long sdTotle;
+	private double allTraffic;// 手机总流量
+	private double thatdayTraffic;// 当天流量
+	private double monthTraffic;// 当月流量
+
 	public String getId() {
 		return id;
 	}
@@ -114,6 +120,46 @@ public class MachineExceptionVo implements Comparable<MachineExceptionVo> {
 
 	public void setLockCount(Integer lockCount) {
 		this.lockCount = lockCount;
+	}
+
+	public long getSdFree() {
+		return sdFree;
+	}
+
+	public void setSdFree(long sdFree) {
+		this.sdFree = sdFree;
+	}
+
+	public long getSdTotle() {
+		return sdTotle;
+	}
+
+	public void setSdTotle(long sdTotle) {
+		this.sdTotle = sdTotle;
+	}
+
+	public double getAllTraffic() {
+		return allTraffic;
+	}
+
+	public void setAllTraffic(double allTraffic) {
+		this.allTraffic = allTraffic;
+	}
+
+	public double getThatdayTraffic() {
+		return thatdayTraffic;
+	}
+
+	public void setThatdayTraffic(double thatdayTraffic) {
+		this.thatdayTraffic = thatdayTraffic;
+	}
+
+	public double getMonthTraffic() {
+		return monthTraffic;
+	}
+
+	public void setMonthTraffic(double monthTraffic) {
+		this.monthTraffic = monthTraffic;
 	}
 
 	@Override

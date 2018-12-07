@@ -489,6 +489,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		vo.setDropGoodsSwitchException(findExceptionMachine(2).getData().size());
 		vo.setChannelException(findExceptionMachine(4).getData().size());
 		vo.setLockCount(findExceptionMachine(5).getData().size());
+		vo.setTrafficCount(findExceptionMachine(6).getData().size());
+		vo.setSdCount(findExceptionMachine(7).getData().size());
 		List<MachineExceptionVo> stockOutVos = inno72MachineMapper.findStockOutMachines();
 		vo.setStockout(stockOutVos == null ? 0 : stockOutVos.size());
 		Condition condition = new Condition(Inno72CheckFault.class);
@@ -600,6 +602,39 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			return Results.success(result);
 		} else if (type == 5) {
 			List<MachineExceptionVo> exceptionVos = inno72MachineMapper.findMachineLocked();
+			return Results.success(exceptionVos);
+		} else if (type == 6) {
+			Query query = new Query();
+			query.addCriteria(Criteria.where("thatdayTraffic").gte(300));
+			query.with(new Sort(Sort.Direction.DESC, "createTime"));
+			List<SystemStatus> systemStatuss = mongoTpl.find(query, SystemStatus.class, "SystemStatus");
+			List<MachineExceptionVo> exceptionVos = new ArrayList<>();
+			if (systemStatuss != null) {
+				for (SystemStatus status : systemStatuss) {
+					MachineExceptionVo vo = new MachineExceptionVo();
+					vo.setMachineCode(status.getMachineId());
+					vo.setAllTraffic(status.getAllTraffic());
+					vo.setMonthTraffic(status.getMonthTraffic());
+					vo.setThatdayTraffic(status.getThatdayTraffic());
+					exceptionVos.add(vo);
+				}
+			}
+			return Results.success(exceptionVos);
+		} else if (type == 7) {
+			Query query = new Query();
+			query.addCriteria(Criteria.where("sdFree").gte(1500));
+			query.with(new Sort(Sort.Direction.DESC, "createTime"));
+			List<SystemStatus> systemStatuss = mongoTpl.find(query, SystemStatus.class, "SystemStatus");
+			List<MachineExceptionVo> exceptionVos = new ArrayList<>();
+			if (systemStatuss != null) {
+				for (SystemStatus status : systemStatuss) {
+					MachineExceptionVo vo = new MachineExceptionVo();
+					vo.setMachineCode(status.getMachineId());
+					vo.setSdFree(status.getSdFree());
+					vo.setSdTotle(status.getSdTotle());
+					exceptionVos.add(vo);
+				}
+			}
 			return Results.success(exceptionVos);
 		} else {
 			return Results.failure("参数传入错误");
