@@ -622,7 +622,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			return Results.success(exceptionVos);
 		} else if (type == 7) {
 			Query query = new Query();
-			query.addCriteria(Criteria.where("sdFree").gte(1500));
+			query.addCriteria(Criteria.where("sdFree").lte(1500));
 			query.with(new Sort(Sort.Direction.DESC, "createTime"));
 			List<SystemStatus> systemStatuss = mongoTpl.find(query, SystemStatus.class, "SystemStatus");
 			List<MachineExceptionVo> exceptionVos = new ArrayList<>();
