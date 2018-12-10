@@ -127,7 +127,7 @@
 		inner join inno72_supply_channel_goods scg on scg.supply_channel_id=sc.id
 		inner join inno72_locale l on m.locale_id=l.id
 		inner join inno72_admin_area aa on aa.code=l.area_code
-		where m.machine_status=4 and cu.id=#{checkUserId,jdbcType=VARCHAR}
+		where m.machine_status=4 and m.machine_type != 2 and cu.id=#{checkUserId,jdbcType=VARCHAR}
 		and scg.goods_id=#{goodsId}
 	</select>
 
