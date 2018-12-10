@@ -1,7 +1,5 @@
 package com.inno72.machine.service.impl;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -37,7 +35,6 @@ public class TrafficServiceImpl implements TrafficService {
 		if (allTraffic != null) {
 			query.addCriteria(Criteria.where("allTraffic").gte(allTraffic));
 		}
-		query.addCriteria(Criteria.where("createTime").gte(getStartTime()).lte(getEndTime()));
 		Pagination page = Pagination.threadLocal.get();
 		if (page == null) { // 没有设置分页page
 			page = new Pagination();
@@ -52,22 +49,4 @@ public class TrafficServiceImpl implements TrafficService {
 		return list;
 	}
 
-	private static Date getStartTime() {
-		Calendar todayStart = Calendar.getInstance();
-		todayStart.set(Calendar.HOUR_OF_DAY, 0);
-		todayStart.set(Calendar.MINUTE, 0);
-		todayStart.set(Calendar.SECOND, 0);
-		todayStart.set(Calendar.MILLISECOND, 0);
-		return todayStart.getTime();
-	}
-
-	private static Date getEndTime() {
-		Calendar todayEnd = Calendar.getInstance();
-		todayEnd.set(Calendar.HOUR_OF_DAY, 23);
-		todayEnd.set(Calendar.MINUTE, 59);
-		todayEnd.set(Calendar.SECOND, 59);
-		todayEnd.set(Calendar.MILLISECOND, 999);
-		return todayEnd.getTime();
-
-	}
 }

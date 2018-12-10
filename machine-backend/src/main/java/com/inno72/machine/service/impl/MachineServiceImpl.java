@@ -4,7 +4,9 @@ import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -605,6 +607,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			return Results.success(exceptionVos);
 		} else if (type == 6) {
 			Query query = new Query();
+			query.addCriteria(Criteria.where("createTime").gte(getStartTime()).lte(getEndTime()));
 			query.addCriteria(Criteria.where("thatdayTraffic").gte(300));
 			query.with(new Sort(Sort.Direction.DESC, "createTime"));
 			List<SystemStatus> systemStatuss = mongoTpl.find(query, SystemStatus.class, "SystemStatus");
@@ -917,5 +920,24 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		condition.orderBy("reciveTime").desc();
 		List<Inno72AppLog> list = appLogService.findByCondition(condition);
 		return Results.success(list);
+	}
+
+	private static Date getStartTime() {
+		Calendar todayStart = Calendar.getInstance();
+		todayStart.set(Calendar.HOUR_OF_DAY, 0);
+		todayStart.set(Calendar.MINUTE, 0);
+		todayStart.set(Calendar.SECOND, 0);
+		todayStart.set(Calendar.MILLISECOND, 0);
+		return todayStart.getTime();
+	}
+
+	private static Date getEndTime() {
+		Calendar todayEnd = Calendar.getInstance();
+		todayEnd.set(Calendar.HOUR_OF_DAY, 23);
+		todayEnd.set(Calendar.MINUTE, 59);
+		todayEnd.set(Calendar.SECOND, 59);
+		todayEnd.set(Calendar.MILLISECOND, 999);
+		return todayEnd.getTime();
+
 	}
 }
