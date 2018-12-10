@@ -207,6 +207,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			if(childChannel != null){
 				childChannel.setIsRemove(0);
 				childChannel.setVolumeCount(volumeCount);
+				childChannel.setStatus(0);
 				childChannel.setGoodsCount(0);
 				inno72SupplyChannelMapper.updateByParam(childChannel);
 			}else{
