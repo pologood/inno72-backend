@@ -70,6 +70,18 @@
 			AND im.interact_id = #{interactId}
   </select>
   
+  <select id="selectInteractMerchantById" parameterType="java.util.Map" resultMap="InteractMerchantResultMap">
+  		SELECT
+			m.*,
+			im.is_focus
+		FROM
+			inno72_interact_merchant im
+			LEFT JOIN inno72_merchant m ON m.id = im.merchant_id
+		WHERE m.is_delete = 0 
+			AND im.merchant_id = #{id}
+			<if test="interactId !=null and interactId !='' ">and im.interact_id = #{interactId}</if>
+  </select>
+  
   
   <insert id="insertInteractMerchantList" parameterType="java.util.List">
         insert into inno72_interact_merchant (id,interact_id,merchant_id,is_focus)

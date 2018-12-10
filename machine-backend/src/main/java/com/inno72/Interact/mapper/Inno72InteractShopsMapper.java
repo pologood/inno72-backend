@@ -13,7 +13,7 @@ import com.inno72.common.Mapper;
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72InteractShopsMapper extends Mapper<Inno72InteractShops> {
 
-	ShopsVo selectInteractShopsById(String id);
+	ShopsVo selectInteractShopsById(Map<String, Object> params);
 
 	List<ShopsVo> selectMerchantShops(Map<String, Object> params);
 

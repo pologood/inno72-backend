@@ -18,7 +18,6 @@ import com.inno72.Interact.vo.InteractMerchantVo;
 import com.inno72.Interact.vo.MerchantVo;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
-import com.inno72.project.model.Inno72Merchant;
 
 /**
  * Created by CodeGenerator on 2018/09/19.
@@ -55,8 +54,8 @@ public class InteractMerchantController {
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<Inno72Merchant> detail(@RequestParam String id) {
-		Inno72Merchant interactMerchant = interactMerchantService.findMerchantsById(id);
+	public Result<MerchantVo> detail(@RequestParam String id, String interactId) {
+		MerchantVo interactMerchant = interactMerchantService.findMerchantsById(id, interactId);
 		return ResultGenerator.genSuccessResult(interactMerchant);
 	}
 

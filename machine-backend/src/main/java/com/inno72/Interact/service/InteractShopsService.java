@@ -16,7 +16,7 @@ public interface InteractShopsService extends Service<Inno72InteractShops> {
 
 	Result<String> save(InteractShopsVo model);
 
-	ShopsVo findShopsById(String id);
+	ShopsVo findShopsById(String id, String interactId);
 
 	List<ShopsVo> getList(String interactId, String merchantId);
 

@@ -136,8 +136,12 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 	}
 
 	@Override
-	public ShopsVo findShopsById(String id) {
-		return inno72InteractShopsMapper.selectInteractShopsById(id);
+	public ShopsVo findShopsById(String id, String interactId) {
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", id);
+		params.put("interactId", interactId);
+		return inno72InteractShopsMapper.selectInteractShopsById(params);
 	}
 
 	@Override

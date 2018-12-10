@@ -57,7 +57,7 @@
         </foreach>
   </insert>
   
-  <select id="selectInteractShopsById" parameterType="String" resultMap="InteractShopsVoResultMap">
+  <select id="selectInteractShopsById" parameterType="java.util.Map" resultMap="InteractShopsVoResultMap">
 		SELECT
 			s.*,
 			isp.is_vip
@@ -65,6 +65,7 @@
 			inno72_interact_shops isp
 			LEFT JOIN inno72_shops s ON s.id = isp.shops_id
 			WHERE isp.shops_id=#{id}
+			<if test="interactId !=null and interactId !='' ">and isp.interact_id = #{interactId}</if>
   </select>
   
   <select id="selectMerchantShops" parameterType="java.util.Map" resultMap="InteractShopsVoResultMap">

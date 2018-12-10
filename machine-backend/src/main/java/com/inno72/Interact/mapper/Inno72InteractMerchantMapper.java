@@ -13,6 +13,8 @@ import com.inno72.common.Mapper;
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72InteractMerchantMapper extends Mapper<Inno72InteractMerchant> {
 
+	MerchantVo selectInteractMerchantById(Map<String, Object> params);
+
 	List<MerchantVo> selectMerchantByInteractId(@Param("interactId") String interactId);
 
 	int insertInteractMerchantList(@Param("list") List<Inno72InteractMerchant> list);

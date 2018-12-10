@@ -169,8 +169,11 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 	}
 
 	@Override
-	public Inno72Merchant findMerchantsById(String id) {
-		return inno72MerchantMapper.selectByPrimaryKey(id);
+	public MerchantVo findMerchantsById(String id, String interactId) {
+		Map<String, Object> pm = new HashMap<>();
+		pm.put("id", id);
+		pm.put("interactId", interactId);
+		return inno72InteractMerchantMapper.selectInteractMerchantById(pm);
 	}
 
 	@Override
