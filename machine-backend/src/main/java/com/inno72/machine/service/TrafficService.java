@@ -9,6 +9,6 @@ import com.inno72.machine.vo.SystemStatus;
  */
 public interface TrafficService {
 
-	List<SystemStatus> list(String machineCode, Integer allTraffic);
+	List<SystemStatus> list(String machineCode, Double allTraffic);
 
 }

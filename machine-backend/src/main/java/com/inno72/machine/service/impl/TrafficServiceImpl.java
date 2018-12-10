@@ -26,7 +26,7 @@ public class TrafficServiceImpl implements TrafficService {
 	private MongoOperations mongoTpl;
 
 	@Override
-	public List<SystemStatus> list(String machineCode, Integer allTraffic) {
+	public List<SystemStatus> list(String machineCode, Double allTraffic) {
 		Query query = new Query();
 		if (!StringUtil.isEmpty(machineCode)) {
 			Pattern pattern = Pattern.compile("^.*" + machineCode + ".*$", Pattern.CASE_INSENSITIVE);
