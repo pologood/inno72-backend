@@ -88,7 +88,7 @@
 		inner JOIN inno72_locale l ON l.id = m.locale_id
         inner JOIN inno72_admin_area aa ON aa.CODE = l.area_code
         left join inno72_supply_channel_goods scg on sc.id=scg.supply_channel_id and mg.goods_id=scg.goods_id
-		where m.machine_status=4 and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
+		where m.machine_status=4 and m.machine_type != 2 and cum.check_user_id=#{checkUserId,jdbcType=VARCHAR}
 		<if test="keyword != null">
             and (m.machine_code like '%${keyword}%'
             or aa.province like '%${keyword}%'
