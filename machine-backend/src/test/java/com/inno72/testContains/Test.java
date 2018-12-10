@@ -18,7 +18,6 @@ public class Test {
 		map.put("timestamp", temp);
 		String a = getMD5String("123");
 		System.out.println(a);
-		System.out.println(b);
 
 	}
 
