@@ -38,7 +38,7 @@
       ch.id,ch.code,ch.name,ch.status,ch.machine_id,ch.parent_code,ch.volume_count,ch.is_delete,
       ch.goods_count,ch.create_id,ch.create_time,ch.update_id,ch.update_time,ch.is_remove,
       cg.goods_id goodsId,
-      cg.is_delete goodsStatus,
+      goods.is_delete goodsStatus,
       goods.name goodsName,
       goods.code goodsCode,
       m.machine_code machineCode
