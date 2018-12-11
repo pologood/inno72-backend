@@ -1,55 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.inno72.project.mapper.Inno72MerchantMapper">
-  <resultMap id="BaseResultMap" type="com.inno72.project.model.Inno72Merchant">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="merchant_code" jdbcType="VARCHAR" property="merchantCode" />
-    <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
-    <result column="origin_flag" jdbcType="VARCHAR" property="originFlag" />
-    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
-    <result column="channel_id" jdbcType="VARCHAR" property="channelId" />
-    <result column="sell_session_key" jdbcType="VARCHAR" property="sellSessionKey" />
-    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
-    <result column="create_id" jdbcType="VARCHAR" property="createId" />
-    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-  </resultMap>
-  
-  <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
-		SELECT
-			m.id,
-			m.merchant_code,
-			m.merchant_name,
-			m.brand_name,
-			m.origin_flag,
-			c.channel_name as channel_id,
-			m.sell_session_key,
-			m.is_delete,
-			m.create_time,
-			m.update_time
-		FROM
-			inno72_merchant m
-			LEFT JOIN inno72_channel c ON c.Id = m.channel_id
-			where m.is_delete = 0
-			<if test="code !=null and code !=''">and m.channel_id = #{code}</if>
-			<if test="keyword !=null and keyword !='' and keyword !='undefined'">
-			and ( m.merchant_code LIKE '%${keyword}%' or m.merchant_name LIKE '%${keyword}%' or m.brand_name LIKE '%${keyword}%' or m.origin_flag LIKE '%${keyword}%' )
-			</if>
-			ORDER BY m.update_time DESC
-  </select>
-  
-  <select id="selectIsUseing" parameterType="String" resultType="int">
+    <resultMap id="BaseResultMap" type="com.inno72.project.model.Inno72Merchant">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="merchant_code" jdbcType="VARCHAR" property="merchantCode" />
+        <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
+        <result column="origin_flag" jdbcType="VARCHAR" property="originFlag" />
+        <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+        <result column="channel_id" jdbcType="VARCHAR" property="channelId" />
+        <result column="sell_session_key" jdbcType="VARCHAR" property="sellSessionKey" />
+        <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+        <result column="create_id" jdbcType="VARCHAR" property="createId" />
+        <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="merchant_account_id" jdbcType="VARCHAR" property="merchantAccountId"/>
+        <result column="merchant_account_name" jdbcType="VARCHAR" property="merchantAccountName"/>
+        <result column="wechat_qrcode_url" jdbcType="VARCHAR" property="wechatQrcodeUrl"/>
+        <result column="channel_name" jdbcType="VARCHAR" property="channelName"/>
+    </resultMap>
+
+    <resultMap id="BaseVoResultMap" type="com.inno72.project.vo.Inno72MerchantVo">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="merchant_id" jdbcType="VARCHAR" property="merchantId" />
+        <result column="merchant_code" jdbcType="VARCHAR" property="merchantCode" />
+        <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
+        <result column="origin_flag" jdbcType="VARCHAR" property="originFlag" />
+        <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+        <result column="channel_id" jdbcType="VARCHAR" property="channelId" />
+        <result column="sell_session_key" jdbcType="VARCHAR" property="sellSessionKey" />
+        <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+        <result column="create_id" jdbcType="VARCHAR" property="createId" />
+        <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="merchant_account_id" jdbcType="VARCHAR" property="merchantAccountId"/>
+        <result column="merchant_account_name" jdbcType="VARCHAR" property="merchantAccountName"/>
+        <result column="wechat_qrcode_url" jdbcType="VARCHAR" property="wechatQrcodeUrl"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="channel_name" jdbcType="VARCHAR" property="channelName"/>
+        <result column="channel_code" jdbcType="VARCHAR" property="channelCode"/>
+    </resultMap>
+
+    <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseVoResultMap">
+        SELECT
+        m.id,
+        m.merchant_code,
+        m.merchant_name,
+        m.merchant_account_id,
+        m.merchant_account_name,
+        u.merchant_id,
+        m.brand_name,
+        m.origin_flag,
+        m.channel_id,
+        m.channel_name,
+        m.sell_session_key,
+        m.is_delete,
+        m.create_time,
+        m.update_time,
+        u.login_status as status
+        FROM
+        inno72_merchant m
+        LEFT JOIN inno72_merchant_user u ON u.id = m.merchant_account_id
+        where m.is_delete = 0
+        <if test="code !=null and code !=''">and m.channel_id = #{code}</if>
+        <if test="keyword !=null and keyword !='' and keyword !='undefined'">
+            and ( m.merchant_code LIKE '%${keyword}%'
+            or m.merchant_name LIKE '%${keyword}%'
+            or m.brand_name LIKE '%${keyword}%'
+            or m.merchant_account_name LIKE '%${keyword}%'
+            or u.merchant_id LIKE '%${keyword}%'
+            or m.channel_name LIKE '%${keyword}%'
+            or u.merchant_id LIKE '%${keyword}%'
+            )
+        </if>
+        ORDER BY m.update_time DESC
+    </select>
+
+    <select id="selectIsUseing" parameterType="String" resultType="int">
 		SELECT count(1) FROM inno72_shops where seller_id=#{id} and is_delete = 0
   </select>
-  
-  <select id="getCount" parameterType="String" resultType="int">
-		SELECT count(1) FROM inno72_merchant m where m.is_delete = 0
-		<if test="code !=null and code !=''">and m.merchant_code =#{code} </if>
-  </select>
-  
-  
+
+    <select id="getCount" parameterType="String" resultType="int">
+        SELECT count(1) FROM inno72_merchant m where m.is_delete = 0
+        <if test="code !=null and code !=''">and m.merchant_code =#{code} </if>
+    </select>
+
+
 </mapper>

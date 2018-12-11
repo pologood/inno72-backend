@@ -11,6 +11,7 @@
     <result column="parent_name" jdbcType="VARCHAR" property="parentName" />
     <result column="level" jdbcType="INTEGER" property="level" />
     <result column="submit_type" jdbcType="INTEGER" property="submitType" />
+    <result column="seq" jdbcType="INTEGER" property="seq" />
     <result column="create_id" jdbcType="VARCHAR" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
@@ -37,12 +38,32 @@
 		
 		GROUP BY t.`code`
   </select>
+  <select id="selectAllList" parameterType="String" resultMap="BaseResultMap">
+		SELECT t.`code`,t.`name`,
+		group_concat(tt.`name` ORDER BY tt.seq) AS parent_name,
+		t.create_time,
+		t.submit_type,
+		u.`name` AS create_id
+		from
+		inno72_check_fault_type t
+		LEFT JOIN inno72_check_fault_type tt ON tt.parent_code = t.code
+		LEFT JOIN inno72_user u ON u.id = t.create_id
+		WHERE t.level=1
+		<if test="keyword !=null and keyword !='' ">
+			AND ( t.name LIKE '%${keyword}%' 
+			or tt.name LIKE '%${keyword}%'
+			or u.name LIKE '%${keyword}%'  
+			)
+		</if>
+		
+		GROUP BY t.`code`
+  </select>
   
   <insert id="insertFaultTypeList" parameterType="java.util.List">
-        insert into inno72_check_fault_type (code, parent_code,name,parent_name,level,create_id,create_time,update_id,update_time)
+        insert into inno72_check_fault_type (code, parent_code,name,parent_name,level,seq,create_id,create_time,update_id,update_time)
         values
         <foreach collection="list" item="type" index="index" separator=",">
-            (#{type.code},#{type.parentCode},#{type.name},#{type.parentName},#{type.level},#{type.createId},#{type.createTime},#{type.updateId},#{type.updateTime})
+            (#{type.code},#{type.parentCode},#{type.name},#{type.parentName},#{type.level},#{type.seq},#{type.createId},#{type.createTime},#{type.updateId},#{type.updateTime})
         </foreach>
    </insert>
    
@@ -70,7 +91,7 @@
 		inno72_check_fault_type t
 		LEFT JOIN inno72_check_fault_type tt ON tt.parent_code = t.code
 		WHERE t.level=1
-		AND t.code = #{code}
+		AND t.code = #{code} ORDER BY tt.seq
   </select>
   
   

@@ -23,10 +23,16 @@ public class CheckDropGoodsTask implements IJobHandler {
 	@Resource
 	private SupplyChannelService supplyChannelService;
 
+<<<<<<< HEAD
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Override
 	public ReturnT<String> execute(String s) throws Exception {
 		logger.info("执行掉货异常定时开始");
+=======
+
+	@Scheduled(cron = "0/5 * * * * ?")
+	public void sendDropGoods(){
+>>>>>>> master
 		List<AlarmDropGoodsBean> list = supplyChannelService.getDropGoodsList();
 		if(list != null && list.size()>0){
 			supplyChannelService.sendAlarmDropGoods(list);

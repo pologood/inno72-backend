@@ -1,6 +1,6 @@
 package com.inno72.Interact.service.impl;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,14 +14,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inno72.Interact.mapper.Inno72InteractGoodsMapper;
+import com.inno72.Interact.mapper.Inno72InteractMapper;
 import com.inno72.Interact.mapper.Inno72InteractMerchantMapper;
+import com.inno72.Interact.mapper.Inno72InteractShopsMapper;
+import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.model.Inno72InteractMerchant;
+import com.inno72.Interact.model.Inno72InteractShops;
 import com.inno72.Interact.service.InteractMerchantService;
 import com.inno72.Interact.vo.Inno72NeedExportStore;
+import com.inno72.Interact.vo.InteractGoodsVo;
 import com.inno72.Interact.vo.InteractMerchantVo;
+import com.inno72.Interact.vo.MerchantVo;
+import com.inno72.Interact.vo.ShopsVo;
 import com.inno72.common.AbstractService;
+import com.inno72.common.CommonConstants;
 import com.inno72.common.ExportExcel;
-import com.inno72.common.MachineBackendProperties;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
@@ -33,8 +41,6 @@ import com.inno72.project.model.Inno72Merchant;
 import com.inno72.project.model.Inno72Shops;
 import com.inno72.system.model.Inno72User;
 
-import tk.mybatis.mapper.entity.Condition;
-
 /**
  * Created by CodeGenerator on 2018/09/19.
  */
@@ -45,13 +51,19 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 
 	private static Logger logger = LoggerFactory.getLogger(InteractMerchantServiceImpl.class);
 	@Resource
+	private Inno72InteractMapper inno72InteractMapper;
+	@Resource
 	private Inno72InteractMerchantMapper inno72InteractMerchantMapper;
 	@Resource
 	private Inno72MerchantMapper inno72MerchantMapper;
 	@Resource
 	private Inno72ShopsMapper inno72ShopsMapper;
+
 	@Resource
-	private MachineBackendProperties machineBackendProperties;
+	private Inno72InteractShopsMapper inno72InteractShopsMapper;
+
+	@Resource
+	private Inno72InteractGoodsMapper inno72InteractGoodsMapper;
 
 	// 表格
 	public static final String[] USERCHARGE = { "省份名(prov_name)", "市名称(city_name)", "区域名称(area_name)",
@@ -64,7 +76,7 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 			"phone", "", "img", "", "", "date", "", "", "", "", "", "", "", "", "" };
 
 	@Override
-	public Result<String> save(InteractMerchantVo model) {
+	public Result<Object> save(InteractMerchantVo model) {
 
 		try {
 			SessionData session = SessionUtil.sessionData.get();
@@ -73,34 +85,55 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
-			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-			model.setId(StringUtil.getUUID());
-			model.setIsDelete(0);
-			model.setCreateId(mUserId);
-			model.setUpdateId(mUserId);
-			model.setCreateTime(LocalDateTime.now());
-			model.setUpdateTime(LocalDateTime.now());
-			// 数据校验
-			if (StringUtil.isBlank(model.getChannelId())) {
-				logger.info("请选择渠道");
-				return Results.failure("请选择渠道");
+			List<MerchantVo> merchants = model.getMerchants();
+			if (merchants.size() == 0) {
+				logger.info("请添加商户");
+				return Results.failure("请添加商户");
 			}
-			if (StringUtil.isBlank(model.getMerchantCode())) {
-				logger.info("请填写商家编号");
-				return Results.failure("请填写商家编号");
+			List<Inno72InteractMerchant> insertList = new ArrayList<>();
+			for (MerchantVo merchant : merchants) {
+				Inno72InteractMerchant interactMerchant = new Inno72InteractMerchant();
+				interactMerchant.setId(StringUtil.getUUID());
+				interactMerchant.setInteractId(model.getInteractId());
+				interactMerchant.setMerchantId(merchant.getId());
+				interactMerchant.setIsFocus(merchant.getIsFocus());
+
+				insertList.add(interactMerchant);
 			}
-			if (StringUtil.isBlank(model.getMerchantName())) {
-				logger.info("请填写商家名称");
-				return Results.failure("请填写商家名称");
+			// 判断是否已添加
+			Inno72InteractMerchant having = new Inno72InteractMerchant();
+			having.setInteractId(model.getInteractId());
+			List<Inno72InteractMerchant> havingList = inno72InteractMerchantMapper.select(having);
+			boolean fg = havingList.removeAll(insertList);
+			if (fg) {
+				logger.info("添加商户中部分已添加过");
+				return Results.failure("添加商户中部分已添加过");
+			}
+			inno72InteractMerchantMapper.insertInteractMerchantList(insertList);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+		return Results.success("操作成功");
+	}
+
+	@Override
+	public Result<String> update(String interactId, String merchantId, Integer isFocus) {
+		try {
+			SessionData session = SessionUtil.sessionData.get();
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
 			}
 
 			Inno72InteractMerchant interactMerchant = new Inno72InteractMerchant();
-			interactMerchant.setId(StringUtil.getUUID());
-			interactMerchant.setInteractId(model.getInteractId());
-			interactMerchant.setMerchantId(model.getId());
-
-			inno72InteractMerchantMapper.insert(interactMerchant);
-			inno72MerchantMapper.insert(model);
+			interactMerchant.setMerchantId(merchantId);
+			interactMerchant.setInteractId(interactId);
+			interactMerchant = inno72InteractMerchantMapper.selectOne(interactMerchant);
+			interactMerchant.setIsFocus(isFocus);
+			inno72InteractMerchantMapper.updateByPrimaryKeySelective(interactMerchant);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.info(e.getMessage());
@@ -110,51 +143,37 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 	}
 
 	@Override
-	public Result<String> update(InteractMerchantVo model) {
-
-		try {
-			SessionData session = SessionUtil.sessionData.get();
-			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
-			if (mUser == null) {
-				logger.info("登陆用户为空");
-				return Results.failure("未找到用户登录信息");
-			}
-			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-			model.setUpdateId(mUserId);
-			model.setUpdateTime(LocalDateTime.now());
-			// 数据校验
-			if (StringUtil.isBlank(model.getChannelId())) {
-				logger.info("请选择渠道");
-				return Results.failure("请选择渠道");
-			}
-			if (StringUtil.isBlank(model.getMerchantCode())) {
-				logger.info("请填写商家编号");
-				return Results.failure("请填写商家编号");
-			}
-			if (StringUtil.isBlank(model.getMerchantName())) {
-				logger.info("请填写商家名称");
-				return Results.failure("请填写商家名称");
-			}
-
-			inno72MerchantMapper.updateByPrimaryKeySelective(model);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.info(e.getMessage());
-			return Results.failure("操作失败");
-		}
-		return Results.success("操作成功");
-	}
-
-	@Override
-	public List<InteractMerchantVo> getList(String interactId) {
+	public List<MerchantVo> getList(String interactId) {
 		logger.info("---------------------获取活动下商户列表-------------------");
 		return inno72InteractMerchantMapper.selectMerchantByInteractId(interactId);
 
 	}
 
 	@Override
-	public Inno72Merchant findMerchantsById(String id) {
-		return inno72MerchantMapper.selectByPrimaryKey(id);
+	public List<Map<String, Object>> getMerchantUserList(String keyword) {
+		logger.info("---------------------获取客户列表-------------------");
+		return inno72InteractMerchantMapper.getMerchantUserList(keyword);
+
+	}
+
+	@Override
+	public List<Map<String, Object>> checkMerchant(String interactId, String merchantAccountId) {
+		logger.info("---------------------获取客户下商户列表-------------------");
+		Inno72Interact interact = inno72InteractMapper.selectByPrimaryKey(interactId);
+		Map<String, Object> pm = new HashMap<>();
+		pm.put("merchantAccountId", merchantAccountId);
+		pm.put("channel", interact.getChannel());
+		pm.put("interactId", interactId);
+		return inno72InteractMerchantMapper.getMerchantList(pm);
+
+	}
+
+	@Override
+	public MerchantVo findMerchantsById(String id, String interactId) {
+		Map<String, Object> pm = new HashMap<>();
+		pm.put("id", id);
+		pm.put("interactId", interactId);
+		return inno72InteractMerchantMapper.selectInteractMerchantById(pm);
 	}
 
 	@Override
@@ -166,28 +185,41 @@ public class InteractMerchantServiceImpl extends AbstractService<Inno72InteractM
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
-			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-
-			// 查询店铺下是否存在店铺
-			Inno72Shops inno72Shops = new Inno72Shops();
-			inno72Shops.setIsDelete(0);
-			inno72Shops.setSellerId(merchantId);
-			Condition condition = new Condition(Inno72Shops.class);
-			condition.createCriteria().andEqualTo(inno72Shops);
-			List<Inno72Shops> shops = inno72ShopsMapper.selectByCondition(condition);
-
-			if (shops != null && shops.size() > 0) {
-				logger.info("商户下存在店铺，不能删除");
-				return Results.failure("商户下存在店铺，不能删除");
-			}
-
+			// 先判断是否微信渠道（微信渠道判断是否存在商品，非微信渠道判断是否存在店铺）
 			Inno72Merchant merchant = new Inno72Merchant();
 			merchant.setId(merchantId);
-			merchant.setIsDelete(1);
-			merchant.setUpdateId(mUserId);
-			merchant.setUpdateTime(LocalDateTime.now());
-			inno72MerchantMapper.updateByPrimaryKeySelective(merchant);
-
+			merchant = inno72MerchantMapper.selectByPrimaryKey(merchantId);
+			if (merchant.getChannelCode().endsWith(CommonConstants.WECHATCODE)) {
+				// 查询店铺下是否存在商品(微信公众号商户下店铺商户ID与店铺ID相等)
+				Map<String, Object> pm = new HashMap<>();
+				pm.put("interactId", interactId);
+				pm.put("shopsId", merchantId);
+				List<InteractGoodsVo> goods = inno72InteractGoodsMapper.selectGoods(pm);
+				if (goods != null && goods.size() > 0) {
+					logger.info("商户下存在商品，不能删除");
+					return Results.failure("商户下存在商品，不能删除");
+				}
+				// 删除公众号下关联虚拟店铺
+				Inno72InteractShops interactShops = new Inno72InteractShops();
+				interactShops.setInteractId(interactId);
+				interactShops.setShopsId(merchantId);
+				inno72InteractShopsMapper.delete(interactShops);
+				// 删除公众号下虚拟店铺
+				Inno72Shops inno72Shops = new Inno72Shops();
+				inno72Shops.setId(merchantId);
+				inno72Shops.setSellerId(merchantId);
+				inno72ShopsMapper.delete(inno72Shops);
+			} else {
+				// 查询店铺下是否存在关联店铺
+				Map<String, Object> pm = new HashMap<>();
+				pm.put("interactId", interactId);
+				pm.put("sellerId", merchantId);
+				List<ShopsVo> shops = inno72InteractShopsMapper.selectMerchantShops(pm);
+				if (shops != null && shops.size() > 0) {
+					logger.info("商户下存在店铺，不能删除");
+					return Results.failure("商户下存在店铺，不能删除");
+				}
+			}
 			// 中间表
 			Inno72InteractMerchant interactMerchant = new Inno72InteractMerchant();
 			interactMerchant.setMerchantId(merchantId);

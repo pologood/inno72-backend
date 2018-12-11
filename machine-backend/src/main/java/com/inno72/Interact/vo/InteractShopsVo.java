@@ -1,8 +1,8 @@
 package com.inno72.Interact.vo;
 
-import com.inno72.project.model.Inno72Shops;
+import java.util.List;
 
-public class InteractShopsVo extends Inno72Shops {
+public class InteractShopsVo {
 
 	/**
 	 * 互动ID
@@ -11,7 +11,10 @@ public class InteractShopsVo extends Inno72Shops {
 
 	private Integer isVip;
 
-	private String merchantName;
+	/**
+	 * 添加的店铺
+	 */
+	private List<ShopsVo> shops;
 
 	public String getInteractId() {
 		return interactId;
@@ -29,12 +32,12 @@ public class InteractShopsVo extends Inno72Shops {
 		this.isVip = isVip;
 	}
 
-	public String getMerchantName() {
-		return merchantName;
+	public List<ShopsVo> getShops() {
+		return shops;
 	}
 
-	public void setMerchantName(String merchantName) {
-		this.merchantName = merchantName;
+	public void setShops(List<ShopsVo> shops) {
+		this.shops = shops;
 	}
 
 }

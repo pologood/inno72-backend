@@ -38,7 +38,16 @@ public class CheckFaultTypeServiceImpl extends AbstractService<Inno72CheckFaultT
 
 	@Override
 	public List<Inno72CheckFaultType> findByPage(String keyword) {
-		return inno72CheckFaultTypeMapper.selectByPage(keyword);
+
+		List<Inno72CheckFaultType> list = inno72CheckFaultTypeMapper.selectByPage(keyword);
+		List<Inno72CheckFaultType> allList = inno72CheckFaultTypeMapper.selectAllList(keyword);
+		for (Inno72CheckFaultType inno72CheckFaultType : list) {
+			int ix = allList.indexOf(inno72CheckFaultType);
+			if (ix != -1) {
+				inno72CheckFaultType.setParentName(allList.get(ix).getParentName());
+			}
+		}
+		return list;
 	}
 
 	@Override
@@ -71,6 +80,7 @@ public class CheckFaultTypeServiceImpl extends AbstractService<Inno72CheckFaultT
 			model.setUpdateTime(LocalDateTime.now());
 			// 子级解决方案
 			List<Inno72CheckFaultType> insertFaultTypeList = new ArrayList<>();
+			int i = 0;
 			for (Inno72CheckFaultType solutionType : solutions) {
 				String childcode = StringUtil.getUUID();
 				solutionType.setCode(childcode);
@@ -81,6 +91,7 @@ public class CheckFaultTypeServiceImpl extends AbstractService<Inno72CheckFaultT
 				solutionType.setUpdateId(mUserId);
 				solutionType.setCreateTime(LocalDateTime.now());
 				solutionType.setUpdateTime(LocalDateTime.now());
+				solutionType.setSeq(i++);
 				insertFaultTypeList.add(solutionType);
 			}
 			inno72CheckFaultTypeMapper.insertFaultTypeList(insertFaultTypeList);
@@ -119,6 +130,7 @@ public class CheckFaultTypeServiceImpl extends AbstractService<Inno72CheckFaultT
 			model.setUpdateTime(LocalDateTime.now());
 			// 子级解决方案
 			List<Inno72CheckFaultType> insertFaultTypeList = new ArrayList<>();
+			int i = 0;
 			for (Inno72CheckFaultType solutionType : solutions) {
 				String childcode = StringUtil.getUUID();
 				solutionType.setCode(childcode);
@@ -129,6 +141,7 @@ public class CheckFaultTypeServiceImpl extends AbstractService<Inno72CheckFaultT
 				solutionType.setUpdateId(mUserId);
 				solutionType.setCreateTime(LocalDateTime.now());
 				solutionType.setUpdateTime(LocalDateTime.now());
+				solutionType.setSeq(i++);
 				insertFaultTypeList.add(solutionType);
 			}
 			// 删除原来解决方案

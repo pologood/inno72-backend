@@ -10,24 +10,59 @@
     <result column="merchant_id" jdbcType="VARCHAR" property="merchantId" />
   </resultMap>
   
-  <resultMap id="InteractMerchantVoResultMap" type="com.inno72.Interact.vo.InteractMerchantVo">
+  <resultMap id="InteractMerchantResultMap" type="com.inno72.Interact.vo.MerchantVo">
     <!--
       WARNING - @mbg.generated
     -->
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="interact_id" jdbcType="VARCHAR" property="interactId" />
-    <result column="shops_id" jdbcType="VARCHAR" property="shopsId" />
-    <result column="is_vip" jdbcType="INTEGER" property="isVip" />
+    <result column="merchant_id" jdbcType="VARCHAR" property="merchantId" />
+    <result column="is_focus" jdbcType="INTEGER" property="isFocus" />
     
     <result column="merchant_code" jdbcType="VARCHAR" property="merchantCode" />
     <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
+    <result column="channel_code" jdbcType="VARCHAR" property="channelCode" />
   </resultMap>
+  <!-- 获取客户 -->
+  <select id="getMerchantUserList" parameterType="String" resultType="java.util.Map">
+		SELECT
+			m.id,
+			m.merchant_id AS merchantCode,
+			m.merchant_name AS merchantName
+		FROM
+			inno72_merchant_user m
+		<where>
+          <if test="keyword !=null and keyword !='' ">
+			and ( m.seller_id LIKE '%${keyword}%' 
+		  	or m.merchant_name LIKE '%${keyword}%'
+			)
+		 </if>
+       </where>
+  </select>
+  <!-- 获取客户下商户 -->
+  <select id="getMerchantList" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+			m.id,
+			m.merchant_code AS merchantCode,
+			m.merchant_name AS merchantName
+		FROM
+			inno72_merchant m
+		<where>
+          <if test="merchantAccountId != null and merchantAccountId != ''">AND m.merchant_account_id=#{merchantAccountId}</if>
+          <if test="channel != null and channel != ''">AND m.channel_code=#{channel}</if>
+          and m.id not in (
+				SELECT im.merchant_id FROM inno72_interact_merchant im WHERE  im.interact_id = #{interactId}
+			)
+       </where>
+  </select>
   
-  <select id="selectMerchantByInteractId" parameterType="String" resultMap="InteractMerchantVoResultMap">
+  <select id="selectMerchantByInteractId" parameterType="String" resultMap="InteractMerchantResultMap">
 		SELECT
 			m.id,
 			m.merchant_code,
-			m.merchant_name 
+			m.merchant_name,
+			m.channel_code,
+			im.is_focus
 		FROM
 			inno72_interact_merchant im
 			LEFT JOIN inno72_merchant m ON m.id = im.merchant_id
@@ -35,6 +70,26 @@
 			AND im.interact_id = #{interactId}
   </select>
   
+  <select id="selectInteractMerchantById" parameterType="java.util.Map" resultMap="InteractMerchantResultMap">
+  		SELECT
+			m.*,
+			im.is_focus
+		FROM
+			inno72_interact_merchant im
+			LEFT JOIN inno72_merchant m ON m.id = im.merchant_id
+		WHERE m.is_delete = 0 
+			AND im.merchant_id = #{id}
+			<if test="interactId !=null and interactId !='' ">and im.interact_id = #{interactId}</if>
+  </select>
+  
+  
+  <insert id="insertInteractMerchantList" parameterType="java.util.List">
+        insert into inno72_interact_merchant (id,interact_id,merchant_id,is_focus)
+        values
+        <foreach collection="list" item="t" index="index" separator=",">
+            (#{t.id}, #{t.interactId},#{t.merchantId},#{t.isFocus})
+        </foreach>
+  </insert>
   
   <select id="findMachineSellerId" resultType="com.inno72.Interact.vo.Inno72NeedExportStore">
   	SELECT *,machine_code AS machineCode, seller_id AS sellerId,CONCAT(seller_id,"-",machine_code) AS shopName 

@@ -82,6 +82,15 @@
 		<if test="id !=null and id !=''">and g.id = #{id}</if>
   </select>
   
+  <select id="selectByShop" parameterType="java.util.Map" resultMap="BaseResultMap">
+		SELECT
+			g.*
+		from inno72_goods g 
+		WHERE g.is_delete=0 
+		AND g.id NOT IN ( SELECT g.goods_id FROM inno72_interact_goods g )
+		<if test="shopId !=null and shopId !=''">and g.shop_id = #{shopId}</if>
+  </select>
+  
   <select id="selectIsUseing" parameterType="String" resultType="int">
 		SELECT count(1) FROM inno72_supply_channel_goods where goods_id=#{id}
   </select>

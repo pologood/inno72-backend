@@ -56,7 +56,7 @@
 			or uu.enterprise LIKE '%${keyword}%'
 			or uu.machine_code LIKE '%${keyword}%' )
 		</if>
-		ORDER BY uu.update_time
+		ORDER BY uu.`status`,uu.update_time DESC
 	</select>
 
 	<select id="checkCardNoIsExist" parameterType="String"

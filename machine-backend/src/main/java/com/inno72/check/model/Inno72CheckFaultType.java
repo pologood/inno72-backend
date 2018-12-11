@@ -53,6 +53,11 @@ public class Inno72CheckFaultType {
 	private Integer submitType;
 
 	/**
+	 * 排序
+	 */
+	@Column(name = "seq")
+	private Integer seq;
+	/**
 	 * 创建人
 	 */
 	@Column(name = "create_id")
@@ -185,6 +190,14 @@ public class Inno72CheckFaultType {
 		this.submitType = submitType;
 	}
 
+	public Integer getSeq() {
+		return seq;
+	}
+
+	public void setSeq(Integer seq) {
+		this.seq = seq;
+	}
+
 	/**
 	 * 获取创建人
 	 *
@@ -259,5 +272,16 @@ public class Inno72CheckFaultType {
 	 */
 	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Inno72CheckFaultType) {
+			Inno72CheckFaultType result = (Inno72CheckFaultType) obj;
+			if (this.code.equals(result.getCode())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

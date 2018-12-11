@@ -2,26 +2,23 @@ package com.inno72.project.vo;
 
 import com.inno72.project.model.Inno72Shops;
 
+import lombok.Data;
+
+@Data
 public class Inno72ShopsVo extends Inno72Shops {
 
 	private Integer isVip;
 
 	private String sessionKey;
 
-	public Integer getIsVip() {
-		return isVip;
-	}
+	private String channelName;
 
-	public void setIsVip(Integer isVip) {
-		this.isVip = isVip;
-	}
+	private String channelId;
 
-	public String getSessionKey() {
-		return sessionKey;
-	}
+	private String status;
 
-	public void setSessionKey(String sessionKey) {
-		this.sessionKey = sessionKey;
-	}
+	private String merchantAccountId;
+
+	private String merchantName;
 
 }

@@ -12,7 +12,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 
@@ -32,7 +34,7 @@ public class MerchantController {
     private MerchantService merchantService;
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> add(@Valid Inno72Merchant merchant,BindingResult bindingResult) {
+    public Result<String> add(@Valid Inno72Merchant merchant, BindingResult bindingResult) {
     	try {
     		if(bindingResult.hasErrors()){
     			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
@@ -81,4 +83,14 @@ public class MerchantController {
         List<Inno72Merchant> list = merchantService.getList(merchant);
         return ResultGenerator.genSuccessResult(list);
     }
+
+	@RequestMapping(value = "/uploadImage", method = { RequestMethod.POST,  RequestMethod.GET})
+	public @ResponseBody
+	Result<String> uploadImage(@RequestParam(value = "file",required = false) MultipartFile file) {
+		try {
+			return merchantService.uploadImage(file);
+		} catch (Exception e) {
+			return ResultGenerator.genFailResult("操作失败！");
+		}
+	}
 }
