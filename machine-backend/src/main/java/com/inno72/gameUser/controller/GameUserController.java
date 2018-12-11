@@ -56,4 +56,10 @@ public class GameUserController {
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 
+	@RequestMapping(value = "/areaList", method = { RequestMethod.POST, RequestMethod.GET })
+	public ModelAndView areaList(String userId) {
+		List<Map<String, Object>> list = gameUserService.areaList(userId);
+		return ResultPages.page(ResultGenerator.genSuccessResult(list));
+	}
+
 }

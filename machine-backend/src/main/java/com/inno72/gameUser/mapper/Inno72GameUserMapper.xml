@@ -19,15 +19,15 @@
   	SELECT
 		u.id,
 		uc.phone,
-		uc.channel_user_key AS channel_key,
+		uc.channel_user_key AS channelKey,
 		uc.user_nick AS userNick,
 		sex.sex,
 		age.age,
 		a.city,
 		tag.tagName,
-		u.create_time AS createTime,
+		date_format( u.create_time, '%Y-%m-%d %H:%i:%s' ) AS createTime,
 		CONCAT(IFNULL( l1.mall,""),IFNULL( l1.name,"")) AS createArea,
-		login.last_time AS lastTime
+		date_format( login.last_time, '%Y-%m-%d %H:%i:%s' ) AS lastTime
 	FROM
 		inno72_game_user u
 		LEFT JOIN inno72_game_user_channel uc ON uc.game_user_id = u.id
@@ -73,6 +73,16 @@
         )
       </if>
     </where>
+  </select>
+  
+  <select id="selectAreaList" resultType="java.util.Map">
+  	SELECT 
+		CONCAT(IFNULL( a.province,""),IFNULL( a.city,""),IFNULL( a.district,""),IFNULL( l.mall,""),IFNULL( l.name,"")) AS area,
+		date_format( login.login_time, '%Y-%m-%d %H:%i:%s' ) AS loginTime
+	FROM inno72_game_user_login login 
+	LEFT JOIN inno72_locale l on l.id=login.locale_id
+	LEFT JOIN inno72_admin_area a ON a.CODE = l.area_code
+	WHERE login.user_id=#{userId}
   </select>
   
   

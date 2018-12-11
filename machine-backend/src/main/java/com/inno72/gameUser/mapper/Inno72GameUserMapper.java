@@ -11,4 +11,6 @@ public interface Inno72GameUserMapper extends Mapper<Inno72GameUser> {
 
 	List<Map<String, Object>> selectByPage(Map<String, Object> map);
 
+	List<Map<String, Object>> selectAreaList(Map<String, Object> map);
+
 }

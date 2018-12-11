@@ -48,4 +48,12 @@ public class GameUserServiceImpl extends AbstractService<Inno72GameUser> impleme
 		return gameUserChannelList;
 	}
 
+	@Override
+	public List<Map<String, Object>> areaList(String userId) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+		List<Map<String, Object>> areaList = inno72GameUserMapper.selectAreaList(params);
+		return areaList;
+	}
+
 }

@@ -8,4 +8,6 @@ import com.inno72.gameUser.model.Inno72GameUser;
 
 public interface GameUserService extends Service<Inno72GameUser> {
 	List<Map<String, Object>> findForPage(String code, String sex, String time, String keyword);
+
+	List<Map<String, Object>> areaList(String userId);
 }
