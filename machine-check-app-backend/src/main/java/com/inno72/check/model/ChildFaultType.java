@@ -7,6 +7,8 @@ public class ChildFaultType {
 
 	private Integer childLevel;
 
+	private Integer childSeq;
+
 	public String getChildCode() {
 		return childCode;
 	}
@@ -29,5 +31,13 @@ public class ChildFaultType {
 
 	public void setChildLevel(Integer childLevel) {
 		this.childLevel = childLevel;
+	}
+
+	public Integer getChildSeq() {
+		return childSeq;
+	}
+
+	public void setChildSeq(Integer childSeq) {
+		this.childSeq = childSeq;
 	}
 }
