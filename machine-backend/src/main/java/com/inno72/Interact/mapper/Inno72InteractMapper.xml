@@ -28,6 +28,8 @@
   	<result column="id" jdbcType="VARCHAR" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="game_name" jdbcType="VARCHAR" property="gameName" />
+    <result column="paiyang_type" jdbcType="VARCHAR" property="paiyangType" />
+    <result column="channel" jdbcType="VARCHAR" property="channel" />
     <result column="merchant_num" jdbcType="INTEGER" property="merchantNum" />
     <result column="goods_num" jdbcType="INTEGER" property="goodsNum" />
     <result column="real_day" jdbcType="VARCHAR" property="realDay" />
@@ -44,30 +46,32 @@
 		SELECT
 			i.id,
 			i.name,
+			i.paiyang_type,
+			dd.`name` AS channel,
 			i.manager,
 			date_format(i.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
-			
 			CASE
-			WHEN i.status=1 and <![CDATA[(i.`day`='max' or i.`day` >= DATEDIFF(NOW(),i.run_time)) ]]>THEN 2
+			WHEN i.status=0 THEN 0
 			WHEN i.status=2 THEN 3
+			WHEN i.status=1 and (<![CDATA[CURRENT_TIMESTAMP < i.run_time]]> or i.run_time is null) THEN 1
+			WHEN i.status=1 and <![CDATA[(i.`day`='max' or i.`day` >= DATEDIFF(NOW(),i.run_time)) ]]>THEN 2
 			WHEN i.status=1 and i.`day`!='max' and <![CDATA[i.`day`< DATEDIFF(NOW(),i.run_time)]]> THEN 4
-			WHEN i.status=1 and <![CDATA[CURRENT_TIMESTAMP < i.run_time]]> THEN 1
-			ELSE 0
 			END As status,
 			gm.name AS game_name,
 			( SELECT count( 1 ) FROM inno72_interact_machine WHERE interact_id = i.id ) AS merchant_num,
 			ig.goods_num AS goods_num,
 			IF(0>DATEDIFF(NOW(),i.run_time),0,DATEDIFF(NOW(),i.run_time)) AS real_day,
 			i.day AS day,
-			( SELECT count( 1 ) FROM inno72_order r WHERE r.inno72_activity_id = i.id and goods_type=1) AS real_num,
+			( SELECT count( 1 ) FROM inno72_order r WHERE r.inno72_activity_id = i.id and goods_status=1) AS real_num,
 			ig.number AS number,
-			( SELECT count( 1 ) FROM inno72_order r WHERE r.inno72_activity_id = i.id and goods_type=1)/ig.number AS goodsSend
+			( SELECT count( 1 ) FROM inno72_order r WHERE r.inno72_activity_id = i.id and goods_status=1)/ig.number AS goodsSend
 		FROM
 			inno72_interact i
 		LEFT JOIN inno72_game gm ON gm.id = i.game_id
+		LEFT JOIN inno72_dictionary dd ON dd.code = i.channel
 		LEFT JOIN (
 			SELECT m.interact_id,sum(mg.number) AS number,COUNT(DISTINCT mg.goods_id) AS goods_num,GROUP_CONCAT(m.machine_code) AS machine_code FROM inno72_interact_machine m
-			LEFT JOIN inno72_interact_machine_goods mg ON m.id=mg.interact_machine_id and mg.type=0
+			LEFT JOIN inno72_interact_machine_goods mg ON m.id=mg.interact_machine_id
 			GROUP BY m.interact_id
 		) ig on ig.interact_id =i.id
 		LEFT JOIN (
@@ -97,8 +101,8 @@
 		 	or area.area LIKE '%${keyword}%'
 			)
 		</if>
-		<if test="status ==0"> and i.status=0 </if>
-		<if test="status ==1"> and i.status=1 and <![CDATA[CURRENT_TIMESTAMP < i.run_time]]> </if>
+		<if test="status ==0"> and i.status=0</if>
+		<if test="status ==1"> and i.status=1 and (<![CDATA[CURRENT_TIMESTAMP < i.run_time]]> or i.run_time is null ) </if>
 		<if test="status ==2"> and i.status=1 and <![CDATA[(i.`day`='max' or i.`day` >= DATEDIFF(NOW(),i.run_time)) ]]> </if>
 		<if test="status ==3"> and i.status=2 </if>
 		<if test="status ==4"> and i.status=1 and i.`day`!='max' and <![CDATA[i.`day`< DATEDIFF(NOW(),i.run_time)]]>  </if>

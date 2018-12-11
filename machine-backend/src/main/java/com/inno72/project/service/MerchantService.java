@@ -2,6 +2,8 @@ package com.inno72.project.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.inno72.common.Result;
 import com.inno72.common.Service;
 import com.inno72.project.model.Inno72Merchant;
@@ -23,6 +25,6 @@ public interface MerchantService extends Service<Inno72Merchant> {
 
 	List<Inno72MerchantVo> findByPage(String code, String keyword);
 
-	
 
+	Result<String> uploadImage(MultipartFile file);
 }

@@ -10,6 +10,8 @@ public class MachinePortalVo {
 	private Integer waitConfirm;// 待确认
 	private Integer paiActivityCount;// 派样活动
 	private Integer lockCount;// 锁定机器
+	private Integer trafficCount;// 流量报警
+	private Integer sdCount;// 内存报警
 
 	public Integer getOffline() {
 		return offline;
@@ -81,6 +83,22 @@ public class MachinePortalVo {
 
 	public void setLockCount(Integer lockCount) {
 		this.lockCount = lockCount;
+	}
+
+	public Integer getTrafficCount() {
+		return trafficCount;
+	}
+
+	public void setTrafficCount(Integer trafficCount) {
+		this.trafficCount = trafficCount;
+	}
+
+	public Integer getSdCount() {
+		return sdCount;
+	}
+
+	public void setSdCount(Integer sdCount) {
+		this.sdCount = sdCount;
 	}
 
 }

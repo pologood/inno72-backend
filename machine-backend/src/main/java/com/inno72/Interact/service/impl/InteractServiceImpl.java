@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inno72.Interact.mapper.Inno72InteractGameRuleMapper;
 import com.inno72.Interact.mapper.Inno72InteractGoodsMapper;
 import com.inno72.Interact.mapper.Inno72InteractMachineGoodsMapper;
 import com.inno72.Interact.mapper.Inno72InteractMachineMapper;
@@ -21,15 +22,16 @@ import com.inno72.Interact.mapper.Inno72InteractMapper;
 import com.inno72.Interact.mapper.Inno72InteractMerchantMapper;
 import com.inno72.Interact.mapper.Inno72InteractShopsMapper;
 import com.inno72.Interact.model.Inno72Interact;
+import com.inno72.Interact.model.Inno72InteractGameRule;
 import com.inno72.Interact.model.Inno72InteractGoods;
 import com.inno72.Interact.model.Inno72InteractMachine;
 import com.inno72.Interact.service.InteractService;
 import com.inno72.Interact.vo.Inno72InteractMachineGoodsVo;
 import com.inno72.Interact.vo.Inno72InteractVo;
 import com.inno72.Interact.vo.InteractListVo;
-import com.inno72.Interact.vo.InteractMerchantVo;
 import com.inno72.Interact.vo.InteractRuleVo;
 import com.inno72.Interact.vo.MachineVo;
+import com.inno72.Interact.vo.MerchantVo;
 import com.inno72.Interact.vo.TreeVo;
 import com.inno72.common.AbstractService;
 import com.inno72.common.CommonConstants;
@@ -71,6 +73,9 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 	@Resource
 	private Inno72InteractMachineGoodsMapper inno72InteractMachineGoodsMapper;
 
+	@Resource
+	private Inno72InteractGameRuleMapper inno72InteractGameRuleMapper;
+
 	@Override
 	public List<InteractListVo> findByPage(String keyword, Integer status, String orderBy) {
 		logger.info("---------------------活动分页列表查询-------------------");
@@ -101,13 +106,20 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			model.setCreateTime(LocalDateTime.now());
 			model.setUpdateTime(LocalDateTime.now());
 
+			if (StringUtil.isBlank(model.getName())) {
+				logger.info("请填写互派名称");
+				return Results.failure("请填写互派名称");
+			}
 			if (type == 1) {
 				// 下一步
-				if (StringUtil.isBlank(model.getName())) {
-					logger.info("请填写互派名称");
-					return Results.failure("请填写互派名称");
+				if (StringUtil.isBlank(model.getChannel())) {
+					logger.info("请选择渠道");
+					return Results.failure("请选择渠道");
 				}
-
+				if (null == model.getPaiyangType()) {
+					logger.info("请选择活动类型");
+					return Results.failure("请选择活动类型");
+				}
 				if (StringUtil.isBlank(model.getGameId())) {
 					logger.info("请选择游戏");
 					return Results.failure("请选择游戏");
@@ -146,6 +158,10 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
 			model.setUpdateId(mUserId);
 			model.setUpdateTime(LocalDateTime.now());
+			// 获取更新前信息（如果已添加商户信息则不可更新类型和渠道）
+			Inno72Interact old = new Inno72Interact();
+			old.setId(model.getId());
+			old = inno72InteractMapper.selectOne(old);
 
 			if (type == 0) {
 				inno72InteractMapper.updateByPrimaryKeySelective(model);
@@ -154,6 +170,14 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 				if (StringUtil.isBlank(model.getName())) {
 					logger.info("请填写互派名称");
 					return Results.failure("请填写互派名称");
+				}
+				if (StringUtil.isBlank(model.getChannel())) {
+					logger.info("请选择渠道");
+					return Results.failure("请选择渠道");
+				}
+				if (null == model.getPaiyangType()) {
+					logger.info("请选择活动类型");
+					return Results.failure("请选择活动类型");
 				}
 
 				if (StringUtil.isBlank(model.getPlanCode())) {
@@ -170,9 +194,7 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 				}
 				inno72InteractMapper.updateByPrimaryKeySelective(model);
 			} else if (type == 2) {
-				Inno72Interact old = new Inno72Interact();
-				old.setId(model.getId());
-				old = inno72InteractMapper.selectOne(old);
+
 				old.setStatus(2);
 				// 更新删除机器端资源缓存
 				logger.info("更新删除机器端资源缓存");
@@ -240,7 +262,23 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 				logger.info("参数错误");
 				return Results.failure("参数错误");
 			}
-
+			// 派样类型：0派样，1互派，2互动，3新零售 互动--组装掉货规则数据
+			List<Inno72InteractGameRule> insertGameRuleList = new ArrayList<>();
+			if (interact.getPaiyangType() == 2) {
+				List<Inno72InteractGameRule> gameRule = interactRule.getGameRule();
+				if (null != gameRule && gameRule.size() > 0) {
+					for (Inno72InteractGameRule inno72InteractGameRule : gameRule) {
+						inno72InteractGameRule.setId(StringUtil.getUUID());
+						inno72InteractGameRule.setInteractId(interactRule.getId());
+						if (insertGameRuleList.contains(inno72InteractGameRule)) {
+							logger.info("添加规则有重复");
+							return Results.failure("添加规则有重复");
+						}
+						insertGameRuleList.add(inno72InteractGameRule);
+					}
+				}
+			}
+			// 数量规则
 			List<Map<String, Object>> goodsRule = interactRule.getGoodsRule();
 			if (null != goodsRule && goodsRule.size() > 0) {
 				for (Map<String, Object> map : goodsRule) {
@@ -251,7 +289,6 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 						return Results.failure("填写商品规则");
 					}
 				}
-
 				for (Map<String, Object> map : goodsRule) {
 					String goodsId = map.get("goodsId").toString();
 					Integer userDayNumber = (Integer) map.get("userDayNumber");
@@ -261,19 +298,26 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 
 					Condition condition = new Condition(Inno72InteractGoods.class);
 					condition.createCriteria().andEqualTo(interactGoods);
-
 					interactGoods.setUserDayNumber(userDayNumber);
 					inno72InteractGoodsMapper.updateByConditionSelective(interactGoods, condition);
-
 				}
 			}
+			// 插入掉货规则(先删除)
+			if (interact.getPaiyangType() == 2) {
+				Inno72InteractGameRule old = new Inno72InteractGameRule();
+				old.setInteractId(interactRule.getId());
+				inno72InteractGameRuleMapper.delete(old);
+				if (null != insertGameRuleList && insertGameRuleList.size() > 0) {
+					inno72InteractGameRuleMapper.insertInteractGameRuleList(insertGameRuleList);
+				}
+			}
+			// 活动运行时间
 			if (interact.getStatus() == 0 && interact.getRunTime().isBefore(LocalDateTime.now())) {
 				interact.setRunTime(LocalDateTime.now());
 			}
+			// 更新活动规则
 			inno72InteractMapper.updateByPrimaryKeySelective(interact);
-
 			return Results.success();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.info(e.getMessage());
@@ -371,28 +415,40 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 	@Override
 	public List<TreeVo> merchantTree(String interactId) {
 
-		List<InteractMerchantVo> merchantList = inno72InteractMerchantMapper.selectMerchantByInteractId(interactId);
+		List<MerchantVo> merchantList = inno72InteractMerchantMapper.selectMerchantByInteractId(interactId);
 
 		List<TreeVo> firstList = new ArrayList<>();
 
-		for (InteractMerchantVo interactMerchantVo : merchantList) {
+		for (MerchantVo interactMerchantVo : merchantList) {
 
 			TreeVo first = new TreeVo();
 			first.setKey(interactMerchantVo.getId());
 			first.setTitle(interactMerchantVo.getMerchantName());
-			Map<String, Object> params = new HashMap<String, Object>();
-			params.put("sellerId", interactMerchantVo.getId());
-			List<TreeVo> secondList = inno72InteractShopsMapper.selectMerchantShopsTree(params);
-			first.setChildren(secondList);
 
-			for (TreeVo second : secondList) {
+			if (interactMerchantVo.getChannelCode().endsWith(CommonConstants.WECHATCODE)) {
+
 				Map<String, Object> p = new HashMap<String, Object>();
-				p.put("shopsId", second.getKey());
-				List<TreeVo> thirdList = inno72InteractGoodsMapper.selectGoodsTree(p);
-				second.setChildren(thirdList);
+				p.put("shopsId", interactMerchantVo.getId());
+				p.put("interactId", interactId);
+				List<TreeVo> secondList = inno72InteractGoodsMapper.selectGoodsTree(p);
+
+				first.setChildren(secondList);
+			} else {
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("sellerId", interactMerchantVo.getId());
+				params.put("interactId", interactId);
+				List<TreeVo> secondList = inno72InteractShopsMapper.selectMerchantShopsTree(params);
+				first.setChildren(secondList);
+
+				for (TreeVo second : secondList) {
+					Map<String, Object> p = new HashMap<String, Object>();
+					p.put("shopsId", second.getKey());
+					p.put("interactId", interactId);
+					List<TreeVo> thirdList = inno72InteractGoodsMapper.selectGoodsTree(p);
+					second.setChildren(thirdList);
+				}
 			}
 			firstList.add(first);
-
 		}
 
 		return firstList;

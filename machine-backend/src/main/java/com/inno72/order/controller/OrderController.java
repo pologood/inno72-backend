@@ -1,6 +1,8 @@
 package com.inno72.order.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -18,6 +20,7 @@ import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.order.model.Inno72Order;
+import com.inno72.order.model.Page;
 import com.inno72.order.service.OrderService;
 
 /**
@@ -63,10 +66,37 @@ public class OrderController {
 	 * @return
 	 */
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list(Inno72Order order) {
+	public Map<String,Object> list(Inno72Order order) {
 		logger.info("查询订单列表参数：{}", JSON.toJSON(order));
 		List<Inno72Order> list = orderService.getOrderList(order);
-		return ResultPages.page(ResultGenerator.genSuccessResult(list));
+		Map<String,Object> map = new HashMap<>();
+		Page page = new Page();
+		int pageNo = order.getPageNo();
+		page.setPageNo(pageNo);
+		boolean firstPage = false;
+		if(pageNo==1){
+			firstPage = true;
+		}
+		page.setFirstPage(firstPage);
+		boolean lastPage = false;
+		int totalPage = 100;
+		int totalCount = 100*20;
+		if(list == null || list.size()<20){
+			lastPage = true;
+			totalPage = pageNo;
+			totalCount = (pageNo-1)*20+list.size();
+		}
+		page.setLastPage(lastPage);
+		page.setTotalCount(totalCount);
+		page.setNextPage(pageNo+1);
+		page.setPageSize(20);
+		page.setPrePage(pageNo);
+		page.setTotalPage(totalPage);
+		map.put("page",page);
+		map.put("data",list);
+		map.put("code",0);
+		map.put("msg","");
+		return map;
 	}
 
 }

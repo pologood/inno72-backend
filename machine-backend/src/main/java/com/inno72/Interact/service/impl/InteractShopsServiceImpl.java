@@ -1,6 +1,6 @@
 package com.inno72.Interact.service.impl;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +19,7 @@ import com.inno72.Interact.model.Inno72InteractShops;
 import com.inno72.Interact.service.InteractShopsService;
 import com.inno72.Interact.vo.InteractGoodsVo;
 import com.inno72.Interact.vo.InteractShopsVo;
+import com.inno72.Interact.vo.ShopsVo;
 import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
@@ -26,7 +27,6 @@ import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72ShopsMapper;
-import com.inno72.project.model.Inno72Shops;
 import com.inno72.system.model.Inno72User;
 
 /**
@@ -44,6 +44,15 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 	private Inno72InteractGoodsMapper inno72InteractGoodsMapper;
 
 	@Override
+	public List<Map<String, Object>> checkShops(String interactId, String sellerId) {
+		logger.info("---------------------获取要添加店铺列表-------------------");
+		Map<String, Object> pm = new HashMap<>();
+		pm.put("sellerId", sellerId);
+		pm.put("interactId", interactId);
+		return inno72InteractShopsMapper.getShopsList(pm);
+	}
+
+	@Override
 	public Result<String> save(InteractShopsVo model) {
 
 		try {
@@ -53,39 +62,33 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
-			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-			model.setId(StringUtil.getUUID());
-			model.setIsDelete(0);
-			model.setCreateId(mUserId);
-			model.setUpdateId(mUserId);
-			model.setCreateTime(LocalDateTime.now());
-			model.setUpdateTime(LocalDateTime.now());
-			// 数据校验
-			if (StringUtil.isBlank(model.getSellerId())) {
-				logger.info("请选择商家");
-				return Results.failure("请选择商家");
+
+			List<ShopsVo> shops = model.getShops();
+			if (shops.size() == 0) {
+				logger.info("请添加店铺");
+				return Results.failure("请添加店铺");
 			}
-			if (StringUtil.isBlank(model.getShopCode())) {
-				logger.info("请填写店铺编号");
-				return Results.failure("请填写店铺编号");
+			List<Inno72InteractShops> insertList = new ArrayList<>();
+			for (ShopsVo shopsVo : shops) {
+				Inno72InteractShops interactShops = new Inno72InteractShops();
+				interactShops.setId(StringUtil.getUUID());
+				interactShops.setInteractId(model.getInteractId());
+				interactShops.setShopsId(shopsVo.getId());
+				interactShops.setIsVip(shopsVo.getIsVip());
+
+				insertList.add(interactShops);
 			}
-			if (StringUtil.isBlank(model.getShopName())) {
-				logger.info("请填写店铺名称");
-				return Results.failure("请填写店铺名称");
-			}
-			if (null == model.getIsVip()) {
-				logger.info("选择是否入会");
-				return Results.failure("选择是否入会");
+			// 判断是否已添加
+			Inno72InteractShops having = new Inno72InteractShops();
+			having.setInteractId(model.getInteractId());
+			List<Inno72InteractShops> havingList = inno72InteractShopsMapper.select(having);
+			boolean fg = havingList.removeAll(insertList);
+			if (fg) {
+				logger.info("添加店铺中部分已添加过");
+				return Results.failure("添加店铺中部分已添加过");
 			}
 
-			Inno72InteractShops interactShops = new Inno72InteractShops();
-			interactShops.setId(StringUtil.getUUID());
-			interactShops.setInteractId(model.getInteractId());
-			interactShops.setShopsId(model.getId());
-			interactShops.setIsVip(model.getIsVip());
-
-			inno72InteractShopsMapper.insert(interactShops);
-			inno72ShopsMapper.insert(model);
+			inno72InteractShopsMapper.insertInteractShopsList(insertList);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.info(e.getMessage());
@@ -95,8 +98,7 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 	}
 
 	@Override
-	public Result<String> update(InteractShopsVo model) {
-
+	public Result<String> update(String interactId, String shopsId, Integer isVip) {
 		try {
 			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
@@ -104,38 +106,13 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
-			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-			model.setCreateId(mUserId);
-			model.setUpdateId(mUserId);
-			model.setCreateTime(LocalDateTime.now());
-			model.setUpdateTime(LocalDateTime.now());
-			// 数据校验
-			if (StringUtil.isBlank(model.getSellerId())) {
-				logger.info("请选择商家");
-				return Results.failure("请选择商家");
-			}
-			if (StringUtil.isBlank(model.getShopCode())) {
-				logger.info("请填写店铺编号");
-				return Results.failure("请填写店铺编号");
-			}
-			if (StringUtil.isBlank(model.getShopName())) {
-				logger.info("请填写店铺名称");
-				return Results.failure("请填写店铺名称");
-			}
-			if (null == model.getIsVip()) {
-				logger.info("选择是否入会");
-				return Results.failure("选择是否入会");
-			}
 
-			inno72ShopsMapper.updateByPrimaryKeySelective(model);
-			// 中间表 关联关系
 			Inno72InteractShops interactShops = new Inno72InteractShops();
-			interactShops.setShopsId(model.getId());
-			Inno72InteractShops oldInteractShops = inno72InteractShopsMapper.selectOne(interactShops);
-
-			oldInteractShops.setIsVip(model.getIsVip());
-			inno72InteractShopsMapper.updateByPrimaryKeySelective(oldInteractShops);
-
+			interactShops.setShopsId(shopsId);
+			interactShops.setInteractId(interactId);
+			interactShops = inno72InteractShopsMapper.selectOne(interactShops);
+			interactShops.setIsVip(isVip);
+			inno72InteractShopsMapper.updateByPrimaryKeySelective(interactShops);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.info(e.getMessage());
@@ -145,22 +122,26 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 	}
 
 	@Override
-	public List<InteractShopsVo> getList(String interactId, String merchantId) {
+	public List<ShopsVo> getList(String interactId, String merchantId) {
 		logger.info("---------------------获取商户下店铺列表-------------------");
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("sellerId", merchantId);
 		params.put("interactId", interactId);
 
-		List<InteractShopsVo> inno72ShopsList = inno72InteractShopsMapper.selectMerchantShops(params);
+		List<ShopsVo> inno72ShopsList = inno72InteractShopsMapper.selectMerchantShops(params);
 
 		return inno72ShopsList;
 
 	}
 
 	@Override
-	public InteractShopsVo findShopsById(String id) {
-		return inno72InteractShopsMapper.selectInteractShopsById(id);
+	public ShopsVo findShopsById(String id, String interactId) {
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", id);
+		params.put("interactId", interactId);
+		return inno72InteractShopsMapper.selectInteractShopsById(params);
 	}
 
 	@Override
@@ -172,8 +153,6 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
-			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
-
 			// 查询店铺下是否存在商品
 			Map<String, Object> pm = new HashMap<>();
 			pm.put("interactId", interactId);
@@ -183,12 +162,12 @@ public class InteractShopsServiceImpl extends AbstractService<Inno72InteractShop
 				logger.info("店铺下存在商品，不能删除");
 				return Results.failure("店铺下存在商品，不能删除");
 			}
-			Inno72Shops shops = new Inno72Shops();
-			shops.setId(shopsId);
-			shops.setIsDelete(1);
-			shops.setUpdateId(mUserId);
-			shops.setUpdateTime(LocalDateTime.now());
-			inno72ShopsMapper.updateByPrimaryKeySelective(shops);
+			/*
+			 * Inno72Shops shops = new Inno72Shops(); shops.setId(shopsId);
+			 * shops.setIsDelete(1); shops.setUpdateId(mUserId);
+			 * shops.setUpdateTime(LocalDateTime.now());
+			 * inno72ShopsMapper.updateByPrimaryKeySelective(shops);
+			 */
 			// 中间表 关联关系
 			Inno72InteractShops interactShops = new Inno72InteractShops();
 			interactShops.setShopsId(shopsId);

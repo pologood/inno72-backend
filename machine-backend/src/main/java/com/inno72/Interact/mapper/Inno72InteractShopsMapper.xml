@@ -11,13 +11,11 @@
     <result column="is_vip" jdbcType="INTEGER" property="isVip" />
   </resultMap>
   
-  <resultMap id="InteractShopsVoResultMap" type="com.inno72.Interact.vo.InteractShopsVo">
+  <resultMap id="InteractShopsVoResultMap" type="com.inno72.Interact.vo.ShopsVo">
     <!--
       WARNING - @mbg.generated
     -->
     <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="interact_id" jdbcType="VARCHAR" property="interactId" />
-    <result column="shops_id" jdbcType="VARCHAR" property="shopsId" />
     <result column="is_vip" jdbcType="INTEGER" property="isVip" />
     <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
     
@@ -33,20 +31,47 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   
-  <select id="selectInteractShopsById" parameterType="String" resultMap="InteractShopsVoResultMap">
+  
+  <!-- 获取客户下商户 -->
+  <select id="getShopsList" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+			s.id,
+			s.shop_code AS shopCode,
+			s.shop_name AS shopName
+		FROM
+			inno72_shops s
+		<where>
+          <if test="sellerId != null and sellerId != ''">AND s.seller_id=#{sellerId}</if>
+       		and s.id not in ( 
+				SELECT isp.shops_id FROM inno72_interact_shops isp 
+				WHERE isp.interact_id=#{interactId}
+			)
+       </where>
+  </select>
+  
+  <insert id="insertInteractShopsList" parameterType="java.util.List">
+        insert into inno72_interact_shops (id,interact_id,shops_id,is_vip)
+        values
+        <foreach collection="list" item="t" index="index" separator=",">
+            (#{t.id}, #{t.interactId},#{t.shopsId},#{t.isVip})
+        </foreach>
+  </insert>
+  
+  <select id="selectInteractShopsById" parameterType="java.util.Map" resultMap="InteractShopsVoResultMap">
 		SELECT
 			s.*,
-			isp.interact_id,
 			isp.is_vip
 		FROM
 			inno72_interact_shops isp
 			LEFT JOIN inno72_shops s ON s.id = isp.shops_id
 			WHERE isp.shops_id=#{id}
+			<if test="interactId !=null and interactId !='' ">and isp.interact_id = #{interactId}</if>
   </select>
   
   <select id="selectMerchantShops" parameterType="java.util.Map" resultMap="InteractShopsVoResultMap">
 	 	SELECT
 			s.*,
+			isp.is_vip,
 			m.merchant_name 
 		FROM
 			inno72_interact_shops isp
@@ -64,13 +89,15 @@
   </resultMap>
   
   <select id="selectMerchantShopsTree" parameterType="java.util.Map" resultMap="InteractShopsTreeResultMap">
-	 	SELECT
-	 		s.id,
+		SELECT
+			s.id,
 			s.shop_name AS name
 		FROM
-			inno72_shops s
+			inno72_interact_shops isp
+			LEFT JOIN inno72_shops s ON s.id = isp.shops_id
 		WHERE s.is_delete=0
 		<if test="sellerId !=null and sellerId !='' ">and s.seller_id = #{sellerId}</if>
+		<if test="interactId !=null and interactId !='' ">and isp.interact_id = #{interactId}</if>
   </select>
   
   

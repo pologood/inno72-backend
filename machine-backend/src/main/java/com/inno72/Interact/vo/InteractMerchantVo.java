@@ -1,13 +1,18 @@
 package com.inno72.Interact.vo;
 
-import com.inno72.project.model.Inno72Merchant;
+import java.util.List;
 
-public class InteractMerchantVo extends Inno72Merchant {
+public class InteractMerchantVo {
 
 	/**
 	 * 互动ID
 	 */
 	private String interactId;
+
+	/**
+	 * 添加的商户
+	 */
+	private List<MerchantVo> merchants;
 
 	public String getInteractId() {
 		return interactId;
@@ -15,6 +20,14 @@ public class InteractMerchantVo extends Inno72Merchant {
 
 	public void setInteractId(String interactId) {
 		this.interactId = interactId;
+	}
+
+	public List<MerchantVo> getMerchants() {
+		return merchants;
+	}
+
+	public void setMerchants(List<MerchantVo> merchants) {
+		this.merchants = merchants;
 	}
 
 }

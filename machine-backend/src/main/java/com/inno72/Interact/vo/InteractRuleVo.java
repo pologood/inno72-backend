@@ -3,6 +3,8 @@ package com.inno72.Interact.vo;
 import java.util.List;
 import java.util.Map;
 
+import com.inno72.Interact.model.Inno72InteractGameRule;
+
 public class InteractRuleVo {
 
 	/**
@@ -31,6 +33,8 @@ public class InteractRuleVo {
 	private Integer dayNumber;
 
 	private List<Map<String, Object>> goodsRule;
+
+	private List<Inno72InteractGameRule> gameRule;
 
 	private Integer type;
 
@@ -80,6 +84,14 @@ public class InteractRuleVo {
 
 	public void setGoodsRule(List<Map<String, Object>> goodsRule) {
 		this.goodsRule = goodsRule;
+	}
+
+	public List<Inno72InteractGameRule> getGameRule() {
+		return gameRule;
+	}
+
+	public void setGameRule(List<Inno72InteractGameRule> gameRule) {
+		this.gameRule = gameRule;
 	}
 
 	public Integer getType() {

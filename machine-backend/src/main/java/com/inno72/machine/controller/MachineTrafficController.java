@@ -23,7 +23,7 @@ public class MachineTrafficController {
 	private TrafficService trafficService;
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list(String machineCode, Integer allTraffic) {
+	public ModelAndView list(String machineCode, Double allTraffic) {
 		List<SystemStatus> list = trafficService.list(machineCode, allTraffic);
 		return ResultPages.page(Results.success(list));
 	}

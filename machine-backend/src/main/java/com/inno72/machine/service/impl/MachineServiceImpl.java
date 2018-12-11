@@ -4,7 +4,9 @@ import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -402,10 +404,12 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 				bean.setAppType(app.getAppType());
 				if (appPackageName.equals(status.getAppPackageName()) || app.getAppType() == 1) {
 					bean.setStartStatus(1);
-					name2 = status.getAppName();
-					version2 = status.getVersionName();
 				} else {
 					bean.setStartStatus(2);
+				}
+				if (appPackageName.equals(status.getAppPackageName())) {
+					name2 = status.getAppName();
+					version2 = status.getVersionName();
 				}
 				sl.add(bean);
 			}
@@ -488,6 +492,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		vo.setDropGoodsSwitchException(findExceptionMachine(2).getData().size());
 		vo.setChannelException(findExceptionMachine(4).getData().size());
 		vo.setLockCount(findExceptionMachine(5).getData().size());
+		vo.setTrafficCount(findExceptionMachine(6).getData().size());
+		vo.setSdCount(findExceptionMachine(7).getData().size());
 		List<MachineExceptionVo> stockOutVos = inno72MachineMapper.findStockOutMachines();
 		vo.setStockout(stockOutVos == null ? 0 : stockOutVos.size());
 		Condition condition = new Condition(Inno72CheckFault.class);
@@ -599,6 +605,40 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			return Results.success(result);
 		} else if (type == 5) {
 			List<MachineExceptionVo> exceptionVos = inno72MachineMapper.findMachineLocked();
+			return Results.success(exceptionVos);
+		} else if (type == 6) {
+			Query query = new Query();
+			query.addCriteria(Criteria.where("createTime").gte(getStartTime()).lte(getEndTime()));
+			query.addCriteria(Criteria.where("thatdayTraffic").gte(300));
+			query.with(new Sort(Sort.Direction.DESC, "createTime"));
+			List<SystemStatus> systemStatuss = mongoTpl.find(query, SystemStatus.class, "SystemStatus");
+			List<MachineExceptionVo> exceptionVos = new ArrayList<>();
+			if (systemStatuss != null) {
+				for (SystemStatus status : systemStatuss) {
+					MachineExceptionVo vo = new MachineExceptionVo();
+					vo.setMachineCode(status.getMachineId());
+					vo.setAllTraffic(status.getAllTraffic());
+					vo.setMonthTraffic(status.getMonthTraffic());
+					vo.setThatdayTraffic(status.getThatdayTraffic());
+					exceptionVos.add(vo);
+				}
+			}
+			return Results.success(exceptionVos);
+		} else if (type == 7) {
+			Query query = new Query();
+			query.addCriteria(Criteria.where("sdFree").lte(1500));
+			query.with(new Sort(Sort.Direction.DESC, "createTime"));
+			List<SystemStatus> systemStatuss = mongoTpl.find(query, SystemStatus.class, "SystemStatus");
+			List<MachineExceptionVo> exceptionVos = new ArrayList<>();
+			if (systemStatuss != null) {
+				for (SystemStatus status : systemStatuss) {
+					MachineExceptionVo vo = new MachineExceptionVo();
+					vo.setMachineCode(status.getMachineId());
+					vo.setSdFree(status.getSdFree());
+					vo.setSdTotle(status.getSdTotle());
+					exceptionVos.add(vo);
+				}
+			}
 			return Results.success(exceptionVos);
 		} else {
 			return Results.failure("参数传入错误");
@@ -903,5 +943,24 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			return Results.failure("修改机器类型失败");
 		}
 		return Results.success();
+	}
+
+	private static Date getStartTime() {
+		Calendar todayStart = Calendar.getInstance();
+		todayStart.set(Calendar.HOUR_OF_DAY, 0);
+		todayStart.set(Calendar.MINUTE, 0);
+		todayStart.set(Calendar.SECOND, 0);
+		todayStart.set(Calendar.MILLISECOND, 0);
+		return todayStart.getTime();
+	}
+
+	private static Date getEndTime() {
+		Calendar todayEnd = Calendar.getInstance();
+		todayEnd.set(Calendar.HOUR_OF_DAY, 23);
+		todayEnd.set(Calendar.MINUTE, 59);
+		todayEnd.set(Calendar.SECOND, 59);
+		todayEnd.set(Calendar.MILLISECOND, 999);
+		return todayEnd.getTime();
+
 	}
 }

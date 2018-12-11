@@ -30,8 +30,6 @@ import com.inno72.project.model.Inno72Goods;
 import com.inno72.project.service.GoodsService;
 import com.inno72.system.model.Inno72User;
 
-import tk.mybatis.mapper.entity.Condition;
-
 /**
  * Created by CodeGenerator on 2018/06/29.
  */
@@ -193,10 +191,9 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 	public List<Inno72Goods> getList(Inno72Goods model) {
 		// TODO 获取商品列表
 		logger.info("---------------------获取商品列表-------------------");
-		model.setIsDelete(0);
-		Condition condition = new Condition(Inno72Goods.class);
-		condition.createCriteria().andEqualTo(model);
-		return super.findByCondition(condition);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("shopId", model.getShopId());
+		return inno72GoodsMapper.selectByShop(params);
 	}
 
 	@Override
