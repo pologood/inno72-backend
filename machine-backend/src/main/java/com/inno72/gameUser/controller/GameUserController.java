@@ -1,6 +1,7 @@
 package com.inno72.gameUser.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -15,7 +16,6 @@ import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.gameUser.model.Inno72GameUser;
-import com.inno72.gameUser.model.Inno72GameUserChannel;
 import com.inno72.gameUser.service.GameUserService;
 
 @RestController
@@ -51,8 +51,8 @@ public class GameUserController {
 	}
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list(Inno72GameUserChannel inno72GameUserChannel) {
-		List<Inno72GameUserChannel> list = gameUserService.findForPage(inno72GameUserChannel);
+	public ModelAndView list(String code, String sex, String time, String keyword) {
+		List<Map<String, Object>> list = gameUserService.findForPage(code, sex, time, keyword);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 

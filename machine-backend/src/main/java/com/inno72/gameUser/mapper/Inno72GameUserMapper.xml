@@ -15,4 +15,65 @@
     <result column="operator" jdbcType="VARCHAR" property="operator" />
     <result column="operator_id" jdbcType="VARCHAR" property="operatorId" />
   </resultMap>
+  <select id="selectByPage" resultType="java.util.Map">
+  	SELECT
+		u.id,
+		uc.phone,
+		uc.channel_user_key AS channel_key,
+		uc.user_nick AS userNick,
+		sex.sex,
+		age.age,
+		a.city,
+		tag.tagName,
+		u.create_time AS createTime,
+		CONCAT(IFNULL( l1.mall,""),IFNULL( l1.name,"")) AS createArea,
+		login.last_time AS lastTime
+	FROM
+		inno72_game_user u
+		LEFT JOIN inno72_game_user_channel uc ON uc.game_user_id = u.id
+		LEFT JOIN (
+			SELECT GROUP_CONCAT(tf.`content`) AS sex,tf.user_id
+			FROM inno72_game_user_tag_ref tf
+			LEFT JOIN inno72_game_user_tag t ON tf.tag_id=t.id
+			WHERE t.`code`='gender' GROUP BY tf.user_id
+		) sex ON sex.user_id=u.id
+		LEFT JOIN (
+			SELECT GROUP_CONCAT(tf.`content`) AS age,tf.user_id
+			FROM inno72_game_user_tag_ref tf
+			LEFT JOIN inno72_game_user_tag t ON tf.tag_id=t.id
+			WHERE t.`code`='age' GROUP BY tf.user_id
+		) age ON sex.user_id=u.id
+		LEFT JOIN (
+			SELECT GROUP_CONCAT(tf.`content`) AS tagName,tf.user_id
+			FROM inno72_game_user_tag_ref tf
+			LEFT JOIN inno72_game_user_tag t ON tf.tag_id=t.id
+			WHERE t.`code`!='age' AND t.`code`!='gender' GROUP BY tf.user_id
+		) tag ON tag.user_id=u.id
+		LEFT JOIN (
+			SELECT MAX(login.login_time) AS last_time,login.user_id
+			FROM inno72_game_user_login login GROUP BY login.user_id
+		) login ON login.user_id = u.id
+		LEFT JOIN (
+			SELECT login.user_id,login.locale_id
+			FROM inno72_game_user_login login GROUP BY login.user_id
+		) reg on reg.user_id=u.id
+		LEFT JOIN inno72_locale l1 on l1.id=reg.locale_id
+		LEFT JOIN inno72_game_user_login regLogin ON regLogin.user_id=u.id and regLogin.login_time=login.last_time
+		LEFT JOIN inno72_locale l2 on l2.id=regLogin.locale_id
+		LEFT JOIN inno72_admin_area a ON a.CODE = l2.area_code
+	<where>
+      <if test="code !=null and code !=''">and LEFT(l2.area_code,#{num}) = LEFT(#{code},#{num})</if>
+      <if test="beginTime != null and beginTime !=''  "> and u.create_time <![CDATA[>=]]> #{beginTime} </if>
+      <if test="endTime != null and endTime !='' "> and u.create_time <![CDATA[<=]]> #{endTime} </if>
+      <if test="keyword != null">
+        and (
+        tag.tagName like CONCAT('%','${keyword}','%')
+        OR l1.name like CONCAT('%','${keyword}','%')
+        OR l1.mall like CONCAT('%','${keyword}','%')
+        )
+      </if>
+    </where>
+  </select>
+  
+  
 </mapper>
