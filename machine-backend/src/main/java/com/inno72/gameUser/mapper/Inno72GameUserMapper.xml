@@ -65,6 +65,7 @@
       <if test="code !=null and code !=''">and LEFT(l2.area_code,#{num}) = LEFT(#{code},#{num})</if>
       <if test="beginTime != null and beginTime !=''  "> and u.create_time <![CDATA[>=]]> #{beginTime} </if>
       <if test="endTime != null and endTime !='' "> and u.create_time <![CDATA[<=]]> #{endTime} </if>
+      <if test="sex != null and sex !='' "> and sex.sex =#{keyword} </if>
       <if test="keyword != null">
         and (
         tag.tagName like CONCAT('%','${keyword}','%')
