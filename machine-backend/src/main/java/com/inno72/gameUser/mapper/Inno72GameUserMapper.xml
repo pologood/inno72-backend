@@ -42,7 +42,7 @@
 			FROM inno72_game_user_tag_ref tf
 			LEFT JOIN inno72_game_user_tag t ON tf.tag_id=t.id
 			WHERE t.`code`='age' GROUP BY tf.user_id
-		) age ON sex.user_id=uc.game_user_id
+		) age ON age.user_id=uc.game_user_id
 		LEFT JOIN (
 			SELECT GROUP_CONCAT(tf.`content`) AS tagName,tf.user_id
 			FROM inno72_game_user_tag_ref tf
