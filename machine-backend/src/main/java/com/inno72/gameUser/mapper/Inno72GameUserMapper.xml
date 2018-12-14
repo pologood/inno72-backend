@@ -65,12 +65,14 @@
       <if test="code !=null and code !=''">and LEFT(l2.area_code,#{num}) = LEFT(#{code},#{num})</if>
       <if test="beginTime != null and beginTime !=''  "> and uc.create_time <![CDATA[>=]]> #{beginTime} </if>
       <if test="endTime != null and endTime !='' "> and uc.create_time <![CDATA[<=]]> #{endTime} </if>
-      <if test="sex != null and sex !='' "> and sex.sex =#{sex} </if>
+      <if test="sex != null and sex !='' and sex !='未知' "> and sex.sex =#{sex} </if>
+      <if test="sex =='未知' "> and sex.sex is null </if>
       <if test="keyword != null">
         and (
         tag.tagName like CONCAT('%','${keyword}','%')
         OR l1.name like CONCAT('%','${keyword}','%')
         OR l1.mall like CONCAT('%','${keyword}','%')
+        OR uc.phone like CONCAT('%','${keyword}','%')
         )
       </if>
   </select>
