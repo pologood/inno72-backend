@@ -44,7 +44,10 @@
         inner join inno72_check_user_machine sum on sum.machine_id=m.id
         inner join inno72_check_user cu on sum.check_user_id=cu.id
         inner join view_machine_goods mg on mg.machine_id=m.id
-        where cu.id=#{checkUserId} and m.machine_status=4 and sc.is_delete=0
+        where cu.id=#{checkUserId} and m.machine_status=4 and m.machine_type != 2 and sc.is_delete=0 and sc.is_remove=0
+        <if test="keyword != null">
+            and goods.name like '%${keyword}%'
+        </if>
     </select>
 
     <select id="selectByMachineId" resultMap="BaseResultMap">

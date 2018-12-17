@@ -89,6 +89,9 @@ public class Inno72SupplyChannel {
 	@Column(name = "work_status")
 	private Integer workStatus;
 
+	@Column(name = "is_remove")
+	private Integer isRemove;
+
 	/**
 	 * 获取uuid
 	 *
@@ -326,6 +329,14 @@ public class Inno72SupplyChannel {
 
 	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public Integer getIsRemove() {
+		return isRemove;
+	}
+
+	public void setIsRemove(Integer isRemove) {
+		this.isRemove = isRemove;
 	}
 
 }

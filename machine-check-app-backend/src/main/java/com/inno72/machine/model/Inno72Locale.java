@@ -24,6 +24,9 @@ public class Inno72Locale {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "type")
+    private Integer type;
+
 
     @NotBlank(message="请选择区域")
     @Column(name = "area_code")
@@ -291,7 +294,15 @@ public class Inno72Locale {
         return localeNameList;
     }
 
-    public void setLocaleNameList(List<LocaleVo> localeNameList) {
+	public void setLocaleNameList(List<LocaleVo> localeNameList) {
         this.localeNameList = localeNameList;
     }
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
 }

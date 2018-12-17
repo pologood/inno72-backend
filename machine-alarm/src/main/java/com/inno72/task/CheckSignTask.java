@@ -18,7 +18,7 @@ public class CheckSignTask {
 	private MachineService machineService;
 
 //	@Scheduled(cron = "0 0/1 * * * ?")
-	@Scheduled(cron = "0 0 20 * * ?")
+//	@Scheduled(cron = "0 0 20 * * ?")
 	public void setSign(){
 		machineService.getSignMachineList();
 	}

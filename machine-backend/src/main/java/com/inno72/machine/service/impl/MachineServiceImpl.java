@@ -116,7 +116,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 
 	@Override
 	public Result<List<MachineListVo>> findMachines(String machineCode, String localCode, String startTime,
-			String endTime, String machineType, String machineStatus) {
+			String endTime, String machineType, String machineStatus, String localType) {
 		Map<String, Object> param = new HashMap<>();
 		if (StringUtil.isNotEmpty(localCode)) {
 			int num = StringUtil.getAreaCodeNum(localCode);
@@ -128,6 +128,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		param.put("machineCode", machineCode);
 		param.put("machineStatus", machineStatus);
 		param.put("machineType", machineType);
+		param.put("localType", localType);
 		param.put("startTime", startTime);
 		param.put("endTime", endTime);
 		List<MachineListVo> machines = inno72MachineMapper.selectMachinesByPage(param);
@@ -920,6 +921,28 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		condition.orderBy("reciveTime").desc();
 		List<Inno72AppLog> list = appLogService.findByCondition(condition);
 		return Results.success(list);
+	}
+
+	@Override
+	public Result<String> updateMachineType(String machineId, Integer machineType) {
+		SessionData session = SessionUtil.sessionData.get();
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
+		Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+		if (machine == null) {
+			return Results.failure("机器id不存在");
+		}
+		machine.setMachineType(machineType);
+		machine.setUpdateTime(LocalDateTime.now());
+		machine.setUpdateId(mUser.getId());
+		int result = inno72MachineMapper.updateByPrimaryKeySelective(machine);
+		if (result != 1) {
+			return Results.failure("修改机器类型失败");
+		}
+		return Results.success();
 	}
 
 	private static Date getStartTime() {

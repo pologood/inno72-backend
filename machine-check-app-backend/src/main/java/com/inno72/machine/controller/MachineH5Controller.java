@@ -8,6 +8,7 @@ import com.inno72.machine.model.Inno72AdminArea;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Machine;
 import com.inno72.machine.service.MachineService;
+import com.inno72.machine.vo.CommonVo;
 import com.inno72.machine.vo.SupplyRequestVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +44,9 @@ public class MachineH5Controller {
      * 查询管理的机器
      */
     @RequestMapping(value="list", method = {RequestMethod.GET})
-    public Result<List<Inno72Machine>> list(){
+    public Result<List<Inno72Machine>> list(@RequestBody CommonVo commonVo){
         logger.info("查询管理的机器H5接口");
-		List<Inno72Machine> list = machineService.getMachineList();
+		List<Inno72Machine> list = machineService.getMachineList(commonVo);
         logger.info("查询管理的机器H5接口结果{}",JSON.toJSON(list));
         return ResultGenerator.genSuccessResult(list);
 

@@ -51,8 +51,12 @@ public class Inno72CheckFaultType {
 	@Column(name = "submit_type")
     private Integer submitType;
 
+	@Column(name = "seq")
+	private Integer seq;
+
 	@Transient
 	private String type;
+
 
 	@Transient
 	private List<ChildFaultType> childFaultTypeList;
@@ -135,6 +139,14 @@ public class Inno72CheckFaultType {
 
 	public void setSubmitType(Integer submitType) {
 		this.submitType = submitType;
+	}
+
+	public Integer getSeq() {
+		return seq;
+	}
+
+	public void setSeq(Integer seq) {
+		this.seq = seq;
 	}
 
 	public String getType() {

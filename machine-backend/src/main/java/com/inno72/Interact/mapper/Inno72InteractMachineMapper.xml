@@ -56,7 +56,7 @@
 		) apt on m.id=apt.machine_id
 		LEFT JOIN inno72_activity a ON a.id = ap.activity_id and a.is_delete = 0 
 		WHERE
-			m.machine_status = '4' 
+			m.machine_status = '4' and machine_type !=2
 		<if test="machineId !=null and machineId !='' ">AND m.id = #{machineId}</if>
 		<if test="keyword !=null and keyword !='' ">
 			AND (l.mall LIKE '%${keyword}%'  
@@ -95,7 +95,7 @@
 			GROUP BY m.machine_id
 		) mm on m.id=mm.machine_id
 		WHERE
-			m.machine_status = '4' 
+			m.machine_status = '4' and machine_type !=2
 		<if test="keyword !=null and keyword !='' ">
 			AND (l.mall LIKE '%${keyword}%'  
 			or l.name LIKE '%${keyword}%' 
@@ -144,7 +144,7 @@
 			) mm GROUP BY machine_id
 		) mm on m.id=mm.machine_id
 		
-	WHERE m.machine_status = '4'
+	WHERE m.machine_status = '4' and machine_type !=2
 		<if test="machineId !=null and machineId !='' ">AND m.id = #{machineId}</if>
   </select>
   

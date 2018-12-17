@@ -98,6 +98,10 @@ public class Inno72Machine {
     @Column(name="monitor_end")
     private String monitorEnd;
 
+
+    @Column(name="machine_type")
+    private Integer machineType;
+
     private String localeStr;
 
     private String areaCode;
@@ -387,6 +391,14 @@ public class Inno72Machine {
 		this.areaCode = areaCode;
 	}
 
+	public Integer getMachineType() {
+		return machineType;
+	}
+
+	public void setMachineType(Integer machineType) {
+		this.machineType = machineType;
+	}
+
 	public List<Inno72CheckUser> getCheckUserList() {
 		return checkUserList;
 	}
@@ -394,4 +406,6 @@ public class Inno72Machine {
 	public void setCheckUserList(List<Inno72CheckUser> checkUserList) {
 		this.checkUserList = checkUserList;
 	}
+
+
 }

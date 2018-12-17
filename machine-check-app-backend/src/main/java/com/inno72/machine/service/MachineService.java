@@ -8,6 +8,7 @@ import com.inno72.common.Service;
 import com.inno72.machine.model.Inno72AdminArea;
 import com.inno72.machine.model.Inno72Locale;
 import com.inno72.machine.model.Inno72Machine;
+import com.inno72.machine.vo.CommonVo;
 import com.inno72.machine.vo.CutAppVo;
 import com.inno72.machine.vo.SupplyRequestVo;
 
@@ -15,7 +16,7 @@ public interface MachineService extends Service<Inno72Machine> {
 
 	Result<String> setMachine(SupplyRequestVo vo);
 
-	List<Inno72Machine> getMachineList();
+	List<Inno72Machine> getMachineList(CommonVo commonVo);
 
 	Result<List<Inno72AdminArea>> findFirstLevelArea();
 

@@ -104,6 +104,12 @@ public class Inno72Machine implements Comparable<Inno72Machine>{
 	@Column(name = "wifi_pwd")
 	private String wifiPwd;
 
+	/**
+	 * 机器类型
+	 */
+	@Column(name = "machine_type")
+	private Integer machineType;
+
 	@Transient
 	private String address;
 
@@ -157,9 +163,9 @@ public class Inno72Machine implements Comparable<Inno72Machine>{
 		if(o.getLackGoodsStatus() == this.getLackGoodsStatus()){
 			return 0;
 		}else if(o.getLackGoodsStatus()>this.getLackGoodsStatus()){
-			return -1;
+			return 1;
 		}
-		return 1;
+		return -1;
 	}
 
 	public enum Machine_Status {
@@ -537,5 +543,13 @@ public class Inno72Machine implements Comparable<Inno72Machine>{
 
 	public void setActivityName(String activityName) {
 		this.activityName = activityName;
+	}
+
+	public Integer getMachineType() {
+		return machineType;
+	}
+
+	public void setMachineType(Integer machineType) {
+		this.machineType = machineType;
 	}
 }

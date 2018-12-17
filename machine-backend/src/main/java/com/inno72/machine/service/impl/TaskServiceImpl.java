@@ -386,10 +386,16 @@ public class TaskServiceImpl extends AbstractService<Inno72Task> implements Task
 	}
 
 	@Override
-	public List<Inno72AdminAreaVo> selectAreaMachineList(String code, String level, String machineCode) {
+	public List<Inno72AdminAreaVo> selectAreaMachineList(String code, String level, String machineCode, String type) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("code", code);
 		params.put("machineCode", machineCode);
+		/**
+		 * 任务类型：1升级 2卸载 3 合并 4 拆分(3,4 不可选取合作机器)
+		 */
+		if (type.equals("3") || type.equals("4")) {
+			params.put("machineType", type);
+		}
 
 		if (StringUtil.isNotBlank(level)) {
 			if (level.equals("1")) {

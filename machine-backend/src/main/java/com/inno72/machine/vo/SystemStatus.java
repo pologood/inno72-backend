@@ -34,7 +34,6 @@ public class SystemStatus {
 	private double allTraffic;// 手机总流量
 	private double thatdayTraffic;// 当天流量
 	private double monthTraffic;// 当月流量
-
 	/**
 	 * 创建时间
 	 */

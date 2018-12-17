@@ -18,6 +18,7 @@
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete"/>
+    <result column="is_remove" jdbcType="INTEGER" property="isRemove"/>
     <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
     <result column="goodsCode" jdbcType="VARCHAR" property="goodsCode"/>
     <result column="goodsId" jdbcType="VARCHAR" property="goodsId"/>
@@ -35,9 +36,9 @@
 
   <sql id="Column_List">
       ch.id,ch.code,ch.name,ch.status,ch.machine_id,ch.parent_code,ch.volume_count,ch.is_delete,
-      ch.goods_count,ch.create_id,ch.create_time,ch.update_id,ch.update_time,
+      ch.goods_count,ch.create_id,ch.create_time,ch.update_id,ch.update_time,ch.is_remove,
       cg.goods_id goodsId,
-      cg.is_delete goodsStatus,
+      goods.is_delete goodsStatus,
       goods.name goodsName,
       goods.code goodsCode,
       m.machine_code machineCode
@@ -72,6 +73,7 @@
       left join inno72_machine m on ch.machine_id=m.id
       left join view_machine_goods mg on mg.machine_id=m.id
     <where>
+        ch.is_remove = 0
         <if test="code != null">
             and ch.code = #{code}
         </if>
@@ -134,6 +136,9 @@
             </if>
             <if test="updateTime != null">
                 update_time = #{updateTime},
+            </if>
+            <if test="isRemove != null">
+                is_remove = #{isRemove},
             </if>
         </set>
         where machine_id=#{machineId} and code=#{code}
@@ -207,121 +212,6 @@
         ap.id
         ) a where a.goods_count is not null
     </select>
-    <select id="selectLockGoods" resultMap="BaseResultMap">
-        select * from (
-        SELECT
-        sum( sc.goods_count ) goods_count,
-        goods.name goodsName,
-        m.machine_code machineCode,
-        CONCAT(
-            aa.province,
-            aa.city,
-            aa.district,
-            IF(aa.circle = '其他' OR aa.circle IS NULL,'',aa.circle),
-            IFNULL(l.mall,""),
-            IFNULL(l.name,"")
-        ) AS localeStr
-        FROM
-        inno72_supply_channel sc
-        INNER JOIN inno72_supply_channel_goods scg ON sc.id = scg.supply_channel_id
-        INNER JOIN inno72_goods goods ON scg.goods_id = goods.id
-        LEFT JOIN inno72_machine m ON sc.machine_id = m.id
-        LEFT JOIN inno72_locale l ON l.id = m.locale_id
-        LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code
-        LEFT JOIN inno72_activity_plan_machine apm ON m.id = apm.machine_id
-        LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id
-        WHERE
-        m.machine_status = 4
-        AND now( ) BETWEEN ap.start_time
-        AND ap.end_time
-        AND scg.goods_id = #{goodsId}
-        AND sc.is_delete = 0
-        AND sc.machine_id = #{machineId}
-        ) a where a.goods_count is not null
-    </select>
-
-
-    <select id="selectPaiyangLockGoods" resultMap="BaseResultMap">
-        select * from (
-        SELECT
-        sum(sc.goods_count) goods_count,
-        goods.name goodsName,
-        m.machine_code machineCode,
-        CONCAT(
-        aa.province,
-        aa.city,
-        aa.district,
-        if(aa.circle='其他' or aa.circle is null,'',aa.circle),IFNULL(l.mall,''),IFNULL( l.name,'')
-        ) AS localeStr
-        from inno72_supply_channel sc
-        INNER JOIN inno72_supply_channel_goods scg ON sc.id = scg.supply_channel_id
-        INNER JOIN inno72_goods goods ON scg.goods_id = goods.id
-        INNER JOIN inno72_machine m ON sc.machine_id = m.id
-        INNER JOIN inno72_interact_machine im ON m.id = im.machine_id
-        INNER JOIN inno72_interact_machine_time imt ON im.id = imt.interact_machine_id AND now( ) BETWEEN imt.start_time AND imt.end_time
-        INNER JOIN inno72_interact_machine_goods img ON goods.id = img.goods_id and img.interact_machine_id=im.id AND now( ) BETWEEN img.start_time AND img.end_time
-        LEFT JOIN inno72_locale l ON l.id = m.locale_id
-        LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code
-        WHERE
-      m.machine_status = 4
-      AND scg.goods_id = #{goodsId}
-      AND sc.is_delete=0
-      AND sc.machine_id=#{machineId}
-      ) a where a.goods_count is not null
-    </select>
-
-
-    <select id="selectLockGoodsList" resultType="com.inno72.model.GoodsBean">
-        select * from (
-        SELECT
-        sum( sc.goods_count ) totalCount,
-        goods.NAME goodsName,
-        goods.id goodsId
-        FROM
-        inno72_supply_channel sc
-        INNER JOIN inno72_supply_channel_goods scg ON sc.id = scg.supply_channel_id
-        INNER JOIN inno72_goods goods ON scg.goods_id = goods.id
-        LEFT JOIN inno72_machine m ON sc.machine_id = m.id
-        LEFT JOIN inno72_activity_plan_machine apm ON m.id = apm.machine_id
-        LEFT JOIN inno72_activity_plan ap ON apm.activity_plan_id = ap.id
-        WHERE
-        m.machine_status = 4
-        AND now( ) BETWEEN ap.start_time
-        AND ap.end_time
-        AND sc.machine_id = #{machineId}
-        AND sc.is_delete = 0
-        GROUP BY
-        goods.id
-        ) a where a.totalCount is not null
-    </select>
-    <select id="selectPaiyangLockGoodsList" resultType="com.inno72.model.GoodsBean">
-        select * from (
-        SELECT
-        sum( sc.goods_count ) totalCount,
-        goods.NAME goodsName,
-        goods.id goodsId
-        FROM
-        inno72_supply_channel sc
-        INNER JOIN inno72_supply_channel_goods scg ON sc.id = scg.supply_channel_id
-        INNER JOIN inno72_goods goods ON scg.goods_id = goods.id
-        INNER JOIN inno72_machine m ON sc.machine_id = m.id
-        INNER JOIN inno72_interact_machine im ON m.id = im.machine_id
-        INNER JOIN inno72_interact_machine_time imt ON im.id = imt.interact_machine_id
-        AND now( ) BETWEEN imt.start_time
-        AND imt.end_time
-        INNER JOIN inno72_interact_machine_goods img ON goods.id = img.goods_id
-        and img.interact_machine_id=im.id
-        AND now( ) BETWEEN img.start_time
-        AND img.end_time
-        WHERE
-        m.machine_status = 4
-        AND now( )
-        AND sc.machine_id = #{machineId}
-        AND sc.is_delete=0
-        GROUP BY
-        goods.id
-        ) a where a.totalCount is not null
-    </select>
 
     <select id="selectExceptionList" resultMap="BaseResultMap">
         select * from inno72_supply_channel
@@ -330,9 +220,9 @@
 
     <update id="updateOpen">
         update inno72_supply_channel
-        set is_delete=0
+        set is_delete=0,update_id=#{updateId},update_time=now()
         where machine_id=#{machineId}
-        and code = #{code}
+        and is_remove=0
     </update>
 
     <select id="selectSupplyAndGoods" resultMap="BaseResultMap">
@@ -347,5 +237,14 @@
                 </foreach>
             </if>
         </where>
+    </select>
+
+    <select id="selectAllSupply" resultMap="BaseResultMap">
+        select <include refid="Column_List"/>
+        from inno72_supply_channel ch
+        left join inno72_supply_channel_goods cg on ch.id=cg.supply_channel_id
+        left join inno72_goods goods on cg.goods_id=goods.id
+        left join inno72_machine m on ch.machine_id=m.id
+        where m.id=#{machineId} order by ch.code*1
     </select>
 </mapper>
