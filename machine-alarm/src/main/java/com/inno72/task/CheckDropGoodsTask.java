@@ -6,9 +6,6 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.inno72.job.core.biz.model.ReturnT;
@@ -23,18 +20,13 @@ public class CheckDropGoodsTask implements IJobHandler {
 	@Resource
 	private SupplyChannelService supplyChannelService;
 
-<<<<<<< HEAD
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	@Override
 	public ReturnT<String> execute(String s) throws Exception {
 		logger.info("执行掉货异常定时开始");
-=======
-
-	@Scheduled(cron = "0/5 * * * * ?")
-	public void sendDropGoods(){
->>>>>>> master
 		List<AlarmDropGoodsBean> list = supplyChannelService.getDropGoodsList();
-		if(list != null && list.size()>0){
+		if (list != null && list.size() > 0) {
 			supplyChannelService.sendAlarmDropGoods(list);
 		}
 		logger.info("执行掉货异常定时结束");
