@@ -31,4 +31,6 @@ public interface Inno72SupplyChannelMapper extends Mapper<Inno72SupplyChannel> {
 	List<Inno72SupplyChannel> selectSupplyAndGoods(@Param("suuplyChannelArray") String[] suuplyChannelArray);
 
 	List<Inno72SupplyChannel> selectAllSupply(String machineId);
+
+	Inno72SupplyChannel selectOneBy(Map<String, Object> map);
 }
