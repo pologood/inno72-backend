@@ -701,6 +701,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			if(historyCount>0){
 				this.saveHistoryOrder(batchNo,machineId,checkUser.getId(),now);
 			}
+			if("".equals(detail)){
+				detail.append("补货");
+			}
 			this.saveToLog(detail,checkUser.getName(),machineCode);
 		}
 		return ResultGenerator.genSuccessResult();
