@@ -14,4 +14,6 @@ public interface OrderRefundService extends Service<Inno72OrderRefund> {
 	List<Map<String, Object>> getRefundList(String channel, String time, String status, String auditStatus,
 			String keyword);
 
+	Map<String, Object> selectRefundDetail(String id);
+
 }

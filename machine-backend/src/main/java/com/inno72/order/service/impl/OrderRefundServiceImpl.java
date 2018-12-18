@@ -44,4 +44,11 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		return orderList;
 	}
 
+	@Override
+	public Map<String, Object> selectRefundDetail(String id) {
+
+		Map<String, Object> orderList = inno72OrderRefundMapper.selectRefundDetail(id);
+		return orderList;
+	}
+
 }

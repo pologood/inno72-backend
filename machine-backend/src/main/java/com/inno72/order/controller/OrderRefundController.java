@@ -45,8 +45,8 @@ public class OrderRefundController {
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<Inno72OrderRefund> detail(@RequestParam String id) {
-		Inno72OrderRefund orderRefund = orderRefundService.findById(id);
+	public Result<Map<String, Object>> detail(@RequestParam String id) {
+		Map<String, Object> orderRefund = orderRefundService.selectRefundDetail(id);
 		return ResultGenerator.genSuccessResult(orderRefund);
 	}
 
