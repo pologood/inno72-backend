@@ -31,6 +31,7 @@
 			re.refund_num AS refundNum,
 			date_format( re.create_time, '%Y-%m-%d %H:%i:%s' ) AS createTime,
 			re.reason,
+			re.audit_reason AS auditReason,
 			re.remark
 		FROM
 			inno72_order_refund re
@@ -73,7 +74,7 @@
 			re.refund_num AS refundNum,
 			re.amount,
 			re.status,
-			date_format( re.create_time, '%Y-%m-%d %H:%i:%s' ) AS orderTime,
+			date_format( re.create_time, '%Y-%m-%d %H:%i:%s' ) AS createTime,
 			date_format( re.audit_time, '%Y-%m-%d %H:%i:%s' ) AS auditTime,
 			re.audit_user AS auditUser,
 			re.audit_reason AS auditReason,
