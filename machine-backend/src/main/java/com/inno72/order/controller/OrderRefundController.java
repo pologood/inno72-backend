@@ -44,6 +44,11 @@ public class OrderRefundController {
 		return ResultGenerator.genSuccessResult();
 	}
 
+	@RequestMapping(value = "/refundAudit", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> refundAudit(String id, String auditStatus, String auditReason) {
+		return orderRefundService.refundAudit(id, auditStatus, auditReason);
+	}
+
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<Map<String, Object>> detail(@RequestParam String id) {
 		Map<String, Object> orderRefund = orderRefundService.selectRefundDetail(id);
