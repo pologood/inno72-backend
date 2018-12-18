@@ -235,6 +235,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 					}
 					supplyChannel.setCreateTime(LocalDateTime.now());
 					supplyChannel.setUpdateTime(LocalDateTime.now());
+					supplyChannel.setIsRemove(0);
 					supplyChannel.setIsDelete(0);
 					supplyChannel.setWorkStatus(0);
 					inno72SupplyChannelMapper.insertSelective(supplyChannel);
@@ -252,6 +253,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 					supplyChannel.setUpdateTime(LocalDateTime.now());
 					supplyChannel.setIsDelete(0);
 					supplyChannel.setWorkStatus(0);
+					supplyChannel.setIsRemove(0);
 					inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
 				}
 			}
@@ -983,6 +985,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 							supplyChannel.setCreateTime(LocalDateTime.now());
 							supplyChannel.setUpdateTime(LocalDateTime.now());
 							supplyChannel.setIsDelete(0);
+							supplyChannel.setIsRemove(0);
 							supplyChannel.setWorkStatus(0);
 							inno72SupplyChannelMapper.insertSelective(supplyChannel);
 						}else{
@@ -999,6 +1002,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 							supplyChannel.setUpdateTime(LocalDateTime.now());
 							supplyChannel.setIsDelete(0);
 							supplyChannel.setWorkStatus(0);
+							supplyChannel.setIsRemove(0);
 							inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
 						}
 					}
