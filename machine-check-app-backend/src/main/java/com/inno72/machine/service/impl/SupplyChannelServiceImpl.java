@@ -24,6 +24,7 @@ import com.inno72.machine.vo.CommonVo;
 import com.inno72.machine.vo.SubmitSupplyChannel;
 import com.inno72.machine.vo.SupplyRequestVo;
 
+import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -173,6 +174,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	@Override
 	public Result<String> split(Inno72SupplyChannel supplyChannel) {
 		String code = supplyChannel.getCode();
+		Inno72CheckUser checkUser = UserUtil.getUser();
 		String machineId = supplyChannel.getMachineId();
 		if (StringUtil.isEmpty(code) || StringUtil.isEmpty(machineId)) {
 			return Results.failure("参数有误");
@@ -211,19 +213,47 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				childChannel.setGoodsCount(0);
 				inno72SupplyChannelMapper.updateByParam(childChannel);
 			}else{
-				childChannel = new Inno72SupplyChannel();
-				childChannel.setId(StringUtil.getUUID());
-				childChannel.setVolumeCount(volumeCount);
-				childChannel.setCode(newCode.toString());
-				childChannel.setCreateTime(LocalDateTime.now());
-				childChannel.setCreateId("系统");
-				childChannel.setUpdateTime(LocalDateTime.now());
-				childChannel.setUpdateId("系统");
-				childChannel.setName("货道" + newCode);
-				childChannel.setGoodsCount(0);
-				childChannel.setWorkStatus(0);
-				childChannel.setMachineId(supplyChannel.getMachineId());
-				inno72SupplyChannelMapper.insertSelective(childChannel);
+				Map<String,Object> paramMap = new HashMap<>();
+				paramMap.put("machineId",machineId);
+				String supplyCode = newCode.toString();
+				paramMap.put("code",supplyCode);
+				Inno72SupplyChannel sChannel = inno72SupplyChannelMapper.selectOneBy(paramMap);
+				if(supplyChannel==null){
+					sChannel = new Inno72SupplyChannel();
+					sChannel.setId(StringUtil.getUUID());
+					sChannel.setMachineId(machineId);
+					sChannel.setCode(supplyCode);
+					sChannel.setName("货道"+supplyCode);
+					sChannel.setStatus(0);
+					sChannel.setVolumeCount(batchDetail.getVolumeCount());
+					if(checkUser != null){
+						supplyChannel.setCreateId(checkUser.getId());
+						supplyChannel.setUpdateId(checkUser.getId());
+					}else{
+						supplyChannel.setCreateId("系统");
+						supplyChannel.setUpdateId("系统");
+					}
+					supplyChannel.setCreateTime(LocalDateTime.now());
+					supplyChannel.setUpdateTime(LocalDateTime.now());
+					supplyChannel.setIsDelete(0);
+					supplyChannel.setWorkStatus(0);
+					inno72SupplyChannelMapper.insertSelective(supplyChannel);
+				}else{
+					supplyChannel.setStatus(0);
+					supplyChannel.setVolumeCount(batchDetail.getVolumeCount());
+					if(checkUser != null){
+						supplyChannel.setCreateId(checkUser.getId());
+						supplyChannel.setUpdateId(checkUser.getId());
+					}else{
+						supplyChannel.setCreateId("系统");
+						supplyChannel.setUpdateId("系统");
+					}
+					supplyChannel.setCreateTime(LocalDateTime.now());
+					supplyChannel.setUpdateTime(LocalDateTime.now());
+					supplyChannel.setIsDelete(0);
+					supplyChannel.setWorkStatus(0);
+					inno72SupplyChannelMapper.updateByPrimaryKeySelective(supplyChannel);
+				}
 			}
 			Inno72Machine machine = inno72MachineMapper.getMachineById(machineId);
 			String detail = "拆分货道：在"+machine.getLocaleStr()+"点位处的机器对"+code+"货道进行了拆分，拆分后变为"+code+"货道和"+newCode+"货道";
