@@ -121,6 +121,9 @@ public class Inno72Order {
 	@Column(name = "repetition")
 	private int repetition;
 
+	@Column(name = "order_status")
+	private int orderStatus;
+
 	@Transient
 	private String channelCode;
 
@@ -482,5 +485,13 @@ public class Inno72Order {
 
 	public void setPageParam(int pageParam) {
 		this.pageParam = pageParam;
+	}
+
+	public int getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(int orderStatus) {
+		this.orderStatus = orderStatus;
 	}
 }

@@ -30,6 +30,8 @@
     <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
     <result column="mer_point_address" jdbcType="VARCHAR" property="merPointAddress"/>
     <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
+    <result column="order_status" jdbcType="INTEGER" property="orderStatus"/>
+    <result column="channelName" jdbcType="VARCHAR" property="channelName"/>
     <collection property="orderGoodsList" resultMap="orderGoodsList"/>
   </resultMap>
 
@@ -54,7 +56,7 @@
       select * from  (select
       o.id,o.user_id,o.channel_id,o.machine_id,
       o.order_time,o.order_price,o.order_type,o.pay_status,o.pay_time,
-      o.shops_id,o.shops_name,o.goods_status,o.order_num,
+      o.shops_id,o.shops_name,o.goods_status,o.order_num,o.order_status,
       guc.game_user_id,guc.user_nick nick_name,
       CONCAT(IFNULL( l.mall,""),IFNULL( l.name,""))
       mer_point_address,
@@ -66,7 +68,8 @@
       og.goods_price goodsPrice,
       og.status orderGoodsStatus,
       if(a.name is null ,i.name,a.name) activity_name,
-      if(g1.name is null,g2.name,g1.name) gameName
+      if(g1.name is null,g2.name,g1.name) gameName,
+      c.channel_name channelName
       from inno72_order o
       left join inno72_order_goods og on og.order_num=o.order_num
       left join inno72_game_user_channel guc on guc.game_user_id=o.user_id
@@ -76,6 +79,7 @@
       left join inno72_activity a on o.inno72_activity_id = a.id
       left join inno72_activity_plan ap on ap.id=o.inno72_activity_plan_id left join inno72_game g1 on ap.game_id= g1.id
       left join inno72_interact i on o.inno72_activity_id=i.id left join inno72_game g2 on i.game_id=g2.id
+      left join inno72_channel c on c.id=o.channel_id
       <where>
           <if test="machineId != null and machineId != ''">
               and o.machine_id = #{machineId}
@@ -97,6 +101,9 @@
           </if>
           <if test="areaCode != null and areaCode != ''">
               and LEFT(l.area_code,#{num}) = LEFT(#{code},#{num})
+          </if>
+          <if test="channelCode != null and channelCode != ''">
+              and c.channel_code=#{channelCode}
           </if>
       </where>
       ) k
