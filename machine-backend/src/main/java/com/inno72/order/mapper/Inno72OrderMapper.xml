@@ -33,6 +33,7 @@
     <result column="order_status" jdbcType="INTEGER" property="orderStatus"/>
     <result column="channelName" jdbcType="VARCHAR" property="channelName"/>
     <result column="merchantName" jdbcType="VARCHAR" property="merchantName"/>
+    <result column="loginName" jdbcType="VARCHAR" property="loginName"/>
     <association property="orderRefund" resultMap="orderRefund"/>
     <collection property="orderGoodsList" resultMap="orderGoodsList"/>
   </resultMap>
@@ -132,7 +133,7 @@
 
   <select id="selectOrderDetail" resultMap="BaseResultMap">
       select o.*,
-      guc.phone,
+      guc.phone loginName,
       CONCAT(
 		aa.province,
 		aa.city,
@@ -144,6 +145,11 @@
       c.channel_name channelName,
       mer.merchant_name merchantName,
       og.goods_name goodsName,
+      ore.refund_num,
+	  ore.create_time refundCreateTime,
+	  ore.amount,
+	  ore.reason,
+	  ore.refund_time
       from inno72_order o
       left join inno72_game_user_channel guc on o.user_id=guc.game_user_id
       left join inno72_machine m on m.id=o.machine_id
@@ -155,6 +161,7 @@
       left join inno72_channel c on c.id=o.channel_id
       left join inno72_merchant mer on mer.id=o.merchant_id
       left join inno72_order_goods og on og.order_num=o.order_num
+      left join inno72_order_refund ore on ore.order_id=o.id
       where o.id=#{id}
   </select>
 </mapper>

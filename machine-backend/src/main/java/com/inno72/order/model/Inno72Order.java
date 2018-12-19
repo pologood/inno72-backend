@@ -171,6 +171,10 @@ public class Inno72Order {
 
 	private Inno72OrderRefund orderRefund;
 
+	private String merchantName;
+
+	private String loginName;
+
 	@Transient
 	private int pageNo;
 
@@ -503,5 +507,21 @@ public class Inno72Order {
 
 	public void setOrderRefund(Inno72OrderRefund orderRefund) {
 		this.orderRefund = orderRefund;
+	}
+
+	public String getMerchantName() {
+		return merchantName;
+	}
+
+	public void setMerchantName(String merchantName) {
+		this.merchantName = merchantName;
+	}
+
+	public String getLoginName() {
+		return loginName;
+	}
+
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
 	}
 }
