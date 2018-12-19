@@ -1,5 +1,6 @@
 package com.inno72.order.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -34,7 +35,7 @@ public class Inno72OrderRefund {
 	/**
 	 * 退款金额
 	 */
-	private Short amount;
+	private BigDecimal amount;
 
 	/**
 	 * 退款原因
@@ -162,7 +163,7 @@ public class Inno72OrderRefund {
 	 *
 	 * @return amount - 退款金额
 	 */
-	public Short getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
@@ -172,7 +173,7 @@ public class Inno72OrderRefund {
 	 * @param amount
 	 *            退款金额
 	 */
-	public void setAmount(Short amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 
