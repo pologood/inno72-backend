@@ -91,7 +91,20 @@
 		WHERE re.id =#{id}
   </select>
   
-  
+  <select id="selectRefundOrderCount" resultType="java.lang.Integer">
+      select count(*) from inno72_order_refund
+      <where>
+          <if test="countType != null">
+              and
+              <if test="countType == 1">
+                  audit_status = 0
+              </if>
+              <if test="countType == 2">
+                  status = 3
+              </if>
+          </if>
+      </where>
+  </select>
   
   
 </mapper>

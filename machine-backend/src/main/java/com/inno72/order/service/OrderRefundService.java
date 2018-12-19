@@ -21,4 +21,6 @@ public interface OrderRefundService extends Service<Inno72OrderRefund> {
 
 	Result<String> updateModle(Inno72OrderRefund model, String type);
 
+	Integer refundOrderCount(int countType);
+
 }

@@ -55,7 +55,9 @@ public class OrderController {
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<Inno72Order> detail(@RequestParam String id) {
+		logger.info("查询订单详情参数：{}", JSON.toJSON(id));
 		Result<Inno72Order> result = orderService.getOrderDetail(id);
+		logger.info("查询订单详情结果：{}", JSON.toJSON(result));
 		return result;
 	}
 

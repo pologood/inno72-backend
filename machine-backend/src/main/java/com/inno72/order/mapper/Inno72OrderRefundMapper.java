@@ -14,4 +14,6 @@ public interface Inno72OrderRefundMapper extends Mapper<Inno72OrderRefund> {
 	List<Map<String, Object>> selectByPage(Map<String, Object> map);
 
 	Map<String, Object> selectRefundDetail(@Param("id") String id);
+
+	int selectRefundOrderCount(@Param("countType") int countType);
 }

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
+import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
@@ -137,6 +138,11 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		inno72OrderRefundMapper.updateByPrimaryKeySelective(base);
 
 		return Results.success("操作成功");
+	}
+
+	@Override
+	public Integer refundOrderCount(int countType) {
+		return inno72OrderRefundMapper.selectRefundOrderCount(countType);
 	}
 
 }
