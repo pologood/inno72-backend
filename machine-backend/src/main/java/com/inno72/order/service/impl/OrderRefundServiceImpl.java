@@ -116,11 +116,25 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			logger.info("登陆用户为空");
 			return Results.failure("未找到用户登录信息");
 		}
+		Inno72OrderRefund base = inno72OrderRefundMapper.selectByPrimaryKey(model.getId());
+		if (type.equals("1")) {
+			if (StringUtil.isBlank(model.getRemark())) {
+				logger.info("备注不能为空！");
+				return Results.failure("备注不能为空！");
+			}
+			base.setRemark(model.getRemark());
+		} else if (type.equals("2")) {
+			base.setStatus(2);
+			base.setRefundTime(LocalDateTime.now());
+			base.setRemark(base.getRemark() + "(线下退款)");
+		} else if (type.equals("3")) {
 
-		if (StringUtil.isBlank(type)) {
+		} else {
 			logger.info("参数错误");
 			return Results.failure("参数错误");
 		}
+		base.setUpdateTime(LocalDateTime.now());
+		inno72OrderRefundMapper.updateByPrimaryKeySelective(base);
 
 		return Results.success("操作成功");
 	}
