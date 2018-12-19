@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.common.AbstractService;
+import com.inno72.common.Result;
+import com.inno72.common.ResultGenerator;
 import com.inno72.common.StringUtil;
 import com.inno72.order.mapper.Inno72OrderGoodsMapper;
 import com.inno72.order.mapper.Inno72OrderMapper;
@@ -41,5 +43,11 @@ public class OrderServiceImpl extends AbstractService<Inno72Order> implements Or
 		order.setPageParam((pageNo-1)*20);
 		List<Inno72Order> orderList = inno72OrderMapper.seleByParamForPg(order);
 		return orderList;
+	}
+
+	@Override
+	public Result<Inno72Order> getOrderDetail(String id) {
+		Inno72Order order = inno72OrderMapper.selectOrderDetail(id);
+		return ResultGenerator.genSuccessResult(order);
 	}
 }

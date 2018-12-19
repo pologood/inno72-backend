@@ -32,6 +32,8 @@
     <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
     <result column="order_status" jdbcType="INTEGER" property="orderStatus"/>
     <result column="channelName" jdbcType="VARCHAR" property="channelName"/>
+    <result column="merchantName" jdbcType="VARCHAR" property="merchantName"/>
+    <association property="orderRefund" resultMap="orderRefund"/>
     <collection property="orderGoodsList" resultMap="orderGoodsList"/>
   </resultMap>
 
@@ -45,6 +47,14 @@
     <result column="goodsCode" jdbcType="VARCHAR" property="goodsCode" />
     <result column="goodsPrice" jdbcType="VARCHAR" property="goodsPrice" />
     <result column="orderGoodsStatus" jdbcType="INTEGER" property="status" />
+  </resultMap>
+    
+  <resultMap id="orderRefund" type="com.inno72.order.model.Inno72OrderRefund">
+    <result column="refund_num" jdbcType="VARCHAR" property="refundNum"/>
+    <result column="refundCreateTime" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="amount" jdbcType="DECIMAL" property="amount"/>
+    <result column="reason" jdbcType="VARCHAR" property="reason"/>
+    <result column="refund_time" jdbcType="TIMESTAMP" property="refundTime"/>
   </resultMap>
 
   <sql id="Column_List">
@@ -118,5 +128,33 @@
     ORDER BY k.order_time desc
     limit #{pageParam},20
 
+  </select>
+
+  <select id="selectOrderDetail" resultMap="BaseResultMap">
+      select o.*,
+      guc.phone,
+      CONCAT(
+		aa.province,
+		aa.city,
+		aa.district,
+		if(aa.circle='其他' or aa.circle is null,'',aa.circle),IFNULL(l.mall,""),IFNULL( l.name,'')
+		) AS mer_point_address,
+      m.machine_code,
+      if(a.name is null ,i.name,a.name) activity_name,
+      c.channel_name channelName,
+      mer.merchant_name merchantName,
+      og.goods_name goodsName,
+      from inno72_order o
+      left join inno72_game_user_channel guc on o.user_id=guc.game_user_id
+      left join inno72_machine m on m.id=o.machine_id
+      left join inno72_locale l on m.locale_id=l.id
+      left join inno72_admin_area aa ON aa.code = l.area_code
+      left join inno72_activity a on o.inno72_activity_id = a.id
+      left join inno72_activity_plan ap on ap.id=o.inno72_activity_plan_id left join inno72_game g1 on ap.game_id= g1.id
+      left join inno72_interact i on o.inno72_activity_id=i.id left join inno72_game g2 on i.game_id=g2.id
+      left join inno72_channel c on c.id=o.channel_id
+      left join inno72_merchant mer on mer.id=o.merchant_id
+      left join inno72_order_goods og on og.order_num=o.order_num
+      where o.id=#{id}
   </select>
 </mapper>

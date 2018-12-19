@@ -169,6 +169,8 @@ public class Inno72Order {
 
 	private List<Inno72OrderGoods> orderGoodsList;
 
+	private Inno72OrderRefund orderRefund;
+
 	@Transient
 	private int pageNo;
 
@@ -493,5 +495,13 @@ public class Inno72Order {
 
 	public void setOrderStatus(int orderStatus) {
 		this.orderStatus = orderStatus;
+	}
+
+	public Inno72OrderRefund getOrderRefund() {
+		return orderRefund;
+	}
+
+	public void setOrderRefund(Inno72OrderRefund orderRefund) {
+		this.orderRefund = orderRefund;
 	}
 }
