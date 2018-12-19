@@ -39,8 +39,8 @@ public class OrderRefundController {
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> update(Inno72OrderRefund orderRefund) {
-		return orderRefundService.updateModle(orderRefund);
+	public Result<String> update(Inno72OrderRefund orderRefund, String type) {
+		return orderRefundService.updateModle(orderRefund, type);
 	}
 
 	@RequestMapping(value = "/refundAudit", method = { RequestMethod.POST, RequestMethod.GET })

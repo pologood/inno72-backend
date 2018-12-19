@@ -100,6 +100,11 @@ public class Inno72OrderRefund {
 	@Column(name = "update_time")
 	private LocalDateTime updateTime;
 
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Column(name = "refund_time")
+	private LocalDateTime refundTime;
+
 	/**
 	 * @return id
 	 */
@@ -344,4 +349,13 @@ public class Inno72OrderRefund {
 	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
 	}
+
+	public LocalDateTime getRefundTime() {
+		return refundTime;
+	}
+
+	public void setRefundTime(LocalDateTime refundTime) {
+		this.refundTime = refundTime;
+	}
+
 }
