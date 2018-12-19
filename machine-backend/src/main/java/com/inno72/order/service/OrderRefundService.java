@@ -19,4 +19,6 @@ public interface OrderRefundService extends Service<Inno72OrderRefund> {
 
 	Result<String> refundAudit(String id, String auditStatus, String auditReason);
 
+	Result<String> updateModle(Inno72OrderRefund model);
+
 }

@@ -107,4 +107,17 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		return Results.success("操作成功");
 	}
 
+	@Override
+	public Result<String> updateModle(Inno72OrderRefund model) {
+
+		SessionData session = SessionUtil.sessionData.get();
+		Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
+
+		return Results.success("操作成功");
+	}
+
 }
