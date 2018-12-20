@@ -116,6 +116,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 
 		} else if (auditStatus.equals("2")) {
 			orderRefund.setAuditStatus(Integer.parseInt(auditStatus));
+			orderRefund.setStatus(3);
 			orderRefund.setAuditTime(LocalDateTime.now());
 			orderRefund.setAuditUser(mUser.getName());
 			orderRefund.setAuditReason(auditReason);
