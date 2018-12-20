@@ -27,7 +27,9 @@ import com.inno72.common.StringUtil;
 import com.inno72.common.json.JsonUtil;
 import com.inno72.log.util.FastJsonUtils;
 import com.inno72.order.mapper.Inno72OrderRefundMapper;
+import com.inno72.order.mapper.Inno72RefundLogMapper;
 import com.inno72.order.model.Inno72OrderRefund;
+import com.inno72.order.model.Inno72RefundLog;
 import com.inno72.order.service.OrderRefundService;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.system.model.Inno72User;
@@ -45,6 +47,9 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 
 	@Resource
 	private Inno72OrderRefundMapper inno72OrderRefundMapper;
+
+	@Resource
+	private Inno72RefundLogMapper inno72RefundLogMapper;
 
 	@Override
 	public List<Map<String, Object>> getRefundList(String channel, String time, String status, String auditStatus,
@@ -101,7 +106,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			orderRefund.setAuditUser(mUser.getName());
 			// 调用退款接口
 			try {
-				String result = payRefund(orderRefund);
+				String result = payRefund(orderRefund, mUser);
 				String code = FastJsonUtils.getString(result, "code");
 				String msg = FastJsonUtils.getString(result, "msg");
 				if (Result.SUCCESS == Integer.parseInt(code)) {
@@ -163,7 +168,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			base.setRemark(base.getRemark() + "(线下退款)");
 		} else if (type.equals("3")) {
 			try {
-				String result = payRefund(base);
+				String result = payRefund(base, mUser);
 				String code = FastJsonUtils.getString(result, "code");
 				String msg = FastJsonUtils.getString(result, "msg");
 				if (Result.SUCCESS == Integer.parseInt(code)) {
@@ -195,7 +200,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		return Results.success("操作成功");
 	}
 
-	public String payRefund(Inno72OrderRefund orderRefund) {
+	public String payRefund(Inno72OrderRefund orderRefund, Inno72User mUser) {
 
 		Map<String, String> param = new HashMap<String, String>();
 		param.put("notifyUrl", machineBackendProperties.get("notifyPayRefundUrl"));
@@ -208,6 +213,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		String sign = genSign(param);
 		param.put("sign", sign);
 		String result = doInvoke(param);
+		refundLog(orderRefund, mUser);
 		return result;
 	}
 
@@ -245,6 +251,15 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		}
 
 		return prestr;
+	}
+
+	private void refundLog(Inno72OrderRefund orderRefund, Inno72User mUser) {
+		Inno72RefundLog log = new Inno72RefundLog();
+		log.setId(StringUtil.getUUID());
+		log.setRefundId(orderRefund.getId());
+		log.setRefundNum(orderRefund.getRefundNum());
+		log.setRefundUser(mUser.getName());
+		inno72RefundLogMapper.insert(log);
 	}
 
 	@Override
