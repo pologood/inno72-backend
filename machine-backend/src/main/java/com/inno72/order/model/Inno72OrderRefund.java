@@ -55,6 +55,13 @@ public class Inno72OrderRefund {
 	private Integer status;
 
 	/**
+	 * 退款返回信息
+	 * 
+	 */
+	@Column(name = "refund_msg")
+	private String refundMsg;
+
+	/**
 	 * 审核状态：0待审核，1已通过，2未通过
 	 */
 	@Column(name = "audit_status")
@@ -216,30 +223,25 @@ public class Inno72OrderRefund {
 	}
 
 	/**
-	 * 获取状态：0 新退款订单，1退款中，
-	 * 
 	 * 状态：0 新退款订单，1退款中，2退款成功，3退款失败
-	 *
-	 * @return status - 状态：0 新退款订单，1退款中，
-	 * 
-	 *         状态：0 新退款订单，1退款中，2退款成功，3退款失败
 	 */
 	public Integer getStatus() {
 		return status;
 	}
 
 	/**
-	 * 设置状态：0 新退款订单，1退款中，
-	 * 
 	 * 状态：0 新退款订单，1退款中，2退款成功，3退款失败
-	 *
-	 * @param status
-	 *            状态：0 新退款订单，1退款中，
-	 * 
-	 *            状态：0 新退款订单，1退款中，2退款成功，3退款失败
 	 */
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getRefundMsg() {
+		return refundMsg;
+	}
+
+	public void setRefundMsg(String refundMsg) {
+		this.refundMsg = refundMsg;
 	}
 
 	/**

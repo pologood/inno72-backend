@@ -101,17 +101,27 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			orderRefund.setAuditUser(mUser.getName());
 			// 调用退款接口
 			try {
-				String status = payRefund(orderRefund);
-				if (status.equals("11")) {
-					orderRefund.setStatus(1);
-				} else if (status.equals("12")) {
-					orderRefund.setStatus(2);
-				} else if (status.equals("13")) {
+				String result = payRefund(orderRefund);
+				String code = FastJsonUtils.getString(result, "code");
+				String msg = FastJsonUtils.getString(result, "msg");
+				if (Result.SUCCESS == Integer.parseInt(code)) {
+					String status = FastJsonUtils.getString(result, "status");
+					if (status.equals("11")) {
+						orderRefund.setStatus(1);
+					} else if (status.equals("12")) {
+						orderRefund.setStatus(2);
+					} else if (status.equals("13")) {
+						orderRefund.setStatus(3);
+					}
+				} else {
 					orderRefund.setStatus(3);
 				}
+				orderRefund.setRefundMsg(msg);
 			} catch (Exception e) {
-				logger.info("退款接口调用失败:" + e.getMessage());
-				return Results.failure("退款接口调用失败！");
+				logger.error(e.getMessage(), e);
+				logger.info("退款接口调用失败:" + e.toString());
+				orderRefund.setStatus(3);
+				orderRefund.setRefundMsg("退款调用失败");
 			}
 
 		} else if (auditStatus.equals("2")) {
@@ -121,7 +131,6 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			orderRefund.setAuditUser(mUser.getName());
 			orderRefund.setAuditReason(auditReason);
 			orderRefund.setUpdateTime(LocalDateTime.now());
-
 			// 发送微信模版消息
 
 		} else {
@@ -154,17 +163,27 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			base.setRemark(base.getRemark() + "(线下退款)");
 		} else if (type.equals("3")) {
 			try {
-				String status = payRefund(base);
-				if (status.equals("11")) {
-					base.setStatus(1);
-				} else if (status.equals("12")) {
-					base.setStatus(2);
-				} else if (status.equals("13")) {
+				String result = payRefund(base);
+				String code = FastJsonUtils.getString(result, "code");
+				String msg = FastJsonUtils.getString(result, "msg");
+				if (Result.SUCCESS == Integer.parseInt(code)) {
+					String status = FastJsonUtils.getString(result, "status");
+					if (status.equals("11")) {
+						base.setStatus(1);
+					} else if (status.equals("12")) {
+						base.setStatus(2);
+					} else if (status.equals("13")) {
+						base.setStatus(3);
+					}
+				} else {
 					base.setStatus(3);
 				}
+				base.setRefundMsg(msg);
 			} catch (Exception e) {
-				logger.info("退款接口调用失败:" + e.getMessage());
-				return Results.failure("退款接口调用失败！");
+				logger.error(e.getMessage(), e);
+				logger.info("退款接口调用失败:" + e.toString());
+				base.setStatus(3);
+				base.setRefundMsg("退款调用失败");
 			}
 		} else {
 			logger.info("参数错误");
@@ -179,7 +198,8 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 	public String payRefund(Inno72OrderRefund orderRefund) {
 
 		Map<String, String> param = new HashMap<String, String>();
-		param.put("notifyUrl", machineBackendProperties.get("notifyUrl"));
+		param.put("notifyUrl", machineBackendProperties.get("notifyPayRefundUrl"));
+		param.put("spId", "1001");
 		param.put("outTradeNo", orderRefund.getOrderId());
 		param.put("outRefundNo", orderRefund.getId());
 		BigDecimal temp = new BigDecimal(100);
@@ -188,15 +208,13 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		String sign = genSign(param);
 		param.put("sign", sign);
 		String result = doInvoke(param);
-		// 状态 11 退款申请中 12 退款成功 13 退款失败
-		String status = FastJsonUtils.getString(result, "status");
-		return status;
+		return result;
 	}
 
 	private String doInvoke(Map<String, String> param) {
-		logger.info("pay invoke param = {}", JsonUtil.toJson(param));
+		logger.info("payRefund invoke param = {}", JsonUtil.toJson(param));
 		String respJson = HttpClient.form(machineBackendProperties.get("payRefundServiceUrl"), param, null);
-		logger.info("pay invoke response = {}", respJson);
+		logger.info("payRefund invoke response = {}", respJson);
 		return respJson;
 	}
 
