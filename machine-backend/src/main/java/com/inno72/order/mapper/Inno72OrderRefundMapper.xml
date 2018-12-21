@@ -42,8 +42,8 @@
 		LEFT JOIN inno72_channel c ON c.id = o.channel_id
 		LEFT JOIN inno72_interact i ON i.id = o.inno72_activity_id
 		<where>
-			<if test="auditStatus != null and auditStatus !=''  "> and re.status #{auditStatus} </if>
-			<if test="status != null and status !=''  "> and re.status #{status} </if>
+			<if test="auditStatus != null and auditStatus !=''  "> and re.audit_status =#{auditStatus} </if>
+			<if test="status != null and status !=''  "> and re.status =#{status} </if>
 		  	<if test="beginTime != null and beginTime !=''  "> and re.create_time <![CDATA[>=]]> #{beginTime} </if>
       	 	<if test="endTime != null and endTime !='' "> and re.create_time <![CDATA[<=]]> #{endTime} </if>
           	<if test="keyword != null and keyword != ''">

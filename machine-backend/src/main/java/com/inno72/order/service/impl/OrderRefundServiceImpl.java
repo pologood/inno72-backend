@@ -1,6 +1,9 @@
 package com.inno72.order.service.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,15 +17,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.common.AbstractService;
+import com.inno72.common.Encrypt;
+import com.inno72.common.MachineBackendProperties;
 import com.inno72.common.Result;
-import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.common.json.JsonUtil;
+import com.inno72.log.util.FastJsonUtils;
 import com.inno72.order.mapper.Inno72OrderRefundMapper;
+import com.inno72.order.mapper.Inno72RefundLogMapper;
 import com.inno72.order.model.Inno72OrderRefund;
+import com.inno72.order.model.Inno72RefundLog;
 import com.inno72.order.service.OrderRefundService;
+import com.inno72.plugin.http.HttpClient;
 import com.inno72.system.model.Inno72User;
 
 /**
@@ -34,7 +43,13 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 	private static Logger logger = LoggerFactory.getLogger(OrderRefundServiceImpl.class);
 
 	@Resource
+	private MachineBackendProperties machineBackendProperties;
+
+	@Resource
 	private Inno72OrderRefundMapper inno72OrderRefundMapper;
+
+	@Resource
+	private Inno72RefundLogMapper inno72RefundLogMapper;
 
 	@Override
 	public List<Map<String, Object>> getRefundList(String channel, String time, String status, String auditStatus,
@@ -89,22 +104,45 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			orderRefund.setAuditStatus(Integer.parseInt(auditStatus));
 			orderRefund.setAuditTime(LocalDateTime.now());
 			orderRefund.setAuditUser(mUser.getName());
-			inno72OrderRefundMapper.updateByPrimaryKeySelective(orderRefund);
 			// 调用退款接口
+			try {
+				String result = payRefund(orderRefund, mUser);
+				String code = FastJsonUtils.getString(result, "code");
+				String msg = FastJsonUtils.getString(result, "msg");
+				if (Result.SUCCESS == Integer.parseInt(code)) {
+					String status = FastJsonUtils.getString(result, "status");
+					if (status.equals("11")) {
+						orderRefund.setStatus(1);
+					} else if (status.equals("12")) {
+						orderRefund.setStatus(2);
+					} else if (status.equals("13")) {
+						orderRefund.setStatus(3);
+					}
+				} else {
+					orderRefund.setStatus(3);
+				}
+				orderRefund.setRefundMsg(msg);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+				logger.info("退款接口调用失败:" + e.toString());
+				orderRefund.setStatus(3);
+				orderRefund.setRefundMsg("退款调用失败");
+			}
 
 		} else if (auditStatus.equals("2")) {
 			orderRefund.setAuditStatus(Integer.parseInt(auditStatus));
+			orderRefund.setStatus(3);
 			orderRefund.setAuditTime(LocalDateTime.now());
 			orderRefund.setAuditUser(mUser.getName());
 			orderRefund.setAuditReason(auditReason);
 			orderRefund.setUpdateTime(LocalDateTime.now());
-			inno72OrderRefundMapper.updateByPrimaryKeySelective(orderRefund);
 			// 发送微信模版消息
 
 		} else {
 			logger.info("参数错误");
 			return Results.failure("参数错误");
 		}
+		inno72OrderRefundMapper.updateByPrimaryKeySelective(orderRefund);
 		return Results.success("操作成功");
 	}
 
@@ -128,8 +166,30 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			base.setStatus(2);
 			base.setRefundTime(LocalDateTime.now());
 			base.setRemark(base.getRemark() + "(线下退款)");
+			refundLog(base, mUser, "线下退款");
 		} else if (type.equals("3")) {
-
+			try {
+				String result = payRefund(base, mUser);
+				String code = FastJsonUtils.getString(result, "code");
+				String msg = FastJsonUtils.getString(result, "msg");
+				if (Result.SUCCESS == Integer.parseInt(code)) {
+					String status = FastJsonUtils.getString(result, "status");
+					if (status.equals("11")) {
+						base.setStatus(1);
+					} else if (status.equals("12")) {
+						base.setStatus(2);
+					} else if (status.equals("13")) {
+						base.setStatus(3);
+					}
+				} else {
+					base.setStatus(3);
+				}
+				base.setRefundMsg(msg);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+				logger.info("退款接口调用失败:" + e.toString());
+				return Results.failure("退款调用失败");
+			}
 		} else {
 			logger.info("参数错误");
 			return Results.failure("参数错误");
@@ -138,6 +198,69 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		inno72OrderRefundMapper.updateByPrimaryKeySelective(base);
 
 		return Results.success("操作成功");
+	}
+
+	public String payRefund(Inno72OrderRefund orderRefund, Inno72User mUser) {
+
+		Map<String, String> param = new HashMap<String, String>();
+		param.put("notifyUrl", machineBackendProperties.get("notifyPayRefundUrl"));
+		param.put("spId", "1001");
+		param.put("outTradeNo", orderRefund.getOrderId());
+		param.put("outRefundNo", orderRefund.getId());
+		BigDecimal temp = new BigDecimal(100);
+		param.put("amount", orderRefund.getAmount().multiply(temp).longValue() + "");
+		param.put("reason", orderRefund.getReason());
+		String sign = genSign(param);
+		param.put("sign", sign);
+		String result = doInvoke(param);
+		refundLog(orderRefund, mUser, result);
+		return result;
+	}
+
+	private String doInvoke(Map<String, String> param) {
+		logger.info("payRefund invoke param = {}", JsonUtil.toJson(param));
+		String respJson = HttpClient.form(machineBackendProperties.get("payRefundServiceUrl"), param, null);
+		logger.info("payRefund invoke response = {}", respJson);
+		return respJson;
+	}
+
+	private String genSign(Map<String, String> param) {
+		String paramStr = createLinkString(param);
+		String secureKey = machineBackendProperties.get("secureKey");
+		String sign = paramStr + "&" + secureKey;
+		sign = Encrypt.md5(sign);
+		return sign;
+	}
+
+	public static String createLinkString(Map<String, String> params) {
+
+		List<String> keys = new ArrayList<String>(params.keySet());
+		Collections.sort(keys);
+
+		String prestr = "";
+
+		for (int i = 0; i < keys.size(); i++) {
+			String key = keys.get(i);
+			String value = params.get(key);
+
+			if (i == keys.size() - 1) {
+				prestr = prestr + key + "=" + value;
+			} else {
+				prestr = prestr + key + "=" + value + "&";
+			}
+		}
+
+		return prestr;
+	}
+
+	private void refundLog(Inno72OrderRefund orderRefund, Inno72User mUser, String msg) {
+		Inno72RefundLog log = new Inno72RefundLog();
+		log.setId(StringUtil.getUUID());
+		log.setRefundId(orderRefund.getId());
+		log.setRefundNum(orderRefund.getRefundNum());
+		log.setRefundUser(mUser.getName());
+		log.setLog(msg);
+		inno72RefundLogMapper.insert(log);
 	}
 
 	@Override
