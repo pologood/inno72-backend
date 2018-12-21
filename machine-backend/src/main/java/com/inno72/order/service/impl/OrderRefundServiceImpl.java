@@ -166,6 +166,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			base.setStatus(2);
 			base.setRefundTime(LocalDateTime.now());
 			base.setRemark(base.getRemark() + "(线下退款)");
+			refundLog(base, mUser, "线下退款");
 		} else if (type.equals("3")) {
 			try {
 				String result = payRefund(base, mUser);
@@ -187,8 +188,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				logger.info("退款接口调用失败:" + e.toString());
-				base.setStatus(3);
-				base.setRefundMsg("退款调用失败");
+				return Results.failure("退款调用失败");
 			}
 		} else {
 			logger.info("参数错误");
@@ -213,7 +213,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		String sign = genSign(param);
 		param.put("sign", sign);
 		String result = doInvoke(param);
-		refundLog(orderRefund, mUser);
+		refundLog(orderRefund, mUser, result);
 		return result;
 	}
 
@@ -253,12 +253,13 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		return prestr;
 	}
 
-	private void refundLog(Inno72OrderRefund orderRefund, Inno72User mUser) {
+	private void refundLog(Inno72OrderRefund orderRefund, Inno72User mUser, String msg) {
 		Inno72RefundLog log = new Inno72RefundLog();
 		log.setId(StringUtil.getUUID());
 		log.setRefundId(orderRefund.getId());
 		log.setRefundNum(orderRefund.getRefundNum());
 		log.setRefundUser(mUser.getName());
+		log.setLog(msg);
 		inno72RefundLogMapper.insert(log);
 	}
 
