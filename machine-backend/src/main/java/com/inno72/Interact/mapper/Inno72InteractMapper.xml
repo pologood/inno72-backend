@@ -110,6 +110,9 @@
 		<if test="orderBy !=null and orderBy !='' ">
 			ORDER BY ${orderBy}
 		</if>
+		<if test="orderBy ==null or orderBy =='' ">
+			ORDER BY i.update_time
+		</if>
   </select>
   
   
