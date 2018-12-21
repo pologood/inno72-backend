@@ -49,6 +49,7 @@
 			i.paiyang_type,
 			dd.`name` AS channel,
 			i.manager,
+			i.update_time,
 			date_format(i.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
 			CASE
 			WHEN i.status=0 THEN 0
@@ -111,7 +112,7 @@
 			ORDER BY ${orderBy}
 		</if>
 		<if test="orderBy ==null or orderBy =='' ">
-			ORDER BY i.update_time
+			ORDER BY update_time
 		</if>
   </select>
   
