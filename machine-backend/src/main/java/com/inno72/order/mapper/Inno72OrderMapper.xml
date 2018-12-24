@@ -31,6 +31,8 @@
     <result column="mer_point_address" jdbcType="VARCHAR" property="merPointAddress"/>
     <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
     <result column="order_status" jdbcType="INTEGER" property="orderStatus"/>
+    <result column="pay_type" jdbcType="INTEGER" property="payType"/>
+    <result column="goods_type" jdbcType="INTEGER" property="goodsType"/>
     <result column="channelName" jdbcType="VARCHAR" property="channelName"/>
     <result column="merchantName" jdbcType="VARCHAR" property="merchantName"/>
     <result column="loginName" jdbcType="VARCHAR" property="loginName"/>

@@ -124,6 +124,12 @@ public class Inno72Order {
 	@Column(name = "order_status")
 	private int orderStatus;
 
+	@Column(name = "pay_type")
+	private Integer payType;
+
+	@Column(name = "goods_type")
+	private Integer goodsType;
+
 	@Transient
 	private String channelCode;
 
@@ -523,5 +529,21 @@ public class Inno72Order {
 
 	public void setLoginName(String loginName) {
 		this.loginName = loginName;
+	}
+
+	public Integer getPayType() {
+		return payType;
+	}
+
+	public void setPayType(Integer payType) {
+		this.payType = payType;
+	}
+
+	public Integer getGoodsType() {
+		return goodsType;
+	}
+
+	public void setGoodsType(Integer goodsType) {
+		this.goodsType = goodsType;
 	}
 }
