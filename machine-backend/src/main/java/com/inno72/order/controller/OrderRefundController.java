@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +22,7 @@ import com.inno72.order.service.OrderRefundService;
  * Created by CodeGenerator on 2018/12/17.
  */
 @RestController
+@CrossOrigin
 @RequestMapping("/order/refund")
 public class OrderRefundController {
 	@Resource
