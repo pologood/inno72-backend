@@ -21,6 +21,7 @@
   
   <select id="selectByPage" parameterType="java.util.Map" resultType="java.util.Map">
   		SELECT
+  			re.id,
 			o.order_num AS orderNum,
 			re.amount,
 			re.phone,
