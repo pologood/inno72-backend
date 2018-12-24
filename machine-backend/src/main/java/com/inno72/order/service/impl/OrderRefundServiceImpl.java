@@ -100,7 +100,14 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		}
 		// 审核状态：1通过（调用退款接口），2不通过（发送微信消息模版）
 		if (auditStatus.equals("1")) {
-
+			if (orderRefund.getAuditStatus() == 2) {
+				logger.info("审核已通过");
+				return Results.failure("审核已通过！");
+			}
+			if (orderRefund.getStatus() == 2) {
+				logger.info("已成功退款，不能再次退款！");
+				return Results.failure("已成功退款，不能再次退款！");
+			}
 			orderRefund.setAuditStatus(Integer.parseInt(auditStatus));
 			orderRefund.setAuditTime(LocalDateTime.now());
 			orderRefund.setAuditUser(mUser.getName());
@@ -125,8 +132,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				logger.info("退款接口调用失败:" + e.toString());
-				orderRefund.setStatus(3);
-				orderRefund.setRefundMsg("退款调用失败");
+				return Results.failure("退款调用失败");
 			}
 
 		} else if (auditStatus.equals("2")) {
@@ -135,9 +141,13 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			orderRefund.setAuditTime(LocalDateTime.now());
 			orderRefund.setAuditUser(mUser.getName());
 			orderRefund.setAuditReason(auditReason);
+			orderRefund.setRefundMsg("审核未通过");
 			orderRefund.setUpdateTime(LocalDateTime.now());
-			// 发送微信模版消息
 
+			// 发送短信
+
+			// 记录日志
+			this.refundLog(orderRefund, mUser, "审核未通过");
 		} else {
 			logger.info("参数错误");
 			return Results.failure("参数错误");
@@ -163,11 +173,25 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			}
 			base.setRemark(model.getRemark());
 		} else if (type.equals("2")) {
+			if (base.getAuditStatus() != 2) {
+				logger.info("审核未通过，不能线下退款");
+				return Results.failure("审核未通过，不能线下退款！");
+			}
 			base.setStatus(2);
 			base.setRefundTime(LocalDateTime.now());
 			base.setRemark(base.getRemark() + "(线下退款)");
-			refundLog(base, mUser, "线下退款");
+			base.setRefundMsg("线下退款");
+			// 记录日志
+			this.refundLog(base, mUser, "线下退款");
 		} else if (type.equals("3")) {
+			if (base.getAuditStatus() != 2) {
+				logger.info("审核未通过，不能线下退款");
+				return Results.failure("审核未通过，不能再次退款！");
+			}
+			if (base.getStatus() == 2) {
+				logger.info("已成功退款，不能再次退款！");
+				return Results.failure("已成功退款，不能再次退款！");
+			}
 			try {
 				String result = payRefund(base, mUser);
 				String code = FastJsonUtils.getString(result, "code");
@@ -181,6 +205,8 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 					} else if (status.equals("13")) {
 						base.setStatus(3);
 					}
+				} else if (50023 == Integer.parseInt(code)) {
+
 				} else {
 					base.setStatus(3);
 				}
