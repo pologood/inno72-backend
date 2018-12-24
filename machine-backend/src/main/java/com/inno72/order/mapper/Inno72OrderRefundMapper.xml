@@ -58,6 +58,7 @@
   
   <select id="selectRefundDetail" parameterType="String" resultType="java.util.Map">
   		SELECT
+  			re.id,
 			o.order_num AS orderNum,
 			CONCAT(area.province,area.city, area.district,IFNULL( l.mall,""),IFNULL( l.name,"")) AS local,
 			m.machine_code AS machineCode,
