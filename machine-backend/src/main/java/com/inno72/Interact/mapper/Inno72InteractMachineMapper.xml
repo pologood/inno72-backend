@@ -75,18 +75,24 @@
   		CONCAT( area.province, area.city, area.district, IFNULL( l.mall, "" ), IFNULL( l.NAME, "" ) ) AS local_desc,
 		m.id AS machine_id,
 		m.machine_code AS machine_code,
-		t.id AS activity_id,
-		t.name AS activity_name,
-		date_format( mt.start_time, '%Y-%m-%d %H:%i:%s' ) AS start_time,
-		date_format( mt.end_time, '%Y-%m-%d %H:%i:%s' ) AS end_time,
+		ma.activity_id,
+		ma.activity_name,
+		ma.start_time,
+		ma.end_time,
 		CASE WHEN <![CDATA[mm.max_time >=#{endTime}]]> THEN 1 ELSE 0 END state
 	FROM
 		inno72_machine m
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
 		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
-		LEFT JOIN inno72_interact_machine im ON im.machine_id = m.id
-		LEFT JOIN inno72_interact_machine_time mt ON mt.interact_machine_id = im.id
-		LEFT JOIN inno72_interact t ON t.id = im.interact_id and t.is_delete = 0 
+		LEFT JOIN (
+			SELECT im.machine_id,t.id AS activity_id,t.NAME AS activity_name,
+					date_format( mt.start_time, '%Y-%m-%d %H:%i:%s' ) AS start_time,
+					date_format( mt.end_time, '%Y-%m-%d %H:%i:%s' ) AS end_time
+			FROM inno72_interact_machine im
+			LEFT JOIN inno72_interact_machine_time mt ON mt.interact_machine_id = im.id
+			LEFT JOIN inno72_interact t ON t.id = im.interact_id 
+			WHERE t.is_delete = 0 AND t.`status` !=2
+		) ma ON ma.machine_id = m.id
 		LEFT JOIN (
 			SELECT machine_id,MAX(mt.end_time) AS max_time FROM inno72_interact_machine m
 			LEFT JOIN inno72_interact_machine_time mt ON m.id=mt.interact_machine_id
