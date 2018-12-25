@@ -27,6 +27,12 @@ public class Inno72OrderRefund {
 	private String orderId;
 
 	/**
+	 * 手机号
+	 */
+	@Column(name = "phone")
+	private String phone;
+
+	/**
 	 * 用户id
 	 */
 	@Column(name = "user_id")
@@ -144,6 +150,14 @@ public class Inno72OrderRefund {
 	 */
 	public void setOrderId(String orderId) {
 		this.orderId = orderId;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	/**

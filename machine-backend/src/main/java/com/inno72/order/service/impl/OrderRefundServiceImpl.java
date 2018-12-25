@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.common.AbstractService;
+import com.inno72.common.DateUtil;
 import com.inno72.common.Encrypt;
 import com.inno72.common.MachineBackendProperties;
 import com.inno72.common.Result;
@@ -26,6 +27,7 @@ import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.common.json.JsonUtil;
 import com.inno72.log.util.FastJsonUtils;
+import com.inno72.msg.MsgUtil;
 import com.inno72.order.mapper.Inno72OrderRefundMapper;
 import com.inno72.order.mapper.Inno72RefundLogMapper;
 import com.inno72.order.model.Inno72OrderRefund;
@@ -50,6 +52,9 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 
 	@Resource
 	private Inno72RefundLogMapper inno72RefundLogMapper;
+
+	@Resource
+	private MsgUtil msgUtil;
 
 	@Override
 	public List<Map<String, Object>> getRefundList(String channel, String time, String status, String auditStatus,
@@ -120,13 +125,16 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 					String status = FastJsonUtils.getString(result, "status");
 					if (status.equals("11")) {
 						orderRefund.setStatus(1);
+						this.sendMsgInfo(orderRefund, "1", "成功");
 					} else if (status.equals("12")) {
 						orderRefund.setStatus(2);
 					} else if (status.equals("13")) {
 						orderRefund.setStatus(3);
+						this.sendMsgInfo(orderRefund, "2", msg);
 					}
 				} else {
 					orderRefund.setStatus(3);
+					this.sendMsgInfo(orderRefund, "2", msg);
 				}
 				orderRefund.setRefundMsg(msg);
 			} catch (Exception e) {
@@ -144,7 +152,8 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			orderRefund.setRefundMsg("审核未通过");
 			orderRefund.setUpdateTime(LocalDateTime.now());
 
-			// 发送短信
+			// 发送短信/模版消息
+			this.sendMsgInfo(orderRefund, "3", auditReason);
 
 			// 记录日志
 			this.refundLog(orderRefund, mUser, "审核未通过");
@@ -200,15 +209,18 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 					String status = FastJsonUtils.getString(result, "status");
 					if (status.equals("11")) {
 						base.setStatus(1);
+						this.sendMsgInfo(base, "1", "成功");
 					} else if (status.equals("12")) {
 						base.setStatus(2);
 					} else if (status.equals("13")) {
 						base.setStatus(3);
+						this.sendMsgInfo(base, "2", msg);
 					}
 				} else if (50023 == Integer.parseInt(code)) {
 
 				} else {
 					base.setStatus(3);
+					this.sendMsgInfo(base, "2", msg);
 				}
 				base.setRefundMsg(msg);
 			} catch (Exception e) {
@@ -287,6 +299,39 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		log.setRefundUser(mUser.getName());
 		log.setLog(msg);
 		inno72RefundLogMapper.insert(log);
+	}
+
+	private String sendMsgInfo(Inno72OrderRefund orderRefund, String type, String msg) {
+		// type 1，退款成功 2，失败 3，审核未通过
+		// String active = System.getenv("spring_profiles_active");
+		String appName = "machineBackend";
+		String smsCode = "sms_order_refund";
+		// String wechatCode = "";
+
+		Map<String, String> params = new HashMap<>();
+		if (type.endsWith("1")) {
+			params.put("title", "费用已退回至您的支付账户");
+			params.put("text", "退款方式：原路退回");
+		} else if (type.endsWith("2")) {
+			params.put("title", "您的退款失败");
+			params.put("text", "失败原因：" + msg);
+		} else if (type.endsWith("3")) {
+			params.put("title", "您的退款审核被拒绝");
+			if (StringUtil.isBlank(msg)) {
+				params.put("text", "失败原因：已经补发商品");
+			}else{
+				params.put("text", "失败原因："+msg);
+			}
+			
+		}
+		params.put("orderNo", orderRefund.getRefundNum());
+		params.put("amount", orderRefund.getAmount() + "元");
+		params.put("date", "时间：" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_ONLY_YMDHM_S1));
+
+		msgUtil.sendSMS(smsCode, params, orderRefund.getPhone(), appName);
+		// msgUtil.sendWechatTemplate(wechatCode, params, firstContent,
+		// remarkContent, openid, null, appName);
+		return "ok";
 	}
 
 	@Override
