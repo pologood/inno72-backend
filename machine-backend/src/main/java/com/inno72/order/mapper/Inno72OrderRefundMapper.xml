@@ -79,6 +79,7 @@
 			re.status,
 			date_format( re.create_time, '%Y-%m-%d %H:%i:%s' ) AS createTime,
 			date_format( re.audit_time, '%Y-%m-%d %H:%i:%s' ) AS auditTime,
+			date_format( re.refund_time, '%Y-%m-%d %H:%i:%s' ) AS refundTime,
 			re.audit_status AS auditStatus,
 			re.audit_user AS auditUser,
 			re.audit_reason AS auditReason,

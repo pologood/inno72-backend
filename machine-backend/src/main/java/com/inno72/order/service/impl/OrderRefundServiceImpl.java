@@ -125,6 +125,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 					String status = FastJsonUtils.getString(result, "status");
 					if (status.equals("11")) {
 						orderRefund.setStatus(1);
+						orderRefund.setRefundTime(LocalDateTime.now());
 						this.sendMsgInfo(orderRefund, "1", "成功");
 					} else if (status.equals("12")) {
 						orderRefund.setStatus(2);
@@ -209,6 +210,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 					String status = FastJsonUtils.getString(result, "status");
 					if (status.equals("11")) {
 						base.setStatus(1);
+						base.setRefundTime(LocalDateTime.now());
 						this.sendMsgInfo(base, "1", "成功");
 					} else if (status.equals("12")) {
 						base.setStatus(2);
@@ -319,10 +321,10 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			params.put("title", "您的退款审核被拒绝");
 			if (StringUtil.isBlank(msg)) {
 				params.put("text", "失败原因：已经补发商品");
-			}else{
-				params.put("text", "失败原因："+msg);
+			} else {
+				params.put("text", "失败原因：" + msg);
 			}
-			
+
 		}
 		params.put("orderNo", orderRefund.getRefundNum());
 		params.put("amount", orderRefund.getAmount() + "元");
