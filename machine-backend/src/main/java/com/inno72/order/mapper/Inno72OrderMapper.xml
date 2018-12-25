@@ -109,6 +109,9 @@
           <if test="goodsStatus != null and goodsStatus != ''">
               and o.goods_status = #{goodsStatus}
           </if>
+          <if test="orderStatus != null and orderStatus != ''">
+              and o.order_status = #{orderStatus}
+          </if>
           <if test="payStatus != null and payStatus !=''">
               and o.pay_status = #{payStatus}
           </if>
