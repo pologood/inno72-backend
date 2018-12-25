@@ -122,7 +122,7 @@ public class Inno72Order {
 	private int repetition;
 
 	@Column(name = "order_status")
-	private int orderStatus;
+	private Integer orderStatus;
 
 	@Column(name = "pay_type")
 	private Integer payType;
@@ -501,11 +501,11 @@ public class Inno72Order {
 		this.pageParam = pageParam;
 	}
 
-	public int getOrderStatus() {
+	public Integer getOrderStatus() {
 		return orderStatus;
 	}
 
-	public void setOrderStatus(int orderStatus) {
+	public void setOrderStatus(Integer orderStatus) {
 		this.orderStatus = orderStatus;
 	}
 
