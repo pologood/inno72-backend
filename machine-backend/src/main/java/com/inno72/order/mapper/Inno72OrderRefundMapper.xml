@@ -24,6 +24,7 @@
   			re.id,
 			o.order_num AS orderNum,
 			re.amount,
+			re.status,
 			re.phone,
 			m.machine_code AS machineCode,
 			CONCAT(area.province,area.city, area.district,IFNULL( l.mall,""),IFNULL( l.name,"")) AS local,

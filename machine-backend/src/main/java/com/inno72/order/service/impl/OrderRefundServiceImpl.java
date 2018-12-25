@@ -26,6 +26,8 @@ import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.common.json.JsonUtil;
+import com.inno72.gameUser.mapper.Inno72GameUserChannelMapper;
+import com.inno72.gameUser.model.Inno72GameUserChannel;
 import com.inno72.log.util.FastJsonUtils;
 import com.inno72.msg.MsgUtil;
 import com.inno72.order.mapper.Inno72OrderRefundMapper;
@@ -52,6 +54,9 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 
 	@Resource
 	private Inno72RefundLogMapper inno72RefundLogMapper;
+
+	@Resource
+	private Inno72GameUserChannelMapper inno72GameUserChannelMapper;
 
 	@Resource
 	private MsgUtil msgUtil;
@@ -308,8 +313,8 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		// String active = System.getenv("spring_profiles_active");
 		String appName = "machineBackend";
 		String smsCode = "sms_order_refund";
-		// String wechatCode = "";
-
+		String wechatCode = "wechat_model";
+		// 短信消息
 		Map<String, String> params = new HashMap<>();
 		if (type.endsWith("1")) {
 			params.put("title", "费用已退回至您的支付账户");
@@ -324,15 +329,38 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			} else {
 				params.put("text", "失败原因：" + msg);
 			}
-
 		}
-		params.put("orderNo", orderRefund.getRefundNum());
+		// params.put("orderNo", orderRefund.getRefundNum());
 		params.put("amount", orderRefund.getAmount() + "元");
 		params.put("date", "时间：" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_ONLY_YMDHM_S1));
-
 		msgUtil.sendSMS(smsCode, params, orderRefund.getPhone(), appName);
-		// msgUtil.sendWechatTemplate(wechatCode, params, firstContent,
-		// remarkContent, openid, null, appName);
+
+		// 微信模版
+		Inno72GameUserChannel user = new Inno72GameUserChannel();
+		user.setGameUserId(orderRefund.getUserId());
+		user = inno72GameUserChannelMapper.selectOne(user);
+		String firstContent = "";
+		String remarkContent = "";
+
+		Map<String, String> wcParams = new HashMap<>();
+		if (type.endsWith("1")) {
+			firstContent = "费用已退回至您的支付账户";
+		} else if (type.endsWith("2")) {
+			firstContent = "您的退款失败";
+		} else if (type.endsWith("3")) {
+			firstContent = "您的退款审核被拒绝";
+			if (StringUtil.isBlank(msg)) {
+				wcParams.put("data3", "失败原因：已经补发商品");
+			} else {
+				wcParams.put("data3", "失败原因：" + msg);
+			}
+		}
+		// wcParams.put("data1", orderRefund.getRefundNum());
+		wcParams.put("data1", orderRefund.getAmount() + "元");
+		wcParams.put("data2", "时间：" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_ONLY_YMDHM_S1));
+
+		msgUtil.sendWechatTemplate(wechatCode, params, firstContent, remarkContent, user.getChannelUserKey(), null,
+				appName);
 		return "ok";
 	}
 
