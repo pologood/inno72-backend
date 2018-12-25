@@ -158,7 +158,7 @@
 	  ore.create_time refundCreateTime,
 	  ore.amount,
 	  ore.reason,
-	  ore.refund_time
+	  ore.refund_time,
 	  ore.status reStatus
       from inno72_order o
       left join inno72_game_user_channel guc on o.user_id=guc.game_user_id
