@@ -36,6 +36,7 @@
     <result column="channelName" jdbcType="VARCHAR" property="channelName"/>
     <result column="merchantName" jdbcType="VARCHAR" property="merchantName"/>
     <result column="loginName" jdbcType="VARCHAR" property="loginName"/>
+    <result column="refundStatus" jdbcType="INTEGER" property="refundStatus"/>
     <association property="orderRefund" resultMap="orderRefund"/>
     <collection property="orderGoodsList" resultMap="orderGoodsList"/>
   </resultMap>
@@ -58,6 +59,7 @@
     <result column="amount" jdbcType="DECIMAL" property="amount"/>
     <result column="reason" jdbcType="VARCHAR" property="reason"/>
     <result column="refund_time" jdbcType="TIMESTAMP" property="refundTime"/>
+    <result column="reStatus" jdbcType="INTEGER" property="status"/>
   </resultMap>
 
   <sql id="Column_List">
@@ -82,7 +84,8 @@
       og.status orderGoodsStatus,
       if(a.name is null ,i.name,a.name) activity_name,
       if(g1.name is null,g2.name,g1.name) gameName,
-      c.channel_name channelName
+      c.channel_name channelName,
+      ore.status refundStatus
       from inno72_order o
       left join inno72_order_goods og on og.order_num=o.order_num
       left join inno72_game_user_channel guc on guc.game_user_id=o.user_id
@@ -93,6 +96,7 @@
       left join inno72_activity_plan ap on ap.id=o.inno72_activity_plan_id left join inno72_game g1 on ap.game_id= g1.id
       left join inno72_interact i on o.inno72_activity_id=i.id left join inno72_game g2 on i.game_id=g2.id
       left join inno72_channel c on c.id=o.channel_id
+      left join inno72_order_refund ore on ore.order_id=o.id
       <where>
           <if test="machineId != null and machineId != ''">
               and o.machine_id = #{machineId}
@@ -155,6 +159,7 @@
 	  ore.amount,
 	  ore.reason,
 	  ore.refund_time
+	  ore.status reStatus
       from inno72_order o
       left join inno72_game_user_channel guc on o.user_id=guc.game_user_id
       left join inno72_machine m on m.id=o.machine_id

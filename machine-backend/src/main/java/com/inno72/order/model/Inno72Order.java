@@ -181,6 +181,8 @@ public class Inno72Order {
 
 	private String loginName;
 
+	private Integer refundStatus;
+
 	@Transient
 	private int pageNo;
 
@@ -545,5 +547,13 @@ public class Inno72Order {
 
 	public void setGoodsType(Integer goodsType) {
 		this.goodsType = goodsType;
+	}
+
+	public Integer getRefundStatus() {
+		return refundStatus;
+	}
+
+	public void setRefundStatus(Integer refundStatus) {
+		this.refundStatus = refundStatus;
 	}
 }
