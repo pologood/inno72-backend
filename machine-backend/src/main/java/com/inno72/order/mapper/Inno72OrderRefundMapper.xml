@@ -21,6 +21,7 @@
   
   <select id="selectByPage" parameterType="java.util.Map" resultType="java.util.Map">
   		SELECT
+  			re.id,
 			o.order_num AS orderNum,
 			re.amount,
 			re.phone,
@@ -58,6 +59,7 @@
   
   <select id="selectRefundDetail" parameterType="String" resultType="java.util.Map">
   		SELECT
+  			re.id,
 			o.order_num AS orderNum,
 			CONCAT(area.province,area.city, area.district,IFNULL( l.mall,""),IFNULL( l.name,"")) AS local,
 			m.machine_code AS machineCode,
@@ -67,6 +69,7 @@
 			o.order_status AS orderStatus,
 			re.user_id AS userId,
 			i.`name` AS activityName,
+			g.goods_name AS goodsName,
 			o.order_type AS orderType,
 			o.goods_status goodsStatus,
 			date_format( o.pay_time, '%Y-%m-%d %H:%i:%s' ) AS payTime,
@@ -76,9 +79,12 @@
 			re.status,
 			date_format( re.create_time, '%Y-%m-%d %H:%i:%s' ) AS createTime,
 			date_format( re.audit_time, '%Y-%m-%d %H:%i:%s' ) AS auditTime,
+			date_format( re.refund_time, '%Y-%m-%d %H:%i:%s' ) AS refundTime,
+			re.audit_status AS auditStatus,
 			re.audit_user AS auditUser,
 			re.audit_reason AS auditReason,
 			re.reason,
+			re.refund_msg AS refundMsg,
 			re.remark
 		FROM
 			inno72_order_refund re
@@ -88,6 +94,7 @@
 		LEFT JOIN inno72_admin_area area ON area.`code`=l.area_code
 		LEFT JOIN inno72_channel c ON c.id = o.channel_id
 		LEFT JOIN inno72_interact i ON i.id = o.inno72_activity_id
+		LEFT JOIN inno72_order_goods g ON g.order_id=re.order_id
 		WHERE re.id =#{id}
   </select>
   
