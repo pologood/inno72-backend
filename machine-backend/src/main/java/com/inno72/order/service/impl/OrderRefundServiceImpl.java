@@ -26,6 +26,8 @@ import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.common.json.JsonUtil;
+import com.inno72.gameUser.mapper.Inno72GameUserChannelMapper;
+import com.inno72.gameUser.model.Inno72GameUserChannel;
 import com.inno72.log.util.FastJsonUtils;
 import com.inno72.msg.MsgUtil;
 import com.inno72.order.mapper.Inno72OrderRefundMapper;
@@ -52,6 +54,9 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 
 	@Resource
 	private Inno72RefundLogMapper inno72RefundLogMapper;
+
+	@Resource
+	private Inno72GameUserChannelMapper inno72GameUserChannelMapper;
 
 	@Resource
 	private MsgUtil msgUtil;
@@ -183,7 +188,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			}
 			base.setRemark(model.getRemark());
 		} else if (type.equals("2")) {
-			if (base.getAuditStatus() != 2) {
+			if (base.getAuditStatus() != 1) {
 				logger.info("审核未通过，不能线下退款");
 				return Results.failure("审核未通过，不能线下退款！");
 			}
@@ -194,8 +199,8 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			// 记录日志
 			this.refundLog(base, mUser, "线下退款");
 		} else if (type.equals("3")) {
-			if (base.getAuditStatus() != 2) {
-				logger.info("审核未通过，不能线下退款");
+			if (base.getAuditStatus() != 1) {
+				logger.info("审核未通过，不能再次退款");
 				return Results.failure("审核未通过，不能再次退款！");
 			}
 			if (base.getStatus() == 2) {
@@ -308,31 +313,59 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		// String active = System.getenv("spring_profiles_active");
 		String appName = "machineBackend";
 		String smsCode = "sms_order_refund";
-		// String wechatCode = "";
+		String wechatCode = "wechat_model";
+		// 短信消息
+		// 【点七二互动】尊敬的用户您的退款申请失败，失败原因#message#。
+		// 【点七二互动】尊敬的用户退款#message#元已退还至您账户，请注意查收！
+		StringBuffer smsContent = new StringBuffer("尊敬的用户");
 
-		Map<String, String> params = new HashMap<>();
 		if (type.endsWith("1")) {
-			params.put("title", "费用已退回至您的支付账户");
-			params.put("text", "退款方式：原路退回");
+			smsContent.append("退款");
+			smsContent.append(orderRefund.getAmount() + "元");
+			smsContent.append("已退还至您账户，请注意查收！");
 		} else if (type.endsWith("2")) {
-			params.put("title", "您的退款失败");
-			params.put("text", "失败原因：" + msg);
+			smsContent.append("您的退款申请失败，失败原因");
+			smsContent.append(msg);
 		} else if (type.endsWith("3")) {
-			params.put("title", "您的退款审核被拒绝");
+			smsContent.append("您的退款申请失败，失败原因");
 			if (StringUtil.isBlank(msg)) {
-				params.put("text", "失败原因：已经补发商品");
+				smsContent.append("审核未通过");
 			} else {
-				params.put("text", "失败原因：" + msg);
+				smsContent.append(msg);
 			}
-
 		}
-		params.put("orderNo", orderRefund.getRefundNum());
-		params.put("amount", orderRefund.getAmount() + "元");
-		params.put("date", "时间：" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_ONLY_YMDHM_S1));
-
+		Map<String, String> params = new HashMap<>();
+		params.put("content", smsContent.toString());
 		msgUtil.sendSMS(smsCode, params, orderRefund.getPhone(), appName);
-		// msgUtil.sendWechatTemplate(wechatCode, params, firstContent,
-		// remarkContent, openid, null, appName);
+
+		// 微信模版
+		Inno72GameUserChannel user = new Inno72GameUserChannel();
+		user.setGameUserId(orderRefund.getUserId());
+		user = inno72GameUserChannelMapper.selectOne(user);
+		String firstContent = "";
+		String remarkContent = "";
+
+		Map<String, String> wcParams = new HashMap<>();
+		if (type.endsWith("1")) {
+			firstContent = "费用已退回至您的支付账户";
+		} else if (type.endsWith("2")) {
+			firstContent = "您的退款失败";
+		} else if (type.endsWith("3")) {
+			firstContent = "您的退款审核被拒绝";
+			if (StringUtil.isBlank(msg)) {
+				wcParams.put("data3", "失败原因：已经补发商品");
+			} else {
+				wcParams.put("data3", "失败原因：" + msg);
+			}
+		}
+		// wcParams.put("data1", orderRefund.getRefundNum());
+		wcParams.put("data1", "金额：" + orderRefund.getAmount() + "元");
+		wcParams.put("data2", "时间：" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_ONLY_YMDHM_S1));
+
+		if (null != user) {
+			msgUtil.sendWechatTemplate(wechatCode, wcParams, firstContent, remarkContent, user.getChannelUserKey(),
+					null, appName);
+		}
 		return "ok";
 	}
 

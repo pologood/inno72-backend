@@ -24,6 +24,7 @@
   			re.id,
 			o.order_num AS orderNum,
 			re.amount,
+			re.status,
 			re.phone,
 			m.machine_code AS machineCode,
 			CONCAT(area.province,area.city, area.district,IFNULL( l.mall,""),IFNULL( l.name,"")) AS local,
@@ -33,6 +34,7 @@
 			date_format( re.create_time, '%Y-%m-%d %H:%i:%s' ) AS createTime,
 			re.reason,
 			re.audit_reason AS auditReason,
+			re.refund_msg AS refundMsg,
 			re.remark
 		FROM
 			inno72_order_refund re
