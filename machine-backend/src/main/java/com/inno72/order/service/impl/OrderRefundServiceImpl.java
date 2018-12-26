@@ -188,7 +188,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			}
 			base.setRemark(model.getRemark());
 		} else if (type.equals("2")) {
-			if (base.getAuditStatus() != 2) {
+			if (base.getAuditStatus() != 1) {
 				logger.info("审核未通过，不能线下退款");
 				return Results.failure("审核未通过，不能线下退款！");
 			}
@@ -200,7 +200,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			this.refundLog(base, mUser, "线下退款");
 		} else if (type.equals("3")) {
 			if (base.getAuditStatus() != 1) {
-				logger.info("审核未通过，不能线下退款");
+				logger.info("审核未通过，不能再次退款");
 				return Results.failure("审核未通过，不能再次退款！");
 			}
 			if (base.getStatus() == 2) {
@@ -359,8 +359,10 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		wcParams.put("data1", "金额：" + orderRefund.getAmount() + "元");
 		wcParams.put("data2", "时间：" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_ONLY_YMDHM_S1));
 
-		// msgUtil.sendWechatTemplate(wechatCode, wcParams, firstContent,
-		// remarkContent, user.getChannelUserKey(), null,appName);
+		if (null != user) {
+			msgUtil.sendWechatTemplate(wechatCode, wcParams, firstContent, remarkContent, user.getChannelUserKey(),
+					null, appName);
+		}
 		return "ok";
 	}
 
