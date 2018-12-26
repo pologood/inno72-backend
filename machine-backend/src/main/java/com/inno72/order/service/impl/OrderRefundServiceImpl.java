@@ -330,7 +330,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 				params.put("text", "失败原因：" + msg);
 			}
 		}
-		// params.put("orderNo","单号：" +  orderRefund.getRefundNum());
+		// params.put("orderNo","单号：" + orderRefund.getRefundNum());
 		params.put("amount", "金额：" + orderRefund.getAmount() + "元");
 		params.put("date", "时间：" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_ONLY_YMDHM_S1));
 		msgUtil.sendSMS(smsCode, params, orderRefund.getPhone(), appName);
@@ -356,7 +356,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 			}
 		}
 		// wcParams.put("data1", orderRefund.getRefundNum());
-		wcParams.put("data1", orderRefund.getAmount() + "元");
+		wcParams.put("data1", "金额：" + orderRefund.getAmount() + "元");
 		wcParams.put("data2", "时间：" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_ONLY_YMDHM_S1));
 
 		msgUtil.sendWechatTemplate(wechatCode, params, firstContent, remarkContent, user.getChannelUserKey(), null,
