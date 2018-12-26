@@ -34,6 +34,7 @@
 			date_format( re.create_time, '%Y-%m-%d %H:%i:%s' ) AS createTime,
 			re.reason,
 			re.audit_reason AS auditReason,
+			re.refund_msg AS refundMsg,
 			re.remark
 		FROM
 			inno72_order_refund re
