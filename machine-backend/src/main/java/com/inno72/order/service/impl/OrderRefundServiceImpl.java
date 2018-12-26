@@ -315,24 +315,27 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		String smsCode = "sms_order_refund";
 		String wechatCode = "wechat_model";
 		// 短信消息
-		Map<String, String> params = new HashMap<>();
+		// 【点七二互动】尊敬的用户您的退款申请失败，失败原因#message#。
+		// 【点七二互动】尊敬的用户退款#message#元已退还至您账户，请注意查收！
+		StringBuffer smsContent = new StringBuffer("尊敬的用户");
+
 		if (type.endsWith("1")) {
-			params.put("title", "费用已退回至您的支付账户");
-			params.put("text", "退款方式：原路退回");
+			smsContent.append("退款");
+			smsContent.append(orderRefund.getAmount() + "元");
+			smsContent.append("已退还至您账户，请注意查收！");
 		} else if (type.endsWith("2")) {
-			params.put("title", "您的退款失败");
-			params.put("text", "失败原因：" + msg);
+			smsContent.append("您的退款申请失败，失败原因");
+			smsContent.append(msg);
 		} else if (type.endsWith("3")) {
-			params.put("title", "您的退款审核被拒绝");
+			smsContent.append("您的退款申请失败，失败原因");
 			if (StringUtil.isBlank(msg)) {
-				params.put("text", "失败原因：已经补发商品");
+				smsContent.append("审核未通过");
 			} else {
-				params.put("text", "失败原因：" + msg);
+				smsContent.append(msg);
 			}
 		}
-		// params.put("orderNo","单号：" + orderRefund.getRefundNum());
-		params.put("amount", "金额：" + orderRefund.getAmount() + "元");
-		params.put("date", "时间：" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_ONLY_YMDHM_S1));
+		Map<String, String> params = new HashMap<>();
+		params.put("content", smsContent.toString());
 		msgUtil.sendSMS(smsCode, params, orderRefund.getPhone(), appName);
 
 		// 微信模版
