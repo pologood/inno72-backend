@@ -112,7 +112,7 @@
 			ORDER BY ${orderBy}
 		</if>
 		<if test="orderBy ==null or orderBy =='' ">
-			ORDER BY update_time
+			ORDER BY update_time DESC
 		</if>
   </select>
   

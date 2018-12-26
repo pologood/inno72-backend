@@ -75,7 +75,7 @@
         OR uc.phone like CONCAT('%','${keyword}','%')
         )
       </if>
-      ORDER BY lastTime
+      ORDER BY lastTime DESC
   </select>
   
   <select id="selectAreaList" resultType="java.util.Map">

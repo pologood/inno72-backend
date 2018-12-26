@@ -196,6 +196,7 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			} else if (type == 2) {
 
 				old.setStatus(2);
+				old.setUpdateTime(LocalDateTime.now());
 				// 更新删除机器端资源缓存
 				logger.info("更新删除机器端资源缓存");
 				redisUtil.deleteByPrex(CommonConstants.REDIS_ACTIVITY_PLAN_CACHE_KEY + model.getId() + "*");
