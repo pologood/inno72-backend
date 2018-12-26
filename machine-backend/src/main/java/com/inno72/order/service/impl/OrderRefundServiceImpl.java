@@ -330,8 +330,8 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 				params.put("text", "失败原因：" + msg);
 			}
 		}
-		// params.put("orderNo", orderRefund.getRefundNum());
-		params.put("amount", orderRefund.getAmount() + "元");
+		// params.put("orderNo","单号：" +  orderRefund.getRefundNum());
+		params.put("amount", "金额：" + orderRefund.getAmount() + "元");
 		params.put("date", "时间：" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_ONLY_YMDHM_S1));
 		msgUtil.sendSMS(smsCode, params, orderRefund.getPhone(), appName);
 
