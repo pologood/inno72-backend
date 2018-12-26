@@ -107,7 +107,7 @@
                   audit_status = 0
               </if>
               <if test="countType == 2">
-                  status = 3
+                  audit_status = 1 and status = 3
               </if>
           </if>
       </where>
