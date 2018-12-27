@@ -68,6 +68,7 @@ public class LogCut {
 		if (retVal instanceof ModelAndView) {
 			return;
 		}
+		@SuppressWarnings("unused")
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 				.getRequest();
 		// logger.info("请求地址{}返回值为：{}", request.getServletPath(),
