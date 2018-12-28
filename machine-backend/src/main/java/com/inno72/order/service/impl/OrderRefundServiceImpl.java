@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.common.AbstractService;
-import com.inno72.common.DateUtil;
 import com.inno72.common.Encrypt;
 import com.inno72.common.MachineBackendProperties;
 import com.inno72.common.Result;
@@ -27,7 +26,6 @@ import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.common.json.JsonUtil;
 import com.inno72.gameUser.mapper.Inno72GameUserChannelMapper;
-import com.inno72.gameUser.model.Inno72GameUserChannel;
 import com.inno72.log.util.FastJsonUtils;
 import com.inno72.msg.MsgUtil;
 import com.inno72.order.mapper.Inno72OrderRefundMapper;
@@ -131,16 +129,16 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 					if (status.equals("11")) {
 						orderRefund.setStatus(1);
 						orderRefund.setRefundTime(LocalDateTime.now());
-						this.sendMsgInfo(orderRefund, "1", "成功");
+						// this.sendMsgInfo(orderRefund, "1", "成功");
 					} else if (status.equals("12")) {
 						orderRefund.setStatus(2);
 					} else if (status.equals("13")) {
 						orderRefund.setStatus(3);
-						this.sendMsgInfo(orderRefund, "2", msg);
+						// this.sendMsgInfo(orderRefund, "2", msg);
 					}
 				} else {
 					orderRefund.setStatus(3);
-					this.sendMsgInfo(orderRefund, "2", msg);
+					// this.sendMsgInfo(orderRefund, "2", msg);
 				}
 				orderRefund.setRefundMsg(msg);
 			} catch (Exception e) {
@@ -216,18 +214,18 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 					if (status.equals("11")) {
 						base.setStatus(1);
 						base.setRefundTime(LocalDateTime.now());
-						this.sendMsgInfo(base, "1", "成功");
+						// this.sendMsgInfo(base, "1", "成功");
 					} else if (status.equals("12")) {
 						base.setStatus(2);
 					} else if (status.equals("13")) {
 						base.setStatus(3);
-						this.sendMsgInfo(base, "2", msg);
+						// this.sendMsgInfo(base, "2", msg);
 					}
 				} else if (50023 == Integer.parseInt(code)) {
 
 				} else {
 					base.setStatus(3);
-					this.sendMsgInfo(base, "2", msg);
+					// this.sendMsgInfo(base, "2", msg);
 				}
 				base.setRefundMsg(msg);
 			} catch (Exception e) {
@@ -313,7 +311,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		// String active = System.getenv("spring_profiles_active");
 		String appName = "machineBackend";
 		String smsCode = "sms_order_refund";
-		String wechatCode = "wechat_model";
+
 		// 短信消息
 		// 【点七二互动】尊敬的用户您的退款申请失败，失败原因#message#。
 		// 【点七二互动】尊敬的用户退款#message#元已退还至您账户，请注意查收！
@@ -338,39 +336,29 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		params.put("content", smsContent.toString());
 		msgUtil.sendSMS(smsCode, params, orderRefund.getPhone(), appName);
 
-		// 微信模版
-		Inno72GameUserChannel user = new Inno72GameUserChannel();
-		user.setGameUserId(orderRefund.getUserId());
-		user = inno72GameUserChannelMapper.selectOne(user);
-		String firstContent = "";
-		String remarkContent = "";
-
-		Map<String, String> wcParams = new HashMap<>();
-		wcParams.put("keyword1", "金额：" + orderRefund.getAmount() + "元");
-		wcParams.put("keyword2", "未掉货");
-		wcParams.put("keyword3", DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_ONLY_YMDHM_S1));
-		wcParams.put("keyword4", "原路退回");
-		if (type.endsWith("1")) {
-			firstContent = "您好，退款已退回您的支付账户，请注意查收！";
-			remarkContent = "如有任何问题，请联系人工客服。";
-		} else if (type.endsWith("2")) {
-			firstContent = "您的退款失败";
-			remarkContent = "如有任何问题，请联系人工客服。";
-			wcParams.put("keyword2", msg);
-		} else if (type.endsWith("3")) {
-			firstContent = "您好，您的退款申请审核未通过。";
-			remarkContent = "线下已补发商品。";
-			if (StringUtil.isBlank(msg)) {
-				wcParams.put("keyword2", "已经补发商品");
-			} else {
-				wcParams.put("keyword2", msg);
-			}
-		}
-
-		if (null != user) {
-			msgUtil.sendWechatTemplate(wechatCode, wcParams, firstContent, remarkContent, user.getChannelUserKey(),
-					null, appName);
-		}
+		/*
+		 * String wechatCode = "wechat_model"; Inno72GameUserChannel user = new
+		 * Inno72GameUserChannel(); user.setGameUserId(orderRefund.getUserId());
+		 * user = inno72GameUserChannelMapper.selectOne(user); String
+		 * firstContent = ""; String remarkContent = "";
+		 * 
+		 * Map<String, String> wcParams = new HashMap<>();
+		 * wcParams.put("keyword1", "金额：" + orderRefund.getAmount() + "元");
+		 * wcParams.put("keyword2", "未掉货"); wcParams.put("keyword3",
+		 * DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_ONLY_YMDHM_S1));
+		 * wcParams.put("keyword4", "原路退回"); if (type.endsWith("1")) {
+		 * firstContent = "您好，退款已退回您的支付账户，请注意查收！"; remarkContent =
+		 * "如有任何问题，请联系人工客服。"; } else if (type.endsWith("2")) { firstContent =
+		 * "您的退款失败"; remarkContent = "如有任何问题，请联系人工客服。"; wcParams.put("keyword2",
+		 * msg); } else if (type.endsWith("3")) { firstContent =
+		 * "您好，您的退款申请审核未通过。"; remarkContent = "线下已补发商品。"; if
+		 * (StringUtil.isBlank(msg)) { wcParams.put("keyword2", "已经补发商品"); }
+		 * else { wcParams.put("keyword2", msg); } }
+		 * 
+		 * if (null != user) { msgUtil.sendWechatTemplate(wechatCode, wcParams,
+		 * firstContent, remarkContent, user.getChannelUserKey(), null,
+		 * appName); }
+		 */
 		return "ok";
 	}
 
