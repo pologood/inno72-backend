@@ -346,21 +346,26 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 		String remarkContent = "";
 
 		Map<String, String> wcParams = new HashMap<>();
+		wcParams.put("keyword1", "金额：" + orderRefund.getAmount() + "元");
+		wcParams.put("keyword2", "未掉货");
+		wcParams.put("keyword3", DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_ONLY_YMDHM_S1));
+		wcParams.put("keyword4", "原路退回");
 		if (type.endsWith("1")) {
-			firstContent = "费用已退回至您的支付账户";
+			firstContent = "您好，退款已退回您的支付账户，请注意查收！";
+			remarkContent = "如有任何问题，请联系人工客服。";
 		} else if (type.endsWith("2")) {
 			firstContent = "您的退款失败";
+			remarkContent = "如有任何问题，请联系人工客服。";
+			wcParams.put("keyword2", msg);
 		} else if (type.endsWith("3")) {
-			firstContent = "您的退款审核被拒绝";
+			firstContent = "您好，您的退款申请审核未通过。";
+			remarkContent = "线下已补发商品。";
 			if (StringUtil.isBlank(msg)) {
-				wcParams.put("data3", "失败原因：已经补发商品");
+				wcParams.put("keyword2", "已经补发商品");
 			} else {
-				wcParams.put("data3", "失败原因：" + msg);
+				wcParams.put("keyword2", msg);
 			}
 		}
-		// wcParams.put("data1", orderRefund.getRefundNum());
-		wcParams.put("data1", "金额：" + orderRefund.getAmount() + "元");
-		wcParams.put("data2", "时间：" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_ONLY_YMDHM_S1));
 
 		if (null != user) {
 			msgUtil.sendWechatTemplate(wechatCode, wcParams, firstContent, remarkContent, user.getChannelUserKey(),
