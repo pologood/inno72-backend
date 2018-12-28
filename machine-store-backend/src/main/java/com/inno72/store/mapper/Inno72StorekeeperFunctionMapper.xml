@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.store.mapper.Inno72StorekeeperFunctionMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.store.model.Inno72StorekeeperFunction">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="storekeeper_id" jdbcType="VARCHAR" property="storekeeperId" />
+    <result column="function_id" jdbcType="VARCHAR" property="functionId" />
+  </resultMap>
+</mapper>

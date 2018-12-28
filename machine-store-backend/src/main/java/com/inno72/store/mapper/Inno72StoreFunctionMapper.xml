@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.store.mapper.Inno72StoreFunctionMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.store.model.Inno72StoreFunction">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="function_depict" jdbcType="VARCHAR" property="functionDepict" />
+    <result column="function_path" jdbcType="VARCHAR" property="functionPath" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="function_level" jdbcType="INTEGER" property="functionLevel" />
+    <result column="function_icon" jdbcType="VARCHAR" property="functionIcon" />
+    <result column="color" jdbcType="VARCHAR" property="color" />
+    <result column="seq" jdbcType="INTEGER" property="seq" />
+  </resultMap>
+</mapper>

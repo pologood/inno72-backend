@@ -60,7 +60,9 @@ public class CodeGenerator {
 	private static final String DATE = new SimpleDateFormat("yyyy/MM/dd").format(new Date());// @date
 
 	public static void main(String[] args) {
-		genCode("inno72_refund_log");
+		genCode("inno72_store", "inno72_store_order", "inno72_store_express", "inno72_store_goods",
+				"inno72_storekeeper", "inno72_storekeeper_function", "inno72_storekeeper_storte",
+				"inno72_store_function");
 		// genCodeByCustomModelName("输入表名","输入自定义Model名称");
 	}
 
