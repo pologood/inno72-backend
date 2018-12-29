@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.project.mapper.Inno72GoodsTypeMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.project.model.Inno72GoodsType">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="code" jdbcType="VARCHAR" property="code" />
+    <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="parent_name" jdbcType="VARCHAR" property="parentName" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+		SELECT 
+			g.code,
+			g.parent_code,
+			g.name,
+			g.parent_name,
+			g.level,
+			g.create_id,
+			g.create_time,
+			u.`name` AS update_id,
+			g.update_time 
+		FROM
+			inno72_goods_type g
+			LEFT JOIN inno72_user u ON u.id=g.update_id
+		WHERE 1=1
+		<if test="level !=null and level !=''">and g.LEVEL = #{level}</if>
+		<if test="parentCode !=null and parentCode !=''">and g.parent_code = #{parentCode}</if>
+		<if test="keyword !=null and keyword !=''">and ( g.name LIKE '%${keyword}%' or g.parent_name LIKE '%${keyword}%' )</if>
+		
+		ORDER BY g.update_time DESC
+  </select>
+</mapper>
