@@ -24,6 +24,8 @@ import com.inno72.project.model.Inno72GoodsType;
 import com.inno72.project.service.GoodsTypeService;
 import com.inno72.system.model.Inno72User;
 
+import tk.mybatis.mapper.entity.Condition;
+
 /**
  * Created by CodeGenerator on 2018/12/29.
  */
@@ -46,6 +48,18 @@ public class GoodsTypeServiceImpl extends AbstractService<Inno72GoodsType> imple
 		}
 
 		return inno72GoodsTypeMapper.selectByPage(params);
+
+	}
+
+	@Override
+	public List<Inno72GoodsType> getList(String code, String keyword) {
+		Condition condition = new Condition(Inno72GoodsType.class);
+		if (StringUtil.isEmpty(code)) {
+			condition.createCriteria().andCondition("level = 1").andLike("name", keyword);
+		} else {
+			condition.createCriteria().andEqualTo("parentCode", code).andLike("name", keyword);
+		}
+		return inno72GoodsTypeMapper.selectByConditionByPage(condition);
 
 	}
 

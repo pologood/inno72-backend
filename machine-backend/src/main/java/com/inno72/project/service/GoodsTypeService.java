@@ -17,4 +17,6 @@ public interface GoodsTypeService extends Service<Inno72GoodsType> {
 
 	List<Inno72GoodsType> findByPage(String code, String keyword);
 
+	List<Inno72GoodsType> getList(String code, String keyword);
+
 }

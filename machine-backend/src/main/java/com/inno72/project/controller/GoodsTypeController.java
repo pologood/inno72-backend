@@ -54,4 +54,10 @@ public class GoodsTypeController {
 		List<Inno72GoodsType> list = goodsTypeService.findByPage(code, keyword);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
+
+	@RequestMapping(value = "/getList", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Inno72GoodsType>> getList(String code, String keyword) {
+		List<Inno72GoodsType> list = goodsTypeService.findByPage(code, keyword);
+		return ResultGenerator.genSuccessResult(list);
+	}
 }
