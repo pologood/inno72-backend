@@ -1,12 +1,14 @@
 package com.inno72.store.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -86,6 +88,24 @@ public class Inno72Storekeeper {
 	@Column(name = "update_time")
 	private LocalDateTime updateTime;
 
+
+	@Transient
+	private List<Inno72Store> storeList;
+
+	@Transient
+	private List<Inno72StoreFunction> storeFunctionList;
+
+	@Transient
+	private String[] storeIds;
+
+	@Transient
+	private String[] functionIds;
+
+	@Transient
+	private Integer loginType;
+
+	@Transient
+	private String smsCode;
 	/**
 	 * 获取ID
 	 *
@@ -312,5 +332,53 @@ public class Inno72Storekeeper {
 	 */
 	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public List<Inno72Store> getStoreList() {
+		return storeList;
+	}
+
+	public void setStoreList(List<Inno72Store> storeList) {
+		this.storeList = storeList;
+	}
+
+	public List<Inno72StoreFunction> getStoreFunctionList() {
+		return storeFunctionList;
+	}
+
+	public void setStoreFunctionList(List<Inno72StoreFunction> storeFunctionList) {
+		this.storeFunctionList = storeFunctionList;
+	}
+
+	public String[] getStoreIds() {
+		return storeIds;
+	}
+
+	public void setStoreIds(String[] storeIds) {
+		this.storeIds = storeIds;
+	}
+
+	public String[] getFunctionIds() {
+		return functionIds;
+	}
+
+	public void setFunctionIds(String[] functionIds) {
+		this.functionIds = functionIds;
+	}
+
+	public Integer getLoginType() {
+		return loginType;
+	}
+
+	public void setLoginType(Integer loginType) {
+		this.loginType = loginType;
+	}
+
+	public String getSmsCode() {
+		return smsCode;
+	}
+
+	public void setSmsCode(String smsCode) {
+		this.smsCode = smsCode;
 	}
 }

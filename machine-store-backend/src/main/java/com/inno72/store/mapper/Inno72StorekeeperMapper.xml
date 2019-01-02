@@ -18,4 +18,50 @@
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
+
+  <resultMap id="storeFunctionList" type="com.inno72.store.model.Inno72StoreFunction">
+      <result column="functionId" jdbcType="VARCHAR" property="id" />
+      <result column="function_depict" jdbcType="VARCHAR" property="functionDepict" />
+      <result column="function_path" jdbcType="VARCHAR" property="functionPath" />
+      <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+      <result column="function_level" jdbcType="INTEGER" property="functionLevel" />
+      <result column="function_icon" jdbcType="VARCHAR" property="functionIcon" />
+      <result column="color" jdbcType="VARCHAR" property="color" />
+      <result column="seq" jdbcType="INTEGER" property="seq" />
+  </resultMap>
+
+  <select id="selectOneByParam" resultMap="BaseResultMap">
+      select * from inno72_storekeeper
+      <where>
+          <if test="mobile != null">
+              and mobile = #{mobile}
+          </if>
+      </where>
+      limit 1
+  </select>
+  <select id="selectKepperModel" resultMap="BaseResultMap">
+      select sk.*,
+      sf.id functionId,
+      sf.function_depict,
+      sf.function_path,
+      sf.parent_id,
+      sf.function_level,
+      sf.function_icon,
+      sf.color,
+      sf.seq
+      from inno72_storekeeper sk
+      left join inno72_storekeeper_function skf on sk.id=skf.storekeeper_id
+      left join inno72_store_function sf on skf.function_id = sf.id
+      <where>
+          <if test="storekeeperId != null">
+              and sk.id=#{storekeeperId}
+          </if>
+          <if test="mobile != null">
+              and sk.mobile=#{mobile}
+          </if>
+          <if test="pwd != null">
+              and sk.pwd = #{pwd}
+          </if>
+      </where>
+  </select>
 </mapper>

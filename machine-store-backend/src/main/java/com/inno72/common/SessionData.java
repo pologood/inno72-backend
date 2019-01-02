@@ -1,29 +1,21 @@
 package com.inno72.common;
 
-import java.util.List;
+import com.inno72.store.model.Inno72Storekeeper;
 
-import com.inno72.system.model.Inno72Function;
-import com.inno72.system.model.Inno72User;
-import com.inno72.system.model.Inno72UserFunctionArea;
+import java.util.List;
 
 public class SessionData {
 	private String token;
-	private Inno72User user;
-	private List<Inno72Function> functions;
-
-	private List<Inno72UserFunctionArea> functionArea;
+	private Inno72Storekeeper storekeeper;
 
 	public SessionData() {
 		super();
 	}
 
-	public SessionData(String token, Inno72User user, List<Inno72Function> functions,
-			List<Inno72UserFunctionArea> functionArea) {
+	public SessionData(String token, Inno72Storekeeper storekeeper) {
 		super();
 		this.token = token;
-		this.user = user;
-		this.functions = functions;
-		this.functionArea = functionArea;
+		this.storekeeper = storekeeper;
 	}
 
 	public String getToken() {
@@ -34,28 +26,12 @@ public class SessionData {
 		this.token = token;
 	}
 
-	public Inno72User getUser() {
-		return user;
+
+	public Inno72Storekeeper getStorekeeper() {
+		return storekeeper;
 	}
 
-	public void setUser(Inno72User user) {
-		this.user = user;
+	public void setStorekeeper(Inno72Storekeeper storekeeper) {
+		this.storekeeper = storekeeper;
 	}
-
-	public List<Inno72Function> getFunctions() {
-		return functions;
-	}
-
-	public void setFunctions(List<Inno72Function> functions) {
-		this.functions = functions;
-	}
-
-	public List<Inno72UserFunctionArea> getFunctionArea() {
-		return functionArea;
-	}
-
-	public void setFunctionArea(List<Inno72UserFunctionArea> functionArea) {
-		this.functionArea = functionArea;
-	}
-
 }

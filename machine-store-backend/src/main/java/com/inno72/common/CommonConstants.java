@@ -18,16 +18,17 @@ public class CommonConstants {
 	/** 被踢出用户集合 **/
 	public static final String CHECK_OUT_USER_TOKEN_SET_KEY = "machine-backend:checkout_user_token_set";
 
-	/** 巡检用户登录TOKEN_缓存KEY前缀 **/
-	public static final String CHECK_USER_LOGIN_CACHE_KEY_PREF = "machine-check-app-backend:login_user:";
-	public static final String CHECK_USER_LOGIN_TOKEN_CACHE_KEY_PREF = "machine-check-app-backend:login_user_token:";
+	/** 库管用户登录TOKEN_缓存KEY前缀 **/
+	public static final String STORE_SMS_CODE_KEY_PREF = "machine-store-backend:sms_code:";
+	public static final String STORE_KEEPER_MOBILE_KEY_PREF = "machine-store-backend:login_kepper_mobile:";
+	public static final String STORE_KEEPER_TOKEN_KEY_PREF = "machine-store-backend:login_kepper_token:";
 	public static final String CHECK_USER_LOGIN_USER_TOKEY_PREF = "machine-check-app-backend:user_key:";
 
 	/** 用户sessionData有效期 **/
 	public static final int SESSION_DATA_EXP = 3600 * 24;
 
 	/** 用户登录对象 **/
-	// public static SessionData SESSION_DATA = new SessionData();
+	 public static SessionData SESSION_DATA = new SessionData();
 
 	/** OSS基础路径 **/
 	public static final String OSS_PATH = "backend";
