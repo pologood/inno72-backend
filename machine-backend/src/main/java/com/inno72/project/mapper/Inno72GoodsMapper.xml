@@ -8,6 +8,8 @@
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="goods_type" jdbcType="VARCHAR" property="goodsType" />
     <result column="price" jdbcType="DECIMAL" property="price" />
     <result column="number" jdbcType="INTEGER" property="number" />
     <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
@@ -33,6 +35,7 @@
 		g.id,
 		g.name,
 		g.code,
+		g.brand_name,
 		g.price,
 		g.number,
 		g.img,
@@ -44,11 +47,13 @@
 		g.create_time,
 		g.update_time,
 		m.merchant_name as seller_id,
-		s.shop_name AS shop_id
+		s.shop_name AS shop_id,
+		gt.goods_type
 		
 		from inno72_goods g 
 		LEFT JOIN inno72_merchant m on m.id=g.seller_id
 		LEFT JOIN inno72_shops s ON s.id = g.shop_id
+		LEFT JOIN  inno72_goods_type gt ON gt.code=g.goods_type
 		WHERE g.is_delete=0 
 		<if test="keyword !=null and keyword !=''">and ( g.name LIKE '%${keyword}%' or g.code LIKE '%${keyword}%' )</if>
 		<if test="code !=null and code !=''">and g.seller_id = #{code}</if>
