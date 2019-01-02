@@ -50,7 +50,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 	private Inno72MerchantMapper inno72MerchantMapper;
 
 	Pattern pattern = Pattern.compile("^([+]?\\d{0,6})(\\.\\d{0,2})?");
-	Pattern patternNumbe = Pattern.compile("^[0-9]{1,8}$");
+	Pattern patternNumbe = Pattern.compile("^[0-9]{8}$");
 
 	@Override
 	public Result<String> saveModel(Inno72Goods model) {
