@@ -118,10 +118,11 @@ public class GoodsTypeServiceImpl extends AbstractService<Inno72GoodsType> imple
 				base.setParentName(parent.getName());
 			} else {
 				Inno72GoodsType parent = new Inno72GoodsType();
-				parent.setParentCode(model.getCode());
-				List<Inno72GoodsType> childList = inno72GoodsTypeMapper.selectByCondition(parent);
+				parent.setParentCode(base.getCode());
+				List<Inno72GoodsType> childList = inno72GoodsTypeMapper.select(parent);
 				for (Inno72GoodsType inno72GoodsType : childList) {
 					inno72GoodsType.setParentName(model.getName());
+					super.update(inno72GoodsType);
 				}
 			}
 			base.setName(model.getName());
