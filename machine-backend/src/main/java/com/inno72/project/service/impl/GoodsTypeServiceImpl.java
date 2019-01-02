@@ -80,6 +80,8 @@ public class GoodsTypeServiceImpl extends AbstractService<Inno72GoodsType> imple
 				code = StringUtil.createRandomCode(4);
 			} else {
 				code = model.getParentCode() + "00" + StringUtil.createRandomCode(4);
+				Inno72GoodsType parent = inno72GoodsTypeMapper.selectByPrimaryKey(model.getParentCode());
+				model.setParentName(parent.getName());
 			}
 
 			model.setCode(code);
