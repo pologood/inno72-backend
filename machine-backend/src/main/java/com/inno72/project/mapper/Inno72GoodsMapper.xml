@@ -32,23 +32,23 @@
   
   <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
 		SELECT
-		g.id,
-		g.name,
-		g.code,
-		g.brand_name,
-		g.price,
-		g.number,
-		g.img,
-		g.banner,
-		g.remark,
-		g.spec_remark,
-		g.create_id,
-		g.update_id,
-		g.create_time,
-		g.update_time,
-		m.merchant_name as seller_id,
-		s.shop_name AS shop_id,
-		gt.goods_type
+			g.id,
+			g.name,
+			g.code,
+			g.brand_name,
+			g.price,
+			g.number,
+			g.img,
+			g.banner,
+			g.remark,
+			g.spec_remark,
+			g.create_id,
+			g.update_id,
+			g.create_time,
+			g.update_time,
+			m.merchant_name as seller_id,
+			s.shop_name AS shop_id,
+			gt.name AS goods_type
 		
 		from inno72_goods g 
 		LEFT JOIN inno72_merchant m on m.id=g.seller_id
