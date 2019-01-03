@@ -22,6 +22,7 @@ import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72GoodsTypeMapper;
 import com.inno72.project.model.Inno72GoodsType;
 import com.inno72.project.service.GoodsTypeService;
+import com.inno72.redis.IRedisUtil;
 import com.inno72.system.model.Inno72User;
 
 import tk.mybatis.mapper.entity.Condition;
@@ -33,6 +34,12 @@ import tk.mybatis.mapper.entity.Condition;
 @Transactional
 public class GoodsTypeServiceImpl extends AbstractService<Inno72GoodsType> implements GoodsTypeService {
 	private static Logger logger = LoggerFactory.getLogger(GoodsTypeServiceImpl.class);
+
+	/** 计划ID key **/
+	public static final String LEVEL1_KEY = "leve1_code_num";
+	public static final String LEVEL2_KEY = "leve2_code_num";
+	@Resource
+	private IRedisUtil redisUtil;
 	@Resource
 	private Inno72GoodsTypeMapper inno72GoodsTypeMapper;
 
@@ -85,12 +92,12 @@ public class GoodsTypeServiceImpl extends AbstractService<Inno72GoodsType> imple
 					return Results.failure("类目名称已存在");
 				}
 			}
-			String code = "";
+			String code = "10";
 			if (StringUtil.isBlank(model.getParentCode())) {
-				code = StringUtil.createRandomCode(4);
+				code = redisUtil.incr(LEVEL1_KEY).toString();
 				model.setLevel(1);
 			} else {
-				code = model.getParentCode() + "00" + StringUtil.createRandomCode(4);
+				code = model.getParentCode() + "00" + redisUtil.incr(LEVEL2_KEY).toString();
 				Inno72GoodsType parent = inno72GoodsTypeMapper.selectByPrimaryKey(model.getParentCode());
 				model.setLevel(2);
 				model.setParentName(parent.getName());
