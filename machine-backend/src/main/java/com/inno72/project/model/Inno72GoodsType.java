@@ -239,4 +239,14 @@ public class Inno72GoodsType {
 	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Inno72GoodsType) {
+			Inno72GoodsType other = (Inno72GoodsType) obj;
+			if (code.equals(other.code) && code.equals(other.code))
+				return true;
+		}
+		return false;
+	}
 }

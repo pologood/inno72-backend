@@ -196,7 +196,8 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 				gn.setName(model.getName());
 				gn.setIsDelete(0);
 				List<Inno72Goods> gnList = inno72GoodsMapper.select(gn);
-				if (null != gnList && !gnList.get(0).getCode().equals(model.getCode())) {
+				gnList.remove(model);
+				if (null != gnList && gnList.size() > 0) {
 					logger.info("商品名称已存在");
 					return Results.failure("商品名称已存在");
 				}

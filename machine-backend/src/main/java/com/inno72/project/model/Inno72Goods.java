@@ -420,4 +420,14 @@ public class Inno72Goods {
 	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Inno72Goods) {
+			Inno72Goods other = (Inno72Goods) obj;
+			if (id.equals(other.id) && id.equals(other.id))
+				return true;
+		}
+		return false;
+	}
 }

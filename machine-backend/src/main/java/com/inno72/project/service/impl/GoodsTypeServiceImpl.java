@@ -127,7 +127,8 @@ public class GoodsTypeServiceImpl extends AbstractService<Inno72GoodsType> imple
 				Inno72GoodsType gt = new Inno72GoodsType();
 				gt.setName(model.getName());
 				List<Inno72GoodsType> gnList = inno72GoodsTypeMapper.select(gt);
-				if (null != gnList && !gnList.get(0).getName().equals(model.getName())) {
+				gnList.remove(base);
+				if (null != gnList && gnList.size() > 0) {
 					logger.info("类目名称已存在");
 					return Results.failure("类目名称已存在");
 				}
