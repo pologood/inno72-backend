@@ -1,5 +1,7 @@
 package com.inno72.store.service.impl;
 
+import java.util.List;
+
 import com.inno72.store.mapper.Inno72StoreFunctionMapper;
 import com.inno72.store.model.Inno72StoreFunction;
 import com.inno72.store.service.StoreFunctionService;
@@ -19,4 +21,9 @@ public class StoreFunctionServiceImpl extends AbstractService<Inno72StoreFunctio
     @Resource
     private Inno72StoreFunctionMapper inno72StoreFunctionMapper;
 
+	@Override
+	public List<Inno72StoreFunction> findAllFunction() {
+		List<Inno72StoreFunction> list = inno72StoreFunctionMapper.selectAllFunction();
+		return list;
+	}
 }
