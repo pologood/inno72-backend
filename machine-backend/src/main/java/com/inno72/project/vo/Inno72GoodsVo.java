@@ -11,6 +11,8 @@ public class Inno72GoodsVo extends Inno72Goods {
 
 	private String goodsTypeParentCode;
 
+	private String channelCode;
+
 	public String getShopName() {
 		return shopName;
 	}
@@ -41,6 +43,14 @@ public class Inno72GoodsVo extends Inno72Goods {
 
 	public void setGoodsTypeParentCode(String goodsTypeParentCode) {
 		this.goodsTypeParentCode = goodsTypeParentCode;
+	}
+
+	public String getChannelCode() {
+		return channelCode;
+	}
+
+	public void setChannelCode(String channelCode) {
+		this.channelCode = channelCode;
 	}
 
 }

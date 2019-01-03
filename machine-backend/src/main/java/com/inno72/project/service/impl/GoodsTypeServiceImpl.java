@@ -66,7 +66,7 @@ public class GoodsTypeServiceImpl extends AbstractService<Inno72GoodsType> imple
 		} else {
 			condition.createCriteria().andEqualTo("parentCode", code).andLike("name", keyword);
 		}
-		return inno72GoodsTypeMapper.selectByConditionByPage(condition);
+		return inno72GoodsTypeMapper.selectList(null);
 
 	}
 

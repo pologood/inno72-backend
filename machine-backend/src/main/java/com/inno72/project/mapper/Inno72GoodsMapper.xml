@@ -28,6 +28,9 @@
   <resultMap id="VoResultMap" type="com.inno72.project.vo.Inno72GoodsVo" extends="BaseResultMap">
     <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
     <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
+    <result column="goods_type_code" jdbcType="VARCHAR" property="goodsTypeCode" />
+    <result column="goods_type_parent_code" jdbcType="VARCHAR" property="goodsTypeParentCode" />
+    <result column="channel_code" jdbcType="VARCHAR" property="channelCode" />
   </resultMap>
   
   <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
@@ -82,7 +85,8 @@
 		s.shop_name,
 		CONCAT(IFNULL( gt.parent_name,''), '-', IFNULL( gt.name,'') ) AS goods_type,
 		gt.code AS goods_type_code,
-		gt.parent_code AS goods_type_parent_code
+		gt.parent_code AS goods_type_parent_code,
+		m.channel_code
 		
 		from inno72_goods g 
 		LEFT JOIN inno72_merchant m on m.id=g.seller_id

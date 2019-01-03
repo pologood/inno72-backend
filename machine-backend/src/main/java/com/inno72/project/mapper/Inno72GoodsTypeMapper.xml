@@ -57,4 +57,28 @@
 		
 		ORDER BY g.update_time DESC
   </select>
+  
+  <select id="selectList" parameterType="java.util.Map" resultMap="VoResult">
+		SELECT 
+			g.code AS p_code,
+			g.name AS p_name,
+			g.level AS p_level,
+			u.`name` AS p_update,
+			g.update_time AS p_update_time,
+			uc.`name` AS update_id,
+			gc.*
+			
+		FROM
+			inno72_goods_type g
+			LEFT JOIN inno72_user u ON u.id=g.update_id
+			LEFT JOIN  inno72_goods_type gc ON gc.parent_code=g.code
+			LEFT JOIN inno72_user uc ON uc.id=gc.update_id
+		WHERE g.level=1
+		<if test="level !=null and level !=''">and g.LEVEL = #{level}</if>
+		<if test="keyword !=null and keyword !=''">and ( g.name LIKE '%${keyword}%' or g.parent_name LIKE '%${keyword}%' )</if>
+		
+		ORDER BY g.update_time DESC
+  </select>
+  
+  
 </mapper>
