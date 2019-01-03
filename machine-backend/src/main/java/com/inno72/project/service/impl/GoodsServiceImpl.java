@@ -32,6 +32,7 @@ import com.inno72.project.model.Inno72Goods;
 import com.inno72.project.model.Inno72Merchant;
 import com.inno72.project.model.Inno72Shops;
 import com.inno72.project.service.GoodsService;
+import com.inno72.project.vo.Inno72GoodsVo;
 import com.inno72.system.model.Inno72User;
 
 /**
@@ -247,8 +248,8 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 	}
 
 	@Override
-	public Inno72Goods findById(String id) {
-		Inno72Goods good = inno72GoodsMapper.selectById(id);
+	public Inno72GoodsVo findId(String id) {
+		Inno72GoodsVo good = inno72GoodsMapper.selectById(id);
 		if (StringUtil.isNotBlank(good.getImg())) {
 			good.setImg(CommonConstants.ALI_OSS + good.getImg());
 		}

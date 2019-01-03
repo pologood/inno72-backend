@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.inno72.common.Mapper;
 import com.inno72.project.model.Inno72Goods;
+import com.inno72.project.vo.Inno72GoodsVo;
 
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72GoodsMapper extends Mapper<Inno72Goods> {
@@ -17,7 +18,7 @@ public interface Inno72GoodsMapper extends Mapper<Inno72Goods> {
 
 	int getCount(@Param("code") String code);
 
-	Inno72Goods selectById(@Param("id") String id);
+	Inno72GoodsVo selectById(@Param("id") String id);
 
 	List<Inno72Goods> selectByPage(Map<String, Object> params);
 

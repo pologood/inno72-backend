@@ -20,6 +20,7 @@ import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.project.model.Inno72Goods;
 import com.inno72.project.service.GoodsService;
+import com.inno72.project.vo.Inno72GoodsVo;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
@@ -66,7 +67,7 @@ public class GoodsController {
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<Inno72Goods> detail(@RequestParam String id) {
-		Inno72Goods goods = goodsService.findById(id);
+		Inno72GoodsVo goods = goodsService.findId(id);
 		return ResultGenerator.genSuccessResult(goods);
 	}
 
