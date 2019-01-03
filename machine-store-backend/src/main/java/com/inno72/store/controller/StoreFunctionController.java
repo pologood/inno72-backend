@@ -1,10 +1,14 @@
 package com.inno72.store.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.store.model.Inno72StoreFunction;
 import com.inno72.store.service.StoreFunctionService;
 import com.inno72.common.ResultPages;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +28,9 @@ import java.util.List;
 public class StoreFunctionController {
     @Resource
     private StoreFunctionService storeFunctionService;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> add(Inno72StoreFunction storeFunction) {
@@ -50,7 +57,9 @@ public class StoreFunctionController {
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<List<Inno72StoreFunction>> list() {
+    	logger.info("获取所有权限接口开始");
         List<Inno72StoreFunction> list = storeFunctionService.findAllFunction();
+		logger.info("获取所有权限接口返回数据，{}", JSON.toJSON(list));
         return ResultGenerator.genSuccessResult(list);
     }
 }

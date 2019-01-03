@@ -49,56 +49,75 @@ public class StorekeeperController {
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> update(@RequestBody Inno72Storekeeper storekeeper) {
+		logger.info("修改库存管理人员接口参数:{}", JSON.toJSON(storekeeper));
         Result<String> result = storekeeperService.updateKeepper(storekeeper);
+		logger.info("修改库存管理人员接口返回数据:{}", JSON.toJSON(result));
         return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<Inno72Storekeeper> detail(@RequestParam String id) {
+		logger.info("查询库存管理人员详情接口参数:{}", JSON.toJSON(id));
         Inno72Storekeeper storekeeper = storekeeperService.findDetail(id);
+		logger.info("查询库存管理人员详情接口返回数据:{}", JSON.toJSON(storekeeper));
         return ResultGenerator.genSuccessResult(storekeeper);
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
     public ModelAndView list(StoreKepperVo storeKepperVo) {
+		logger.info("分页查询库存管理人员接口参数:{}", JSON.toJSON(storeKepperVo));
         List<Inno72Storekeeper> list = storekeeperService.findKepperByPage(storeKepperVo);
-        return ResultPages.page(ResultGenerator.genSuccessResult(list));
+		ModelAndView result = ResultPages.page(ResultGenerator.genSuccessResult(list));
+		logger.info("分页查询库存管理人员接口返回数据:{}", JSON.toJSON(result));
+        return result;
     }
 
     @RequestMapping(value = "/editUse")
     public Result<String> editUse(Inno72Storekeeper storekeeper){
+		logger.info("库存管理人员启用禁用接口参数:{}", JSON.toJSON(storekeeper));
     	Result<String> result = storekeeperService.editUse(storekeeper);
+		logger.info("库存管理人员启用禁用接口返回数据:{}", JSON.toJSON(result));
     	return result;
 	}
 
 
 	@RequestMapping(value = "/smsCode")
 	public Result<String> smsCode(String mobile){
+		logger.info("库存管理人员获取验证码接口参数:{}", JSON.toJSON(mobile));
     	Result<String> result = storekeeperService.getSmsCode(mobile);
+		logger.info("库存管理人员获取验证码接口返回数据:{}", JSON.toJSON(result));
     	return result;
 	}
 
 	@RequestMapping(value = "/login")
 	public Result<SessionData> login(Inno72Storekeeper inno72Storekeeper){
+		logger.info("库存管理人员登录接口参数:{}", JSON.toJSON(inno72Storekeeper));
     	Result<SessionData> result = storekeeperService.login(inno72Storekeeper);
+		logger.info("库存管理人员登录接口返回数据:{}", JSON.toJSON(result));
     	return result;
 	}
 
 	@RequestMapping(value = "/logout")
 	public Result<String> logout(){
+		logger.info("库存管理人员退出登录接口:{}");
     	Result<String> result = storekeeperService.logout();
+		logger.info("库存管理人员退出登录返回数据:{}", JSON.toJSON(result));
     	return result;
 	}
 
 	@RequestMapping(value = "/setPwd")
 	public Result<String> setPwd(String newPwd,String rePwd){
+		logger.info("库存管理人员设置密码接口参数:"+"newPwd="+newPwd+",rePwd="+rePwd);
     	Result<String> result = storekeeperService.setPwd(newPwd,rePwd);
+		logger.info("库存管理人员设置密码返回数据:{}", JSON.toJSON(result));
     	return result;
 	}
 
 	@RequestMapping(value = "/reSetPwd")
 	public Result<String> reSetPwd(String oldPwd,String newPwd,String rePwd){
+		logger.info("库存管理人员重置密码接口参数:oldPwd="+oldPwd+",newPwd="+newPwd+",rePwd="+rePwd);
     	Result<String> result = storekeeperService.reSetPwd(oldPwd,newPwd,rePwd);
+		logger.info("库存管理人员重置密码返回数据:{}", JSON.toJSON(result));
     	return result;
 	}
 
