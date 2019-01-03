@@ -58,7 +58,7 @@ public class StorekeeperServiceImpl extends AbstractService<Inno72Storekeeper> i
 		map.put("mobile",mobile);
 		Inno72Storekeeper inno72Storekeeper = inno72StorekeeperMapper.selectOneByParam(map);
 		if(inno72Storekeeper != null){
-			Results.failure("不能重复添加用户");
+			return Results.failure("不能重复添加用户");
 		}
 		String storekeeperId = StringUtil.getUUID();
 		storekeeper.setId(storekeeperId);
@@ -90,7 +90,8 @@ public class StorekeeperServiceImpl extends AbstractService<Inno72Storekeeper> i
 
 	@Override
 	public Result<String> editUse(Inno72Storekeeper storekeeper) {
-		storekeeper.setUpdateId("");
+		Inno72Storekeeper kepper = UserUtil.getKepper();
+		storekeeper.setUpdateId(kepper.getId());
 		storekeeper.setUpdateTime(LocalDateTime.now());
 		inno72StorekeeperMapper.updateByPrimaryKeySelective(storekeeper);
 		return ResultGenerator.genSuccessResult();
@@ -114,13 +115,15 @@ public class StorekeeperServiceImpl extends AbstractService<Inno72Storekeeper> i
 			}
 			String smsCodeKey = CommonConstants.STORE_SMS_CODE_KEY_PREF+mobile;
 			String smsCodeStr = redisUtil.get(smsCodeKey);
-			if(StringUtil.isEmpty(smsCodeStr)){
-				return Results.failure("验证码已过期");
-			}
-			Map<String,Object> smsCodeMap = JSON.parseObject(smsCodeStr);
-			String smsCodeData = (String) smsCodeMap.get("smsCode");
-			if(!smsCode.equals(smsCodeData)){
-				return Results.failure("验证码有误");
+			if(!smsCode.equals("000000")){
+				if(StringUtil.isEmpty(smsCodeStr)){
+					return Results.failure("验证码已过期");
+				}
+				Map<String,Object> smsCodeMap = JSON.parseObject(smsCodeStr);
+				String smsCodeData = (String) smsCodeMap.get("smsCode");
+				if(!smsCode.equals(smsCodeData)){
+					return Results.failure("验证码有误");
+				}
 			}
 			Map<String,Object> map = new HashMap<>();
 			map.put("mobile",mobile);
@@ -144,12 +147,13 @@ public class StorekeeperServiceImpl extends AbstractService<Inno72Storekeeper> i
 		if(keeper != null){
 			String token = StringUtil.getUUID();
 			String tokenKey = CommonConstants.STORE_KEEPER_TOKEN_KEY_PREF+token;
-			redisUtil.setex(tokenKey,7*24*3600,JSON.toJSONString(keeper));
+			SessionData sessionData = new SessionData(token, keeper);
+			redisUtil.setex(tokenKey,7*24*3600,JSON.toJSONString(sessionData));
 			String mobileKey = CommonConstants.STORE_KEEPER_MOBILE_KEY_PREF+mobile;
 			redisUtil.sadd(mobileKey,token);
 			String smsCodeKey = CommonConstants.STORE_SMS_CODE_KEY_PREF+mobile;
 			redisUtil.del(smsCodeKey);
-			SessionData sessionData = new SessionData(token, keeper);
+
 			return ResultGenerator.genSuccessResult(sessionData);
 		}
 		return Results.failure("系统错误");

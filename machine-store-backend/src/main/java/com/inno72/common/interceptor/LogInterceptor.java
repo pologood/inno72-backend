@@ -23,6 +23,7 @@ import com.inno72.common.DataAutherInterceptor;
 import com.inno72.common.Result;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
+import com.inno72.common.StringUtil;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.utils.page.Pagination;
 
@@ -37,7 +38,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	@Resource
 	private IRedisUtil redisUtil; // memcachedClient
 
-	private static List<String> doNotCheckUs = Arrays.asList(new String[] { "/admin/area/list" });
+	private static List<String> doNotCheckUs = Arrays.asList(new String[] { "/storekeeper/smsCode","/storekeeper/login" });
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -126,53 +127,37 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 		String requestMethod = request.getMethod().toUpperCase();
 		if (requestMethod.equals("GET") || requestMethod.equals("POST") || requestMethod.equals("DELETE")
 				|| requestMethod.equals("PUT")) {
-			if (!match) {
-				// lf-None-Matoh 传入token
-				String token = request.getHeader("lf-None-Matoh");
-				if (token == null) {
-					Result<String> result = new Result<>();
-					result.setCode(999);
-					result.setMsg("你未登录，请登录");
-					String origin = request.getHeader("Origin");
-					response(response, origin);
-					PrintWriter out = null;
-					try {
-						out = response.getWriter();
-						out.append(JSON.toJSONString(result));
-					} catch (IOException e) {
-						e.printStackTrace();
-					} finally {
-						if (out != null) {
-							out.close();
-						}
-					}
-					return false;
+			// lf-None-Matoh 传入token
+			String token = request.getHeader("lf-None-Matoh");
+			log.info("用户token:{}",token);
+			if (StringUtil.isEmpty(token)) {
+				Result<String> result = new Result<>();
+				result.setCode(999);
+				result.setMsg("你未登录，请登录");
+				String origin = request.getHeader("Origin");
+				response(response, origin);
+				try (PrintWriter out = response.getWriter()) {
+					out.append(JSON.toJSONString(result));
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-				String info = redisUtil.get(CommonConstants.STORE_KEEPER_TOKEN_KEY_PREF + token);
-				if (info == null) {
-					Result<String> result = new Result<>();
-					result.setCode(999);
-					result.setMsg("你登录超时，请重新登录");
-					String origin = request.getHeader("Origin");
-					response(response, origin);
-					PrintWriter out = null;
-					try {
-						out = response.getWriter();
-						out.append(JSON.toJSONString(result));
-					} catch (IOException e) {
-						e.printStackTrace();
-					} finally {
-						if (out != null) {
-							out.close();
-						}
-					}
-					return false;
-				} else {
-					String _info = info.toString();
-					SessionData session = JSON.parseObject(_info, SessionData.class);
-					SessionUtil.sessionData.set(session);
-					DataAutherInterceptor.setUserId(session.getStorekeeper().getId());
+				return false;
+			}
+			String info = redisUtil.get(CommonConstants.STORE_KEEPER_TOKEN_KEY_PREF + token);
+			if (info == null) {
+				Result<String> result = new Result<>();
+				result.setCode(999);
+				result.setMsg("你登录超时，请重新登录");
+				String origin = request.getHeader("Origin");
+				response(response, origin);
+				try (PrintWriter out = response.getWriter()) {
+					out.append(JSON.toJSONString(result));
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
+				return false;
+			} else {
+				CommonConstants.SESSION_DATA = JSON.parseObject(info, SessionData.class);
 			}
 		}
 		return true;
