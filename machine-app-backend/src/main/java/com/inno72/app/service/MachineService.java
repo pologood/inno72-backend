@@ -39,4 +39,6 @@ public interface MachineService extends Service<Inno72Machine> {
 
 	Result<String> updateChannelStatus(Map<String, Object> msg);
 
+	Result<String> getServerTime(Map<String, Object> msg);
+
 }
