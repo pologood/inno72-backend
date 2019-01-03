@@ -15,7 +15,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 
 import com.github.miemiedev.mybatis.paginator.OffsetLimitInterceptor;
 import com.inno72.common.DataAutherInterceptor;
-import com.inno72.utils.page.PagePlugin;
+import com.inno72.common.PagePlugin;
 
 import tk.mybatis.spring.mapper.MapperScannerConfigurer;
 
@@ -31,6 +31,8 @@ public class MybatisConfig {
 		Properties props = new Properties();
 		props.setProperty("dialect", "mysql");
 		props.setProperty("pageSqlId", "(ByPage|ForPage)");
+		props.setProperty("levelpageSqlId", "(ByPageLevel|ForPageLevel)");
+
 		PagePlugin pagePlugin = new PagePlugin();
 		pagePlugin.setProperties(props);
 

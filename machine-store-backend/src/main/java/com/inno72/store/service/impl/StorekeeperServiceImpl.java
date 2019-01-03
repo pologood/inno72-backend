@@ -3,6 +3,7 @@ package com.inno72.store.service.impl;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
@@ -23,6 +24,8 @@ import com.inno72.store.model.Inno72StorekeeperFunction;
 import com.inno72.store.model.Inno72StorekeeperStorte;
 import com.inno72.store.service.StorekeeperService;
 import com.inno72.common.AbstractService;
+import com.inno72.store.vo.StoreKepperVo;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -247,6 +250,21 @@ public class StorekeeperServiceImpl extends AbstractService<Inno72Storekeeper> i
 		inno72Storekeeper.setUpdateTime(LocalDateTime.now());
 		inno72StorekeeperMapper.updateByPrimaryKeySelective(inno72Storekeeper);
 		return ResultGenerator.genSuccessResult();
+	}
+
+	@Override
+	public List<Inno72Storekeeper> findKepperByPage(StoreKepperVo storeKepperVo) {
+		Integer status = storeKepperVo.getStatus();
+		String keyword = storeKepperVo.getKeyword();
+		Map<String,Object> map = new HashMap<>();
+		if(status != null){
+			map.put("status",status);
+		}
+		if(StringUtil.isNotEmpty(keyword)){
+			map.put("keyword",keyword);
+		}
+		List<Inno72Storekeeper> list = inno72StorekeeperMapper.selectByPageLevel(map);
+		return list;
 	}
 
 	public void addToStorte(String[] storeIds,String storekeeperId){

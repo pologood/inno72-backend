@@ -1,8 +1,11 @@
 package com.inno72.store.service;
+import java.util.List;
+
 import com.inno72.common.Result;
 import com.inno72.common.SessionData;
 import com.inno72.store.model.Inno72Storekeeper;
 import com.inno72.common.Service;
+import com.inno72.store.vo.StoreKepperVo;
 
 
 /**
@@ -25,4 +28,6 @@ public interface StorekeeperService extends Service<Inno72Storekeeper> {
 	Result<String> setPwd(String newPwd, String rePwd);
 
 	Result<String> reSetPwd(String oldPwd, String newPwd, String rePwd);
+
+	List<Inno72Storekeeper> findKepperByPage(StoreKepperVo storeKepperVo);
 }

@@ -7,6 +7,7 @@ import com.inno72.common.SessionData;
 import com.inno72.store.model.Inno72Storekeeper;
 import com.inno72.store.service.StorekeeperService;
 import com.inno72.common.ResultPages;
+import com.inno72.store.vo.StoreKepperVo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,9 +59,8 @@ public class StorekeeperController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list() {
-   	   Condition condition = new Condition( Inno72Storekeeper.class);
-        List<Inno72Storekeeper> list = storekeeperService.findByPage(condition);
+    public ModelAndView list(StoreKepperVo storeKepperVo) {
+        List<Inno72Storekeeper> list = storekeeperService.findKepperByPage(storeKepperVo);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
 

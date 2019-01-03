@@ -17,6 +17,8 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <association property="storeFunctionList" resultMap="storeFunctionList"/>
+    <association property="storeList" resultMap="storeList"/>
   </resultMap>
 
   <resultMap id="storeFunctionList" type="com.inno72.store.model.Inno72StoreFunction">
@@ -28,6 +30,13 @@
       <result column="function_icon" jdbcType="VARCHAR" property="functionIcon" />
       <result column="color" jdbcType="VARCHAR" property="color" />
       <result column="seq" jdbcType="INTEGER" property="seq" />
+  </resultMap>
+
+  <resultMap id="storeList" type="com.inno72.store.model.Inno72Store">
+      <result column="storeName" jdbcType="VARCHAR" property="name" />
+      <result column="storeType" jdbcType="VARCHAR" property="type" />
+      <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+      <result column="area" jdbcType="VARCHAR" property="area" />
   </resultMap>
 
   <select id="selectOneByParam" resultMap="BaseResultMap">
@@ -63,5 +72,27 @@
               and sk.pwd = #{pwd}
           </if>
       </where>
+  </select>
+
+  <select id="selectByPageLevel" resultMap="BaseResultMap">
+    select sk.*,
+    s.name storeName,
+    s.type storeType,
+    s.area_code,
+    s.area
+    from inno72_storekeeper sk
+    left join inno72_storekeeper_storte sks on sk.id=sks.storekeeper_id
+    left join inno72_store s on sks.store_id=s.id
+    <where>
+        <if test="status != null and status != ''">
+            and sk.status=#{status}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (sk.name like '%${keyword}%'
+            or sk.mobile like '%${keyword}%'
+            or s.name like '%${keyword}%'
+        </if>
+    </where>
+    order by sk.update_time desc
   </select>
 </mapper>
