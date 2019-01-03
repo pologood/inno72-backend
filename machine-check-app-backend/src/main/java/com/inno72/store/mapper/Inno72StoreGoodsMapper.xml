@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.store.mapper.Inno72StoreGoodsMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.store.model.Inno72StoreGoods">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="store_id" jdbcType="VARCHAR" property="storeId" />
+    <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="capacity" jdbcType="INTEGER" property="capacity" />
+    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+</mapper>
