@@ -43,8 +43,8 @@
 			g.level AS p_level,
 			u.`name` AS p_update,
 			g.update_time AS p_update_time,
-			gc.*,
-			uc.`name` AS update_id
+			uc.`name` AS update_id,
+			gc.*
 			
 		FROM
 			inno72_goods_type g
