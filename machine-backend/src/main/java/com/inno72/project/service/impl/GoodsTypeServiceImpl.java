@@ -92,18 +92,19 @@ public class GoodsTypeServiceImpl extends AbstractService<Inno72GoodsType> imple
 					return Results.failure("类目名称已存在");
 				}
 			}
-			String code = "10";
+			StringBuffer code = new StringBuffer("10");
 			if (StringUtil.isBlank(model.getParentCode())) {
-				code = redisUtil.incr(LEVEL1_KEY).toString();
+				code.append(redisUtil.incr(LEVEL1_KEY).toString());
 				model.setLevel(1);
 			} else {
-				code = model.getParentCode() + "00" + redisUtil.incr(LEVEL2_KEY).toString();
+				code.append("00");
+				code.append(redisUtil.incr(LEVEL2_KEY).toString());
 				Inno72GoodsType parent = inno72GoodsTypeMapper.selectByPrimaryKey(model.getParentCode());
 				model.setLevel(2);
 				model.setParentName(parent.getName());
 			}
 
-			model.setCode(code);
+			model.setCode(code.toString());
 			model.setCreateId(userId);
 			model.setUpdateId(userId);
 			model.setCreateTime(LocalDateTime.now());

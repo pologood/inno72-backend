@@ -29,8 +29,7 @@ public class GoodsTypeController {
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> add(Inno72GoodsType goodsType) {
-		goodsTypeService.saveModel(goodsType);
-		return ResultGenerator.genSuccessResult();
+		return goodsTypeService.saveModel(goodsType);
 	}
 
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })
