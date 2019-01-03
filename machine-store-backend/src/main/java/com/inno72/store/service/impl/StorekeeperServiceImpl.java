@@ -273,6 +273,12 @@ public class StorekeeperServiceImpl extends AbstractService<Inno72Storekeeper> i
 		return list;
 	}
 
+	@Override
+	public Inno72Storekeeper findDetail(String id) {
+		Inno72Storekeeper inno72Storekeeper = inno72StorekeeperMapper.selectDetail(id);
+		return inno72Storekeeper;
+	}
+
 	public void addToStorte(String[] storeIds,String storekeeperId){
 		if(storeIds != null && storeIds.length>0){
 			for(String storeId : storeIds){

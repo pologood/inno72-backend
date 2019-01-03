@@ -13,4 +13,6 @@ public interface Inno72StorekeeperMapper extends Mapper<Inno72Storekeeper> {
 	Inno72Storekeeper selectKepperModel(Map<String,Object> map);
 
 	List<Inno72Storekeeper> selectByPageLevel(Map<String,Object> map);
+
+	Inno72Storekeeper selectDetail(String id);
 }

@@ -96,6 +96,9 @@ public class Inno72Storekeeper {
 	private List<Inno72StoreFunction> storeFunctionList;
 
 	@Transient
+	private List<Inno72Store> storeList;
+
+	@Transient
 	private String[] storeIds;
 
 	@Transient
@@ -380,5 +383,13 @@ public class Inno72Storekeeper {
 
 	public void setSmsCode(String smsCode) {
 		this.smsCode = smsCode;
+	}
+
+	public List<Inno72Store> getStoreList() {
+		return storeList;
+	}
+
+	public void setStoreList(List<Inno72Store> storeList) {
+		this.storeList = storeList;
 	}
 }

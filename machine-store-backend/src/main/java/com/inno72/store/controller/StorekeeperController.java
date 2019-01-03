@@ -11,6 +11,7 @@ import com.inno72.store.vo.StoreKepperVo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,7 +35,7 @@ public class StorekeeperController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> add(Inno72Storekeeper storekeeper) {
+    public Result<String> add(@RequestBody Inno72Storekeeper storekeeper) {
         logger.info("添加库存管理人员接口参数:{}", JSON.toJSON(storekeeper));
     	Result<String> result = storekeeperService.saveKeeper(storekeeper);
 		logger.info("添加库存管理人员接口返回结果:{}", JSON.toJSON(result));
@@ -47,14 +48,14 @@ public class StorekeeperController {
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> update(Inno72Storekeeper storekeeper) {
+    public Result<String> update(@RequestBody Inno72Storekeeper storekeeper) {
         Result<String> result = storekeeperService.updateKeepper(storekeeper);
         return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<Inno72Storekeeper> detail(@RequestParam String id) {
-        Inno72Storekeeper storekeeper = storekeeperService.findById(id);
+        Inno72Storekeeper storekeeper = storekeeperService.findDetail(id);
         return ResultGenerator.genSuccessResult(storekeeper);
     }
     

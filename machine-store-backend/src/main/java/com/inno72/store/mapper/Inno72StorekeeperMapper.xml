@@ -19,6 +19,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="storeName" jdbcType="VARCHAR" property="storeName"/>
     <association property="storeFunctionList" resultMap="storeFunctionList"/>
+    <association property="storeList" resultMap="storeList"/>
   </resultMap>
 
   <resultMap id="storeFunctionList" type="com.inno72.store.model.Inno72StoreFunction">
@@ -30,6 +31,11 @@
       <result column="function_icon" jdbcType="VARCHAR" property="functionIcon" />
       <result column="color" jdbcType="VARCHAR" property="color" />
       <result column="seq" jdbcType="INTEGER" property="seq" />
+  </resultMap>
+
+  <resultMap id="storeList" type="com.inno72.store.model.Inno72Store">
+      <result column="sId" jdbcType="VARCHAR" property="id" />
+      <result column="sName" jdbcType="VARCHAR" property="name" />
   </resultMap>
 
   <select id="selectOneByParam" resultMap="BaseResultMap">
@@ -85,5 +91,25 @@
     </where>
     group by sk.id
     order by sk.update_time desc
+  </select>
+
+  <select id="selectDetail" resultMap="BaseResultMap">
+    select sk.*,
+    sf.id functionId,
+    sf.function_depict,
+    sf.function_path,
+    sf.parent_id,
+    sf.function_level,
+    sf.function_icon,
+    sf.color,
+    sf.seq,
+    s.name sName,
+    s.id sId
+    from inno72_storekeeper sk
+    left join inno72_storekeeper_storte sks on sk.id=sks.storekeeper_id
+    left join inno72_store s on sks.store_id=s.id
+    left join inno72_storekeeper_function skf on sk.id=skf.storekeeper_id
+    left join inno72_store_function sf on skf.function_id = sf.id
+    where sk.id=#{id}
   </select>
 </mapper>

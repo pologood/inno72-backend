@@ -30,4 +30,6 @@ public interface StorekeeperService extends Service<Inno72Storekeeper> {
 	Result<String> reSetPwd(String oldPwd, String newPwd, String rePwd);
 
 	List<Inno72Storekeeper> findKepperByPage(StoreKepperVo storeKepperVo);
+
+	Inno72Storekeeper findDetail(String id);
 }
