@@ -160,7 +160,7 @@ public class GoodsTypeServiceImpl extends AbstractService<Inno72GoodsType> imple
 			base.setUpdateId(userId);
 			base.setUpdateTime(LocalDateTime.now());
 
-			super.update(model);
+			super.update(base);
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 			return Results.failure("操作失败");
