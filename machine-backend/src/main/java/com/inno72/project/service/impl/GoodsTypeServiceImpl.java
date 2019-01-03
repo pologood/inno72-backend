@@ -36,8 +36,8 @@ public class GoodsTypeServiceImpl extends AbstractService<Inno72GoodsType> imple
 	private static Logger logger = LoggerFactory.getLogger(GoodsTypeServiceImpl.class);
 
 	/** 计划ID key **/
-	public static final String LEVEL1_KEY = "leve1_code_num";
-	public static final String LEVEL2_KEY = "leve2_code_num";
+	public static final String LEVEL1_KEY = "goodsype_leve1_num";
+	public static final String LEVEL2_KEY = "goodsype_leve2_";
 	@Resource
 	private IRedisUtil redisUtil;
 	@Resource
@@ -100,7 +100,7 @@ public class GoodsTypeServiceImpl extends AbstractService<Inno72GoodsType> imple
 			} else {
 				code.append(model.getParentCode());
 				code.append("00");
-				code.append(redisUtil.incr(LEVEL2_KEY).toString());
+				code.append(redisUtil.incr(LEVEL2_KEY + model.getParentCode()).toString());
 				Inno72GoodsType parent = inno72GoodsTypeMapper.selectByPrimaryKey(model.getParentCode());
 				model.setLevel(2);
 				model.setParentName(parent.getName());
