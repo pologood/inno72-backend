@@ -63,8 +63,14 @@ public class StorekeeperServiceImpl extends AbstractService<Inno72Storekeeper> i
 		if(inno72Storekeeper != null){
 			return Results.failure("不能重复添加用户");
 		}
+		Inno72Storekeeper user = UserUtil.getKepper();
 		String storekeeperId = StringUtil.getUUID();
 		storekeeper.setId(storekeeperId);
+		storekeeper.setCreateId(user.getId());
+		LocalDateTime now = LocalDateTime.now();
+		storekeeper.setCreateTime(now);
+		storekeeper.setUpdateId(user.getId());
+		storekeeper.setUpdateTime(now);
 		inno72StorekeeperMapper.insertSelective(storekeeper);
 		String[] storeIds = storekeeper.getStoreIds();
 		String[] functionIds = storekeeper.getFunctionIds();

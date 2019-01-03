@@ -90,7 +90,7 @@ public class Inno72Storekeeper {
 
 
 	@Transient
-	private List<Inno72Store> storeList;
+	private String storeName;
 
 	@Transient
 	private List<Inno72StoreFunction> storeFunctionList;
@@ -334,12 +334,12 @@ public class Inno72Storekeeper {
 		this.updateTime = updateTime;
 	}
 
-	public List<Inno72Store> getStoreList() {
-		return storeList;
+	public String getStoreName() {
+		return storeName;
 	}
 
-	public void setStoreList(List<Inno72Store> storeList) {
-		this.storeList = storeList;
+	public void setStoreName(String storeName) {
+		this.storeName = storeName;
 	}
 
 	public List<Inno72StoreFunction> getStoreFunctionList() {
