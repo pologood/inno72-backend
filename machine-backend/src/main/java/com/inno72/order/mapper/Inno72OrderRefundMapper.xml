@@ -57,6 +57,7 @@
               )
           	</if>
       </where>
+      ORDER BY re.update_time DESC
   </select>
   
   <select id="selectRefundDetail" parameterType="String" resultType="java.util.Map">
