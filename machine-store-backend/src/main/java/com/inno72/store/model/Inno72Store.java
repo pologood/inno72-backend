@@ -30,7 +30,7 @@ public class Inno72Store {
 	/**
 	 * 仓库类型:0 中心仓，1分仓
 	 */
-	private String type;
+	private Integer type;
 
 	/**
 	 * 区域ID
@@ -146,7 +146,7 @@ public class Inno72Store {
 	 *
 	 * @return type - 仓库类型:0 中心仓，1分仓
 	 */
-	public String getType() {
+	public Integer getType() {
 		return type;
 	}
 
@@ -156,7 +156,7 @@ public class Inno72Store {
 	 * @param type
 	 *            仓库类型:0 中心仓，1分仓
 	 */
-	public void setType(String type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 
