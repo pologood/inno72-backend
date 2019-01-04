@@ -1,5 +1,7 @@
 package com.inno72.store.service;
 
+import java.util.List;
+
 import com.inno72.common.Result;
 import com.inno72.common.Service;
 import com.inno72.store.model.Inno72Store;
@@ -13,4 +15,6 @@ public interface StoreService extends Service<Inno72Store> {
 	Result<Object> saveModel(StoreVo model);
 
 	Result<Object> updateModel(StoreVo model);
+
+	List<StoreVo> findByPage(String keyword);
 }

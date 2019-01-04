@@ -18,8 +18,6 @@ import com.inno72.store.model.Inno72Store;
 import com.inno72.store.service.StoreService;
 import com.inno72.store.vo.StoreVo;
 
-import tk.mybatis.mapper.entity.Condition;
-
 /**
  * Created by CodeGenerator on 2018/12/28.
  */
@@ -53,9 +51,8 @@ public class StoreController {
 	}
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list() {
-		Condition condition = new Condition(Inno72Store.class);
-		List<Inno72Store> list = storeService.findByPage(condition);
+	public ModelAndView list(String keyword) {
+		List<StoreVo> list = storeService.findByPage(keyword);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 }

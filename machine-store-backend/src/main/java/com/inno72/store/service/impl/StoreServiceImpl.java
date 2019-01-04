@@ -1,6 +1,9 @@
 package com.inno72.store.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -146,6 +149,13 @@ public class StoreServiceImpl extends AbstractService<Inno72Store> implements St
 		vo.setDistrict(district);
 
 		return vo;
+	}
+
+	@Override
+	public List<StoreVo> findByPage(String keyword) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("keyword", keyword);
+		return inno72StoreMapper.selectByPage(map);
 	}
 
 }

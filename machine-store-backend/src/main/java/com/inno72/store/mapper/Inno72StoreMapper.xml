@@ -23,11 +23,35 @@
   </resultMap>
   
   <resultMap id="VoResultMap" type="com.inno72.store.vo.StoreVo" extends="BaseResultMap">
-    
+    	<result column="keeper" jdbcType="VARCHAR" property="keeper" />
+    	<result column="areaName" jdbcType="VARCHAR" property="areaName" />
     
   </resultMap>
   
-   <select id="selectById" parameterType="String" resultMap="VoResultMap">
+  <select id="selectByPage" parameterType="String" resultMap="VoResultMap">
+		SELECT * FROM (
+		SELECT
+			s.*,
+			GROUP_CONCAT(er.`name`) AS keeper,
+			CONCAT(area.province, area.city, area.district) AS areaName
+		FROM
+			inno72_store s
+		LEFT JOIN inno72_storekeeper_storte ses ON ses.store_id=s.id
+		LEFT JOIN inno72_storekeeper er ON er.id=ses.storekeeper_id
+		LEFT JOIN inno72_admin_area area ON area.code =s.area_code
+		GROUP BY s.id) t 
+		where 1=1
+		<if test="keyword !=null and keyword !='' ">
+			AND ( t.name LIKE '%${keyword}%' 
+			or t.areaName LIKE '%${keyword}%' 
+			or t.keeper LIKE '%${keyword}%' 
+			or t.area LIKE '%${keyword}%' 
+			)
+		</if>
+		ORDER BY t.update_time DESC
+  </select>
+  
+  <select id="selectById" parameterType="String" resultMap="VoResultMap">
 		SELECT * FROM inno72_store where id=#{id}
   </select>
   

@@ -14,6 +14,10 @@ public class StoreVo extends Inno72Store {
 
 	private String endTimeStr;
 
+	private String keeper;
+
+	private String areaName;
+
 	public String getProvince() {
 		return province;
 	}
@@ -52,6 +56,22 @@ public class StoreVo extends Inno72Store {
 
 	public void setEndTimeStr(String endTimeStr) {
 		this.endTimeStr = endTimeStr;
+	}
+
+	public String getKeeper() {
+		return keeper;
+	}
+
+	public void setKeeper(String keeper) {
+		this.keeper = keeper;
+	}
+
+	public String getAreaName() {
+		return areaName;
+	}
+
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
 	}
 
 }
