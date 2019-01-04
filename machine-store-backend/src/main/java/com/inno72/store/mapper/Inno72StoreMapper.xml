@@ -11,6 +11,7 @@
     <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
     <result column="area" jdbcType="VARCHAR" property="area" />
     <result column="capacity" jdbcType="INTEGER" property="capacity" />
+    <result column="capacity_use" jdbcType="INTEGER" property="capacityUse" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
@@ -20,4 +21,16 @@
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
+  
+  <resultMap id="VoResultMap" type="com.inno72.store.vo.StoreVo" extends="BaseResultMap">
+    
+    
+  </resultMap>
+  
+   <select id="selectById" parameterType="String" resultMap="VoResultMap">
+		SELECT * FROM inno72_store where id=#{id}
+  </select>
+  
+  
+  
 </mapper>

@@ -49,6 +49,12 @@ public class Inno72Store {
 	private Integer capacity;
 
 	/**
+	 * 已使用容量（方）
+	 */
+	@Column(name = "capacity_use")
+	private Integer capacityUse;
+
+	/**
 	 * 使用开始时间
 	 */
 	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
@@ -217,6 +223,14 @@ public class Inno72Store {
 		this.capacity = capacity;
 	}
 
+	public Integer getCapacityUse() {
+		return capacityUse;
+	}
+
+	public void setCapacityUse(Integer capacityUse) {
+		this.capacityUse = capacityUse;
+	}
+
 	/**
 	 * 获取使用开始时间
 	 *
@@ -368,4 +382,5 @@ public class Inno72Store {
 	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
 	}
+
 }
