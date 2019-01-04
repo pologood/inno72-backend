@@ -124,6 +124,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 				String result = payRefund(orderRefund, mUser);
 				String code = FastJsonUtils.getString(result, "code");
 				String msg = FastJsonUtils.getString(result, "msg");
+				orderRefund.setRefundMsg(msg);
 				if (Result.SUCCESS == Integer.parseInt(code)) {
 					String status = FastJsonUtils.getString(result, "status");
 					if (status.equals("11")) {
@@ -131,7 +132,9 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 						orderRefund.setRefundTime(LocalDateTime.now());
 						// this.sendMsgInfo(orderRefund, "1", "成功");
 					} else if (status.equals("12")) {
+						orderRefund.setRefundMsg("");
 						orderRefund.setStatus(2);
+						orderRefund.setRefundTime(LocalDateTime.now());
 					} else if (status.equals("13")) {
 						orderRefund.setStatus(3);
 						// this.sendMsgInfo(orderRefund, "2", msg);
@@ -140,7 +143,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 					orderRefund.setStatus(3);
 					// this.sendMsgInfo(orderRefund, "2", msg);
 				}
-				orderRefund.setRefundMsg(msg);
+
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				logger.info("退款接口调用失败:" + e.toString());
@@ -209,6 +212,7 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 				String result = payRefund(base, mUser);
 				String code = FastJsonUtils.getString(result, "code");
 				String msg = FastJsonUtils.getString(result, "msg");
+				base.setRefundMsg(msg);
 				if (Result.SUCCESS == Integer.parseInt(code)) {
 					String status = FastJsonUtils.getString(result, "status");
 					if (status.equals("11")) {
@@ -216,18 +220,20 @@ public class OrderRefundServiceImpl extends AbstractService<Inno72OrderRefund> i
 						base.setRefundTime(LocalDateTime.now());
 						// this.sendMsgInfo(base, "1", "成功");
 					} else if (status.equals("12")) {
+						base.setRefundMsg("");
 						base.setStatus(2);
+						base.setRefundTime(LocalDateTime.now());
 					} else if (status.equals("13")) {
 						base.setStatus(3);
 						// this.sendMsgInfo(base, "2", msg);
 					}
 				} else if (50023 == Integer.parseInt(code)) {
-
+					base.setRefundMsg("");
 				} else {
 					base.setStatus(3);
 					// this.sendMsgInfo(base, "2", msg);
 				}
-				base.setRefundMsg(msg);
+
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				logger.info("退款接口调用失败:" + e.toString());
