@@ -13,16 +13,18 @@ import com.inno72.common.Service;
  */
 public interface InteractGoodsService extends Service<Inno72InteractGoods> {
 
-	Result<String> save(InteractGoodsVo interactGoods);
+	Result<String> saveCoupon(InteractGoodsVo interactGoods);
 
 	InteractGoodsVo findGoodsById(String id, Integer type);
 
-	Result<String> update(InteractGoodsVo model);
+	Result<String> updateCoupon(InteractGoodsVo model);
 
 	List<InteractGoodsVo> getList(String interactId, String shopsId, Integer isAlone);
 
 	Result<String> deleteById(String interactId, String goodsId);
 
 	List<Map<String, Object>> couponGetList(String interactId, String shopsId);
+
+	List<Map<String, Object>> getToAddList(String interactId, String shopsId, String sellerId);
 
 }

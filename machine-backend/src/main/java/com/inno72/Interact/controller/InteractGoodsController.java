@@ -32,9 +32,9 @@ public class InteractGoodsController {
 	@Resource
 	private InteractGoodsService interactGoodsService;
 
-	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
+	@RequestMapping(value = "/addCoupon", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> add(@RequestBody InteractGoodsVo interactGoods) {
-		return interactGoodsService.save(interactGoods);
+		return interactGoodsService.saveCoupon(interactGoods);
 	}
 
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })
@@ -43,8 +43,8 @@ public class InteractGoodsController {
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> update(@RequestBody InteractGoodsVo interactGoods) {
-		return interactGoodsService.update(interactGoods);
+	public Result<String> updateCoupon(@RequestBody InteractGoodsVo interactGoods) {
+		return interactGoodsService.updateCoupon(interactGoods);
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
@@ -57,6 +57,12 @@ public class InteractGoodsController {
 	public Result<List<InteractGoodsVo>> getList(String interactId, String shopsId,
 			@RequestParam(required = false) Integer isAlone) {
 		List<InteractGoodsVo> list = interactGoodsService.getList(interactId, shopsId, isAlone);
+		return ResultGenerator.genSuccessResult(list);
+	}
+
+	@RequestMapping(value = "/getToAddList", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Map<String, Object>>> getToAddList(String interactId, String shopsId, String sellerId) {
+		List<Map<String, Object>> list = interactGoodsService.getToAddList(interactId, shopsId, sellerId);
 		return ResultGenerator.genSuccessResult(list);
 	}
 

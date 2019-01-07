@@ -42,6 +42,18 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   
+  <!-- 获取商户店铺下商品 -->
+  <select id="getGoodsList" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT g.id,g.name,g.code,g.price FROM goods g
+		<where>
+          <if test="sellerId != null and sellerId != ''">AND g.seller_id=#{sellerId}</if>
+          <if test="shopId != null and shopId != ''">AND g.shop_id=#{shopId}</if>
+          and g.id not in (
+				SELECT ig.id FROM inno72_interact_goods ig WHERE  ig.interact_id = #{interactId}
+			)
+       </where>
+  </select>
+  
   <select id="selectInteractGoodsById" parameterType="String" resultMap="InteractGoodsVoResultMap">
 		SELECT
 			g.*,ig.interact_id,ig.user_day_number,ig.type 

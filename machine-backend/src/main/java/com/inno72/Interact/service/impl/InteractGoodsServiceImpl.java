@@ -70,7 +70,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 	private Inno72InteractGameRuleMapper inno72InteractGameRuleMapper;
 
 	@Override
-	public Result<String> save(InteractGoodsVo model) {
+	public Result<String> saveCoupon(InteractGoodsVo model) {
 
 		try {
 			SessionData session = SessionUtil.sessionData.get();
@@ -106,31 +106,8 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 			}
 
 			if (0 == model.getType()) {
-
-				if (StringUtil.isBlank(model.getName())) {
-					logger.info("请填写商品名称");
-					return Results.failure("请填写商品名称");
-				}
-				if (StringUtil.isBlank(model.getCode())) {
-					logger.info("请填写商品ID");
-					return Results.failure("请填写商品ID");
-				}
-				if (null == model.getImg()) {
-					logger.info("请上传图片");
-					return Results.failure("请上传图片");
-				}
-
-				model.setId(StringUtil.getUUID());
-				model.setUseType(1);
-				model.setIsDelete(0);
-				model.setCreateId(mUserId);
-				model.setUpdateId(mUserId);
-				model.setCreateTime(LocalDateTime.now());
-				model.setUpdateTime(LocalDateTime.now());
-
-				inno72GoodsMapper.insert(model);
-				interactGoods.setGoodsId(model.getId());
-				interactGoods.setUserDayNumber(model.getUserDayNumber());
+				logger.info("参数错误");
+				return Results.failure("参数错误");
 			} else {
 				if (StringUtil.isBlank(model.getName())) {
 					logger.info("请填写优惠券名称");
@@ -246,8 +223,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 	}
 
 	@Override
-	public Result<String> update(InteractGoodsVo model) {
-
+	public Result<String> updateCoupon(InteractGoodsVo model) {
 		try {
 			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
@@ -279,20 +255,8 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 			}
 
 			if (0 == model.getType()) {
-				if (StringUtil.isBlank(model.getName())) {
-					logger.info("请填写商品名称");
-					return Results.failure("请填写商品名称");
-				}
-				if (StringUtil.isBlank(model.getCode())) {
-					logger.info("请填写商品编码");
-					return Results.failure("请填写商品编码");
-				}
-
-				model.setUpdateId(mUserId);
-				model.setUpdateTime(LocalDateTime.now());
-
-				inno72GoodsMapper.updateByPrimaryKeySelective(model);
-				interactGoods.setUserDayNumber(model.getUserDayNumber());
+				logger.info("参数错误");
+				return Results.failure("参数错误");
 			} else {
 				if (StringUtil.isBlank(model.getName())) {
 					logger.info("请填写优惠券名称");
@@ -378,13 +342,25 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 
 	@Override
 	public List<InteractGoodsVo> getList(String interactId, String shopsId, Integer isAlone) {
-		logger.info("---------------------获取活动下商品列表-------------------");
+		logger.info("---------------------获取活动下已添加的商品列表-------------------");
 
 		Map<String, Object> pm = new HashMap<>();
 		pm.put("interactId", interactId);
 		pm.put("shopsId", shopsId);
 		pm.put("isAlone", isAlone);
 		return inno72InteractGoodsMapper.selectGoods(pm);
+
+	}
+
+	@Override
+	public List<Map<String, Object>> getToAddList(String interactId, String shopsId, String sellerId) {
+		logger.info("---------------------获取将要添加的商品列表-------------------");
+
+		Map<String, Object> pm = new HashMap<>();
+		pm.put("interactId", interactId);
+		pm.put("shopsId", shopsId);
+		pm.put("sellerId", sellerId);
+		return inno72InteractGoodsMapper.getGoodsList(pm);
 
 	}
 
