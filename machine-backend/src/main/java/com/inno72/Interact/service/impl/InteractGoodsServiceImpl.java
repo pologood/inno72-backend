@@ -70,6 +70,49 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 	private Inno72InteractGameRuleMapper inno72InteractGameRuleMapper;
 
 	@Override
+	public Result<String> saveGoods(InteractGoodsVo model) {
+
+		try {
+			SessionData session = SessionUtil.sessionData.get();
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+			List<Map<String, String>> list = model.getGoodsList();
+
+			if (list == null || list.size() <= 0) {
+				logger.info("请添加商品");
+				return Results.failure("请添加商品");
+			}
+			for (Map<String, String> goods : list) {
+				String goodsId = goods.get("goodsId");
+				Inno72InteractGoods interactGoods = new Inno72InteractGoods();
+				interactGoods.setId(StringUtil.getUUID());
+				interactGoods.setInteractId(model.getInteractId());
+				interactGoods.setType(0);
+				interactGoods.setGoodsId(goodsId);
+				Inno72Goods g = inno72GoodsMapper.selectByPrimaryKey(goodsId);
+
+				// 微信类型操作默认店铺
+				Result<Object> sr = this.wxChannlShops(g.getId(), model.getInteractId(), mUserId);
+				if (sr.getCode() == 0) {
+					model.setShopId(sr.getData().toString());
+				}
+
+				inno72InteractGoodsMapper.insert(interactGoods);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+		return Results.success("操作成功");
+	}
+
+	@Override
 	public Result<String> saveCoupon(InteractGoodsVo model) {
 
 		try {
@@ -85,7 +128,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 			Inno72InteractGoods interactGoods = new Inno72InteractGoods();
 			interactGoods.setId(StringUtil.getUUID());
 			interactGoods.setInteractId(model.getInteractId());
-			interactGoods.setType(model.getType());
+			interactGoods.setType(1);
 			if (null == model.getType()) {
 				logger.info("请选择商品类型");
 				return Results.failure("请选择商品类型");
@@ -202,6 +245,14 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					shops.setUpdateTime(LocalDateTime.now());
 
 					inno72ShopsMapper.insertSelective(shops);
+
+					return Results.warn("微店ID", 0, shops.getId());
+				}
+				Inno72InteractShops pm = new Inno72InteractShops();
+				pm.setInteractId(interactId);
+				pm.setShopsId(merchantId);
+				List<Inno72InteractShops> interactShopsList = inno72InteractShopsMapper.select(pm);
+				if (interactShopsList.size() == 0) {
 					// 活动关联店铺
 					Inno72InteractShops interactShops = new Inno72InteractShops();
 					interactShops.setId(StringUtil.getUUID());
@@ -209,9 +260,9 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					interactShops.setShopsId(merchantId);
 					inno72InteractShopsMapper.insert(interactShops);
 
-					return Results.warn("微店ID", 0, shops.getId());
+					return Results.warn("微店ID", 0, merchantId);
 				}
-				return Results.warn("微店ID", 0, shopsList.get(0).getId());
+				return Results.warn("微店ID", 0, merchantId);
 			} else {
 				return Results.failure("无需操作店铺");
 			}

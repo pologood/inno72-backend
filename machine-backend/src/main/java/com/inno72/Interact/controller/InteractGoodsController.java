@@ -32,8 +32,13 @@ public class InteractGoodsController {
 	@Resource
 	private InteractGoodsService interactGoodsService;
 
+	@RequestMapping(value = "/addGoods", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> addGoods(@RequestBody InteractGoodsVo interactGoods) {
+		return interactGoodsService.saveGoods(interactGoods);
+	}
+
 	@RequestMapping(value = "/addCoupon", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> add(@RequestBody InteractGoodsVo interactGoods) {
+	public Result<String> saveCoupon(@RequestBody InteractGoodsVo interactGoods) {
 		return interactGoodsService.saveCoupon(interactGoods);
 	}
 
