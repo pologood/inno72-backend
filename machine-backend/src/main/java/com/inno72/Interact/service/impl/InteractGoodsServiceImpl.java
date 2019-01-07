@@ -409,7 +409,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 
 		Map<String, Object> pm = new HashMap<>();
 		pm.put("interactId", interactId);
-		pm.put("shopsId", shopsId);
+		pm.put("shopId", shopsId);
 		pm.put("sellerId", sellerId);
 		return inno72InteractGoodsMapper.getGoodsList(pm);
 
