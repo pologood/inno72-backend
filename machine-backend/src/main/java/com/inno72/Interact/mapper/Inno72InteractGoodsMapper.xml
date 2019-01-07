@@ -44,7 +44,7 @@
   
   <!-- 获取商户店铺下商品 -->
   <select id="getGoodsList" parameterType="java.util.Map" resultType="java.util.Map">
-		SELECT g.id,g.name,g.code,g.price FROM goods g
+		SELECT g.id,g.name,g.code,g.price FROM inno72_goods g
 		<where>
           <if test="sellerId != null and sellerId != ''">AND g.seller_id=#{sellerId}</if>
           <if test="shopId != null and shopId != ''">AND g.shop_id=#{shopId}</if>
