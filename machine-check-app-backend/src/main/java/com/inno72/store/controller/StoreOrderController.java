@@ -55,7 +55,7 @@ public class StoreOrderController {
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<Inno72StoreOrder> detail(@RequestParam String id) {
-        Inno72StoreOrder storeOrder = storeOrderService.findById(id);
+        Inno72StoreOrder storeOrder = storeOrderService.findOrderById(id);
         return ResultGenerator.genSuccessResult(storeOrder);
     }
     

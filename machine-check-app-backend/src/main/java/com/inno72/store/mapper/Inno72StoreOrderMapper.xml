@@ -45,4 +45,11 @@
       </where>
       order by so.update_time desc
   </select>
+
+  <select id="selectDetailById" resultMap="BaseResultMap">
+      select so.*,se.express_num expressNum,se. from inno72_store_order so
+      left join inno72_store_express se on so.id=se.order_id
+      left join inno72_goods g on so.goods=g.id
+      where so.id=#{id}
+  </select>
 </mapper>
