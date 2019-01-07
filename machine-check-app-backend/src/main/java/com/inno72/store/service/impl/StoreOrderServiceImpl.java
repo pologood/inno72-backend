@@ -1,6 +1,9 @@
 package com.inno72.store.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -70,5 +73,18 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		inno72StoreExpress.setUpdateTime(now);
 		inno72StoreExpressMapper.insertSelective(inno72StoreExpress);
 		return ResultGenerator.genSuccessResult();
+	}
+
+	@Override
+	public List<Inno72StoreOrder> findOrderByPage(StoreOrderVo storeOrderVo) {
+		String keyword = storeOrderVo.getKeyword();
+		Map<String,Object> map = new HashMap<>();
+		if(StringUtil.isNotEmpty(keyword)){
+			map.put("keyword",keyword);
+		}
+		String sendId = UserUtil.getUser().getId();
+		map.put("sendId",sendId);
+		List<Inno72StoreOrder> list = inno72StoreOrderMapper.selectOrderByPage(map);
+		return list;
 	}
 }

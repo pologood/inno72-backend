@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,7 +35,7 @@ public class StoreOrderController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> add(StoreOrderVo storeOrderVo) {
+    public Result<String> add(@RequestBody StoreOrderVo storeOrderVo) {
         logger.info("添加商品寄出单接收参数：{}", JSON.toJSON(storeOrderVo));
     	Result<String> result = storeOrderService.saveOrder(storeOrderVo);
 		logger.info("添加商品寄出单结果：{}", JSON.toJSON(result));
@@ -59,9 +60,8 @@ public class StoreOrderController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list() {
-   	   Condition condition = new Condition( Inno72StoreOrder.class);
-        List<Inno72StoreOrder> list = storeOrderService.findByPage(condition);
+    public ModelAndView list(@RequestBody StoreOrderVo storeOrderVo) {
+        List<Inno72StoreOrder> list = storeOrderService.findOrderByPage(storeOrderVo);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
 }

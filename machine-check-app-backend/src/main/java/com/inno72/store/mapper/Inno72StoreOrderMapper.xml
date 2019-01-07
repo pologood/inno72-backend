@@ -28,5 +28,21 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="updater" jdbcType="VARCHAR" property="updater" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
   </resultMap>
+
+  <select id="selectOrderByPage" resultMap="BaseResultMap">
+      select so.*,g.name goodsName from inno72_store_order so
+      left join inno72_goods g on so.goods=g.id
+      <where>
+          <if test="keyword != null">
+              and (so.order_num like '%${keyword}%'
+              or g.name like '%${keyword}%')
+          </if>
+          <if test="sendId != null">
+              and send_id = #{sendId}
+          </if>
+      </where>
+      order by so.update_time desc
+  </select>
 </mapper>

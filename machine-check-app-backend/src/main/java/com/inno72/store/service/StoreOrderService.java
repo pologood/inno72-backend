@@ -1,5 +1,7 @@
 package com.inno72.store.service;
 
+import java.util.List;
+
 import com.inno72.common.Result;
 import com.inno72.common.Service;
 import com.inno72.store.model.Inno72StoreOrder;
@@ -12,4 +14,6 @@ import com.inno72.store.vo.StoreOrderVo;
 public interface StoreOrderService extends Service<Inno72StoreOrder> {
 
 	Result<String> saveOrder(StoreOrderVo storeOrderVo);
+
+	List<Inno72StoreOrder> findOrderByPage(StoreOrderVo storeOrderVo);
 }

@@ -37,6 +37,8 @@ public class StoreOrderVo {
 	 */
 	private String expressNum;
 
+	private String keyword;
+
 	public String getReceiver() {
 		return receiver;
 	}
@@ -83,5 +85,13 @@ public class StoreOrderVo {
 
 	public void setExpressNum(String expressNum) {
 		this.expressNum = expressNum;
+	}
+
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
 	}
 }

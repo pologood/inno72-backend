@@ -51,9 +51,8 @@ public class StoreController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list() {
-   	   Condition condition = new Condition( Inno72Store.class);
-        List<Inno72Store> list = storeService.findByPage(condition);
-        return ResultPages.page(ResultGenerator.genSuccessResult(list));
+    public Result<List<Inno72Store>> list() {
+        List<Inno72Store> list = storeService.findAll();
+        return ResultGenerator.genSuccessResult(list);
     }
 }
