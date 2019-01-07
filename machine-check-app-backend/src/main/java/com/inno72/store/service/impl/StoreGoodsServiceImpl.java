@@ -29,12 +29,14 @@ public class StoreGoodsServiceImpl extends AbstractService<Inno72StoreGoods> imp
 
 	@Override
 	public List<Inno72StoreGoods> findStoreGoods(StoreOrderVo storeOrderVo) {
-		String chekUserId = UserUtil.getUser().getId();
 		Map<String,Object> map = new HashMap<>();
-		map.put("receiveId",chekUserId);
 		String storeId = storeOrderVo.getStoreId();
 		if(StringUtil.isNotEmpty(storeId)){
 			map.put("storeId",storeId);
+		}
+		String keyword = storeOrderVo.getKeyword();
+		if(StringUtil.isNotEmpty(keyword)){
+			map.put("keyword",keyword);
 		}
 		List<Inno72StoreGoods> goodsList = inno72StoreGoodsMapper.selectByParam(map);
 		return goodsList;

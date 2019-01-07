@@ -31,8 +31,9 @@ public class StoreOrderVo {
 	 */
 	private Integer number;
 
-	@Transient
 	private String storeId;
+
+	private String keyword;
 
 	public String getId() {
 		return id;
@@ -52,8 +53,6 @@ public class StoreOrderVo {
 	 * 物流单号
 	 */
 	private String expressNum;
-
-	private String keyword;
 
 	public String getReceiver() {
 		return receiver;

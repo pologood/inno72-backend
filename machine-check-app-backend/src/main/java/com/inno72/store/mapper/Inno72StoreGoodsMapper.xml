@@ -15,7 +15,7 @@
     <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
   </resultMap>
   <select id="selectByParam" resultMap="BaseResultMap">
-      select sg.*,g.name goodsName from inno72_store_goods sg
+      select sg.goods_id,g.name goodsName from inno72_store_goods sg
       left join inno72_goods g on sg.goods_id=g.id
       left join inno72_store_order so on g.id=so.goods
       where
@@ -26,5 +26,9 @@
           <if test="storeId != null">
               and store_id=#{storeId}
           </if>
+          <if test="keyword != null">
+              and g.name like '%${keyword}%'
+          </if>
+      group by sg.goods_id
   </select>
 </mapper>
