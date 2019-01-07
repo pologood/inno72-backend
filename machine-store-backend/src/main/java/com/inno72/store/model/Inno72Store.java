@@ -30,7 +30,7 @@ public class Inno72Store {
 	/**
 	 * 仓库类型:0 中心仓，1分仓
 	 */
-	private String type;
+	private Integer type;
 
 	/**
 	 * 区域ID
@@ -47,6 +47,12 @@ public class Inno72Store {
 	 * 容量（方）
 	 */
 	private Integer capacity;
+
+	/**
+	 * 已使用容量（方）
+	 */
+	@Column(name = "capacity_use")
+	private Integer capacityUse;
 
 	/**
 	 * 使用开始时间
@@ -146,7 +152,7 @@ public class Inno72Store {
 	 *
 	 * @return type - 仓库类型:0 中心仓，1分仓
 	 */
-	public String getType() {
+	public Integer getType() {
 		return type;
 	}
 
@@ -156,7 +162,7 @@ public class Inno72Store {
 	 * @param type
 	 *            仓库类型:0 中心仓，1分仓
 	 */
-	public void setType(String type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 
@@ -215,6 +221,14 @@ public class Inno72Store {
 	 */
 	public void setCapacity(Integer capacity) {
 		this.capacity = capacity;
+	}
+
+	public Integer getCapacityUse() {
+		return capacityUse;
+	}
+
+	public void setCapacityUse(Integer capacityUse) {
+		this.capacityUse = capacityUse;
 	}
 
 	/**
@@ -368,4 +382,5 @@ public class Inno72Store {
 	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
 	}
+
 }
