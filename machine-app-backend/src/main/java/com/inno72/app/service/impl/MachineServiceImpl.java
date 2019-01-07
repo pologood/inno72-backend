@@ -422,4 +422,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		return Results.success();
 	}
 
+	@Override
+	public Result<String> getServerTime(Map<String, Object> msg) {
+		return Results.success(String.valueOf(System.currentTimeMillis()));
+	}
+
 }

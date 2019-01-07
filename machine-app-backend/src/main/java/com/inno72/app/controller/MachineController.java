@@ -179,6 +179,17 @@ public class MachineController {
 		return machineService.updateChannelStatus(msg);
 	}
 
+	/**
+	 * 查询服务器时间
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	@RequestMapping(value = "/getServerTime", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> getServerTime(@RequestBody(required = false) Map<String, Object> msg) {
+		return machineService.getServerTime(msg);
+	}
+
 	@PostMapping("encrypt")
 	public String encrypt(HttpServletRequest request) throws IOException {
 		byte[] encryptRequestBodyBytes = StreamUtils.copyToByteArray(request.getInputStream());
