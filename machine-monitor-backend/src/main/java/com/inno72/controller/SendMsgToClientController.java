@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,7 +22,6 @@ import com.inno72.common.utils.StringUtil;
 import com.inno72.model.SendMessageBean;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.redis.IRedisUtil;
-import com.inno72.service.SocketService;
 import com.inno72.util.AesUtils;
 import com.inno72.util.GZIPUtil;
 import com.inno72.vo.AppMsgVo;
@@ -35,11 +33,6 @@ public class SendMsgToClientController {
 
 	@Resource
 	private IRedisUtil redisUtil;
-
-	@Autowired
-	private SocketService socketService;
-	@Autowired
-	private MongoOperations mongoTpl;
 
 	@Autowired
 	private MachineMonitorBackendProperties machineMonitorBackendProperties;

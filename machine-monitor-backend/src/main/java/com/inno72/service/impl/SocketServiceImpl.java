@@ -1,6 +1,5 @@
 package com.inno72.service.impl;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,25 +12,23 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
-import com.inno72.common.CommonConstants;
 import com.inno72.common.MachineMonitorBackendProperties;
-import com.inno72.common.utils.StringUtil;
 import com.inno72.mapper.Inno72MachineMapper;
 import com.inno72.model.AlarmDetailBean;
 import com.inno72.model.AppStatus;
 import com.inno72.model.AppVersion;
-import com.inno72.model.Inno72AppMsg;
 import com.inno72.model.Inno72Machine;
 import com.inno72.model.MachineAppStatus;
 import com.inno72.model.MachineInstallAppBean;
 import com.inno72.model.SendMessageBean;
 import com.inno72.model.SystemStatus;
+import com.inno72.plugin.http.HttpClient;
 import com.inno72.redis.IRedisUtil;
-import com.inno72.service.AppMsgService;
 import com.inno72.service.SocketService;
 import com.inno72.util.AesUtils;
 import com.inno72.util.AlarmUtil;
 import com.inno72.util.GZIPUtil;
+import com.inno72.vo.AppMsgVo;
 
 import tk.mybatis.mapper.entity.Condition;
 
@@ -48,27 +45,11 @@ public class SocketServiceImpl implements SocketService {
 	@Resource
 	private IRedisUtil redisUtil;
 
-	@Autowired
-	private AppMsgService appMsgService;
-
 	@Override
 	public void updateNetStatus(SystemStatus systemStatus) {
 		try {
 			String ping = systemStatus.getPing();
 			int pingInt = Integer.parseInt(ping.replace("ms", ""));
-			// Map<String, Object> map = new HashMap<>();
-			// map.put("machineCode", systemStatus.getMachineId());
-			// if (pingInt <= 100) {
-			// map.put("netStatus", 4);
-			// } else if (pingInt > 100 && pingInt <= 300) {
-			// map.put("netStatus", 3);
-			// } else if (pingInt > 300 && pingInt <= 500) {
-			// map.put("netStatus", 2);
-			// } else if (pingInt > 500 && pingInt <= 1000) {
-			// map.put("netStatus", 1);
-			// } else {
-			// map.put("netStatus", 0);
-			// }
 			int status = 0;
 			if (pingInt <= 100) {
 				status = 4;
@@ -143,6 +124,7 @@ public class SocketServiceImpl implements SocketService {
 				}
 			}
 			if (!il.isEmpty() && (verisonCode >= 5 || verisonCode == 0)) {
+				String url = machineMonitorBackendProperties.get("sendMsgUrl");
 				SendMessageBean msg = new SendMessageBean();
 				msg.setEventType(2);
 				msg.setSubEventType(2);
@@ -150,18 +132,17 @@ public class SocketServiceImpl implements SocketService {
 				msg.setData(il);
 
 				String result = GZIPUtil.compress(AesUtils.encrypt(JSON.toJSONString(msg)));
-				String machinKey = CommonConstants.REDIS_SESSION_PATH + msg.getMachineId();
-				String sessionId = redisUtil.get(machinKey);
-				if (!com.inno72.common.utils.StringUtil.isEmpty(sessionId)) {
-					Inno72AppMsg msg1 = new Inno72AppMsg();
-					msg1.setId(StringUtil.uuid());
-					msg1.setCreateTime(LocalDateTime.now());
-					msg1.setMachineCode(msg.getMachineId());
-					msg1.setContent(result);
-					msg1.setStatus(0);
-					msg1.setMsgType(1);
-					appMsgService.save(msg1);
+				AppMsgVo vo = new AppMsgVo();
+				vo.setData(result);
+				vo.setIsQueue(1);
+				vo.setTargetCode(msg.getMachineId());
+				vo.setTargetType("machine");
+				try {
+					HttpClient.post(url, JSON.toJSONString(vo));
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+
 			}
 		}
 
