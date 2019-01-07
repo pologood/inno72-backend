@@ -348,7 +348,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		msg.setSubEventType(updateStatus);
 		msg.setMachineId(machine.getMachineCode());
 		if (updateStatus == 2) {
-			if (machine.getMachineStatus() == 9) {
+			if (machine.getMachineType() == 2) {
 				List<String> names = new ArrayList<String>();
 				Condition condition = new Condition(Inno72App.class);
 				condition.createCriteria().andEqualTo("appBelong", 6);
@@ -405,7 +405,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 				MachineStartAppBean bean = new MachineStartAppBean();
 				bean.setAppPackageName(status.getAppPackageName());
 				Inno72App app = appService.findBy("appPackageName", status.getAppPackageName());
-				if(app != null){
+				if (app != null) {
 					bean.setAppType(app.getAppType());
 					if (appPackageName.equals(status.getAppPackageName()) || app.getAppType() == 1) {
 						bean.setStartStatus(1);
@@ -418,7 +418,6 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 					}
 					sl.add(bean);
 				}
-
 			}
 			msg.setData(sl);
 			String m = "用户{0}，在erp系统中将运行的App由{1}{2}切换为{3}{4}";
@@ -754,7 +753,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 			return Results.failure("机器id不存在");
 		}
 		String key = "com.inno72.monitorapp/.services.DetectionService";
-		if (machine.getMachineStatus() == 9) {
+		if (machine.getMachineType() == 2) {
 			key = "com.inno72.monitorapp.tmall/.services.DetectionService";
 		}
 		if (status == 1) {
@@ -909,7 +908,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		Map<String, String> params = new HashMap<>();
 		params.put("msg", JSON.toJSONString(param));
 
-		if (machine.getMachineStatus() == 9) {
+		if (machine.getMachineType() == 2) {
 			msgUtil.sendPush("push_android_tm_transmission_common", params, machine.getMachineCode(),
 					"machine-backend--grabLog", "获取日志", "获取日志");
 			return Results.success();

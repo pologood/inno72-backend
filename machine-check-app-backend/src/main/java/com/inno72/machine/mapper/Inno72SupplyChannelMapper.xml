@@ -247,4 +247,11 @@
         left join inno72_machine m on ch.machine_id=m.id
         where m.id=#{machineId} order by ch.code*1
     </select>
+
+    <select id="selectOneBy" resultMap="BaseResultMap">
+        select * from inno72_supply_channel
+        where machine_id=#{machineId}
+        and code=#{code}
+        limit 1
+    </select>
 </mapper>
