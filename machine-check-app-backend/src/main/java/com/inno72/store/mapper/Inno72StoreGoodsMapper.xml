@@ -12,5 +12,19 @@
     <result column="capacity" jdbcType="INTEGER" property="capacity" />
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
   </resultMap>
+  <select id="selectByParam" resultMap="BaseResultMap">
+      select sg.*,g.name goodsName from inno72_store_goods sg
+      left join inno72_goods g on sg.goods_id=g.id
+      left join inno72_store_order so on g.id=so.goods
+      where
+          receive_type=1
+          <if test="receiveId != null">
+              and receive_id=#{receiveId}
+          </if>
+          <if test="storeId != null">
+              and store_id=#{storeId}
+          </if>
+  </select>
 </mapper>

@@ -48,8 +48,8 @@ public class StoreOrderController {
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> update(Inno72StoreOrder storeOrder) {
-        storeOrderService.update(storeOrder);
+    public Result<String> update(@RequestBody StoreOrderVo storeOrderVo) {
+        storeOrderService.updateOrder(storeOrderVo);
         return ResultGenerator.genSuccessResult();
     }
     

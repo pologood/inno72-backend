@@ -16,4 +16,6 @@ public interface StoreOrderService extends Service<Inno72StoreOrder> {
 	Result<String> saveOrder(StoreOrderVo storeOrderVo);
 
 	List<Inno72StoreOrder> findOrderByPage(StoreOrderVo storeOrderVo);
+
+	Result<String> updateOrder(StoreOrderVo storeOrderVo);
 }

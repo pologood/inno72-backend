@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,7 @@ import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.store.model.Inno72StoreGoods;
 import com.inno72.store.service.StoreGoodsService;
+import com.inno72.store.vo.StoreOrderVo;
 
 import tk.mybatis.mapper.entity.Condition;
 
@@ -51,9 +53,8 @@ public class StoreGoodsController {
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
-    public ModelAndView list() {
-   	   Condition condition = new Condition( Inno72StoreGoods.class);
-        List<Inno72StoreGoods> list = storeGoodsService.findByPage(condition);
-        return ResultPages.page(ResultGenerator.genSuccessResult(list));
+    public Result<List<Inno72StoreGoods>> list(@RequestBody StoreOrderVo storeOrderVo) {
+        List<Inno72StoreGoods> list = storeGoodsService.findStoreGoods(storeOrderVo);
+        return ResultGenerator.genSuccessResult(list);
     }
 }

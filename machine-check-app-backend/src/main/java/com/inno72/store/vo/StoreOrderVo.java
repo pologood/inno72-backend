@@ -1,8 +1,14 @@
 package com.inno72.store.vo;
 
 import javax.persistence.Column;
+import javax.persistence.Transient;
 
 public class StoreOrderVo {
+
+	/**
+	 * 寄出单id
+	 */
+	private String id;
 
 	/**
 	 * 收货方
@@ -25,6 +31,16 @@ public class StoreOrderVo {
 	 */
 	private Integer number;
 
+	@Transient
+	private String storeId;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	/**
 	 * 物流公司
@@ -93,5 +109,13 @@ public class StoreOrderVo {
 
 	public void setKeyword(String keyword) {
 		this.keyword = keyword;
+	}
+
+	public String getStoreId() {
+		return storeId;
+	}
+
+	public void setStoreId(String storeId) {
+		this.storeId = storeId;
 	}
 }

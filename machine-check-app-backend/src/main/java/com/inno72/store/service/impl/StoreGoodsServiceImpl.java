@@ -1,14 +1,21 @@
 package com.inno72.store.service.impl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.common.AbstractService;
+import com.inno72.common.StringUtil;
+import com.inno72.common.UserUtil;
 import com.inno72.store.mapper.Inno72StoreGoodsMapper;
 import com.inno72.store.model.Inno72StoreGoods;
 import com.inno72.store.service.StoreGoodsService;
+import com.inno72.store.vo.StoreOrderVo;
 
 
 /**
@@ -20,4 +27,16 @@ public class StoreGoodsServiceImpl extends AbstractService<Inno72StoreGoods> imp
     @Resource
     private Inno72StoreGoodsMapper inno72StoreGoodsMapper;
 
+	@Override
+	public List<Inno72StoreGoods> findStoreGoods(StoreOrderVo storeOrderVo) {
+		String chekUserId = UserUtil.getUser().getId();
+		Map<String,Object> map = new HashMap<>();
+		map.put("receiveId",chekUserId);
+		String storeId = storeOrderVo.getStoreId();
+		if(StringUtil.isNotEmpty(storeId)){
+			map.put("storeId",storeId);
+		}
+		List<Inno72StoreGoods> goodsList = inno72StoreGoodsMapper.selectByParam(map);
+		return goodsList;
+	}
 }

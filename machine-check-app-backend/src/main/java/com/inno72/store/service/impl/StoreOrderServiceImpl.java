@@ -87,4 +87,30 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		List<Inno72StoreOrder> list = inno72StoreOrderMapper.selectOrderByPage(map);
 		return list;
 	}
+
+	@Override
+	public Result<String> updateOrder(StoreOrderVo storeOrderVo) {
+		Inno72CheckUser user = UserUtil.getUser();
+		Inno72StoreOrder inno72StoreOrder = new Inno72StoreOrder();
+		LocalDateTime now = LocalDateTime.now();
+		String orderId = storeOrderVo.getId();
+		inno72StoreOrder.setId(orderId);
+		inno72StoreOrder.setGoods(storeOrderVo.getGoods());
+		inno72StoreOrder.setReceiver(storeOrderVo.getReceiver());
+		inno72StoreOrder.setReceiveId(storeOrderVo.getReceiveId());
+		inno72StoreOrder.setNumber(storeOrderVo.getNumber());
+		inno72StoreOrder.setUpdater(user.getName());
+		inno72StoreOrder.setUpdateTime(now);
+		inno72StoreOrderMapper.updateByPrimaryKeySelective(inno72StoreOrder);
+		Inno72StoreExpress express = new Inno72StoreExpress();
+		express.setOrderId(orderId);
+		Inno72StoreExpress inno72StoreExpress = inno72StoreExpressMapper.selectOne(express);
+		inno72StoreExpress.setExpressNum(storeOrderVo.getExpressNum());
+		inno72StoreExpress.setExpressCompany(storeOrderVo.getExpressCompany());
+		inno72StoreExpress.setNumber(storeOrderVo.getNumber());
+		inno72StoreExpress.setUpdater(user.getName());
+		inno72StoreExpress.setUpdateTime(now);
+		inno72StoreExpressMapper.updateByPrimaryKeySelective(inno72StoreExpress);
+		return ResultGenerator.genSuccessResult();
+	}
 }
