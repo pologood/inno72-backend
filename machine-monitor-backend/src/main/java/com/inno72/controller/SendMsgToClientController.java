@@ -49,7 +49,7 @@ public class SendMsgToClientController {
 			vo.setData(result);
 			vo.setIsQueue(1);
 			vo.setTargetCode(msg.getMachineId());
-			vo.setTargetType("machine");
+			vo.setTargetType("1");
 			try {
 				Map<String, String> headers = new HashMap<>();
 				headers.put("MsgType", "message");
@@ -83,7 +83,7 @@ public class SendMsgToClientController {
 		vo.setData(result);
 		vo.setIsQueue(1);
 		vo.setTargetCode(machineCode);
-		vo.setTargetType("machine");
+		vo.setTargetType("1");
 		try {
 			Map<String, String> headers = new HashMap<>();
 			headers.put("MsgType", "commandInfo");
