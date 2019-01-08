@@ -1,6 +1,9 @@
 package com.inno72.store.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.common.AbstractService;
+import com.inno72.common.DateUtil;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
@@ -36,6 +40,9 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 	@Resource
 	private Inno72StoreMapper inno72StoreMapper;
 
+	/**
+	 * 创建保存出库单
+	 */
 	@Override
 	public Result<Object> saveModel(Inno72StoreOrder model) {
 
@@ -53,7 +60,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			model.setUpdateTime(LocalDateTime.now());
 			// 库单类型：0入库，1出库
 			model.setOrderType(1);
-			model.setOrderNum("");
+			model.setOrderNum("C" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S2));
 			if (StringUtil.isBlank(model.getMerchant())) {
 				logger.info("请选择活动商家");
 				return Results.failure("请选择活动商家");
@@ -118,6 +125,33 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			logger.info(e.getMessage());
 			return Results.failure("操作失败");
 		}
+	}
+
+	/**
+	 * 查询出库单
+	 */
+	@Override
+	public List<Map<String, Object>> findSendOrderByPage(String date, String keyword) {
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
+		params.put("keyword", keyword);
+		if (StringUtil.isNotBlank(date)) {
+			params.put("beginTime", date.trim() + " 00:00:00");
+			params.put("endTime", date.trim() + " 23:59:59");
+		}
+		return inno72StoreOrderMapper.selectSendOrderByPage(params);
+	}
+
+	/**
+	 * 查询入库单
+	 */
+	@Override
+	public List<Map<String, Object>> findReceiveOrderByPage(String date, String keyword) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
+		params.put("keyword", keyword);
+		return inno72StoreOrderMapper.selectReceiveOrderByPage(params);
 	}
 
 }

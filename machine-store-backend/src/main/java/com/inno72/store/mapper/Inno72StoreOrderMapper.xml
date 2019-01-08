@@ -29,4 +29,66 @@
     <result column="updater" jdbcType="VARCHAR" property="updater" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
+  
+  <select id="selectSendOrderByPage" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+			o.id,
+			o.order_num AS orderNum,
+			g.`name` AS goodsName,
+			g.`code` goodsCode,
+			m.merchant_name AS merchantName,
+			o.sender,
+			o.receiver,
+			o.number,
+			o.creater,
+			date_format( o.create_time, '%Y-%m-%d %H:%i:%s' ) AS createTime
+		FROM
+			inno72_store_order o
+			LEFT JOIN inno72_goods g on g.id=o.goods
+			LEFT JOIN inno72_merchant m ON m.id =o.merchant
+		WHRER o.type=1
+	    	<if test="beginTime != null and beginTime !=''"> and o.create_timee <![CDATA[>=]]> #{beginTime} </if>
+      		<if test="endTime != null and endTime !=''"> and o.create_time <![CDATA[<=]]> #{endTime} </if>
+	      	<if test="keyword != null and keyword != ''">
+              and (o.sender like CONCAT('%','${keyword}','%')
+              	or o.receiver like CONCAT('%','${keyword}','%')
+              	or g.code like CONCAT('%','${keyword}','%')
+              	or g.name like CONCAT('%','${keyword}','%')
+              	or g.creater like CONCAT('%','${keyword}','%')
+              )
+          	</if>
+  </select>
+  
+  <select id="selectReceiveOrderByPage" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+			o.id,
+			o.order_num AS orderNum,
+			g.`name` AS goodsName,
+			g.`code` goodsCode,
+			m.merchant_name AS merchantName,
+			o.sender,
+			o.receiver,
+			o.number,
+			o.creater,
+			date_format( o.create_time, '%Y-%m-%d %H:%i:%s' ) AS createTime
+		FROM
+			inno72_store_order o
+			LEFT JOIN inno72_goods g on g.id=o.goods
+			LEFT JOIN inno72_merchant m ON m.id =o.merchant
+		WHRER o.type=0
+	    	<if test="beginTime != null and beginTime !=''"> and o.create_timee <![CDATA[>=]]> #{beginTime} </if>
+      		<if test="endTime != null and endTime !=''"> and o.create_time <![CDATA[<=]]> #{endTime} </if>
+	      	<if test="keyword != null and keyword != ''">
+              and (o.sender like CONCAT('%','${keyword}','%')
+              	or o.receiver like CONCAT('%','${keyword}','%')
+              	or g.code like CONCAT('%','${keyword}','%')
+              	or g.name like CONCAT('%','${keyword}','%')
+              	or g.creater like CONCAT('%','${keyword}','%')
+              )
+          </if>
+  </select>
+  
+  
+  
+  
 </mapper>
