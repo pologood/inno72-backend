@@ -63,7 +63,7 @@ public class ReceiveMsgController {
 		String targetCode = request.getHeader("TargetCode");
 		String msgType = request.getHeader("MsgType");
 		String msg = getInfo(request);
-		log.info("收到socket消息{}", msg);
+		log.info("收到socket消息 targetCode:{},msgType:{},msg:{}", targetCode, msgType, msg);
 		if (!StringUtil.isEmpty(targetCode)) {
 			if ("message".equals(msgType)) {
 				processInfo(targetCode, msg);
