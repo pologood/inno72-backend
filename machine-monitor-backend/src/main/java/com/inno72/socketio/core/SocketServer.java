@@ -53,7 +53,7 @@ public class SocketServer {
 		server.addEventListener("monitor", String.class, listener.monitor());
 		server.addEventListener("remote", byte[].class, listener.remote());
 
-		server.start();
+		// server.start();
 		Thread shutdownHookOne = new Thread() {
 			@Override
 			public void run() {

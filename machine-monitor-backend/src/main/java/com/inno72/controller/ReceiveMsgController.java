@@ -5,6 +5,8 @@ import static com.inno72.model.MessageBean.SubEventType.APPSTATUS;
 import static com.inno72.model.MessageBean.SubEventType.MACHINESTATUS;
 import static com.inno72.model.MessageBean.SubEventType.SCREENSHOT;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 
@@ -18,7 +20,6 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,9 +59,11 @@ public class ReceiveMsgController {
 	private SocketService socketService;
 
 	@RequestMapping(value = "/receiveMsg", method = { RequestMethod.POST, RequestMethod.GET })
-	public void receiveMsg(@RequestBody String msg, HttpServletRequest request) {
+	public void receiveMsg(HttpServletRequest request) {
 		String targetCode = request.getHeader("TargetCode");
 		String msgType = request.getHeader("MsgType");
+		String msg = getInfo(request);
+		log.info("收到socket消息{}", msg);
 		if (!StringUtil.isEmpty(targetCode)) {
 			if ("message".equals(msgType)) {
 				processInfo(targetCode, msg);
@@ -147,4 +150,30 @@ public class ReceiveMsgController {
 				systemStatus.getSdTotle(), systemStatus.getCount());
 		LogUtil.logger("1", machineId, logs, JSON.toJSONString(systemStatus));
 	}
+
+	public String getInfo(HttpServletRequest request) {
+
+		BufferedReader br = null;
+		StringBuilder sb = new StringBuilder("");
+		try {
+			br = request.getReader();
+			String str;
+			while ((str = br.readLine()) != null) {
+				sb.append(str);
+			}
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (null != br) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return sb.toString();
+	}
+
 }
