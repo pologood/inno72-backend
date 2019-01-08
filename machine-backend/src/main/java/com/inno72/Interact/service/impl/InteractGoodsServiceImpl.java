@@ -457,12 +457,6 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					return Results.failure("该商品已关联优惠券不能删除");
 				}
 
-				Inno72Goods goods = new Inno72Goods();
-				goods.setId(goodsId);
-				goods.setIsDelete(1);
-				goods.setUpdateId(mUserId);
-				goods.setUpdateTime(LocalDateTime.now());
-				inno72GoodsMapper.updateByPrimaryKeySelective(goods);
 			} else {
 				// 清空优惠券原来关联的商品
 				Inno72InteractGoods old = new Inno72InteractGoods();

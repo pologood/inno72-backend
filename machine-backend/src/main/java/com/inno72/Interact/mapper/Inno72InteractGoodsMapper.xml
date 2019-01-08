@@ -45,13 +45,12 @@
   <!-- 获取商户店铺下商品 -->
   <select id="getGoodsList" parameterType="java.util.Map" resultType="java.util.Map">
 		SELECT g.id,g.name,g.code,g.price FROM inno72_goods g
-		<where>
+		where g.is_delete =0
           <if test="sellerId != null and sellerId != ''">AND g.seller_id=#{sellerId}</if>
           <if test="shopId != null and shopId != ''">AND g.shop_id=#{shopId}</if>
           and g.id not in (
 				SELECT ig.goods_id FROM inno72_interact_goods ig WHERE  ig.interact_id = #{interactId}
 			)
-       </where>
   </select>
   
   <select id="selectInteractGoodsById" parameterType="String" resultMap="InteractGoodsVoResultMap">
