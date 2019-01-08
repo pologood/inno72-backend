@@ -49,7 +49,7 @@
           <if test="sellerId != null and sellerId != ''">AND g.seller_id=#{sellerId}</if>
           <if test="shopId != null and shopId != ''">AND g.shop_id=#{shopId}</if>
           and g.id not in (
-				SELECT ig.id FROM inno72_interact_goods ig WHERE  ig.interact_id = #{interactId}
+				SELECT ig.goods_id FROM inno72_interact_goods ig WHERE  ig.interact_id = #{interactId}
 			)
        </where>
   </select>
