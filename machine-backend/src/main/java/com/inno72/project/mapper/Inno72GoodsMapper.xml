@@ -92,8 +92,7 @@
 		LEFT JOIN inno72_merchant m on m.id=g.seller_id
 		LEFT JOIN inno72_shops s ON s.id = g.shop_id
 		LEFT JOIN  inno72_goods_type gt ON gt.code=g.goods_type
-		WHERE g.is_delete=0 
-		<if test="id !=null and id !=''">and g.id = #{id}</if>
+		WHERE g.id = #{id}
   </select>
   
   <select id="selectByShop" parameterType="java.util.Map" resultMap="BaseResultMap">
