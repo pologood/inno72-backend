@@ -24,7 +24,7 @@
               and receive_id=#{receiveId}
           </if>
           <if test="storeId != null">
-              and store_id=#{storeId}
+              and store_id=#{storeId} and so.send_id=#{storeId}
           </if>
           <if test="keyword != null">
               and g.name like '%${keyword}%'

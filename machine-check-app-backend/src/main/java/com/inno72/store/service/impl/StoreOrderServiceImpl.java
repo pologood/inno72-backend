@@ -116,8 +116,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 
 	@Override
 	public Inno72StoreOrder findOrderById(String id) {
-
 		Inno72StoreOrder storeOrder = inno72StoreOrderMapper.selectDetailById(id);
-		return null;
+		return storeOrder;
 	}
 }

@@ -155,6 +155,11 @@ public class Inno72StoreOrder {
 	@Transient
 	private String goodsName;
 
+	@Transient
+	private String expressNum;
+	@Transient
+	private String expressCompany;
+
 	/**
 	 * 获取ID
 	 *
@@ -598,5 +603,21 @@ public class Inno72StoreOrder {
 
 	public void setGoodsName(String goodsName) {
 		this.goodsName = goodsName;
+	}
+
+	public String getExpressNum() {
+		return expressNum;
+	}
+
+	public void setExpressNum(String expressNum) {
+		this.expressNum = expressNum;
+	}
+
+	public String getExpressCompany() {
+		return expressCompany;
+	}
+
+	public void setExpressCompany(String expressCompany) {
+		this.expressCompany = expressCompany;
 	}
 }
