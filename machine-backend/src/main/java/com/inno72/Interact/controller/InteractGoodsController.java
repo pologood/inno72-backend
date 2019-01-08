@@ -47,7 +47,7 @@ public class InteractGoodsController {
 		return interactGoodsService.deleteById(interactId, goodsId);
 	}
 
-	@RequestMapping(value = "/update", method = { RequestMethod.POST, RequestMethod.GET })
+	@RequestMapping(value = "/updateCoupon", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<String> updateCoupon(@RequestBody InteractGoodsVo interactGoods) {
 		return interactGoodsService.updateCoupon(interactGoods);
 	}
