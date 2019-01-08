@@ -20,10 +20,10 @@ import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.utils.StringUtil;
 import com.inno72.model.SendMessageBean;
-import com.inno72.plugin.http.HttpClient;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.util.AesUtils;
 import com.inno72.util.GZIPUtil;
+import com.inno72.util.HttpFormConnector;
 import com.inno72.vo.AppMsgVo;
 
 @RestController
@@ -50,7 +50,10 @@ public class SendMsgToClientController {
 			vo.setTargetCode(msg.getMachineId());
 			vo.setTargetType("machine");
 			try {
-				String r = HttpClient.post(url, JSON.toJSONString(vo));
+				Map<String, String> headers = new HashMap<>();
+				headers.put("MsgType", "message");
+				byte[] rr = HttpFormConnector.doPostJson(url, JSON.toJSONString(vo), headers, 5000);
+				String r = new String(rr);
 				if (!StringUtil.isEmpty(r)) {
 					JSONObject $_result = JSON.parseObject(result);
 					if ($_result.getInteger("code") == 0) {
@@ -80,7 +83,10 @@ public class SendMsgToClientController {
 		vo.setTargetCode(machineCode);
 		vo.setTargetType("machine");
 		try {
-			String r = HttpClient.post(url, JSON.toJSONString(vo));
+			Map<String, String> headers = new HashMap<>();
+			headers.put("MsgType", "commandInfo");
+			byte[] rr = HttpFormConnector.doPostJson(url, JSON.toJSONString(vo), headers, 5000);
+			String r = new String(rr);
 			if (!StringUtil.isEmpty(r)) {
 				JSONObject $_result = JSON.parseObject(result);
 				if ($_result.getInteger("code") == 0) {

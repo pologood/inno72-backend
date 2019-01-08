@@ -92,6 +92,34 @@ public class HttpFormConnector {
 		return res;
 	}
 
+	static public byte[] doPostJson(String url, String obj, Map<String, String> headers, int timeout)
+			throws IOException {
+		URL urlConn = new URL(url);
+		HttpURLConnection connector = (HttpURLConnection) urlConn.openConnection();
+		connector.setConnectTimeout(timeout);
+		connector.setReadTimeout(timeout);
+		connector.setDoOutput(true);
+		connector.setDoInput(true);
+		connector.setRequestMethod("POST");
+		connector.setRequestProperty("Content-Type", "application/json");
+
+		if (headers != null) {
+			for (String key : headers.keySet()) {
+				connector.setRequestProperty(key, headers.get(key));
+			}
+		}
+
+		connector.connect();
+		OutputStream out = connector.getOutputStream();
+		out.write(obj.getBytes("utf-8"));
+		out.flush();
+
+		byte[] res = readByteBuffer(connector.getInputStream());
+		connector.disconnect();
+
+		return res;
+	}
+
 	static public byte[] doGet(String url, Map<String, String> form, int timeout) throws IOException {
 
 		String strForm = makeHttpForm(form);
