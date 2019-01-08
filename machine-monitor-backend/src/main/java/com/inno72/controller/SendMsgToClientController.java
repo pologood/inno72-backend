@@ -56,7 +56,7 @@ public class SendMsgToClientController {
 				byte[] rr = HttpFormConnector.doPostJson(url, JSON.toJSONString(vo), headers, 5000);
 				String r = new String(rr);
 				if (!StringUtil.isEmpty(r)) {
-					JSONObject $_result = JSON.parseObject(result);
+					JSONObject $_result = JSON.parseObject(r);
 					if ($_result.getInteger("code") == 0) {
 						map.put(msg.getMachineId(), "发送成功");
 					} else {
@@ -90,7 +90,7 @@ public class SendMsgToClientController {
 			byte[] rr = HttpFormConnector.doPostJson(url, JSON.toJSONString(vo), headers, 5000);
 			String r = new String(rr);
 			if (!StringUtil.isEmpty(r)) {
-				JSONObject $_result = JSON.parseObject(result);
+				JSONObject $_result = JSON.parseObject(r);
 				if ($_result.getInteger("code") == 0) {
 					map.put(machineCode, "发送成功");
 				} else {
