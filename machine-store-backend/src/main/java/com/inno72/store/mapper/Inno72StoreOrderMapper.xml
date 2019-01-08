@@ -46,7 +46,7 @@
 			inno72_store_order o
 			LEFT JOIN inno72_goods g on g.id=o.goods
 			LEFT JOIN inno72_merchant m ON m.id =o.merchant
-		WHRER o.type=1
+		WHERE o.order_type=1
 	    	<if test="beginTime != null and beginTime !=''"> and o.create_timee <![CDATA[>=]]> #{beginTime} </if>
       		<if test="endTime != null and endTime !=''"> and o.create_time <![CDATA[<=]]> #{endTime} </if>
 	      	<if test="keyword != null and keyword != ''">
@@ -69,13 +69,24 @@
 			o.sender,
 			o.receiver,
 			o.number,
-			o.creater,
-			date_format( o.create_time, '%Y-%m-%d %H:%i:%s' ) AS createTime
+			o.receive_number,
+			o.`status`,
+			date_format( o.receive_time, '%Y-%m-%d %H:%i:%s' ) AS receiveTime,
+			e.rExpressNum,e.expressNum
 		FROM
 			inno72_store_order o
 			LEFT JOIN inno72_goods g on g.id=o.goods
 			LEFT JOIN inno72_merchant m ON m.id =o.merchant
-		WHRER o.type=0
+			LEFT JOIN (
+				SELECT
+					se.order_id,
+					COUNT( IF ( se.STATUS = 1, se.id, NULL ) ) AS rExpressNum,
+					COUNT(1) AS  expressNum
+				FROM
+					inno72_store_express se 
+				GROUP BY se.order_id
+			) e ON e.order_id = o.id
+		WHERE o.order_type=0
 	    	<if test="beginTime != null and beginTime !=''"> and o.create_timee <![CDATA[>=]]> #{beginTime} </if>
       		<if test="endTime != null and endTime !=''"> and o.create_time <![CDATA[<=]]> #{endTime} </if>
 	      	<if test="keyword != null and keyword != ''">
@@ -83,7 +94,6 @@
               	or o.receiver like CONCAT('%','${keyword}','%')
               	or g.code like CONCAT('%','${keyword}','%')
               	or g.name like CONCAT('%','${keyword}','%')
-              	or g.creater like CONCAT('%','${keyword}','%')
               )
           </if>
   </select>
