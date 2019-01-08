@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.mortbay.log.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,7 @@ public class SendMsgToClientController {
 		logger.info("客户端发送消息：{}", JSON.toJSONString(param));
 		String result = GZIPUtil.compress(AesUtils.encrypt(JSON.toJSONString(param.get("msg"))));
 		String url = machineMonitorBackendProperties.get("sendMsgUrl");
+		Log.info("url:{}", url);
 		String machineCode = (String) param.get("machineCode");
 		AppMsgVo vo = new AppMsgVo();
 		vo.setData(result);
