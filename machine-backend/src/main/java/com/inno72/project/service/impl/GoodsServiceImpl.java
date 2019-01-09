@@ -163,6 +163,16 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
+			// 活动添加不可修改
+			int gu1 = inno72GoodsMapper.selectIsUseing1(model.getId());
+			if (gu1 > 0) {
+				return Results.failure("商品活动排期中，请移除后修改！");
+			}
+
+			int gu2 = inno72GoodsMapper.selectIsUseing2(model.getId());
+			if (gu2 > 0) {
+				return Results.failure("商品派样活动使用中，请移除后修改！");
+			}
 
 			// 微信类型操作默认店铺
 			Inno72Merchant m = inno72MerchantMapper.selectByPrimaryKey(model.getSellerId());

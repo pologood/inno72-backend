@@ -118,6 +118,15 @@
 		p.is_delete=0 and goods_id=#{id} <![CDATA[and NOW() <= p.end_time ]]>
 	
   </select>
+  <select id="selectIsUseing2" parameterType="String" resultType="int">
+	SELECT
+		count( 1 ) 
+	FROM
+		inno72_interact_goods g
+		LEFT JOIN inno72_interact i ON g.interact_id=i.id
+	WHERE
+		i.is_delete=0 and g.goods_id=#{id}
+  </select>
   
   <select id="getCount" parameterType="String" resultType="int">
 		SELECT count(1) FROM inno72_goods g where g.is_delete = 0
