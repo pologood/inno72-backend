@@ -772,6 +772,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	public Map<String,Integer> setCheckGoodsNumMap(Map<String,Integer> map,String goodsIdStr,int supplyCount){
 		int checkGoodsCount = 0;
 		if(map.containsKey(goodsIdStr)){
+			checkGoodsCount = map.get(goodsIdStr);
 			checkGoodsCount += supplyCount;
 		}else{
 			checkGoodsCount = supplyCount;
