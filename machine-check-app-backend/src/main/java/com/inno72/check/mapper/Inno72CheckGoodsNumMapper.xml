@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.check.mapper.Inno72CheckGoodsNumMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.check.model.Inno72CheckGoodsNum">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="check_user_id" jdbcType="VARCHAR" property="checkUserId" />
+    <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="receive_total_tount" jdbcType="INTEGER" property="receiveTotalCount" />
+    <result column="supply_total_count" jdbcType="INTEGER" property="supplyTotalCount" />
+    <result column="differ_total_tount" jdbcType="INTEGER" property="differTotalCount" />
+  </resultMap>
+
+  <select id="selectByparam" resultMap="BaseResultMap">
+      select * from inno72_check_goods_num
+      <where>
+          <if test="checkUserId != null">
+              and check_user_id = #{checkUserId}
+          </if>
+          <if test="goodsId != null">
+              and goods_id = #{goodsId}
+          </if>
+          <if test="activity_id != null">
+              and activity_id = #{activityId}
+          </if>
+      </where>
+      limit 1
+  </select>
+
+
+
+
+</mapper>
