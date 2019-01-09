@@ -69,7 +69,7 @@
 			o.sender,
 			o.receiver,
 			o.number,
-			o.receive_number,
+			o.receive_number AS receiveNumber,
 			o.`status`,
 			date_format( o.receive_time, '%Y-%m-%d %H:%i:%s' ) AS receiveTime,
 			e.rExpressNum,e.expressNum

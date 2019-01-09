@@ -1,6 +1,7 @@
 package com.inno72.store.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -16,8 +17,6 @@ import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.store.model.Inno72StoreOrder;
 import com.inno72.store.service.StoreOrderService;
-
-import tk.mybatis.mapper.entity.Condition;
 
 /**
  * Created by CodeGenerator on 2018/12/28.
@@ -53,10 +52,21 @@ public class StoreOrderController {
 		return ResultGenerator.genSuccessResult(storeOrder);
 	}
 
-	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list() {
-		Condition condition = new Condition(Inno72StoreOrder.class);
-		List<Inno72StoreOrder> list = storeOrderService.findByPage(condition);
+	/**
+	 * 查询出库单
+	 */
+	@RequestMapping(value = "/sendOrderList", method = { RequestMethod.POST, RequestMethod.GET })
+	public ModelAndView sendOrderList(String date, String keyword) {
+		List<Map<String, Object>> list = storeOrderService.findSendOrderByPage(date, keyword);
+		return ResultPages.page(ResultGenerator.genSuccessResult(list));
+	}
+
+	/**
+	 * 查询入库单
+	 */
+	@RequestMapping(value = "/receiveOrderList", method = { RequestMethod.POST, RequestMethod.GET })
+	public ModelAndView receiveOrderList(String date, String keyword) {
+		List<Map<String, Object>> list = storeOrderService.findReceiveOrderByPage(date, keyword);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 }
