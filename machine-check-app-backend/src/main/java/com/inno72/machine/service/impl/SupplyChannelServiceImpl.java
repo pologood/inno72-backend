@@ -815,6 +815,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		goodsDetail.setReceiveCount(0);
 		goodsDetail.setSupplyCount(goodsCount);
 		goodsDetail.setDifferCount(-goodsCount);
+		goodsDetail.setCreateTime(LocalDateTime.now());
 		inno72CheckGoodsDetailMapper.insertSelective(goodsDetail);
 	}
 
