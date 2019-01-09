@@ -30,6 +30,14 @@
     <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
     <result column="mer_point_address" jdbcType="VARCHAR" property="merPointAddress"/>
     <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
+    <result column="order_status" jdbcType="INTEGER" property="orderStatus"/>
+    <result column="pay_type" jdbcType="INTEGER" property="payType"/>
+    <result column="goods_type" jdbcType="INTEGER" property="goodsType"/>
+    <result column="channelName" jdbcType="VARCHAR" property="channelName"/>
+    <result column="merchantName" jdbcType="VARCHAR" property="merchantName"/>
+    <result column="loginName" jdbcType="VARCHAR" property="loginName"/>
+    <result column="refundStatus" jdbcType="INTEGER" property="refundStatus"/>
+    <association property="orderRefund" resultMap="orderRefund"/>
     <collection property="orderGoodsList" resultMap="orderGoodsList"/>
   </resultMap>
 
@@ -44,6 +52,15 @@
     <result column="goodsPrice" jdbcType="VARCHAR" property="goodsPrice" />
     <result column="orderGoodsStatus" jdbcType="INTEGER" property="status" />
   </resultMap>
+    
+  <resultMap id="orderRefund" type="com.inno72.order.model.Inno72OrderRefund">
+    <result column="refund_num" jdbcType="VARCHAR" property="refundNum"/>
+    <result column="refundCreateTime" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="amount" jdbcType="DECIMAL" property="amount"/>
+    <result column="reason" jdbcType="VARCHAR" property="reason"/>
+    <result column="refund_time" jdbcType="TIMESTAMP" property="refundTime"/>
+    <result column="reStatus" jdbcType="INTEGER" property="status"/>
+  </resultMap>
 
   <sql id="Column_List">
 
@@ -51,10 +68,11 @@
   </sql>
 
   <select id="seleByParamForPg" resultMap="BaseResultMap">
+      select j.* ,ore.status AS refundStatus from(
       select * from  (select
       o.id,o.user_id,o.channel_id,o.machine_id,
       o.order_time,o.order_price,o.order_type,o.pay_status,o.pay_time,
-      o.shops_id,o.shops_name,o.goods_status,o.order_num,
+      o.shops_id,o.shops_name,o.goods_status,o.order_num,o.order_status,
       guc.game_user_id,guc.user_nick nick_name,
       CONCAT(IFNULL( l.mall,""),IFNULL( l.name,""))
       mer_point_address,
@@ -66,7 +84,8 @@
       og.goods_price goodsPrice,
       og.status orderGoodsStatus,
       if(a.name is null ,i.name,a.name) activity_name,
-      if(g1.name is null,g2.name,g1.name) gameName
+      if(g1.name is null,g2.name,g1.name) gameName,
+      c.channel_name channelName
       from inno72_order o
       left join inno72_order_goods og on og.order_num=o.order_num
       left join inno72_game_user_channel guc on guc.game_user_id=o.user_id
@@ -76,6 +95,8 @@
       left join inno72_activity a on o.inno72_activity_id = a.id
       left join inno72_activity_plan ap on ap.id=o.inno72_activity_plan_id left join inno72_game g1 on ap.game_id= g1.id
       left join inno72_interact i on o.inno72_activity_id=i.id left join inno72_game g2 on i.game_id=g2.id
+      left join inno72_channel c on c.id=o.channel_id
+      left join inno72_order_refund ore on ore.order_id=o.id
       <where>
           <if test="machineId != null and machineId != ''">
               and o.machine_id = #{machineId}
@@ -92,11 +113,17 @@
           <if test="goodsStatus != null and goodsStatus != ''">
               and o.goods_status = #{goodsStatus}
           </if>
+          <if test="orderStatus != null and orderStatus != ''">
+              and o.order_status = #{orderStatus}
+          </if>
           <if test="payStatus != null and payStatus !=''">
               and o.pay_status = #{payStatus}
           </if>
           <if test="areaCode != null and areaCode != ''">
               and LEFT(l.area_code,#{num}) = LEFT(#{code},#{num})
+          </if>
+          <if test="channelCode != null and channelCode != ''">
+              and c.channel_code=#{channelCode}
           </if>
       </where>
       ) k
@@ -109,7 +136,42 @@
           </if>
       </where>
     ORDER BY k.order_time desc
-    limit #{pageParam},20
+    limit #{pageParam},20) j LEFT JOIN inno72_order_refund ore ON ore.order_id = j.id
 
+  </select>
+
+  <select id="selectOrderDetail" resultMap="BaseResultMap">
+      select o.*,
+      guc.phone loginName,
+      CONCAT(
+		aa.province,
+		aa.city,
+		aa.district,
+		if(aa.circle='其他' or aa.circle is null,'',aa.circle),IFNULL(l.mall,""),IFNULL( l.name,'')
+		) AS mer_point_address,
+      m.machine_code,
+      if(a.name is null ,i.name,a.name) activity_name,
+      c.channel_name channelName,
+      mer.merchant_name merchantName,
+      og.goods_name goodsName,
+      ore.refund_num,
+	  ore.create_time refundCreateTime,
+	  ore.amount,
+	  ore.reason,
+	  ore.refund_time,
+	  ore.status reStatus
+      from inno72_order o
+      left join inno72_game_user_channel guc on o.user_id=guc.game_user_id
+      left join inno72_machine m on m.id=o.machine_id
+      left join inno72_locale l on m.locale_id=l.id
+      left join inno72_admin_area aa ON aa.code = l.area_code
+      left join inno72_activity a on o.inno72_activity_id = a.id
+      left join inno72_activity_plan ap on ap.id=o.inno72_activity_plan_id left join inno72_game g1 on ap.game_id= g1.id
+      left join inno72_interact i on o.inno72_activity_id=i.id left join inno72_game g2 on i.game_id=g2.id
+      left join inno72_channel c on c.id=o.channel_id
+      left join inno72_merchant mer on mer.id=o.merchant_id
+      left join inno72_order_goods og on og.order_num=o.order_num
+      left join inno72_order_refund ore on ore.order_id=o.id
+      where o.id=#{id}
   </select>
 </mapper>

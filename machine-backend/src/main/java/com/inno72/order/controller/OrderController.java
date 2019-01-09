@@ -55,8 +55,10 @@ public class OrderController {
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<Inno72Order> detail(@RequestParam String id) {
-		Inno72Order order = orderService.findById(id);
-		return ResultGenerator.genSuccessResult(order);
+		logger.info("查询订单详情参数：{}", JSON.toJSON(id));
+		Result<Inno72Order> result = orderService.getOrderDetail(id);
+		logger.info("查询订单详情结果：{}", JSON.toJSON(result));
+		return result;
 	}
 
 	/**
@@ -81,11 +83,11 @@ public class OrderController {
 		boolean lastPage = false;
 		int totalPage = 100;
 		int totalCount = 100*20;
-		if(list == null || list.size()<20){
-			lastPage = true;
-			totalPage = pageNo;
-			totalCount = (pageNo-1)*20+list.size();
-		}
+//		if(list == null || list.size()<20){
+//			lastPage = true;
+//			totalPage = pageNo;
+//			totalCount = (pageNo-1)*20+list.size();
+//		}
 		page.setLastPage(lastPage);
 		page.setTotalCount(totalCount);
 		page.setNextPage(pageNo+1);
