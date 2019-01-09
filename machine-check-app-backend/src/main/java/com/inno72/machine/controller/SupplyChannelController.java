@@ -143,6 +143,11 @@ public class SupplyChannelController {
         return supplyChannelService.submit(mapList);
 	}
 
+	/**
+	 * 补货前校验
+	 * @param map
+	 * @return
+	 */
 	@RequestMapping(value="supplyCheck",method = { RequestMethod.POST})
 	public Result<Boolean> supplyCheck(@RequestBody Map<String,Object> map){
 		List<Map<String,Object>> mapList = (List<Map<String,Object>>) map.get("list");

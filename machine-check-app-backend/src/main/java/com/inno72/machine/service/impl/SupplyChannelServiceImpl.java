@@ -172,6 +172,11 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				Condition condition = new Condition(Inno72SupplyChannelGoods.class);
 				condition.createCriteria().andEqualTo("supplyChannelId", supply.getId());
 				inno72SupplyChannelGoodsMapper.deleteByCondition(condition);// 删除货道关联商品
+				int supplyCount =supply.getGoodsCount();
+				String goodsId = supply.getGoodsId();
+				if(StringUtil.isNotEmpty(goodsId)){
+					this.saveGoodsNum(goodsId,machine.getActivityId(),supplyCount);
+				}
 			}
 			String detail = "合并货道:在"+machine.getLocaleStr()+"点位处的机器对"+parentCode+"货道和"+childCode+"货道进行了合并，合并后为"+parentCode+"货道，"+childCode+"货道已被清除";
 			StringUtil.logger(CommonConstants.LOG_TYPE_MERGE_CHANNEL,machineCode,detail);
@@ -749,40 +754,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			for(String goodsKey:checkGoodsCountMap.keySet()){
 				int goodsVelue = checkGoodsCountMap.get(goodsKey);
 				if(goodsVelue != 0){
-					Map<String,Object> goodsMap = new HashMap<>();
-					goodsMap.put("goodsId",goodsKey);
-					goodsMap.put("checkUserId",checkUser.getId());
-//					goodsMap.put("activityId",machine.getActivityId());
-					Inno72CheckGoodsNum goodsNum = inno72CheckGoodsNumMapper.selectByparam(goodsMap);
-					if(goodsNum != null){
-						int receiveTotalCount = goodsNum.getReceiveTotalCount();
-						int supplyTotalCount = goodsNum.getSupplyTotalCount();
-						supplyTotalCount += goodsVelue;
-						int differTotalCount = receiveTotalCount-supplyTotalCount;
-						goodsNum.setSupplyTotalCount(supplyTotalCount);
-						goodsNum.setDifferTotalCount(differTotalCount);
-						inno72CheckGoodsNumMapper.updateByPrimaryKeySelective(goodsNum);
-					}else{
-						int receiveTotalCount = 0;
-						int supplyTotalCount = goodsVelue;
-						int differTotalCount = -supplyTotalCount;
-						goodsNum = new Inno72CheckGoodsNum();
-						goodsNum.setId(StringUtil.getUUID());
-						goodsNum.setReceiveTotalCount(receiveTotalCount);
-						goodsNum.setSupplyTotalCount(supplyTotalCount);
-						goodsNum.setDifferTotalCount(differTotalCount);
-						goodsNum.setGoodsId(goodsKey);
-						goodsNum.setCheckUserId(checkUser.getId());
-						goodsNum.setActivityId(machine.getActivityId());
-						inno72CheckGoodsNumMapper.insertSelective(goodsNum);
-					}
-					Inno72CheckGoodsDetail goodsDetail = new Inno72CheckGoodsDetail();
-					goodsDetail.setGoodsNumId(goodsNum.getId());
-					goodsDetail.setId(StringUtil.getUUID());
-					goodsDetail.setReceiveCount(0);
-					goodsDetail.setSupplyCount(goodsVelue);
-					goodsDetail.setDifferCount(-goodsVelue);
-					inno72CheckGoodsDetailMapper.insertSelective(goodsDetail);
+					this.saveGoodsNum(goodsKey,machine.getActivityId(),goodsVelue);
 				}
 			}
 			if(historyCount>0){
@@ -798,12 +770,52 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 
 
 	public Map<String,Integer> setCheckGoodsNumMap(Map<String,Integer> map,String goodsIdStr,int supplyCount){
+		int checkGoodsCount = 0;
 		if(map.containsKey(goodsIdStr)){
-			int checkGoodsCount = map.get(goodsIdStr);
 			checkGoodsCount += supplyCount;
-			map.put(goodsIdStr,checkGoodsCount);
+		}else{
+			checkGoodsCount = supplyCount;
 		}
+		map.put(goodsIdStr,checkGoodsCount);
 		return map;
+	}
+
+
+	public void saveGoodsNum(String goodsId,String activityId,int goodsCount){
+		Map<String,Object> goodsMap = new HashMap<>();
+		goodsMap.put("goodsId",goodsId);
+		goodsMap.put("checkUserId",UserUtil.getUser().getId());
+		//					goodsMap.put("activityId",activityId);
+		Inno72CheckGoodsNum goodsNum = inno72CheckGoodsNumMapper.selectByparam(goodsMap);
+		if(goodsNum != null){
+			int receiveTotalCount = goodsNum.getReceiveTotalCount();
+			int supplyTotalCount = goodsNum.getSupplyTotalCount();
+			supplyTotalCount += goodsCount;
+			int differTotalCount = receiveTotalCount-supplyTotalCount;
+			goodsNum.setSupplyTotalCount(supplyTotalCount);
+			goodsNum.setDifferTotalCount(differTotalCount);
+			inno72CheckGoodsNumMapper.updateByPrimaryKeySelective(goodsNum);
+		}else{
+			int receiveTotalCount = 0;
+			int supplyTotalCount = goodsCount;
+			int differTotalCount = -supplyTotalCount;
+			goodsNum = new Inno72CheckGoodsNum();
+			goodsNum.setId(StringUtil.getUUID());
+			goodsNum.setReceiveTotalCount(receiveTotalCount);
+			goodsNum.setSupplyTotalCount(supplyTotalCount);
+			goodsNum.setDifferTotalCount(differTotalCount);
+			goodsNum.setGoodsId(goodsId);
+			goodsNum.setCheckUserId(UserUtil.getUser().getId());
+			goodsNum.setActivityId(activityId);
+			inno72CheckGoodsNumMapper.insertSelective(goodsNum);
+		}
+		Inno72CheckGoodsDetail goodsDetail = new Inno72CheckGoodsDetail();
+		goodsDetail.setGoodsNumId(goodsNum.getId());
+		goodsDetail.setId(StringUtil.getUUID());
+		goodsDetail.setReceiveCount(0);
+		goodsDetail.setSupplyCount(goodsCount);
+		goodsDetail.setDifferCount(-goodsCount);
+		inno72CheckGoodsDetailMapper.insertSelective(goodsDetail);
 	}
 
 	/**
