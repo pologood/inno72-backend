@@ -40,6 +40,11 @@ public class Inno72StoreOrder {
 	private String goods;
 
 	/**
+	 * 参与活动
+	 */
+	private String activity;
+
+	/**
 	 * 商家
 	 */
 	private String merchant;
@@ -76,7 +81,7 @@ public class Inno72StoreOrder {
 	 * 收货方类型
 	 */
 	@Column(name = "receive_type")
-	private String receiveType;
+	private Integer receiveType;
 
 	/**
 	 * 出库/应入库商品数量
@@ -226,6 +231,14 @@ public class Inno72StoreOrder {
 		this.goods = goods;
 	}
 
+	public String getActivity() {
+		return activity;
+	}
+
+	public void setActivity(String activity) {
+		this.activity = activity;
+	}
+
 	/**
 	 * 获取商家
 	 *
@@ -345,7 +358,7 @@ public class Inno72StoreOrder {
 	 *
 	 * @return receive_type - 收货方类型
 	 */
-	public String getReceiveType() {
+	public Integer getReceiveType() {
 		return receiveType;
 	}
 
@@ -355,7 +368,7 @@ public class Inno72StoreOrder {
 	 * @param receiveType
 	 *            收货方类型
 	 */
-	public void setReceiveType(String receiveType) {
+	public void setReceiveType(Integer receiveType) {
 		this.receiveType = receiveType;
 	}
 
