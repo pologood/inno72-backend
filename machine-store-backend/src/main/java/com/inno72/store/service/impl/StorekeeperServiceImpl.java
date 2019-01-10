@@ -232,7 +232,7 @@ public class StorekeeperServiceImpl extends AbstractService<Inno72Storekeeper> i
 		if(StringUtil.isEmpty(oldPwd)){
 			return Results.failure("原密码不能为空");
 		}
-		if(StringUtil.isNotEmpty(newPwd) || StringUtil.isEmpty(rePwd)){
+		if(StringUtil.isEmpty(newPwd) || StringUtil.isEmpty(rePwd)){
 			return Results.failure("新密码不能为空");
 		}
 		String id = UserUtil.getKepper().getId();
