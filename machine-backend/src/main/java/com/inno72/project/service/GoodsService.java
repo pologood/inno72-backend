@@ -28,4 +28,6 @@ public interface GoodsService extends Service<Inno72Goods> {
 
 	Result<String> updateModel(Inno72Goods model);
 
+	Result<String> isExist(String code, String sellerId, String Id, int type);
+
 }

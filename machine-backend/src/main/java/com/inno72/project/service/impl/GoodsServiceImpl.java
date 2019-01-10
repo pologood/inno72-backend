@@ -309,4 +309,34 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 
 	}
 
+	@Override
+	public Result<String> isExist(String code, String sellerId, String Id, int type) {
+		// 商品ID：如果选择的店铺渠道是天猫，不限制输入长度，但需要校验唯一性；如果选择的店铺渠道是点七二或微信，则需要输入8位正整数，且校验唯一性
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("type", type);
+		params.put("code", code);
+		params.put("id", Id);
+		if (0 == type) {// 商品ID
+			Inno72Merchant m = inno72MerchantMapper.selectByPrimaryKey(sellerId);
+			if (m.getChannelCode().equals(CommonConstants.WECHATCODE)
+					|| m.getChannelCode().equals(CommonConstants.INNO72CODE)) {
+				Matcher match = patternNumbe.matcher(code);
+				if (!match.matches()) {
+					return Results.failure("商品ID请输入8位正整数");
+				}
+			}
+			int n = inno72GoodsMapper.selectIsExist(params);
+			if (n > 0) {
+				return Results.warn("商品ID已存在", 0, "false");
+			}
+		} else {// 商品名称
+			int n = inno72GoodsMapper.selectIsExist(params);
+			if (n > 0) {
+				return Results.warn("商品名称已存在", 0, "false");
+			}
+		}
+
+		return Results.warn("", 0, "");
+	}
+
 }

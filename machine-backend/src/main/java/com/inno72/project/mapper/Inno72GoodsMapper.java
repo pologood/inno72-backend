@@ -18,6 +18,8 @@ public interface Inno72GoodsMapper extends Mapper<Inno72Goods> {
 
 	int selectIsUseing2(String id);
 
+	int selectIsExist(Map<String, Object> params);
+
 	int getCount(@Param("code") String code);
 
 	Inno72GoodsVo selectById(@Param("id") String id);

@@ -94,4 +94,9 @@ public class GoodsController {
 		}
 	}
 
+	@RequestMapping(value = "/isExist", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<String> isExist(String code, String sellerId, String Id, int type) {
+		return goodsService.isExist(code, sellerId, Id, type);
+	}
+
 }

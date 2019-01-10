@@ -104,6 +104,16 @@
 		<if test="shopId !=null and shopId !=''">and g.shop_id = #{shopId}</if>
   </select>
   
+  <select id="selectIsExist" parameterType="java.util.Map" resultType="int">
+		SELECT count(1) FROM inno72_goods g
+		WHERE g.is_delete = 0 
+        <if test="type ==0">and g.code = #{code}</if>
+        <if test="type ==1">and g.name = #{code}</if>
+        <if test="id !=null and id !=''">
+            and id !=#{id}
+        </if>
+  </select>
+  
   <select id="selectIsUseing" parameterType="String" resultType="int">
 		SELECT count(1) FROM inno72_supply_channel_goods where goods_id=#{id}
   </select>
