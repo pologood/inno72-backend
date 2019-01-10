@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.inno72.common.CommonConstants;
+import com.inno72.common.Encrypt;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
@@ -220,7 +221,7 @@ public class StorekeeperServiceImpl extends AbstractService<Inno72Storekeeper> i
 		if(status == null || status != 0){
 			return Results.failure("用户已禁用");
 		}
-		inno72Storekeeper.setPwd(newPwd);
+		inno72Storekeeper.setPwd(Encrypt.md5(newPwd));
 		inno72Storekeeper.setUpdateId(id);
 		inno72Storekeeper.setUpdateTime(LocalDateTime.now());
 		inno72StorekeeperMapper.updateByPrimaryKeySelective(inno72Storekeeper);
@@ -245,13 +246,13 @@ public class StorekeeperServiceImpl extends AbstractService<Inno72Storekeeper> i
 			return Results.failure("用户已禁用");
 		}
 		String pwdData = inno72Storekeeper.getPwd();
-		if(!oldPwd.equals(pwdData)){
+		if(!Encrypt.md5(oldPwd).equals(pwdData)){
 			return Results.failure("原密码不匹配");
 		}
 		if(!newPwd.equals(rePwd)){
 			return Results.failure("新密码不一致");
 		}
-		inno72Storekeeper.setPwd(newPwd);
+		inno72Storekeeper.setPwd(Encrypt.md5(newPwd));
 		inno72Storekeeper.setUpdateId(id);
 		inno72Storekeeper.setUpdateTime(LocalDateTime.now());
 		inno72StorekeeperMapper.updateByPrimaryKeySelective(inno72Storekeeper);
