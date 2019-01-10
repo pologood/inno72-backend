@@ -17,6 +17,7 @@ import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.store.model.Inno72StoreOrder;
 import com.inno72.store.service.StoreOrderService;
+import com.inno72.store.vo.StoreOrderVo;
 
 /**
  * Created by CodeGenerator on 2018/12/28.
@@ -29,9 +30,8 @@ public class StoreOrderController {
 	private StoreOrderService storeOrderService;
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> add(Inno72StoreOrder storeOrder) {
-		storeOrderService.save(storeOrder);
-		return ResultGenerator.genSuccessResult();
+	public Result<Object> add(Inno72StoreOrder storeOrder) {
+		return storeOrderService.saveModel(storeOrder);
 	}
 
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })
@@ -47,8 +47,8 @@ public class StoreOrderController {
 	}
 
 	@RequestMapping(value = "/detail", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<Inno72StoreOrder> detail(@RequestParam String id) {
-		Inno72StoreOrder storeOrder = storeOrderService.findById(id);
+	public Result<StoreOrderVo> detail(@RequestParam String id) {
+		StoreOrderVo storeOrder = storeOrderService.findDetailById(id);
 		return ResultGenerator.genSuccessResult(storeOrder);
 	}
 

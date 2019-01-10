@@ -26,6 +26,7 @@ import com.inno72.store.model.Inno72Store;
 import com.inno72.store.model.Inno72StoreOrder;
 import com.inno72.store.model.Inno72Storekeeper;
 import com.inno72.store.service.StoreOrderService;
+import com.inno72.store.vo.StoreOrderVo;
 
 /**
  * Created by CodeGenerator on 2018/12/28.
@@ -116,6 +117,10 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 				}
 				model.setSender(store.getName());
 			}
+			// 减库存
+
+			// 加容量
+
 			inno72StoreOrderMapper.insertSelective(model);
 
 			return Results.warn("操作成功", 0, model.getId());
@@ -152,6 +157,14 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		params.put("keyword", keyword);
 		return inno72StoreOrderMapper.selectReceiveOrderByPage(params);
+	}
+
+	@Override
+	public StoreOrderVo findDetailById(String id) {
+		logger.info("---------------------库单详情-------------------");
+		StoreOrderVo vo = inno72StoreOrderMapper.selectOrderById(id);
+
+		return vo;
 	}
 
 }

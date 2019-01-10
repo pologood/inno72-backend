@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.store.model.Inno72StoreExpress;
 import com.inno72.store.service.StoreExpressService;
+import com.inno72.store.vo.StoreOrderVo;
 
 import tk.mybatis.mapper.entity.Condition;
 
@@ -30,8 +32,8 @@ public class StoreExpressController {
 	private StoreExpressService storeExpressService;
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> add(Inno72StoreExpress storeExpress) {
-		storeExpressService.save(storeExpress);
+	public Result<String> add(@RequestBody StoreOrderVo storeOrderVo) {
+		storeExpressService.saveModel(storeOrderVo);
 		return ResultGenerator.genSuccessResult();
 	}
 

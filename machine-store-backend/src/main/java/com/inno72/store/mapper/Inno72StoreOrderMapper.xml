@@ -15,7 +15,7 @@
     <result column="send_type" jdbcType="INTEGER" property="sendType" />
     <result column="receiver" jdbcType="VARCHAR" property="receiver" />
     <result column="receive_id" jdbcType="VARCHAR" property="receiveId" />
-    <result column="receive_type" jdbcType="VARCHAR" property="receiveType" />
+    <result column="receive_type" jdbcType="INTEGER" property="receiveType" />
     <result column="number" jdbcType="INTEGER" property="number" />
     <result column="capacity" jdbcType="INTEGER" property="capacity" />
     <result column="receive_number" jdbcType="INTEGER" property="receiveNumber" />
@@ -96,6 +96,33 @@
               	or g.name like CONCAT('%','${keyword}','%')
               )
           </if>
+  </select>
+  
+  <resultMap id="VoResultMap" extends="BaseResultMap"  type="com.inno72.store.vo.StoreOrderVo">
+   
+	<association property="expressList" resultMap="expressList" />
+  </resultMap>
+  <resultMap id="expressList" type="java.util.Map">
+		<result column="expressId" jdbcType="VARCHAR" property="machineId" />
+		<result column="expressCompany" jdbcType="VARCHAR" property="expressCompany" />
+		<result column="expressNum" jdbcType="VARCHAR" property="expressNum" />
+		<result column="expressNumber" jdbcType="INTEGER" property="expressNumber" />
+		<result column="expressStatus" jdbcType="INTEGER" property="expressStatus" />
+	</resultMap>
+  
+  <select id="selectOrderById" parameterType="java.util.Map" resultMap="VoResultMap">
+		SELECT
+			so.*,
+			se.express_company AS expressCompany,
+			se.express_num AS expressNum,
+			se.number AS expressNumber,
+			se.`status` AS expressStatus,
+			se.id AS expressId 
+		FROM
+			inno72_store_order so
+			LEFT JOIN inno72_store_express se ON se.order_id = so.id 
+		WHERE
+			so.id =#{id}
   </select>
   
   
