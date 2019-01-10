@@ -325,18 +325,14 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 					return Results.failure("商品ID请输入8位正整数");
 				}
 			}
-			int n = inno72GoodsMapper.selectIsExist(params);
-			if (n > 0) {
-				return Results.warn("商品ID已存在", 0, "false");
-			}
-		} else {// 商品名称
-			int n = inno72GoodsMapper.selectIsExist(params);
-			if (n > 0) {
-				return Results.warn("商品名称已存在", 0, "false");
-			}
+		}
+		int n = inno72GoodsMapper.selectIsExist(params);
+		if (n > 0) {
+			return Results.warn("已存在", 0, "false");
+		} else {
+			return Results.success();
 		}
 
-		return Results.warn("", 0, "");
 	}
 
 }
