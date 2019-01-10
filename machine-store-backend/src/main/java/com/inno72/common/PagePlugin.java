@@ -19,7 +19,6 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.mapping.ParameterMode;
-import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
@@ -41,16 +40,16 @@ public class PagePlugin implements Interceptor {
 
 	private static String dialect = ""; // 数据库方言
 	private static String pageSqlId = ""; // mapper.xml中需要拦截的ID(正则匹配
-	private static String levelpageSqlId="";
+	private static String levelpageSqlId = "";
 
 	@Override
 	public Object intercept(Invocation ivk) throws Throwable {
 		if (ivk.getTarget() instanceof RoutingStatementHandler) {
 			RoutingStatementHandler statementHandler = (RoutingStatementHandler) ivk.getTarget();
-			BaseStatementHandler delegate = (BaseStatementHandler) ReflectHelper
-					.getValueByFieldName(statementHandler, "delegate");
-			MappedStatement mappedStatement = (MappedStatement) ReflectHelper
-					.getValueByFieldName(delegate, "mappedStatement");
+			BaseStatementHandler delegate = (BaseStatementHandler) ReflectHelper.getValueByFieldName(statementHandler,
+					"delegate");
+			MappedStatement mappedStatement = (MappedStatement) ReflectHelper.getValueByFieldName(delegate,
+					"mappedStatement");
 
 			String id = mappedStatement.getId();
 			boolean matches = id.matches(".*" + pageSqlId);
@@ -64,16 +63,16 @@ public class PagePlugin implements Interceptor {
 				Connection connection = (Connection) ivk.getArgs()[0];
 				String sql = boundSql.getSql();
 				String upperCaseSql = sql.toUpperCase();
-				String tableName =getFirstTableName(upperCaseSql);
+				String tableName = getFirstTableName(upperCaseSql);
 				int indexOfFrom = upperCaseSql.indexOf("FROM");
-				String 	fromCase = "select distinct "+tableName+".id " + upperCaseSql.substring(indexOfFrom);
+				String fromCase = "select distinct " + tableName + ".id " + upperCaseSql.substring(indexOfFrom);
 				PreparedStatement countStmt = connection.prepareStatement(fromCase);
 				BoundSql countBS = mappedStatement.getBoundSql(parameterObject);
 				setParameters(countStmt, mappedStatement, countBS, parameterObject);
 				ResultSet rs = countStmt.executeQuery();
 				int count = 0;
 				rs.last();
-				count=rs.getRow();
+				count = rs.getRow();
 				rs.close();
 				countStmt.close();
 				Pagination page = Pagination.threadLocal.get();
@@ -85,34 +84,34 @@ public class PagePlugin implements Interceptor {
 				String pageSql = generatePageSql(sql, page);
 				ReflectHelper.setValueByFieldName(boundSql, "sql", pageSql); // 将分页sql语句反射回BoundSql.
 			} else {
-			if (matches) { // 拦截需要分页的SQL
-				BoundSql boundSql = delegate.getBoundSql();
-				Object parameterObject = boundSql.getParameterObject();// 分页SQL<select>中parameterType属性对应的实体参数，即Mapper接口中执行分页方法的参数,该参数不得为空
-				if (parameterObject == null) {
-					parameterObject = "";
+				if (matches) { // 拦截需要分页的SQL
+					BoundSql boundSql = delegate.getBoundSql();
+					Object parameterObject = boundSql.getParameterObject();// 分页SQL<select>中parameterType属性对应的实体参数，即Mapper接口中执行分页方法的参数,该参数不得为空
+					if (parameterObject == null) {
+						parameterObject = "";
+					}
+					Connection connection = (Connection) ivk.getArgs()[0];
+					String sql = boundSql.getSql();
+					String upperCaseSql = sql.toUpperCase();
+					PreparedStatement countStmt = connection.prepareStatement(upperCaseSql);
+					BoundSql countBS = mappedStatement.getBoundSql(parameterObject);
+					setParameters(countStmt, mappedStatement, countBS, parameterObject);
+					ResultSet rs = countStmt.executeQuery();
+					int count = 0;
+					rs.last();
+					count = rs.getRow();
+					rs.close();
+					countStmt.close();
+					Pagination page = Pagination.threadLocal.get();
+					if (page == null) { // 没有设置分页page
+						page = new Pagination();
+						Pagination.threadLocal.set(page);
+					}
+					page.setTotalCount(count); // 设置总条数
+					String pageSql = generatePageSql(sql, page);
+					ReflectHelper.setValueByFieldName(boundSql, "sql", pageSql); // 将分页sql语句反射回BoundSql.
 				}
-				Connection connection = (Connection) ivk.getArgs()[0];
-				String sql = boundSql.getSql();
-				String upperCaseSql = sql.toUpperCase();
-				PreparedStatement countStmt = connection.prepareStatement(upperCaseSql);
-				BoundSql countBS = mappedStatement.getBoundSql(parameterObject);
-				setParameters(countStmt, mappedStatement, countBS, parameterObject);
-				ResultSet rs = countStmt.executeQuery();
-				int count = 0;
-				rs.last();
-				count=rs.getRow();
-				rs.close();
-				countStmt.close();
-				Pagination page = Pagination.threadLocal.get();
-				if (page == null) { // 没有设置分页page
-					page = new Pagination();
-					Pagination.threadLocal.set(page);
-				}
-				page.setTotalCount(count); // 设置总条数
-				String pageSql = generatePageSql(sql, page);
-				ReflectHelper.setValueByFieldName(boundSql, "sql", pageSql); // 将分页sql语句反射回BoundSql.
 			}
-		}
 		}
 		return ivk.proceed();
 	}
@@ -229,24 +228,25 @@ public class PagePlugin implements Interceptor {
 		}
 
 	}
-	private  String getFirstTableName(String sql){
-		String a = sql.substring(sql.indexOf("FROM")+5,sql.length());
-		String aa= a.substring(a.indexOf(" "),a.length()).trim();
-		String aaa= aa.substring(0,aa.indexOf(" "));
-		return aaa.replace("\n","");
+
+	private String getFirstTableName(String sql) {
+		String a = sql.substring(sql.indexOf("FROM") + 5, sql.length());
+		String aa = a.substring(a.indexOf(" "), a.length()).trim();
+		String aaa = aa.substring(0, aa.indexOf(" "));
+		return aaa.replace("\n", "");
 	}
-	public  static void  main(String [] args){
-		String sql ="a from b\n bb from cc c from dd d".toUpperCase();
-		String a = sql.substring(sql.indexOf("FROM")+5,sql.length());
+
+	public static void main(String[] args) {
+		String sql = "a from b\n bb from cc c from dd d".toUpperCase();
+		String a = sql.substring(sql.indexOf("FROM") + 5, sql.length());
 		System.out.println(a);
 
-		String aa= a.substring(a.indexOf(" "),a.length()).trim();
-		String aaa= aa.substring(0,aa.indexOf(" "));
+		String aa = a.substring(a.indexOf(" "), a.length()).trim();
+		String aaa = aa.substring(0, aa.indexOf(" "));
 
 		System.out.println(aaa);
-		System.out.println("+++"+sql);
-		System.out.println("+++"+sql.replace("\n",""));
-
+		System.out.println("+++" + sql);
+		System.out.println("+++" + sql.replace("\n", ""));
 
 	}
 }

@@ -14,7 +14,6 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import com.github.miemiedev.mybatis.paginator.OffsetLimitInterceptor;
-import com.inno72.common.DataAutherInterceptor;
 import com.inno72.common.PagePlugin;
 
 import tk.mybatis.spring.mapper.MapperScannerConfigurer;

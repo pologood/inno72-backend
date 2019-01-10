@@ -2,8 +2,6 @@ package com.inno72.common;
 
 import com.inno72.store.model.Inno72Storekeeper;
 
-import java.util.List;
-
 public class SessionData {
 	private String token;
 	private Inno72Storekeeper storekeeper;
@@ -25,7 +23,6 @@ public class SessionData {
 	public void setToken(String token) {
 		this.token = token;
 	}
-
 
 	public Inno72Storekeeper getStorekeeper() {
 		return storekeeper;

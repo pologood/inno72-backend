@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.common.AbstractService;
 import com.inno72.common.DateUtil;
 import com.inno72.common.Result;
@@ -130,6 +131,28 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			logger.info(e.getMessage());
 			return Results.failure("操作失败");
 		}
+	}
+
+	/**
+	 * 签收入库单
+	 */
+	@Override
+	public Result<Object> receiverConfirm(StoreOrderVo storeOrderVo) {
+		logger.info("签收物流单接口参数:{}", JSON.toJSON(storeOrderVo));
+		SessionData session = SessionUtil.sessionData.get();
+		Inno72Storekeeper mUser = Optional.ofNullable(session).map(SessionData::getStorekeeper).orElse(null);
+		if (mUser == null) {
+			logger.info("登陆用户为空");
+			return Results.failure("未找到用户登录信息");
+		}
+
+		List<Map<String, Object>> expressList = storeOrderVo.getExpressList();
+		if (null == expressList || expressList.size() == 0) {
+			logger.info("物流单未选择");
+			return Results.failure("物流单未选择");
+		}
+
+		return Results.success();
 	}
 
 	/**

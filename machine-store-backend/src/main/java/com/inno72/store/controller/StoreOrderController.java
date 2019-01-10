@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +33,11 @@ public class StoreOrderController {
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<Object> add(Inno72StoreOrder storeOrder) {
 		return storeOrderService.saveModel(storeOrder);
+	}
+
+	@RequestMapping(value = "/receiverConfirm", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<Object> receiverConfirm(@RequestBody StoreOrderVo storeOrderVo) {
+		return storeOrderService.receiverConfirm(storeOrderVo);
 	}
 
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })

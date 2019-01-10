@@ -22,7 +22,6 @@ import com.inno72.common.CommonConstants;
 import com.inno72.common.DataAutherInterceptor;
 import com.inno72.common.Result;
 import com.inno72.common.SessionData;
-import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.redis.IRedisUtil;
 import com.inno72.utils.page.Pagination;
@@ -38,7 +37,8 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	@Resource
 	private IRedisUtil redisUtil; // memcachedClient
 
-	private static List<String> doNotCheckUs = Arrays.asList(new String[] { "/storekeeper/smsCode","/storekeeper/login" });
+	private static List<String> doNotCheckUs = Arrays
+			.asList(new String[] { "/storekeeper/smsCode", "/storekeeper/login" });
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -129,7 +129,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 				|| requestMethod.equals("PUT")) {
 			// lf-None-Matoh 传入token
 			String token = request.getHeader("lf-None-Matoh");
-			log.info("用户token:{}",token);
+			log.info("用户token:{}", token);
 			if (StringUtil.isEmpty(token)) {
 				Result<String> result = new Result<>();
 				result.setCode(999);

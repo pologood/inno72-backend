@@ -21,4 +21,6 @@ public interface StoreOrderService extends Service<Inno72StoreOrder> {
 
 	StoreOrderVo findDetailById(String id);
 
+	Result<Object> receiverConfirm(StoreOrderVo storeOrderVo);
+
 }
