@@ -21,9 +21,13 @@ import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.store.mapper.Inno72StoreExpressMapper;
+import com.inno72.store.mapper.Inno72StoreGoodsMapper;
 import com.inno72.store.mapper.Inno72StoreMapper;
 import com.inno72.store.mapper.Inno72StoreOrderMapper;
 import com.inno72.store.model.Inno72Store;
+import com.inno72.store.model.Inno72StoreExpress;
+import com.inno72.store.model.Inno72StoreGoods;
 import com.inno72.store.model.Inno72StoreOrder;
 import com.inno72.store.model.Inno72Storekeeper;
 import com.inno72.store.service.StoreOrderService;
@@ -41,6 +45,11 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 	private Inno72StoreOrderMapper inno72StoreOrderMapper;
 	@Resource
 	private Inno72StoreMapper inno72StoreMapper;
+
+	@Resource
+	private Inno72StoreGoodsMapper inno72StoreGoodsMapper;
+	@Resource
+	private Inno72StoreExpressMapper inno72StoreExpressMapper;
 
 	/**
 	 * 创建保存出库单
@@ -107,21 +116,32 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 					return Results.failure("请选择收货人员");
 				}
 			}
+			Inno72Store store = null;
 			if (model.getReceiveType() == 2) {
 				if (null == model.getReceiveId()) {
 					logger.info("请选择收货仓库");
 					return Results.failure("请选择收货仓库");
 				}
-				Inno72Store store = inno72StoreMapper.selectByPrimaryKey(model.getReceiveId());
+				store = inno72StoreMapper.selectByPrimaryKey(model.getReceiveId());
 				if (null == store) {
 					return Results.failure("收货仓不存在");
 				}
 				model.setSender(store.getName());
 			}
-			// 减库存
 
-			// 加容量
-
+			// 仓库增加相应容量
+			if (null != store) {
+				store.setCapacity(store.getCapacity() + model.getCapacity());
+			}
+			Inno72StoreGoods storeGoods = new Inno72StoreGoods();
+			storeGoods.setGoodsId(model.getGoods());
+			storeGoods.setStoreId(model.getReceiveId());
+			storeGoods = inno72StoreGoodsMapper.selectOne(storeGoods);
+			// 商品库存减少，容量增加
+			storeGoods.setNumber(storeGoods.getNumber() - model.getNumber());
+			storeGoods.setCapacity(storeGoods.getCapacity() + model.getCapacity());
+			inno72StoreGoodsMapper.updateByPrimaryKeySelective(storeGoods);
+			// 保存出库单
 			inno72StoreOrderMapper.insertSelective(model);
 
 			return Results.warn("操作成功", 0, model.getId());
@@ -146,12 +166,60 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			return Results.failure("未找到用户登录信息");
 		}
 
-		List<Map<String, Object>> expressList = storeOrderVo.getExpressList();
+		List<Inno72StoreExpress> expressList = storeOrderVo.getExpressList();
 		if (null == expressList || expressList.size() == 0) {
 			logger.info("物流单未选择");
 			return Results.failure("物流单未选择");
 		}
+		// 仓库容量减小
 
+		// 获取商品库存
+		Inno72StoreOrder storeOrder = inno72StoreOrderMapper.selectByPrimaryKey(storeOrderVo.getId());
+
+		Inno72Store store = new Inno72Store();
+		store.setId(storeOrder.getReceiveId());
+		store = inno72StoreMapper.selectOne(store);
+
+		Inno72StoreGoods storeGoods = new Inno72StoreGoods();
+		storeGoods.setGoodsId(storeOrder.getGoods());
+		storeGoods.setStoreId(storeOrder.getReceiveId());
+		storeGoods = inno72StoreGoodsMapper.selectOne(storeGoods);
+		// 签收总数量
+		int totalNumber = 0;
+		int totalCapacity = 0;
+
+		for (Inno72StoreExpress express : expressList) {
+			totalNumber += express.getReceiveNumber();
+			totalCapacity += express.getReceiveCapacity();
+			express.setReceiveTime(LocalDateTime.now());
+			express.setReceiver(mUser.getName());
+			express.setUpdater(mUser.getName());
+			express.setUpdateTime(LocalDateTime.now());
+			// 更新物流单
+			inno72StoreExpressMapper.updateByPrimaryKeySelective(express);
+		}
+		// 更新库存数量
+		storeGoods.setNumber(storeGoods.getNumber() + totalNumber);
+		storeGoods.setCapacity(storeGoods.getCapacity() + totalCapacity);
+		inno72StoreGoodsMapper.updateByPrimaryKeySelective(storeGoods);
+		// 更新仓库容量
+		store.setCapacity(store.getCapacity() - totalCapacity);
+		inno72StoreMapper.updateByPrimaryKeySelective(store);
+
+		// 更新入库单：状态，实收数量，实收所占容量，
+		Inno72StoreExpress ee = new Inno72StoreExpress();
+		ee.setOrderId(storeOrderVo.getId());
+		int all = inno72StoreExpressMapper.selectCount(ee);
+		ee.setStatus(1);
+		int con = inno72StoreExpressMapper.selectCount(ee);
+		if (all == con) {
+			storeOrder.setStatus(1);
+			storeOrder.setReceiveTime(LocalDateTime.now());
+		}
+		storeOrder.setReceiveNumber(storeOrder.getReceiveNumber() + totalNumber);
+		storeOrder.setReceiveCapacity(storeOrder.getCapacity() + totalCapacity);
+
+		inno72StoreOrderMapper.updateByPrimaryKeySelective(storeOrder);
 		return Results.success();
 	}
 

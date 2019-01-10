@@ -71,6 +71,12 @@ public class Inno72StoreExpress {
 	private String receiver;
 
 	/**
+	 * 签收状态：0未签收，1签收
+	 */
+	@Column(name = "status")
+	private Integer status;
+
+	/**
 	 * 状态：0正常，1停止
 	 */
 	@Column(name = "is_delete")
@@ -276,6 +282,14 @@ public class Inno72StoreExpress {
 	 */
 	public void setReceiver(String receiver) {
 		this.receiver = receiver;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	/**
