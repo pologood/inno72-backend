@@ -89,10 +89,11 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 									Date date = DateUtil.addSecondOfDate(DateUtil.toDateOld(signTime,DateUtil.DF_ONLY_YMDHM),second);
 									inno72CheckSignIn.setCreateTime(DateUtil.UDateToLocalDateTime(date));
 									inno72CheckSignInMapper.insertSelective(inno72CheckSignIn);
+									redisUtil.sadd("signKey",findTime);
 								}
 							}
 						}
-						redisUtil.sadd("signKey",findTime);
+
 					}
 				}
 			}
