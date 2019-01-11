@@ -3,7 +3,6 @@ package com.inno72.store.service.impl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -46,7 +45,7 @@ public class StoreExpressServiceImpl extends AbstractService<Inno72StoreExpress>
 			return Results.failure("未找到用户登录信息");
 		}
 
-		List<Map<String, Object>> expressList = storeOrderVo.getExpressList();
+		List<Inno72StoreExpress> expressList = storeOrderVo.getExpressList();
 		if (null == expressList || expressList.size() == 0) {
 			logger.info("物流单未填写");
 			return Results.failure("请选择活动商家");
@@ -54,25 +53,18 @@ public class StoreExpressServiceImpl extends AbstractService<Inno72StoreExpress>
 
 		List<Inno72StoreExpress> addExpressList = new ArrayList<>();
 
-		for (Map<String, Object> express : expressList) {
-			if (StringUtil.isBlank(express.get("id").toString())) {
-				Inno72StoreExpress storeExpress = new Inno72StoreExpress();
-				storeExpress.setId(StringUtil.getUUID());
-				storeExpress.setOrderId(storeOrderVo.getId());
-				storeExpress.setCreater(mUser.getName());
-				storeExpress.setUpdater(mUser.getName());
-				storeExpress.setCreateTime(LocalDateTime.now());
-				storeExpress.setUpdateTime(LocalDateTime.now());
-				storeExpress.setExpressCompany(express.get("expressCompany").toString());
-				storeExpress.setExpressNum(express.get("expressNum").toString());
-				storeExpress.setNumber(Integer.parseInt(express.get("number").toString()));
+		for (Inno72StoreExpress express : expressList) {
+			if (StringUtil.isBlank(express.getId())) {
+				express.setId(StringUtil.getUUID());
+				express.setOrderId(storeOrderVo.getId());
+				express.setCreater(mUser.getName());
+				express.setUpdater(mUser.getName());
+				express.setCreateTime(LocalDateTime.now());
+				express.setUpdateTime(LocalDateTime.now());
 
-				addExpressList.add(storeExpress);
+				addExpressList.add(express);
 			} else {
-				Inno72StoreExpress storeExpress = inno72StoreExpressMapper.selectByPrimaryKey(express.get("id"));
-				storeExpress.setExpressCompany(express.get("expressCompany").toString());
-				storeExpress.setExpressNum(express.get("expressNum").toString());
-				storeExpress.setNumber(Integer.parseInt(express.get("number").toString()));
+				Inno72StoreExpress storeExpress = inno72StoreExpressMapper.selectByPrimaryKey(express.getId());
 
 				inno72StoreExpressMapper.updateByPrimaryKeySelective(storeExpress);
 			}
