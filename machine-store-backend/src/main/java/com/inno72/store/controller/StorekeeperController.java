@@ -69,9 +69,8 @@ public class StorekeeperController {
 	public ModelAndView list(StoreKepperVo storeKepperVo) {
 		logger.info("分页查询库存管理人员接口参数:{}", JSON.toJSON(storeKepperVo));
 		List<Inno72Storekeeper> list = storekeeperService.findKepperByPage(storeKepperVo);
-		ModelAndView result = ResultPages.page(ResultGenerator.genSuccessResult(list));
-		logger.info("分页查询库存管理人员接口返回数据:{}", JSON.toJSON(result));
-		return result;
+		logger.info("分页查询库存管理人员接口返回数据:{}", JSON.toJSON(list));
+		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 
 	@RequestMapping(value = "/editUse")
