@@ -55,4 +55,10 @@ public class StoreController {
 		List<StoreVo> list = storeService.findByPage(keyword);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
+
+	@RequestMapping(value = "/getStoreList", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Inno72Store>> getStoreList(String keyword) {
+		List<Inno72Store> list = storeService.getStoreList(keyword);
+		return ResultGenerator.genSuccessResult(list);
+	}
 }

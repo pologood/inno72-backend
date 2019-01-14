@@ -25,6 +25,8 @@ import com.inno72.store.model.Inno72Storekeeper;
 import com.inno72.store.service.StoreService;
 import com.inno72.store.vo.StoreVo;
 
+import tk.mybatis.mapper.entity.Condition;
+
 /**
  * Created by CodeGenerator on 2018/12/28.
  */
@@ -156,6 +158,14 @@ public class StoreServiceImpl extends AbstractService<Inno72Store> implements St
 		Map<String, Object> map = new HashMap<>();
 		map.put("keyword", keyword);
 		return inno72StoreMapper.selectByPage(map);
+	}
+
+	@Override
+	public List<Inno72Store> getStoreList(String keyword) {
+		Condition condition = new Condition(Inno72Store.class);
+
+		condition.createCriteria().andEqualTo("name", keyword).orEqualTo("area", keyword);
+		return inno72StoreMapper.selectByCondition(condition);
 	}
 
 }

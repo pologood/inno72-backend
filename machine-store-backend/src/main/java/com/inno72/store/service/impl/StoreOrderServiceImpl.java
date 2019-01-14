@@ -288,7 +288,6 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		Inno72Storekeeper mUser = Optional.ofNullable(session).map(SessionData::getStorekeeper).orElse(null);
 
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("ID", mUser.getId());
 
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		params.put("keyword", keyword);
@@ -308,7 +307,6 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		Inno72Storekeeper mUser = Optional.ofNullable(session).map(SessionData::getStorekeeper).orElse(null);
 
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("ID", mUser.getId());
 
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		params.put("keyword", keyword);
@@ -321,6 +319,30 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		StoreOrderVo vo = inno72StoreOrderMapper.selectOrderById(id);
 
 		return vo;
+	}
+
+	@Override
+	public List<Map<String, Object>> getGoodsList(String merchantId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Map<String, Object>> getMerchantList(String keyword) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Map<String, Object>> getActivityList(String keyword) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Map<String, Object>> getCheckUserList(String keyword) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
