@@ -328,7 +328,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 		}
 		int n = inno72GoodsMapper.selectIsExist(params);
 		if (n > 0) {
-			return Results.warn("已存在", 0, "false");
+			return Results.warn("内容重复,请修改", 0, "false");
 		} else {
 			return Results.success();
 		}
