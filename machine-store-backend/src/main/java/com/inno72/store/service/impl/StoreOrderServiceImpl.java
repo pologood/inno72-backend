@@ -1,6 +1,7 @@
 package com.inno72.store.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,11 +22,13 @@ import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.store.mapper.Inno72CheckGoodsDetailMapper;
 import com.inno72.store.mapper.Inno72CheckGoodsNumMapper;
 import com.inno72.store.mapper.Inno72StoreExpressMapper;
 import com.inno72.store.mapper.Inno72StoreGoodsMapper;
 import com.inno72.store.mapper.Inno72StoreMapper;
 import com.inno72.store.mapper.Inno72StoreOrderMapper;
+import com.inno72.store.model.Inno72CheckGoodsDetail;
 import com.inno72.store.model.Inno72CheckGoodsNum;
 import com.inno72.store.model.Inno72Store;
 import com.inno72.store.model.Inno72StoreExpress;
@@ -55,6 +58,9 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 
 	@Resource
 	private Inno72CheckGoodsNumMapper inno72CheckGoodsNumMapper;
+
+	@Resource
+	private Inno72CheckGoodsDetailMapper inno72CheckGoodsDetailMapper;
 
 	/**
 	 * 创建保存出库单
@@ -111,20 +117,6 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 				return Results.failure("请选择收货方");
 			}
 			// 收货方类型：0商家，1巡检，2仓库
-
-			Inno72CheckGoodsNum checkGoodsNum = new Inno72CheckGoodsNum();
-			if (model.getReceiveType() == 1) {
-				if (null == model.getActivity()) {
-					logger.info("请选择参与活动");
-					return Results.failure("请选择参与活动");
-				}
-				if (null == model.getReceiveId()) {
-					logger.info("请选择收货人员");
-					return Results.failure("请选择收货人员");
-				}
-
-				checkGoodsNum = inno72CheckGoodsNumMapper.selectOne(checkGoodsNum);
-			}
 			Inno72Store store = null;
 			if (model.getReceiveType() == 2) {
 				if (null == model.getReceiveId()) {
@@ -136,6 +128,47 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 					return Results.failure("收货仓不存在");
 				}
 				model.setSender(store.getName());
+			}
+			Inno72CheckGoodsNum checkGoodsNum = new Inno72CheckGoodsNum();
+			if (model.getReceiveType() == 1) {
+				if (null == model.getActivity()) {
+					logger.info("请选择参与活动");
+					return Results.failure("请选择参与活动");
+				}
+				if (null == model.getReceiveId()) {
+					logger.info("请选择收货人员");
+					return Results.failure("请选择收货人员");
+				}
+				checkGoodsNum.setActivityId(model.getActivity());
+				checkGoodsNum.setCheckUserId(model.getReceiveId());
+				checkGoodsNum.setGoodsId(model.getGoods());
+				checkGoodsNum = inno72CheckGoodsNumMapper.selectOne(checkGoodsNum);
+
+				if (null == checkGoodsNum) {
+					checkGoodsNum = new Inno72CheckGoodsNum();
+					checkGoodsNum.setId(StringUtil.getUUID());
+					checkGoodsNum.setActivityId(model.getActivity());
+					checkGoodsNum.setCheckUserId(model.getReceiveId());
+					checkGoodsNum.setGoodsId(model.getGoods());
+
+					checkGoodsNum.setReceiveTotalCount(model.getNumber());
+					checkGoodsNum.setDifferTotalCount(model.getNumber());
+					inno72CheckGoodsNumMapper.insert(checkGoodsNum);
+				} else {
+					checkGoodsNum.setReceiveTotalCount(checkGoodsNum.getReceiveTotalCount() + model.getNumber());
+					checkGoodsNum.setDifferTotalCount(
+							checkGoodsNum.getReceiveTotalCount() - checkGoodsNum.getDifferTotalCount());
+
+					inno72CheckGoodsNumMapper.updateByPrimaryKey(checkGoodsNum);
+				}
+				Inno72CheckGoodsDetail checkGoodsDetail = new Inno72CheckGoodsDetail();
+				checkGoodsDetail.setId(StringUtil.getUUID());
+				checkGoodsDetail.setCreateTime(new Date());
+				checkGoodsDetail.setReceiveCount(model.getNumber());
+				checkGoodsDetail.setDifferCount(model.getNumber());
+				checkGoodsDetail.setGoodsNumId(checkGoodsNum.getId());
+				inno72CheckGoodsDetailMapper.insert(checkGoodsDetail);
+
 			}
 
 			// 仓库增加相应容量
