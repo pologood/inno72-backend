@@ -21,10 +21,12 @@ import com.inno72.common.Results;
 import com.inno72.common.SessionData;
 import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.store.mapper.Inno72CheckGoodsNumMapper;
 import com.inno72.store.mapper.Inno72StoreExpressMapper;
 import com.inno72.store.mapper.Inno72StoreGoodsMapper;
 import com.inno72.store.mapper.Inno72StoreMapper;
 import com.inno72.store.mapper.Inno72StoreOrderMapper;
+import com.inno72.store.model.Inno72CheckGoodsNum;
 import com.inno72.store.model.Inno72Store;
 import com.inno72.store.model.Inno72StoreExpress;
 import com.inno72.store.model.Inno72StoreGoods;
@@ -50,6 +52,9 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 	private Inno72StoreGoodsMapper inno72StoreGoodsMapper;
 	@Resource
 	private Inno72StoreExpressMapper inno72StoreExpressMapper;
+
+	@Resource
+	private Inno72CheckGoodsNumMapper inno72CheckGoodsNumMapper;
 
 	/**
 	 * 创建保存出库单
@@ -106,6 +111,8 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 				return Results.failure("请选择收货方");
 			}
 			// 收货方类型：0商家，1巡检，2仓库
+
+			Inno72CheckGoodsNum checkGoodsNum = new Inno72CheckGoodsNum();
 			if (model.getReceiveType() == 1) {
 				if (null == model.getActivity()) {
 					logger.info("请选择参与活动");
@@ -115,6 +122,8 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 					logger.info("请选择收货人员");
 					return Results.failure("请选择收货人员");
 				}
+
+				checkGoodsNum = inno72CheckGoodsNumMapper.selectOne(checkGoodsNum);
 			}
 			Inno72Store store = null;
 			if (model.getReceiveType() == 2) {
@@ -180,10 +189,6 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		store.setId(storeOrder.getReceiveId());
 		store = inno72StoreMapper.selectOne(store);
 
-		Inno72StoreGoods storeGoods = new Inno72StoreGoods();
-		storeGoods.setGoodsId(storeOrder.getGoods());
-		storeGoods.setStoreId(storeOrder.getReceiveId());
-		storeGoods = inno72StoreGoodsMapper.selectOne(storeGoods);
 		// 签收总数量
 		int totalNumber = 0;
 		int totalCapacity = 0;
@@ -199,9 +204,26 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			inno72StoreExpressMapper.updateByPrimaryKeySelective(express);
 		}
 		// 更新库存数量
-		storeGoods.setNumber(storeGoods.getNumber() + totalNumber);
-		storeGoods.setCapacity(storeGoods.getCapacity() + totalCapacity);
-		inno72StoreGoodsMapper.updateByPrimaryKeySelective(storeGoods);
+		Inno72StoreGoods storeGoods = new Inno72StoreGoods();
+		storeGoods.setGoodsId(storeOrder.getGoods());
+		storeGoods.setStoreId(storeOrder.getReceiveId());
+		storeGoods = inno72StoreGoodsMapper.selectOne(storeGoods);
+		if (null == storeGoods) {
+			storeGoods = new Inno72StoreGoods();
+			storeGoods.setId(StringUtil.getUUID());
+			storeGoods.setGoodsId(storeOrder.getGoods());
+			storeGoods.setStoreId(storeOrder.getReceiveId());
+			storeGoods.setNumber(storeGoods.getNumber() + totalNumber);
+			storeGoods.setCapacity(storeGoods.getCapacity() + totalCapacity);
+			storeGoods.setUpdateId(mUser.getId());
+			storeGoods.setUpdateTime(LocalDateTime.now());
+			inno72StoreGoodsMapper.insert(storeGoods);
+		} else {
+			storeGoods.setNumber(storeGoods.getNumber() + totalNumber);
+			storeGoods.setCapacity(storeGoods.getCapacity() + totalCapacity);
+			inno72StoreGoodsMapper.updateByPrimaryKeySelective(storeGoods);
+		}
+
 		// 更新仓库容量
 		store.setCapacity(store.getCapacity() - totalCapacity);
 		inno72StoreMapper.updateByPrimaryKeySelective(store);
@@ -229,7 +251,12 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 	@Override
 	public List<Map<String, Object>> findSendOrderByPage(String date, String keyword) {
 
+		SessionData session = SessionUtil.sessionData.get();
+		Inno72Storekeeper mUser = Optional.ofNullable(session).map(SessionData::getStorekeeper).orElse(null);
+
 		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("ID", mUser.getId());
+
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		params.put("keyword", keyword);
 		if (StringUtil.isNotBlank(date)) {
@@ -244,7 +271,12 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 	 */
 	@Override
 	public List<Map<String, Object>> findReceiveOrderByPage(String date, String keyword) {
+		SessionData session = SessionUtil.sessionData.get();
+		Inno72Storekeeper mUser = Optional.ofNullable(session).map(SessionData::getStorekeeper).orElse(null);
+
 		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("ID", mUser.getId());
+
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		params.put("keyword", keyword);
 		return inno72StoreOrderMapper.selectReceiveOrderByPage(params);
