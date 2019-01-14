@@ -9,9 +9,9 @@
     <result column="check_user_id" jdbcType="VARCHAR" property="checkUserId" />
     <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
     <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
-    <result column="receive_total_tount" jdbcType="INTEGER" property="receiveTotalCount" />
+    <result column="receive_total_count" jdbcType="INTEGER" property="receiveTotalCount" />
     <result column="supply_total_count" jdbcType="INTEGER" property="supplyTotalCount" />
-    <result column="differ_total_tount" jdbcType="INTEGER" property="differTotalCount" />
+    <result column="differ_total_count" jdbcType="INTEGER" property="differTotalCount" />
     <result column="goodsName" jdbcType="VARCHAR" property="goodsName" />
     <result column="activity_name" jdbcType="VARCHAR" property="activityName" />
     <result column="checkUserName" jdbcType="VARCHAR" property="checkUserName" />
