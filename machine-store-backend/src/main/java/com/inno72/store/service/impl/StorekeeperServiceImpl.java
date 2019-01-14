@@ -27,6 +27,8 @@ import com.inno72.store.service.StorekeeperService;
 import com.inno72.common.AbstractService;
 import com.inno72.store.vo.StoreKepperVo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,6 +57,8 @@ public class StorekeeperServiceImpl extends AbstractService<Inno72Storekeeper> i
 
 	@Resource
 	private IRedisUtil redisUtil;
+
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Override
 	public Result<String> saveKeeper(Inno72Storekeeper storekeeper) {
 		String mobile = storekeeper.getMobile();
@@ -188,6 +192,7 @@ public class StorekeeperServiceImpl extends AbstractService<Inno72Storekeeper> i
 		params.put("code", smsCode);
 		String appName = "machine-store-backend";
 		msgUtil.sendSMS(code,params,mobile,appName);
+		logger.info("发送验证码给"+mobile+",验证码为："+smsCode);
 		String smsCodeKey = CommonConstants.STORE_SMS_CODE_KEY_PREF+mobile;
 		Map<String,Object> smsCodeMap = new HashMap<>();
 		smsCodeMap.put("smsCode",smsCode);
