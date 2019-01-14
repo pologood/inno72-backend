@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.machine.mapper.Inno72CheckGoodsNumMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.machine.model.Inno72CheckGoodsNum">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="check_user_id" jdbcType="VARCHAR" property="checkUserId" />
+    <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="receive_total_tount" jdbcType="INTEGER" property="receiveTotalCount" />
+    <result column="supply_total_count" jdbcType="INTEGER" property="supplyTotalCount" />
+    <result column="differ_total_tount" jdbcType="INTEGER" property="differTotalCount" />
+    <result column="goodsName" jdbcType="VARCHAR" property="goodsName" />
+    <result column="activity_name" jdbcType="VARCHAR" property="activityName" />
+    <result column="checkUserName" jdbcType="VARCHAR" property="checkUserName" />
+  </resultMap>
+
+  <select id="selectListByPage" resultMap="BaseResultMap">
+      select cgn.*,g.name goodsName,vam.activity_name,cu.name checkUserName from inno72_check_goods_num cgn
+      left join inno72_goods g on cgn.goods_id=g.id
+      left join view_activity_machine vam on cgn.activity_id=vam.activity_id
+      left join inno72_check_user cu on cgn.check_user_id=cu.id
+      <where>
+          <if test="keyword != null">
+              and (cgn.goods_id like '%${keyword}%'
+              or g.name like '%${keyword}%'
+          </if>
+      </where>
+  </select>
+
+
+
+
+</mapper>
