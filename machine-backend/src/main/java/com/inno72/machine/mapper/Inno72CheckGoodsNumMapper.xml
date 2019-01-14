@@ -25,7 +25,7 @@
       <where>
           <if test="keyword != null">
               and (cgn.goods_id like '%${keyword}%'
-              or g.name like '%${keyword}%'
+              or g.name like '%${keyword}%')
           </if>
       </where>
   </select>
