@@ -322,7 +322,7 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 					|| m.getChannelCode().equals(CommonConstants.INNO72CODE)) {
 				Matcher match = patternNumbe.matcher(code);
 				if (!match.matches()) {
-					return Results.failure("商品ID请输入8位正整数");
+					return Results.warn("商品ID请输入8位正整数", 0, "false");
 				}
 			}
 		}
