@@ -1,5 +1,6 @@
 package com.inno72.store.service;
 import java.util.List;
+import java.util.Map;
 
 import com.inno72.common.Result;
 import com.inno72.common.SessionData;
@@ -19,7 +20,7 @@ public interface StorekeeperService extends Service<Inno72Storekeeper> {
 
 	Result<String> editUse(Inno72Storekeeper storekeeper);
 
-	Result<SessionData> login(Inno72Storekeeper inno72Storekeeper);
+	Result<Map<String,Object>> login(Inno72Storekeeper inno72Storekeeper);
 
 	Result<String> getSmsCode(String mobile);
 

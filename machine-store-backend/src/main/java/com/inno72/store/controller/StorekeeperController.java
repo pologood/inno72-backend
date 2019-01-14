@@ -1,6 +1,7 @@
 package com.inno72.store.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -90,9 +91,9 @@ public class StorekeeperController {
 	}
 
 	@RequestMapping(value = "/login")
-	public Result<SessionData> login(Inno72Storekeeper inno72Storekeeper) {
+	public Result<Map<String,Object>> login(Inno72Storekeeper inno72Storekeeper) {
 		logger.info("库存管理人员登录接口参数:{}", JSON.toJSON(inno72Storekeeper));
-		Result<SessionData> result = storekeeperService.login(inno72Storekeeper);
+		Result<Map<String,Object>> result = storekeeperService.login(inno72Storekeeper);
 		logger.info("库存管理人员登录接口返回数据:{}", JSON.toJSON(result));
 		return result;
 	}

@@ -20,6 +20,7 @@ import com.inno72.redis.IRedisUtil;
 import com.inno72.store.mapper.Inno72StorekeeperFunctionMapper;
 import com.inno72.store.mapper.Inno72StorekeeperMapper;
 import com.inno72.store.mapper.Inno72StorekeeperStorteMapper;
+import com.inno72.store.model.Inno72StoreFunction;
 import com.inno72.store.model.Inno72Storekeeper;
 import com.inno72.store.model.Inno72StorekeeperFunction;
 import com.inno72.store.model.Inno72StorekeeperStorte;
@@ -112,7 +113,8 @@ public class StorekeeperServiceImpl extends AbstractService<Inno72Storekeeper> i
 	}
 
 	@Override
-	public Result<SessionData> login(Inno72Storekeeper inno72Storekeeper) {
+	public Result<Map<String,Object>> login(Inno72Storekeeper inno72Storekeeper) {
+		Map<String,Object> resultMap = new HashMap<>();
 		Inno72Storekeeper keeper = null;
 		Integer loginType = inno72Storekeeper.getLoginType();
 		if(loginType == null){
@@ -167,8 +169,12 @@ public class StorekeeperServiceImpl extends AbstractService<Inno72Storekeeper> i
 			redisUtil.sadd(mobileKey,token);
 			String smsCodeKey = CommonConstants.STORE_SMS_CODE_KEY_PREF+mobile;
 			redisUtil.del(smsCodeKey);
-
-			return ResultGenerator.genSuccessResult(sessionData);
+			List<Inno72StoreFunction> functions = keeper.getStoreFunctionList();
+			resultMap.put("token",token);
+			keeper.setStoreFunctionList(null);
+			resultMap.put("user",keeper);
+			resultMap.put("functions",functions);
+			return ResultGenerator.genSuccessResult(resultMap);
 		}
 		return Results.failure("系统错误");
 	}
