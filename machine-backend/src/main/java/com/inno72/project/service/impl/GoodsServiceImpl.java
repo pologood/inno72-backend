@@ -166,12 +166,12 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 			// 活动添加不可修改
 			int gu1 = inno72GoodsMapper.selectIsUseing1(model.getId());
 			if (gu1 > 0) {
-				return Results.failure("商品活动排期中，请移除后修改！");
+				return Results.failure("商品在活动中被使用，请先去活动中移除商品后修改！");
 			}
 
 			int gu2 = inno72GoodsMapper.selectIsUseing2(model.getId());
 			if (gu2 > 0) {
-				return Results.failure("商品派样活动使用中，请移除后修改！");
+				return Results.failure("商品在活动中被使用，请先去活动中移除商品后修改！");
 			}
 
 			// 微信类型操作默认店铺
