@@ -16,9 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
-import com.inno72.common.SessionData;
-import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.common.UserUtil;
 import com.inno72.store.mapper.Inno72StoreMapper;
 import com.inno72.store.model.Inno72Store;
 import com.inno72.store.model.Inno72Storekeeper;
@@ -43,8 +42,7 @@ public class StoreServiceImpl extends AbstractService<Inno72Store> implements St
 	public Result<Object> saveModel(StoreVo model) {
 
 		try {
-			SessionData session = SessionUtil.sessionData.get();
-			Inno72Storekeeper mUser = Optional.ofNullable(session).map(SessionData::getStorekeeper).orElse(null);
+			Inno72Storekeeper mUser = UserUtil.getKepper();
 			if (mUser == null) {
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
@@ -92,8 +90,7 @@ public class StoreServiceImpl extends AbstractService<Inno72Store> implements St
 	public Result<Object> updateModel(StoreVo model) {
 
 		try {
-			SessionData session = SessionUtil.sessionData.get();
-			Inno72Storekeeper mUser = Optional.ofNullable(session).map(SessionData::getStorekeeper).orElse(null);
+			Inno72Storekeeper mUser = UserUtil.getKepper();
 			if (mUser == null) {
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
