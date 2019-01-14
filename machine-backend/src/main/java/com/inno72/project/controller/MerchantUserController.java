@@ -32,6 +32,11 @@ public class MerchantUserController {
 	private Inno72MerchantUserService inno72MerchantUserService;
 
 
+	@RequestMapping(value = "/inno72/merchant/user/activity", method = { RequestMethod.POST,  RequestMethod.GET})
+	public Result activityInfo(String merchantId) {
+		return inno72MerchantUserService.activity(merchantId);
+	}
+
 	/**
 	 * 保存客户
 	 * @param user

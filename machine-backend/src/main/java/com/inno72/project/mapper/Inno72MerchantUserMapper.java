@@ -14,4 +14,6 @@ public interface Inno72MerchantUserMapper extends Mapper<Inno72MerchantUser> {
 	int selectByLoginName(String loginName);
 
 	int selectMerchantId(String s);
+
+	List<Map<String,String>> activity(String merchantId);
 }

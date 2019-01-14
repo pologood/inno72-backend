@@ -34,4 +34,11 @@
     <select id="selectMerchantId" resultType="java.lang.Integer" parameterType="string">
         select count(*) from inno72_merchant_user where merchant_id = #{s}
     </select>
+    <select id="activity" resultType="java.util.Map" parameterType="string">
+        select i.id as actId, i.name as actName from inno72_interact i
+            left join inno72_interact_merchant im on i.id = im.interact_id
+            left join inno72_merchant m on im.merchant_id = m.id
+            left join inno72_merchant_user mu on m.merchant_account_id = mu.id
+        where mu.merchant_id = #{merchantId}
+    </select>
 </mapper>

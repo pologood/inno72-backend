@@ -1,6 +1,7 @@
 package com.inno72.project.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.inno72.common.Result;
 import com.inno72.common.Service;
@@ -23,4 +24,6 @@ public interface Inno72MerchantUserService extends Service<Inno72MerchantUser> {
 	Result resetPwd(Inno72MerchantUser user);
 
 	Result<List<Inno72MerchantUser>> getList(Inno72MerchantUser user);
+
+	Result<List<Map<String, String>>> activity(String merchantId);
 }
