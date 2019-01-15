@@ -19,9 +19,8 @@ import com.inno72.common.AbstractService;
 import com.inno72.common.DateUtil;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
-import com.inno72.common.SessionData;
-import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.common.UserUtil;
 import com.inno72.store.mapper.Inno72CheckGoodsDetailMapper;
 import com.inno72.store.mapper.Inno72CheckGoodsNumMapper;
 import com.inno72.store.mapper.Inno72StoreExpressMapper;
@@ -69,8 +68,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 	public Result<Object> saveModel(Inno72StoreOrder model) {
 
 		try {
-			SessionData session = SessionUtil.sessionData.get();
-			Inno72Storekeeper mUser = Optional.ofNullable(session).map(SessionData::getStorekeeper).orElse(null);
+			Inno72Storekeeper mUser = UserUtil.getKepper();
 			if (mUser == null) {
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
@@ -201,8 +199,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 	@Override
 	public Result<Object> receiverConfirm(StoreOrderVo storeOrderVo) {
 		logger.info("签收物流单接口参数:{}", JSON.toJSON(storeOrderVo));
-		SessionData session = SessionUtil.sessionData.get();
-		Inno72Storekeeper mUser = Optional.ofNullable(session).map(SessionData::getStorekeeper).orElse(null);
+		Inno72Storekeeper mUser = UserUtil.getKepper();
 		if (mUser == null) {
 			logger.info("登陆用户为空");
 			return Results.failure("未找到用户登录信息");
@@ -284,11 +281,9 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 	@Override
 	public List<Map<String, Object>> findSendOrderByPage(String date, String keyword) {
 
-		SessionData session = SessionUtil.sessionData.get();
-		Inno72Storekeeper mUser = Optional.ofNullable(session).map(SessionData::getStorekeeper).orElse(null);
+		Inno72Storekeeper mUser = UserUtil.getKepper();
 
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("ID", mUser.getId());
 
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		params.put("keyword", keyword);
@@ -304,11 +299,9 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 	 */
 	@Override
 	public List<Map<String, Object>> findReceiveOrderByPage(String date, String keyword) {
-		SessionData session = SessionUtil.sessionData.get();
-		Inno72Storekeeper mUser = Optional.ofNullable(session).map(SessionData::getStorekeeper).orElse(null);
+		Inno72Storekeeper mUser = UserUtil.getKepper();
 
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("ID", mUser.getId());
 
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		params.put("keyword", keyword);
@@ -321,6 +314,30 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		StoreOrderVo vo = inno72StoreOrderMapper.selectOrderById(id);
 
 		return vo;
+	}
+
+	@Override
+	public List<Map<String, Object>> getGoodsList(String merchantId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Map<String, Object>> getMerchantList(String keyword) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Map<String, Object>> getActivityList(String keyword) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Map<String, Object>> getCheckUserList(String keyword) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

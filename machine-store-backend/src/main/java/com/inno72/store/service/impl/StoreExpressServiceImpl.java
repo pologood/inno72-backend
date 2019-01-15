@@ -3,7 +3,6 @@ package com.inno72.store.service.impl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -16,9 +15,8 @@ import com.alibaba.fastjson.JSON;
 import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
-import com.inno72.common.SessionData;
-import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
+import com.inno72.common.UserUtil;
 import com.inno72.store.mapper.Inno72StoreExpressMapper;
 import com.inno72.store.model.Inno72StoreExpress;
 import com.inno72.store.model.Inno72Storekeeper;
@@ -38,8 +36,7 @@ public class StoreExpressServiceImpl extends AbstractService<Inno72StoreExpress>
 	@Override
 	public Result<Object> saveModel(StoreOrderVo storeOrderVo) {
 		logger.info("保存物流单接口参数:{}", JSON.toJSON(storeOrderVo));
-		SessionData session = SessionUtil.sessionData.get();
-		Inno72Storekeeper mUser = Optional.ofNullable(session).map(SessionData::getStorekeeper).orElse(null);
+		Inno72Storekeeper mUser = UserUtil.getKepper();
 		if (mUser == null) {
 			logger.info("登陆用户为空");
 			return Results.failure("未找到用户登录信息");

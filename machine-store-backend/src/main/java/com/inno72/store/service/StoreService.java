@@ -17,4 +17,6 @@ public interface StoreService extends Service<Inno72Store> {
 	Result<Object> updateModel(StoreVo model);
 
 	List<StoreVo> findByPage(String keyword);
+
+	List<Inno72Store> getStoreList(String keyword);
 }

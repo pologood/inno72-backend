@@ -75,4 +75,41 @@ public class StoreOrderController {
 		List<Map<String, Object>> list = storeOrderService.findReceiveOrderByPage(date, keyword);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
+
+	/**
+	 * 查询活动商家
+	 */
+	@RequestMapping(value = "/getMerchantList", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Map<String, Object>>> getMerchantList(String keyword) {
+		List<Map<String, Object>> goodsList = storeOrderService.getMerchantList(keyword);
+		return ResultGenerator.genSuccessResult(goodsList);
+	}
+
+	/**
+	 * 查询出库商品
+	 */
+	@RequestMapping(value = "/getGoodsList", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Map<String, Object>>> getGoodsList(String merchantId) {
+		List<Map<String, Object>> goodsList = storeOrderService.getGoodsList(merchantId);
+		return ResultGenerator.genSuccessResult(goodsList);
+	}
+
+	/**
+	 * 查询参与活动
+	 */
+	@RequestMapping(value = "/getActivityList", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Map<String, Object>>> getActivityList(String keyword) {
+		List<Map<String, Object>> goodsList = storeOrderService.getActivityList(keyword);
+		return ResultGenerator.genSuccessResult(goodsList);
+	}
+
+	/**
+	 * 查询收货巡检人员
+	 */
+	@RequestMapping(value = "/getCheckUserList", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<List<Map<String, Object>>> getCheckUserList(String keyword) {
+		List<Map<String, Object>> goodsList = storeOrderService.getCheckUserList(keyword);
+		return ResultGenerator.genSuccessResult(goodsList);
+	}
+
 }
