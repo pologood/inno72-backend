@@ -284,6 +284,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		Inno72Storekeeper mUser = UserUtil.getKepper();
 
 		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", mUser.getId());
 
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		params.put("keyword", keyword);
@@ -302,9 +303,14 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		Inno72Storekeeper mUser = UserUtil.getKepper();
 
 		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", mUser.getId());
 
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		params.put("keyword", keyword);
+		if (StringUtil.isNotBlank(date)) {
+			params.put("beginTime", date.trim() + " 00:00:00");
+			params.put("endTime", date.trim() + " 23:59:59");
+		}
 		return inno72StoreOrderMapper.selectReceiveOrderByPage(params);
 	}
 

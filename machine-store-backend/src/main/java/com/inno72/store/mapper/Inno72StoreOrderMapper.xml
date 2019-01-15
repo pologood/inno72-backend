@@ -46,7 +46,8 @@
 			inno72_store_order o
 			LEFT JOIN inno72_goods g on g.id=o.goods
 			LEFT JOIN inno72_merchant m ON m.id =o.merchant
-		WHERE o.order_type=1
+			LEFT JOIN inno72_storekeeper_storte ss ON ss.store_id=o.send_id
+		WHERE o.order_type=1 and ss.storekeeper_id = #{userId}
 	    	<if test="beginTime != null and beginTime !=''"> and o.create_timee <![CDATA[>=]]> #{beginTime} </if>
       		<if test="endTime != null and endTime !=''"> and o.create_time <![CDATA[<=]]> #{endTime} </if>
 	      	<if test="keyword != null and keyword != ''">
@@ -86,7 +87,8 @@
 					inno72_store_express se 
 				GROUP BY se.order_id
 			) e ON e.order_id = o.id
-		WHERE o.order_type=0
+			LEFT JOIN inno72_storekeeper_storte ss ON ss.store_id=o.receive_id
+		WHERE o.order_type=0 and ss.storekeeper_id = #{userId}
 	    	<if test="beginTime != null and beginTime !=''"> and o.create_timee <![CDATA[>=]]> #{beginTime} </if>
       		<if test="endTime != null and endTime !=''"> and o.create_time <![CDATA[<=]]> #{endTime} </if>
 	      	<if test="keyword != null and keyword != ''">
@@ -163,7 +165,39 @@
   </select>
   
   <select id="getActivityList" parameterType="java.util.Map" resultType="java.util.Map">
-		
+  
+  SELECT * FROM (
+		SELECT
+			a.id AS id,	
+			a.name AS activityName,
+			0 AS activityType
+		FROM
+			inno72.inno72_activity_plan ap 
+			LEFT JOIN inno72.inno72_activity a ON a.id = ap.activity_id
+		WHERE
+			ap.is_delete = 0 AND now( ) BETWEEN ap.start_time AND ap.end_time GROUP BY a.id
+		UNION
+		SELECT
+			i.id AS id,
+			i.name AS activityName,
+			1 AS activityType
+		FROM
+			inno72.inno72_interact_machine im
+			LEFT JOIN inno72.inno72_interact_machine_time imt ON im.id = imt.interact_machine_id
+			LEFT JOIN inno72.inno72_machine m ON m.id = im.machine_id
+			LEFT JOIN inno72.inno72_interact i ON i.id = im.interact_id
+		WHERE
+			m.machine_status = 4 
+			AND  i.is_delete = 0 
+			AND i.status = 1 
+			AND now( ) BETWEEN imt.start_time AND imt.end_time
+		GROUP BY i.id
+	) m where 1=1
+	<if test="keyword != null and keyword != ''">
+        and (m.activityName like CONCAT('%','${keyword}','%')
+          or m.code like CONCAT('%','${keyword}','%')
+        )
+    </if>
   </select>
   
   <select id="getCheckUserList" parameterType="java.util.Map" resultType="java.util.Map">
