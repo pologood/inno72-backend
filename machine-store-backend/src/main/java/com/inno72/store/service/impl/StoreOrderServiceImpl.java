@@ -317,27 +317,44 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 	}
 
 	@Override
-	public List<Map<String, Object>> getGoodsList(String merchantId) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Map<String, Object>> getGoodsList(String merchantId, String keyword) {
+		Map<String, Object> params = new HashMap<String, Object>();
+
+		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
+		params.put("keyword", keyword);
+		params.put("sellerId", merchantId);
+
+		return inno72StoreOrderMapper.getGoodsList(params);
 	}
 
 	@Override
 	public List<Map<String, Object>> getMerchantList(String keyword) {
-		// TODO Auto-generated method stub
-		return null;
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
+		params.put("keyword", keyword);
+
+		return inno72StoreOrderMapper.getMerchantList(params);
 	}
 
 	@Override
 	public List<Map<String, Object>> getActivityList(String keyword) {
-		// TODO Auto-generated method stub
-		return null;
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
+		params.put("keyword", keyword);
+
+		return inno72StoreOrderMapper.getActivityList(params);
 	}
 
 	@Override
 	public List<Map<String, Object>> getCheckUserList(String keyword) {
-		// TODO Auto-generated method stub
-		return null;
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
+		params.put("keyword", keyword);
+
+		return inno72StoreOrderMapper.getCheckUserList(params);
 	}
 
 }

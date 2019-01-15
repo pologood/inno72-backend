@@ -23,9 +23,9 @@ public interface StoreOrderService extends Service<Inno72StoreOrder> {
 
 	Result<Object> receiverConfirm(StoreOrderVo storeOrderVo);
 
-	List<Map<String, Object>> getGoodsList(String merchantId);
-
 	List<Map<String, Object>> getMerchantList(String keyword);
+
+	List<Map<String, Object>> getGoodsList(String merchantId, String keyword);
 
 	List<Map<String, Object>> getActivityList(String keyword);
 

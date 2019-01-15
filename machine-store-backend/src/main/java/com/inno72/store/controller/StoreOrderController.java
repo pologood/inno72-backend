@@ -89,8 +89,8 @@ public class StoreOrderController {
 	 * 查询出库商品
 	 */
 	@RequestMapping(value = "/getGoodsList", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<List<Map<String, Object>>> getGoodsList(String merchantId) {
-		List<Map<String, Object>> goodsList = storeOrderService.getGoodsList(merchantId);
+	public Result<List<Map<String, Object>>> getGoodsList(String merchantId, @RequestParam String keyword) {
+		List<Map<String, Object>> goodsList = storeOrderService.getGoodsList(merchantId, keyword);
 		return ResultGenerator.genSuccessResult(goodsList);
 	}
 

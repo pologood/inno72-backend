@@ -126,6 +126,61 @@
   </select>
   
   
+  <select id="getMerchantList" parameterType="java.util.Map" resultType="java.util.Map">
+  		SELECT
+			m.id,
+			m.merchant_name AS name,
+			m.merchant_code AS code
+		FROM
+			inno72_merchant m 
+		WHERE
+			m.is_delete =0
+		<if test="keyword != null and keyword != ''">
+            and (m.merchant_name like CONCAT('%','${keyword}','%')
+              	or m.merchant_code like CONCAT('%','${keyword}','%')
+            )
+        </if>
+		
+  </select>
+  
+  <select id="getGoodsList" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+			g.id,
+			g.name,
+			g.code
+		FROM
+			inno72_goods g 
+		WHERE
+			g.is_delete =0
+		<if test="sellerId != null and sellerId != ''">
+            and g.seller_id =#{sellerId}
+        </if>
+		<if test="keyword != null and keyword != ''">
+            and (g.name like CONCAT('%','${keyword}','%')
+              	or g.code like CONCAT('%','${keyword}','%')
+            )
+        </if>
+  </select>
+  
+  <select id="getActivityList" parameterType="java.util.Map" resultType="java.util.Map">
+		
+  </select>
+  
+  <select id="getCheckUserList" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+			cu.id,
+			cu.`name`
+		FROM
+			inno72_check_user cu 
+		WHERE
+			cu.is_delete = 0 AND cu.`status` =0
+		<if test="keyword != null and keyword != ''">
+            and (cu.name like CONCAT('%','${keyword}','%')
+              	or cu.code like CONCAT('%','${keyword}','%')
+            )
+        </if>
+  </select>
+  
   
   
 </mapper>
