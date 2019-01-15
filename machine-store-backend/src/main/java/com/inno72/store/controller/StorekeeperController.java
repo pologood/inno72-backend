@@ -19,7 +19,6 @@ import com.alibaba.fastjson.JSON;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
-import com.inno72.common.SessionData;
 import com.inno72.store.model.Inno72Storekeeper;
 import com.inno72.store.service.StorekeeperService;
 import com.inno72.store.vo.StoreKepperVo;
@@ -91,9 +90,9 @@ public class StorekeeperController {
 	}
 
 	@RequestMapping(value = "/login")
-	public Result<Map<String,Object>> login(Inno72Storekeeper inno72Storekeeper) {
+	public Result<Map<String, Object>> login(Inno72Storekeeper inno72Storekeeper) {
 		logger.info("库存管理人员登录接口参数:{}", JSON.toJSON(inno72Storekeeper));
-		Result<Map<String,Object>> result = storekeeperService.login(inno72Storekeeper);
+		Result<Map<String, Object>> result = storekeeperService.login(inno72Storekeeper);
 		logger.info("库存管理人员登录接口返回数据:{}", JSON.toJSON(result));
 		return result;
 	}

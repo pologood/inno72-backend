@@ -15,4 +15,13 @@ public interface Inno72StoreOrderMapper extends Mapper<Inno72StoreOrder> {
 	List<Map<String, Object>> selectSendOrderByPage(Map<String, Object> map);
 
 	StoreOrderVo selectOrderById(String id);
+
+	List<Map<String, Object>> getMerchantList(Map<String, Object> map);
+
+	List<Map<String, Object>> getGoodsList(Map<String, Object> map);
+
+	List<Map<String, Object>> getActivityList(Map<String, Object> map);
+
+	List<Map<String, Object>> getCheckUserList(Map<String, Object> map);
+
 }
