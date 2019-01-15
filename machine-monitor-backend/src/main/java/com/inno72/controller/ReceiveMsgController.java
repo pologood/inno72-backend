@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.inno72.common.CommonConstants;
 import com.inno72.common.utils.StringUtil;
 import com.inno72.model.AlarmMessageBean;
 import com.inno72.model.Inno72AppScreenShot;
@@ -133,6 +134,8 @@ public class ReceiveMsgController {
 	}
 
 	public void monitorResponse(String machineId, String data) {
+		String machinKey = CommonConstants.REDIS_SESSION_PATH + machineId;
+		redisUtil.setex(machinKey, 60 * 2, machineId);
 		String message = AesUtils.decrypt(GZIPUtil.uncompress(data));
 		log.info("收到推送监控消息，machineId：{}机器的系统信息已保存,消息内容：{}", machineId, message);
 		SystemStatus systemStatus = JSONObject.parseObject(message, SystemStatus.class);
