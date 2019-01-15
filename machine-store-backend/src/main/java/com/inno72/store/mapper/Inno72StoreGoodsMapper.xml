@@ -23,13 +23,18 @@
 			s.`name` AS storeName,
 			sg.number AS number,
 			sg.capacity capacity,
-			GROUP_CONCAT( sk.`name` ) AS keeper 
+			skk.keeper 
 		FROM
 			inno72_store_goods sg
 			LEFT JOIN inno72_goods g ON g.id = sg.goods_id
 			LEFT JOIN inno72_store s ON s.id = sg.store_id
 			LEFT JOIN inno72_storekeeper_storte ss ON ss.store_id = s.id
 			LEFT JOIN inno72_storekeeper sk ON sk.id = ss.storekeeper_id 
+			LEFT JOIN (
+				SELECT ss.store_id,GROUP_CONCAT( sk.`name` ) AS keeper FROM  inno72_storekeeper_storte ss
+				LEFT JOIN inno72_storekeeper sk ON sk.id = ss.storekeeper_id 
+				GROUP BY ss.store_id
+			) skk ON skk.store_id=s.id
 		WHERE ss.storekeeper_id = #{userId}
 	      	<if test="keyword != null and keyword != ''">
               and (s.name like CONCAT('%','${keyword}','%')
