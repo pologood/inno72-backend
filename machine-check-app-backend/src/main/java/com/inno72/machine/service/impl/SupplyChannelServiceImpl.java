@@ -687,7 +687,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 								history.setSupplyCount(supplyCount);
 								history.setSupplyType(2);
 								inno72SupplyChannelHistoryMapper.insertSelective(history);
-								this.setCheckGoodsNumMap(checkGoodsCountMap,goodsIdStr,supplyCount);
+								this.setCheckGoodsNumMap(checkGoodsCountMap,dataGoodsId,supplyCount);
 								this.saveStatistic(machine,code,dataGoodsId,beforeGoodsCount,0,userId);
 								detail.append("为"+machineCode+"机器"+code+"货道补货，补货数量为"+supplyCount+"；");
 								historyCount++;
