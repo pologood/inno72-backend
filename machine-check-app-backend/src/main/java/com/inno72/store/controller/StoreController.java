@@ -52,7 +52,9 @@ public class StoreController {
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<List<Inno72Store>> list() {
-        List<Inno72Store> list = storeService.findAll();
+		Condition condition = new Condition(Inno72Store.class);
+		condition.createCriteria().andEqualTo("isDelete",0);
+        List<Inno72Store> list = storeService.findByCondition(condition);
         return ResultGenerator.genSuccessResult(list);
     }
 }
