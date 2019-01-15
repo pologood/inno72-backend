@@ -28,6 +28,7 @@
               or g.name like '%${keyword}%')
           </if>
       </where>
+      group by cgn.id
   </select>
 
 
