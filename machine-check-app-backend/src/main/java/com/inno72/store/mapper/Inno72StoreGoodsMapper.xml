@@ -13,16 +13,17 @@
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
+    <result column="differ_total_count" jdbcType="INTEGER" property="defaultCount"/>
   </resultMap>
   <select id="selectByParam" resultMap="BaseResultMap">
-      select sg.goods_id,g.name goodsName from inno72_store_goods sg
+      select sg.goods_id,g.name goodsName,cgn.differ_total_count from inno72_store_goods sg
       left join inno72_goods g on sg.goods_id=g.id
       left join inno72_store_order so on g.id=so.goods
+      left join inno72_check_goods_num cgn on cgn.goods_id=g.id
       where
-          receive_type=1
-          <if test="receiveId != null">
-              and receive_id=#{receiveId}
-          </if>
+          so.receive_type=1
+          and so.receive_id=#{receiveId}
+          and cgn.check_user_id=#{receiveId}
           <if test="storeId != null">
               and store_id=#{storeId} and so.send_id=#{storeId}
           </if>
