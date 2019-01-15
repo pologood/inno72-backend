@@ -1,6 +1,7 @@
 package com.inno72.store.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -16,8 +17,6 @@ import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
 import com.inno72.store.model.Inno72StoreGoods;
 import com.inno72.store.service.StoreGoodsService;
-
-import tk.mybatis.mapper.entity.Condition;
 
 /**
  * Created by CodeGenerator on 2018/12/28.
@@ -54,9 +53,8 @@ public class StoreGoodsController {
 	}
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list() {
-		Condition condition = new Condition(Inno72StoreGoods.class);
-		List<Inno72StoreGoods> list = storeGoodsService.findByPage(condition);
+	public ModelAndView list(String keyword) {
+		List<Map<String, Object>> list = storeGoodsService.findStoreGoodsByPage(keyword);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 }
