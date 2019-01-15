@@ -8,7 +8,7 @@
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
     <result column="activity_name" jdbcType="VARCHAR" property="activityName" />
-    <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
+    <result column="merchant_id" jdbcType="VARCHAR" property="merchantId" />
     <result column="activity_index_type" jdbcType="VARCHAR" property="activityIndexType" />
     <result column="activity_index" jdbcType="INTEGER" property="activityIndex" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" javaType="java.time.LocalDateTime"
@@ -20,9 +20,6 @@
   </resultMap>
     <select id="selectIndex" resultMap="BaseResultMap">
       select * from inno72_activity_index
-        where activity_id = #{activityId} and machine_id = #{merchantId}
-    </select>
-    <select id="selectByActIdAndIndexType" resultMap="BaseResultMap">
-
+        where activity_id = #{activityId} and merchant_id = #{merchantId}
     </select>
 </mapper>
