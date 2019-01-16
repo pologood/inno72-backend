@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 public class Inno72CheckGoodsNum {
 
@@ -31,6 +32,12 @@ public class Inno72CheckGoodsNum {
 
 	@Column(name="differ_total_count")
 	private int differTotalCount;
+
+	@Transient
+	private String activityName;
+
+	@Transient
+	private String goodsName;
 
 	public String getId() {
 		return id;
@@ -86,5 +93,21 @@ public class Inno72CheckGoodsNum {
 
 	public void setDifferTotalCount(int differTotalCount) {
 		this.differTotalCount = differTotalCount;
+	}
+
+	public String getActivityName() {
+		return activityName;
+	}
+
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
+	}
+
+	public String getGoodsName() {
+		return goodsName;
+	}
+
+	public void setGoodsName(String goodsName) {
+		this.goodsName = goodsName;
 	}
 }

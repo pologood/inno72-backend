@@ -9,9 +9,9 @@
     <result column="check_user_id" jdbcType="VARCHAR" property="checkUserId" />
     <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
     <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
-    <result column="receive_total_tount" jdbcType="INTEGER" property="receiveTotalCount" />
+    <result column="receive_total_count" jdbcType="INTEGER" property="receiveTotalCount" />
     <result column="supply_total_count" jdbcType="INTEGER" property="supplyTotalCount" />
-    <result column="differ_total_tount" jdbcType="INTEGER" property="differTotalCount" />
+    <result column="differ_total_count" jdbcType="INTEGER" property="differTotalCount" />
     <result column="activityName" jdbcType="VARCHAR" property="activityName"/>
     <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
   </resultMap>
@@ -33,7 +33,7 @@
   </select>
 
   <select id="selectActivityList" resultMap="BaseResultMap">
-      select cgn.acitity_id,
+      select cgn.*,
       if(a.name is null ,i.name,a.name) activityName
       from inno72_check_goods_num cgn
       left join inno72_activity a on cgn.activity_id=a.id
@@ -46,7 +46,6 @@
               and cgn.goods_id=#{goodsId}
           </if>
       </where>
-      group by cgn.activity_id
   </select>
 
 
