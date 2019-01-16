@@ -72,7 +72,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		inno72StoreOrder.setCreateTime(now);
 		inno72StoreOrder.setUpdater(user.getName());
 		inno72StoreOrder.setUpdateTime(now);
-
+		inno72StoreOrder.setActivity(storeOrderVo.getActivity());
 		inno72StoreOrderMapper.insertSelective(inno72StoreOrder);
 		Inno72StoreExpress inno72StoreExpress = new Inno72StoreExpress();
 		inno72StoreExpress.setId(StringUtil.getUUID());
@@ -89,7 +89,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		Map<String,Object> goodsMap = new HashMap<>();
 		goodsMap.put("goodsId",goodsId);
 		goodsMap.put("checkUserId",user.getId());
-		//					goodsMap.put("activityId",activityId);
+		goodsMap.put("activityId",storeOrderVo.getActivity());
 		Inno72CheckGoodsNum goodsNum = inno72CheckGoodsNumMapper.selectByparam(goodsMap);
 		if(goodsNum != null){
 			int receiveTotalCount = goodsNum.getReceiveTotalCount();

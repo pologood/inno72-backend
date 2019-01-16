@@ -35,6 +35,8 @@ public class StoreOrderVo {
 
 	private String keyword;
 
+	private String activity;
+
 	public String getId() {
 		return id;
 	}
@@ -116,5 +118,13 @@ public class StoreOrderVo {
 
 	public void setStoreId(String storeId) {
 		this.storeId = storeId;
+	}
+
+	public String getActivity() {
+		return activity;
+	}
+
+	public void setActivity(String activity) {
+		this.activity = activity;
 	}
 }
