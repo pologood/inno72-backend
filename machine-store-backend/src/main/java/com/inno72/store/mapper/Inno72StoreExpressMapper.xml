@@ -23,7 +23,7 @@
   </resultMap>
   
   <insert id="insertStoreExpressList" parameterType="java.util.List">
-        insert into inno72_interact_shops (id,order_id,express_num,express_company,number,creater,updater,create_time,update_time)
+        insert into inno72_store_express (id,order_id,express_num,express_company,number,creater,updater,create_time,update_time)
         values
         <foreach collection="list" item="t" index="index" separator=",">
             (#{t.id}, #{t.orderId},#{t.expressNum},#{t.expressCompany},#{t.creater},#{t.updater},#{t.createTime},#{t.updateTime})
