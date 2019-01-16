@@ -121,7 +121,7 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 				return Results.failure("活动不在呀!");
 			}
 
-			String machineId = index.getMachineId();
+			String machineId = index.getMerchantId();
 			List<Map<String, String>> activity = inno72MerchantUserMapper.activity(machineId);
 			if (activity.size() == 0){
 				return Results.failure("活动配置错误!");
