@@ -202,7 +202,6 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
                 return false;
             } else {
                 CommonConstants.SESSION_DATA = JSON.parseObject(info, SessionData.class);
-				logger.info("用户信息为：{}",JSON.toJSON(CommonConstants.SESSION_DATA.getUser()));
             }
 		}
 		return true;
