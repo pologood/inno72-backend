@@ -8,11 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
-import com.inno72.common.ResultPages;
 import com.inno72.store.model.Inno72StoreGoodsDetail;
 import com.inno72.store.service.StoreGoodsDetailService;
 
@@ -52,9 +50,12 @@ public class StoreGoodsDetailController {
 	}
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list() {
+	public Result<List<Inno72StoreGoodsDetail>> list(String storeGoodsId) {
+
 		Condition condition = new Condition(Inno72StoreGoodsDetail.class);
+		condition.createCriteria().andEqualTo("storeGoodsId", storeGoodsId);
+		condition.setOrderByClause("updateTime");
 		List<Inno72StoreGoodsDetail> list = storeGoodsDetailService.findByPage(condition);
-		return ResultPages.page(ResultGenerator.genSuccessResult(list));
+		return ResultGenerator.genSuccessResult(list);
 	}
 }
