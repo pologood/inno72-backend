@@ -1,7 +1,6 @@
 package com.inno72.project.vo;
 
 import java.util.List;
-import java.util.Map;
 
 import com.inno72.project.model.Inno72ActivityIndex;
 import com.inno72.project.model.Inno72ActivityInfoDesc;

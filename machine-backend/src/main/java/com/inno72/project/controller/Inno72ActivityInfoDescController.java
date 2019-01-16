@@ -1,6 +1,8 @@
 package com.inno72.project.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -13,6 +15,13 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
+import com.inno72.common.Results;
+import com.inno72.common.SessionData;
+import com.inno72.common.SessionUtil;
+import com.inno72.common.StringUtil;
+import com.inno72.project.model.Inno72ActivityInfoDesc;
+import com.inno72.project.service.Inno72ActivityInfoDescService;
+import com.inno72.system.model.Inno72User;
 import com.inno72.project.model.Inno72ActivityInfoDesc;
 import com.inno72.project.service.Inno72ActivityInfoDescService;
 
@@ -28,6 +37,10 @@ public class Inno72ActivityInfoDescController {
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result add(Inno72ActivityInfoDesc inno72ActivityInfoDesc) {
+		Inno72User inno72User = getmUser();
+		inno72ActivityInfoDesc.setCreator(inno72User.getId());
+		inno72ActivityInfoDesc.setCreateTime(LocalDateTime.now());
+		inno72ActivityInfoDesc.setId(StringUtil.getUUID());
 		inno72ActivityInfoDescService.save(inno72ActivityInfoDesc);
         return ResultGenerator.genSuccessResult();
     }
@@ -56,4 +69,9 @@ public class Inno72ActivityInfoDescController {
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
     }
+
+	private Inno72User getmUser(){
+		SessionData session = SessionUtil.sessionData.get();
+		return Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+	}
 }
