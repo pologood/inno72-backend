@@ -180,7 +180,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			}
 			Inno72StoreGoods storeGoods = new Inno72StoreGoods();
 			storeGoods.setGoodsId(model.getGoods());
-			storeGoods.setStoreId(model.getReceiveId());
+			storeGoods.setStoreId(model.getSendId());
 			storeGoods = inno72StoreGoodsMapper.selectOne(storeGoods);
 			// 商品库存减少，容量增加
 			storeGoods.setNumber(storeGoods.getNumber() - model.getNumber());
