@@ -39,6 +39,7 @@ public class StoreGoodsServiceImpl extends AbstractService<Inno72StoreGoods> imp
 			map.put("keyword",keyword);
 		}
 		String receiveId = UserUtil.getUser().getId();
+		map.put("receiveId",receiveId);
 		List<Inno72StoreGoods> goodsList = inno72StoreGoodsMapper.selectByParam(map);
 		return goodsList;
 	}
