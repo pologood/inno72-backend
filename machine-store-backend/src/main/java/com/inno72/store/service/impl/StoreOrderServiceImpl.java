@@ -24,6 +24,7 @@ import com.inno72.common.UserUtil;
 import com.inno72.store.mapper.Inno72CheckGoodsDetailMapper;
 import com.inno72.store.mapper.Inno72CheckGoodsNumMapper;
 import com.inno72.store.mapper.Inno72StoreExpressMapper;
+import com.inno72.store.mapper.Inno72StoreGoodsDetailMapper;
 import com.inno72.store.mapper.Inno72StoreGoodsMapper;
 import com.inno72.store.mapper.Inno72StoreMapper;
 import com.inno72.store.mapper.Inno72StoreOrderMapper;
@@ -32,6 +33,7 @@ import com.inno72.store.model.Inno72CheckGoodsNum;
 import com.inno72.store.model.Inno72Store;
 import com.inno72.store.model.Inno72StoreExpress;
 import com.inno72.store.model.Inno72StoreGoods;
+import com.inno72.store.model.Inno72StoreGoodsDetail;
 import com.inno72.store.model.Inno72StoreOrder;
 import com.inno72.store.model.Inno72Storekeeper;
 import com.inno72.store.service.StoreOrderService;
@@ -60,6 +62,9 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 
 	@Resource
 	private Inno72CheckGoodsDetailMapper inno72CheckGoodsDetailMapper;
+
+	@Resource
+	private Inno72StoreGoodsDetailMapper inno72StoreGoodsDetailMapper;
 
 	/**
 	 * 创建保存出库单
@@ -184,7 +189,9 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			// 保存出库单
 			inno72StoreOrderMapper.insertSelective(model);
 
-			return Results.warn("操作成功", 0, model.getId());
+			this.storeGoodsDetail(model, storeGoods.getNumber(), storeGoods.getCapacity(), storeGoods.getId());
+
+			return Results.warn("操作成功", 0, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -198,7 +205,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 	 */
 	@Override
 	public Result<Object> receiverConfirm(StoreOrderVo storeOrderVo) {
-		logger.info("签收物流单接口参数:{}", JSON.toJSON(storeOrderVo));
+		// logger.info("签收物流单接口参数:{}", JSON.toJSON(storeOrderVo));
 		Inno72Storekeeper mUser = UserUtil.getKepper();
 		if (mUser == null) {
 			logger.info("登陆用户为空");
@@ -210,8 +217,6 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			logger.info("物流单未选择");
 			return Results.failure("物流单未选择");
 		}
-		// 仓库容量减小
-
 		// 获取商品库存
 		Inno72StoreOrder storeOrder = inno72StoreOrderMapper.selectByPrimaryKey(storeOrderVo.getId());
 
@@ -243,8 +248,8 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			storeGoods.setId(StringUtil.getUUID());
 			storeGoods.setGoodsId(storeOrder.getGoods());
 			storeGoods.setStoreId(storeOrder.getReceiveId());
-			storeGoods.setNumber(storeGoods.getNumber() + totalNumber);
-			storeGoods.setCapacity(storeGoods.getCapacity() + totalCapacity);
+			storeGoods.setNumber(totalNumber);
+			storeGoods.setCapacity(totalCapacity);
 			storeGoods.setUpdateId(mUser.getId());
 			storeGoods.setUpdateTime(LocalDateTime.now());
 			inno72StoreGoodsMapper.insert(storeGoods);
@@ -269,10 +274,46 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			storeOrder.setReceiveTime(LocalDateTime.now());
 		}
 		storeOrder.setReceiveNumber(storeOrder.getReceiveNumber() + totalNumber);
-		storeOrder.setReceiveCapacity(storeOrder.getCapacity() + totalCapacity);
+		storeOrder.setReceiveCapacity(storeOrder.getReceiveCapacity() + totalCapacity);
 
 		inno72StoreOrderMapper.updateByPrimaryKeySelective(storeOrder);
+		this.storeGoodsDetail(storeOrder, totalNumber, totalCapacity, storeGoods.getId());
 		return Results.success();
+	}
+
+	/**
+	 * 记录商品出入库记录
+	 */
+	public void storeGoodsDetail(Inno72StoreOrder storeOrder, Integer number, Integer capacity, String storeGoodsId) {
+		StringBuffer detail = new StringBuffer();
+		Inno72StoreGoodsDetail storeGoodsDetail = new Inno72StoreGoodsDetail();
+		if (storeOrder.getOrderType() == 0) {
+			detail.append("由");
+			detail.append(storeOrder.getSender());
+			detail.append("发来商品");
+			detail.append(number.toString());
+			detail.append("件  入库完成");
+			storeGoodsDetail.setType(0);
+		} else {
+			detail.append("由仓库");
+			detail.append(storeOrder.getSender());
+			detail.append("发给 ");
+			detail.append(storeOrder.getReceiver());
+			detail.append(" 商品 ");
+			detail.append(number.toString());
+			detail.append("件  出库完成");
+			storeGoodsDetail.setType(1);
+		}
+
+		storeGoodsDetail.setId(StringUtil.getUUID());
+		storeGoodsDetail.setStoreGoodsId(storeGoodsId);
+		storeGoodsDetail.setNumber(number);
+		storeGoodsDetail.setCapacity(capacity);
+		storeGoodsDetail.setUpdateTime(LocalDateTime.now());
+		storeGoodsDetail.setDetail(detail.toString());
+		logger.info("记录商品出入库记录:{}", JSON.toJSON(storeGoodsDetail));
+		inno72StoreGoodsDetailMapper.insert(storeGoodsDetail);
+
 	}
 
 	/**
