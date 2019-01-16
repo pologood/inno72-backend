@@ -151,6 +151,9 @@ public class Inno72StoreOrder {
 	@Column(name = "update_time")
 	private LocalDateTime updateTime;
 
+	@Column(name = "activity")
+	private String activity;
+
 
 	@Transient
 	private String goodsName;
@@ -159,6 +162,9 @@ public class Inno72StoreOrder {
 	private String expressNum;
 	@Transient
 	private String expressCompany;
+
+	@Transient
+	private String activityName;
 
 	/**
 	 * 获取ID
@@ -619,5 +625,21 @@ public class Inno72StoreOrder {
 
 	public void setExpressCompany(String expressCompany) {
 		this.expressCompany = expressCompany;
+	}
+
+	public String getActivityName() {
+		return activityName;
+	}
+
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
+	}
+
+	public String getActivity() {
+		return activity;
+	}
+
+	public void setActivity(String activity) {
+		this.activity = activity;
 	}
 }

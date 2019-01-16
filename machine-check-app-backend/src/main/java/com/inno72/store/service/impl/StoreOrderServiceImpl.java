@@ -72,6 +72,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		inno72StoreOrder.setCreateTime(now);
 		inno72StoreOrder.setUpdater(user.getName());
 		inno72StoreOrder.setUpdateTime(now);
+
 		inno72StoreOrderMapper.insertSelective(inno72StoreOrder);
 		Inno72StoreExpress inno72StoreExpress = new Inno72StoreExpress();
 		inno72StoreExpress.setId(StringUtil.getUUID());
