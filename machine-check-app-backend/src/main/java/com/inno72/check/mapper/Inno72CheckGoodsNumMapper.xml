@@ -12,6 +12,8 @@
     <result column="receive_total_tount" jdbcType="INTEGER" property="receiveTotalCount" />
     <result column="supply_total_count" jdbcType="INTEGER" property="supplyTotalCount" />
     <result column="differ_total_tount" jdbcType="INTEGER" property="differTotalCount" />
+    <result column="activityName" jdbcType="VARCHAR" property="activityName"/>
+    <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
   </resultMap>
 
   <select id="selectByparam" resultMap="BaseResultMap">
@@ -28,6 +30,23 @@
           </if>
       </where>
       limit 1
+  </select>
+
+  <select id="selectActivityList" resultMap="BaseResultMap">
+      select cgn.acitity_id,
+      if(a.name is null ,i.name,a.name) activityName
+      from inno72_check_goods_num cgn
+      left join inno72_activity a on cgn.activity_id=a.id
+      left join inno72_interact i on cgn.activity_id=i.id
+      <where>
+          <if test="checkUserId != null">
+              and cgn.check_user_id=#{checkUserId}
+          </if>
+          <if test="goodsId != null">
+              and cgn.goods_id=#{goodsId}
+          </if>
+      </where>
+      group by cgn.activity_id
   </select>
 
 

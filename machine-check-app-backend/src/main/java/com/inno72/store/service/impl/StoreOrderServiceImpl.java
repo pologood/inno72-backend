@@ -10,6 +10,10 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inno72.check.mapper.Inno72CheckGoodsDetailMapper;
+import com.inno72.check.mapper.Inno72CheckGoodsNumMapper;
+import com.inno72.check.model.Inno72CheckGoodsDetail;
+import com.inno72.check.model.Inno72CheckGoodsNum;
 import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.common.AbstractService;
 import com.inno72.common.DateUtil;
@@ -37,8 +41,16 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
     @Resource
     private Inno72StoreExpressMapper inno72StoreExpressMapper;
 
+    @Resource
+    private Inno72CheckGoodsNumMapper inno72CheckGoodsNumMapper;
+
+    @Resource
+    private Inno72CheckGoodsDetailMapper inno72CheckGoodsDetailMapper;
+
 	@Override
 	public Result<String> saveOrder(StoreOrderVo storeOrderVo) {
+		String goodsId = storeOrderVo.getGoods();
+		int number = storeOrderVo.getNumber();
 		Inno72CheckUser user = UserUtil.getUser();
 		Inno72StoreOrder inno72StoreOrder = new Inno72StoreOrder();
 		LocalDateTime now = LocalDateTime.now();
@@ -47,14 +59,14 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		String orderNum = "JC"+DateUtil.toTimeStr(now,DateUtil.DF_FULL_S2)+StringUtil.createVerificationCode(4);
 		inno72StoreOrder.setOrderNum(orderNum);
 		inno72StoreOrder.setOrderType(0);
-		inno72StoreOrder.setGoods(storeOrderVo.getGoods());
+		inno72StoreOrder.setGoods(goodsId);
 		inno72StoreOrder.setSender(user.getName());
 		inno72StoreOrder.setSendId(user.getId());
 		inno72StoreOrder.setSendType(1);
 		inno72StoreOrder.setReceiver(storeOrderVo.getReceiver());
 		inno72StoreOrder.setReceiveId(storeOrderVo.getReceiveId());
 		inno72StoreOrder.setReceiveType(2);
-		inno72StoreOrder.setNumber(storeOrderVo.getNumber());
+		inno72StoreOrder.setNumber(number);
 		inno72StoreOrder.setStatus(0);
 		inno72StoreOrder.setCreater(user.getName());
 		inno72StoreOrder.setCreateTime(now);
@@ -66,12 +78,48 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		inno72StoreExpress.setOrderId(orderId);
 		inno72StoreExpress.setExpressNum(storeOrderVo.getExpressNum());
 		inno72StoreExpress.setExpressCompany(storeOrderVo.getExpressCompany());
-		inno72StoreExpress.setNumber(storeOrderVo.getNumber());
+		inno72StoreExpress.setNumber(number);
 		inno72StoreExpress.setCreater(user.getName());
 		inno72StoreExpress.setCreateTime(now);
 		inno72StoreExpress.setUpdater(user.getName());
 		inno72StoreExpress.setUpdateTime(now);
 		inno72StoreExpressMapper.insertSelective(inno72StoreExpress);
+
+		Map<String,Object> goodsMap = new HashMap<>();
+		goodsMap.put("goodsId",goodsId);
+		goodsMap.put("checkUserId",user.getId());
+		//					goodsMap.put("activityId",activityId);
+		Inno72CheckGoodsNum goodsNum = inno72CheckGoodsNumMapper.selectByparam(goodsMap);
+		if(goodsNum != null){
+			int receiveTotalCount = goodsNum.getReceiveTotalCount();
+			int supplyTotalCount = goodsNum.getSupplyTotalCount();
+			receiveTotalCount += number;
+			int differTotalCount = receiveTotalCount-supplyTotalCount;
+			goodsNum.setDifferTotalCount(differTotalCount);
+			goodsNum.setReceiveTotalCount(receiveTotalCount);
+			inno72CheckGoodsNumMapper.updateByPrimaryKeySelective(goodsNum);
+		}else{
+			int receiveTotalCount = -number;
+			int supplyTotalCount = 0;
+			int differTotalCount = receiveTotalCount;
+			goodsNum = new Inno72CheckGoodsNum();
+			goodsNum.setId(StringUtil.getUUID());
+			goodsNum.setReceiveTotalCount(receiveTotalCount);
+			goodsNum.setSupplyTotalCount(supplyTotalCount);
+			goodsNum.setDifferTotalCount(differTotalCount);
+			goodsNum.setGoodsId(goodsId);
+			goodsNum.setCheckUserId(UserUtil.getUser().getId());
+//			goodsNum.setActivityId(activityId);
+			inno72CheckGoodsNumMapper.insertSelective(goodsNum);
+		}
+		Inno72CheckGoodsDetail goodsDetail = new Inno72CheckGoodsDetail();
+		goodsDetail.setGoodsNumId(goodsNum.getId());
+		goodsDetail.setId(StringUtil.getUUID());
+		goodsDetail.setReceiveCount(-number);
+		goodsDetail.setSupplyCount(0);
+		goodsDetail.setDifferCount(-number);
+		goodsDetail.setCreateTime(LocalDateTime.now());
+		inno72CheckGoodsDetailMapper.insertSelective(goodsDetail);
 		return ResultGenerator.genSuccessResult();
 	}
 
@@ -118,5 +166,17 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 	public Inno72StoreOrder findOrderById(String id) {
 		Inno72StoreOrder storeOrder = inno72StoreOrderMapper.selectDetailById(id);
 		return storeOrder;
+	}
+
+	@Override
+	public Result<List<Inno72CheckGoodsNum>> findActivityList(StoreOrderVo storeOrderVo) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("checkUserId",UserUtil.getUser().getId());
+		String goodsId = storeOrderVo.getGoods();
+		if(StringUtil.isNotEmpty(goodsId)){
+			map.put("goodsId",goodsId);
+		}
+		List<Inno72CheckGoodsNum> list = inno72CheckGoodsNumMapper.selectActivityList(map);
+		return ResultGenerator.genSuccessResult(list);
 	}
 }

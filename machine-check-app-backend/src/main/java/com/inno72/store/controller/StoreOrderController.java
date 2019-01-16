@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
+import com.inno72.check.model.Inno72CheckGoodsNum;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.ResultPages;
@@ -64,4 +65,10 @@ public class StoreOrderController {
         List<Inno72StoreOrder> list = storeOrderService.findOrderByPage(storeOrderVo);
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
+
+    @RequestMapping(value = "/activityList")
+    public Result<List<Inno72CheckGoodsNum>> activityList(@RequestBody StoreOrderVo storeOrderVo){
+		Result<List<Inno72CheckGoodsNum>> result = storeOrderService.findActivityList(storeOrderVo);
+		return result;
+	}
 }
