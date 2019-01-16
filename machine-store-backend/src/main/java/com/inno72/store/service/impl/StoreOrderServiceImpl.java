@@ -274,7 +274,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			storeOrder.setReceiveTime(LocalDateTime.now());
 		}
 		storeOrder.setReceiveNumber(storeOrder.getReceiveNumber() + totalNumber);
-		storeOrder.setReceiveCapacity(storeOrder.getCapacity() + totalCapacity);
+		storeOrder.setReceiveCapacity(storeOrder.getReceiveCapacity() + totalCapacity);
 
 		inno72StoreOrderMapper.updateByPrimaryKeySelective(storeOrder);
 		this.storeGoodsDetail(storeOrder, totalNumber, totalCapacity, storeGoods.getId());
