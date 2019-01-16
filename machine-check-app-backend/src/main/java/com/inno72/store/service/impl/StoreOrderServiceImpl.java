@@ -150,6 +150,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		inno72StoreOrder.setNumber(storeOrderVo.getNumber());
 		inno72StoreOrder.setUpdater(user.getName());
 		inno72StoreOrder.setUpdateTime(now);
+		inno72StoreOrder.setActivity(storeOrderVo.getActivity());
 		inno72StoreOrderMapper.updateByPrimaryKeySelective(inno72StoreOrder);
 		Inno72StoreExpress express = new Inno72StoreExpress();
 		express.setOrderId(orderId);
