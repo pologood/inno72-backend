@@ -189,16 +189,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
             }
             String info = redisUtil.get(CommonConstants.USER_LOGIN_CACHE_KEY_PREF + token);
             if (info == null) {
-                // 判断用户是否被踢出
-//                boolean checkout = redisUtil.sismember(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, token);
-//                redisUtil.srem(CommonConstants.CHECK_OUT_USER_TOKEN_SET_KEY, token);
                 Result<String> result = new Result<>();
-//                if (checkout) {
-//                    result.setCode(888);
-//                    result.setMsg("你的账号在另一处登录，你已被踢出");
-//                } else {
-//
-//                }
 				result.setCode(999);
 				result.setMsg("你登录超时，请重新登录");
                 String origin = request.getHeader("Origin");
@@ -211,6 +202,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
                 return false;
             } else {
                 CommonConstants.SESSION_DATA = JSON.parseObject(info, SessionData.class);
+				logger.info("用户信息为：{}",JSON.toJSON(CommonConstants.SESSION_DATA.getUser()));
             }
 		}
 		return true;

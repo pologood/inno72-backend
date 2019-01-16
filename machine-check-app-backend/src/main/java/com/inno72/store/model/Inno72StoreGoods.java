@@ -62,6 +62,9 @@ public class Inno72StoreGoods {
 	@Transient
 	private String goodsName;
 
+	@Transient
+	private int defaultCount;
+
 	/**
 	 * 获取ID
 	 *
@@ -201,5 +204,13 @@ public class Inno72StoreGoods {
 
 	public void setGoodsName(String goodsName) {
 		this.goodsName = goodsName;
+	}
+
+	public int getDefaultCount() {
+		return defaultCount;
+	}
+
+	public void setDefaultCount(int defaultCount) {
+		this.defaultCount = defaultCount;
 	}
 }
