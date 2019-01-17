@@ -73,6 +73,7 @@ import com.inno72.machine.vo.SystemStatus;
 import com.inno72.machine.vo.UpdateMachineChannelVo;
 import com.inno72.machine.vo.UpdateMachineVo;
 import com.inno72.msg.MsgUtil;
+import com.inno72.order.service.OrderRefundService;
 import com.inno72.plugin.http.HttpClient;
 import com.inno72.project.service.ActivityPlanService;
 import com.inno72.system.model.Inno72User;
@@ -113,6 +114,9 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 	private MachineLocaleDetailService machineLocaleDetailService;
 	@Autowired
 	private MsgUtil msgUtil;
+
+	@Autowired
+	private OrderRefundService orderRefundService;
 
 	@Override
 	public Result<List<MachineListVo>> findMachines(String machineCode, String localCode, String startTime,
@@ -401,7 +405,7 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 				MachineStartAppBean bean = new MachineStartAppBean();
 				bean.setAppPackageName(status.getAppPackageName());
 				Inno72App app = appService.findBy("appPackageName", status.getAppPackageName());
-				if(app != null){
+				if (app != null) {
 					bean.setAppType(app.getAppType());
 					if (appPackageName.equals(status.getAppPackageName()) || app.getAppType() == 1) {
 						bean.setStartStatus(1);
@@ -528,6 +532,8 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		vo.setWaitConfirm(waitConfirm);
 		vo.setProcessed(processed);
 		vo.setWaitOrder(waitOrder);
+		vo.setWaitAudit(orderRefundService.refundOrderCount(1));
+		vo.setRefundException(orderRefundService.refundOrderCount(2));
 		return Results.success(vo);
 	}
 
