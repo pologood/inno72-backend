@@ -112,4 +112,10 @@ public class StoreOrderController {
 		return ResultGenerator.genSuccessResult(goodsList);
 	}
 
+	@RequestMapping(value = "/homePageInfo")
+	public Result<Map<String,Object>> homePageInfo(){
+		Result<Map<String,Object>> result = storeOrderService.getHomePageInfo();
+		return result;
+	}
+
 }

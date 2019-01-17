@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSON;
 import com.inno72.common.AbstractService;
 import com.inno72.common.DateUtil;
 import com.inno72.common.Result;
+import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
 import com.inno72.common.StringUtil;
 import com.inno72.common.UserUtil;
@@ -404,6 +405,15 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		params.put("keyword", keyword);
 
 		return inno72StoreOrderMapper.getCheckUserList(params);
+	}
+
+	@Override
+	public Result<Map<String, Object>> getHomePageInfo() {
+		String userId = UserUtil.getKepper().getId();
+		int pendingStorageCount = inno72StoreOrderMapper.selectPendingStorageCount(userId);
+		Map<String,Object> map = new HashMap<>();
+		map.put("pendingStorageCount",pendingStorageCount);
+		return ResultGenerator.genSuccessResult(map);
 	}
 
 }
