@@ -786,7 +786,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 		Map<String,Object> goodsMap = new HashMap<>();
 		goodsMap.put("goodsId",goodsId);
 		goodsMap.put("checkUserId",UserUtil.getUser().getId());
-		//					goodsMap.put("activityId",activityId);
+		goodsMap.put("activityId",activityId);
 		Inno72CheckGoodsNum goodsNum = inno72CheckGoodsNumMapper.selectByparam(goodsMap);
 		if(goodsNum != null){
 			int receiveTotalCount = goodsNum.getReceiveTotalCount();
