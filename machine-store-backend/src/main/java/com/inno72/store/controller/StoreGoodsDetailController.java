@@ -54,7 +54,7 @@ public class StoreGoodsDetailController {
 
 		Condition condition = new Condition(Inno72StoreGoodsDetail.class);
 		condition.createCriteria().andEqualTo("storeGoodsId", storeGoodsId);
-		condition.setOrderByClause("updateTime");
+		condition.orderBy("updateTime").desc();
 		List<Inno72StoreGoodsDetail> list = storeGoodsDetailService.findByPage(condition);
 		return ResultGenerator.genSuccessResult(list);
 	}
