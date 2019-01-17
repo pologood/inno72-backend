@@ -161,7 +161,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 				} else {
 					checkGoodsNum.setReceiveTotalCount(checkGoodsNum.getReceiveTotalCount() + model.getNumber());
 					checkGoodsNum.setDifferTotalCount(
-							checkGoodsNum.getReceiveTotalCount() - checkGoodsNum.getDifferTotalCount());
+							checkGoodsNum.getReceiveTotalCount() - checkGoodsNum.getSupplyTotalCount());
 
 					inno72CheckGoodsNumMapper.updateByPrimaryKey(checkGoodsNum);
 				}
