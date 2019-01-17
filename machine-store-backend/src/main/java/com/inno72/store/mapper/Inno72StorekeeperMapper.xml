@@ -71,6 +71,7 @@
               and sk.pwd = #{pwd}
           </if>
       </where>
+      order by sf.seq
   </select>
 
   <select id="selectByPageLevel" resultMap="BaseResultMap">
