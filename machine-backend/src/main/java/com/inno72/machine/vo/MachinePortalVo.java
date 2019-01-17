@@ -12,6 +12,8 @@ public class MachinePortalVo {
 	private Integer lockCount;// 锁定机器
 	private Integer trafficCount;// 流量报警
 	private Integer sdCount;// 内存报警
+	private Integer waitAudit;//待审核
+	private Integer refundException;//退款异常
 
 	public Integer getOffline() {
 		return offline;
@@ -101,4 +103,19 @@ public class MachinePortalVo {
 		this.sdCount = sdCount;
 	}
 
+	public Integer getWaitAudit() {
+		return waitAudit;
+	}
+
+	public void setWaitAudit(Integer waitAudit) {
+		this.waitAudit = waitAudit;
+	}
+
+	public Integer getRefundException() {
+		return refundException;
+	}
+
+	public void setRefundException(Integer refundException) {
+		this.refundException = refundException;
+	}
 }

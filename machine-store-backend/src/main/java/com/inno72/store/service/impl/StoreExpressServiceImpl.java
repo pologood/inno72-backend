@@ -60,14 +60,17 @@ public class StoreExpressServiceImpl extends AbstractService<Inno72StoreExpress>
 				express.setUpdateTime(LocalDateTime.now());
 
 				addExpressList.add(express);
+				inno72StoreExpressMapper.insert(express);
 			} else {
 				Inno72StoreExpress storeExpress = inno72StoreExpressMapper.selectByPrimaryKey(express.getId());
-
+				storeExpress.setExpressCompany(express.getExpressCompany());
+				storeExpress.setExpressNum(express.getExpressNum());
+				storeExpress.setNumber(express.getNumber());
 				inno72StoreExpressMapper.updateByPrimaryKeySelective(storeExpress);
 			}
 		}
 
-		inno72StoreExpressMapper.insertStoreExpressList(addExpressList);
+		// inno72StoreExpressMapper.insertStoreExpressList(addExpressList);
 		return Results.success();
 	}
 

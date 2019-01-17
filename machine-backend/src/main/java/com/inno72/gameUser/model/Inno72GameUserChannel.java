@@ -7,6 +7,7 @@ import javax.persistence.Convert;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -68,6 +69,7 @@ public class Inno72GameUserChannel {
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime createTime;
 
+	@Transient
 	private String keyword;
 
 	public String getId() {

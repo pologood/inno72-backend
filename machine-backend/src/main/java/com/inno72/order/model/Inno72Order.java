@@ -121,6 +121,15 @@ public class Inno72Order {
 	@Column(name = "repetition")
 	private int repetition;
 
+	@Column(name = "order_status")
+	private Integer orderStatus;
+
+	@Column(name = "pay_type")
+	private Integer payType;
+
+	@Column(name = "goods_type")
+	private Integer goodsType;
+
 	@Transient
 	private String channelCode;
 
@@ -165,6 +174,14 @@ public class Inno72Order {
 	private String activityId;
 
 	private List<Inno72OrderGoods> orderGoodsList;
+
+	private Inno72OrderRefund orderRefund;
+
+	private String merchantName;
+
+	private String loginName;
+
+	private Integer refundStatus;
 
 	@Transient
 	private int pageNo;
@@ -482,5 +499,61 @@ public class Inno72Order {
 
 	public void setPageParam(int pageParam) {
 		this.pageParam = pageParam;
+	}
+
+	public Integer getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(Integer orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+
+	public Inno72OrderRefund getOrderRefund() {
+		return orderRefund;
+	}
+
+	public void setOrderRefund(Inno72OrderRefund orderRefund) {
+		this.orderRefund = orderRefund;
+	}
+
+	public String getMerchantName() {
+		return merchantName;
+	}
+
+	public void setMerchantName(String merchantName) {
+		this.merchantName = merchantName;
+	}
+
+	public String getLoginName() {
+		return loginName;
+	}
+
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
+	}
+
+	public Integer getPayType() {
+		return payType;
+	}
+
+	public void setPayType(Integer payType) {
+		this.payType = payType;
+	}
+
+	public Integer getGoodsType() {
+		return goodsType;
+	}
+
+	public void setGoodsType(Integer goodsType) {
+		this.goodsType = goodsType;
+	}
+
+	public Integer getRefundStatus() {
+		return refundStatus;
+	}
+
+	public void setRefundStatus(Integer refundStatus) {
+		this.refundStatus = refundStatus;
 	}
 }

@@ -9,6 +9,7 @@
     <result column="store_goods_id" jdbcType="VARCHAR" property="storeGoodsId" />
     <result column="number" jdbcType="INTEGER" property="number" />
     <result column="capacity" jdbcType="INTEGER" property="capacity" />
+    <result column="type" jdbcType="INTEGER" property="type" />
     <result column="detail" jdbcType="VARCHAR" property="detail" />
     <result column="update_id" jdbcType="VARCHAR" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />

@@ -190,6 +190,7 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 			}
 
 			interact.setRunTime(runTime);
+			interact.setUpdateTime(LocalDateTime.now());
 			inno72InteractMapper.updateByPrimaryKeySelective(interact);
 			inno72InteractMachineMapper.insertInteractMachineList(insetInteractMachineList);
 			inno72InteractMachineTimeMapper.insertInteractMachineTimeList(insetInteractMachineTimeList);
@@ -291,6 +292,7 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 					return Results.failure("所选时间内机器已占用，机器编号：" + machineTime.getMachineCode());
 				}
 				interact.setRunTime(runTime);
+				interact.setUpdateTime(LocalDateTime.now());
 				inno72InteractMapper.updateByPrimaryKeySelective(interact);
 
 				inno72InteractMachineMapper.updateByPrimaryKeySelective(interactMachine);
