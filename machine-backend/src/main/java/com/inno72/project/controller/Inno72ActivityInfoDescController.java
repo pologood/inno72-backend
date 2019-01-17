@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,7 +37,7 @@ public class Inno72ActivityInfoDescController {
     private Inno72ActivityInfoDescService inno72ActivityInfoDescService;
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result add(Inno72ActivityInfoDesc inno72ActivityInfoDesc) {
+    public Result add(@Valid Inno72ActivityInfoDesc inno72ActivityInfoDesc) {
 		Inno72User inno72User = getmUser();
 		inno72ActivityInfoDesc.setCreator(inno72User.getId());
 		inno72ActivityInfoDesc.setCreateTime(LocalDateTime.now());
