@@ -41,6 +41,7 @@
 			o.receiver,
 			o.number,
 			o.creater,
+			o.`status`,
 			date_format( o.create_time, '%Y-%m-%d %H:%i:%s' ) AS createTime
 		FROM
 			inno72_store_order o
