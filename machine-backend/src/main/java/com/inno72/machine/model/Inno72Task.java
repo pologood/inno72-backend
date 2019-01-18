@@ -35,6 +35,12 @@ public class Inno72Task {
 	private Integer status;
 
 	/**
+	 * 强制升级：0 不强制， 1强制
+	 */
+	@Column(name = "is_force")
+	private Integer isForce;
+
+	/**
 	 * 执行类型：1 socket 2 push
 	 */
 	@Column(name = "do_type")
@@ -166,6 +172,14 @@ public class Inno72Task {
 	 */
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public Integer getIsForce() {
+		return isForce;
+	}
+
+	public void setIsForce(Integer isForce) {
+		this.isForce = isForce;
 	}
 
 	/**
