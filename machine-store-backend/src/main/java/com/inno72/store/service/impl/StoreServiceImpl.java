@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.common.AbstractService;
+import com.inno72.common.DateUtil;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.StringUtil;
@@ -74,6 +75,8 @@ public class StoreServiceImpl extends AbstractService<Inno72Store> implements St
 				logger.info("请填写使用时长");
 				return Results.failure("请填写使用时长");
 			}
+			model.setStartTime(DateUtil.toDateTime(model.getStartTimeStr(), DateUtil.DF_ONLY_YMDHM_S1));
+			model.setEndTime(DateUtil.toDateTime(model.getEndTimeStr(), DateUtil.DF_ONLY_YMDHM_S1));
 
 			inno72StoreMapper.insert(model);
 
@@ -96,7 +99,6 @@ public class StoreServiceImpl extends AbstractService<Inno72Store> implements St
 				return Results.failure("未找到用户登录信息");
 			}
 			String mUserId = Optional.ofNullable(mUser).map(Inno72Storekeeper::getId).orElse(null);
-			model.setId(StringUtil.getUUID());
 			model.setCreateId(mUserId);
 			model.setUpdateId(mUserId);
 			model.setCreateTime(LocalDateTime.now());
@@ -122,6 +124,8 @@ public class StoreServiceImpl extends AbstractService<Inno72Store> implements St
 				logger.info("请填写使用时长");
 				return Results.failure("请填写使用时长");
 			}
+			model.setStartTime(DateUtil.toDateTime(model.getStartTimeStr(), DateUtil.DF_ONLY_YMDHM_S1));
+			model.setEndTime(DateUtil.toDateTime(model.getEndTimeStr(), DateUtil.DF_ONLY_YMDHM_S1));
 
 			inno72StoreMapper.updateByPrimaryKeySelective(model);
 

@@ -10,6 +10,7 @@
     <result column="order_type" jdbcType="INTEGER" property="orderType" />
     <result column="goods" jdbcType="VARCHAR" property="goods" />
     <result column="merchant" jdbcType="VARCHAR" property="merchant" />
+    <result column="activity" jdbcType="VARCHAR" property="activity" />
     <result column="sender" jdbcType="VARCHAR" property="sender" />
     <result column="send_id" jdbcType="VARCHAR" property="sendId" />
     <result column="send_type" jdbcType="INTEGER" property="sendType" />
