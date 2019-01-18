@@ -87,7 +87,7 @@
         <if test="keyword != null and keyword != ''">
             and (sk.name like '%${keyword}%'
             or sk.mobile like '%${keyword}%'
-            or s.name like '%${keyword}%'
+            or s.name like '%${keyword}%')
         </if>
     </where>
     group by sk.id
