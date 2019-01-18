@@ -113,8 +113,8 @@ public class StoreOrderController {
 	}
 
 	@RequestMapping(value = "/homePageInfo")
-	public Result<Map<String,Object>> homePageInfo(){
-		Result<Map<String,Object>> result = storeOrderService.getHomePageInfo();
+	public Result<Map<String, Object>> homePageInfo() {
+		Result<Map<String, Object>> result = storeOrderService.getHomePageInfo();
 		return result;
 	}
 

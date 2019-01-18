@@ -105,7 +105,7 @@
 	<association property="expressList" resultMap="expressList" />
   </resultMap>
   <resultMap id="expressList" type="com.inno72.store.model.Inno72StoreExpress">
-		<result column="expressId" jdbcType="VARCHAR" property="machineId" />
+		<result column="expressId" jdbcType="VARCHAR" property="expressId" />
 		<result column="expressCompany" jdbcType="VARCHAR" property="expressCompany" />
 		<result column="expressNum" jdbcType="VARCHAR" property="expressNum" />
 		<result column="expressNumber" jdbcType="INTEGER" property="expressNumber" />
