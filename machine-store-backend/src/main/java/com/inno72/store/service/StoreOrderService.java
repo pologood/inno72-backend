@@ -25,11 +25,11 @@ public interface StoreOrderService extends Service<Inno72StoreOrder> {
 
 	List<Map<String, Object>> getMerchantList(String keyword);
 
-	List<Map<String, Object>> getGoodsList(String merchantId, String keyword);
+	List<Map<String, Object>> getGoodsList(String storeId, String merchantId, String keyword);
 
 	List<Map<String, Object>> getActivityList(String keyword);
 
 	List<Map<String, Object>> getCheckUserList(String keyword);
 
-	Result<Map<String,Object>> getHomePageInfo();
+	Result<Map<String, Object>> getHomePageInfo();
 }

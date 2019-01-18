@@ -178,15 +178,15 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 
 			// 仓库增加相应容量
 			if (null != store) {
-				store.setCapacity(store.getCapacity() + model.getCapacity());
+				store.setCapacityUse(store.getCapacityUse() - model.getCapacity());
 			}
 			Inno72StoreGoods storeGoods = new Inno72StoreGoods();
 			storeGoods.setGoodsId(model.getGoods());
 			storeGoods.setStoreId(model.getSendId());
 			storeGoods = inno72StoreGoodsMapper.selectOne(storeGoods);
-			// 商品库存减少，容量增加
+			// 商品库存减少，所占容量减少
 			storeGoods.setNumber(storeGoods.getNumber() - model.getNumber());
-			storeGoods.setCapacity(storeGoods.getCapacity() + model.getCapacity());
+			storeGoods.setCapacity(storeGoods.getCapacity() - model.getCapacity());
 			inno72StoreGoodsMapper.updateByPrimaryKeySelective(storeGoods);
 			// 保存出库单
 			inno72StoreOrderMapper.insertSelective(model);
@@ -262,7 +262,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		}
 
 		// 更新仓库容量
-		store.setCapacity(store.getCapacity() - totalCapacity);
+		store.setCapacityUse(store.getCapacityUse() + totalCapacity);
 		inno72StoreMapper.updateByPrimaryKeySelective(store);
 
 		// 更新入库单：状态，实收数量，实收所占容量，
@@ -368,12 +368,13 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 	}
 
 	@Override
-	public List<Map<String, Object>> getGoodsList(String merchantId, String keyword) {
+	public List<Map<String, Object>> getGoodsList(String storeId, String merchantId, String keyword) {
 		Map<String, Object> params = new HashMap<String, Object>();
 
 		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
 		params.put("keyword", keyword);
 		params.put("sellerId", merchantId);
+		params.put("storeId", storeId);
 
 		return inno72StoreOrderMapper.getGoodsList(params);
 	}

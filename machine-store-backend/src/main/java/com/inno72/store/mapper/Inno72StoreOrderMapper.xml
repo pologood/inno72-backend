@@ -59,6 +59,7 @@
               	or g.creater like CONCAT('%','${keyword}','%')
               )
           	</if>
+        ORDER BY o.update_time DESC
   </select>
   
   <select id="selectReceiveOrderByPage" parameterType="java.util.Map" resultType="java.util.Map">
@@ -99,6 +100,7 @@
               	or g.name like CONCAT('%','${keyword}','%')
               )
           </if>
+        ORDER BY o.update_time DESC
   </select>
   
   <resultMap id="VoResultMap" extends="BaseResultMap"  type="com.inno72.store.vo.StoreOrderVo">
@@ -115,15 +117,34 @@
   
   <select id="selectOrderById" parameterType="java.util.Map" resultMap="VoResultMap">
 		SELECT
-			so.*,
+			so.order_num,
+			so.sender,
+			so.receiver,
+			so.number,
+			so.capacity,
+			so.status,
+			so.creater,
+			so.create_time,
+			so.receive_number,
+			so.receive_capacity,
+			so.receive_time,
+			g.`name` AS goodsName,
+			g.`code` goodsCode,
+			m.merchant_name AS merchantName,
+			IFNULL(ai.name,ac.name) AS activity,
 			se.express_company AS expressCompany,
 			se.express_num AS expressNum,
 			se.number AS expressNumber,
 			se.`status` AS expressStatus,
-			se.id AS expressId 
+			se.id AS expressId
+			
 		FROM
 			inno72_store_order so
+			LEFT JOIN inno72_goods g on g.id=so.goods
+			LEFT JOIN inno72_merchant m ON m.id =so.merchant
 			LEFT JOIN inno72_store_express se ON se.order_id = so.id 
+			LEFT JOIN inno72_interact ai ON ai.id = so.activity 
+			LEFT JOIN inno72_activity ac ON ac.id = so.activity 
 		WHERE
 			so.id =#{id}
   </select>
@@ -153,11 +174,10 @@
 			g.code
 		FROM
 			inno72_goods g 
-		WHERE
-			g.is_delete =0
-		<if test="sellerId != null and sellerId != ''">
+			LEFT JOIN inno72_store_goods sg ON g.id=sg.goods_id
+		WHERE g.is_delete =0
             and g.seller_id =#{sellerId}
-        </if>
+            and sg.store_id =#{storeId}
 		<if test="keyword != null and keyword != ''">
             and (g.name like CONCAT('%','${keyword}','%')
               	or g.code like CONCAT('%','${keyword}','%')
