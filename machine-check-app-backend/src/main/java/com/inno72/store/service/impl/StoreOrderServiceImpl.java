@@ -183,7 +183,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		goodsDetail.setId(StringUtil.getUUID());
 		goodsDetail.setReceiveCount(oldCount-newCount);
 		goodsDetail.setSupplyCount(0);
-		goodsDetail.setDifferCount(newCount-oldCount);
+		goodsDetail.setDifferCount(oldCount-newCount);
 		goodsDetail.setCreateTime(LocalDateTime.now());
 		inno72CheckGoodsDetailMapper.insertSelective(goodsDetail);
 		return ResultGenerator.genSuccessResult();
