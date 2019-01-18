@@ -41,6 +41,7 @@
 			o.receiver,
 			o.number,
 			o.creater,
+			o.`status`,
 			date_format( o.create_time, '%Y-%m-%d %H:%i:%s' ) AS createTime
 		FROM
 			inno72_store_order o
@@ -105,11 +106,11 @@
 	<association property="expressList" resultMap="expressList" />
   </resultMap>
   <resultMap id="expressList" type="com.inno72.store.model.Inno72StoreExpress">
-		<result column="expressId" jdbcType="VARCHAR" property="machineId" />
+		<result column="expressId" jdbcType="VARCHAR" property="id" />
 		<result column="expressCompany" jdbcType="VARCHAR" property="expressCompany" />
 		<result column="expressNum" jdbcType="VARCHAR" property="expressNum" />
-		<result column="expressNumber" jdbcType="INTEGER" property="expressNumber" />
-		<result column="expressStatus" jdbcType="INTEGER" property="expressStatus" />
+		<result column="expressNumber" jdbcType="INTEGER" property="number" />
+		<result column="expressStatus" jdbcType="INTEGER" property="status" />
 	</resultMap>
   
   <select id="selectOrderById" parameterType="java.util.Map" resultMap="VoResultMap">

@@ -157,6 +157,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 
 					checkGoodsNum.setReceiveTotalCount(model.getNumber());
 					checkGoodsNum.setDifferTotalCount(model.getNumber());
+					checkGoodsNum.setSupplyTotalCount(0);
 					inno72CheckGoodsNumMapper.insert(checkGoodsNum);
 				} else {
 					checkGoodsNum.setReceiveTotalCount(checkGoodsNum.getReceiveTotalCount() + model.getNumber());
@@ -411,8 +412,8 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 	public Result<Map<String, Object>> getHomePageInfo() {
 		String userId = UserUtil.getKepper().getId();
 		int pendingStorageCount = inno72StoreOrderMapper.selectPendingStorageCount(userId);
-		Map<String,Object> map = new HashMap<>();
-		map.put("pendingStorageCount",pendingStorageCount);
+		Map<String, Object> map = new HashMap<>();
+		map.put("pendingStorageCount", pendingStorageCount);
 		return ResultGenerator.genSuccessResult(map);
 	}
 
