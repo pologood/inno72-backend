@@ -94,7 +94,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		if(goodsNum != null){
 			int receiveTotalCount = goodsNum.getReceiveTotalCount();
 			int supplyTotalCount = goodsNum.getSupplyTotalCount();
-			receiveTotalCount += number;
+			receiveTotalCount = receiveTotalCount-number;
 			int differTotalCount = receiveTotalCount-supplyTotalCount;
 			goodsNum.setDifferTotalCount(differTotalCount);
 			goodsNum.setReceiveTotalCount(receiveTotalCount);
