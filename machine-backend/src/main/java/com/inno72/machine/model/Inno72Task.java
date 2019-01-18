@@ -35,7 +35,7 @@ public class Inno72Task {
 	private Integer status;
 
 	/**
-	 * 强制升级：0 不强制， 1强制
+	 * 强制升级：0 强制， 1不强制
 	 */
 	@Column(name = "is_force")
 	private Integer isForce;
