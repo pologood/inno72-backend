@@ -124,8 +124,8 @@ public class StoreServiceImpl extends AbstractService<Inno72Store> implements St
 				logger.info("请填写使用时长");
 				return Results.failure("请填写使用时长");
 			}
-			model.setStartTime(DateUtil.toDateTime(model.getStartTimeStr(), DateUtil.DF_ONLY_YMDHM_S1));
-			model.setEndTime(DateUtil.toDateTime(model.getEndTimeStr(), DateUtil.DF_ONLY_YMDHM_S1));
+			model.setStartTime(DateUtil.toDateTime(model.getStartTimeStr(), DateUtil.DF_FULL_S1));
+			model.setEndTime(DateUtil.toDateTime(model.getEndTimeStr(), DateUtil.DF_FULL_S1));
 
 			inno72StoreMapper.updateByPrimaryKeySelective(model);
 
