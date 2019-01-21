@@ -137,6 +137,19 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 				}
 				model.setSender(store.getName());
 			}
+
+			Inno72StoreGoods storeGoods = new Inno72StoreGoods();
+			storeGoods.setGoodsId(model.getGoods());
+			storeGoods.setStoreId(model.getSendId());
+			storeGoods = inno72StoreGoodsMapper.selectOne(storeGoods);
+			if (null == storeGoods) {
+				logger.info("商品无库存");
+				return Results.failure("商品无库存");
+			}
+			if (storeGoods.getNumber() < model.getNumber()) {
+				logger.info("商品库存不足");
+				return Results.failure("商品库存不足");
+			}
 			Inno72CheckGoodsNum checkGoodsNum = new Inno72CheckGoodsNum();
 			if (model.getReceiveType() == 1) {
 				if (null == model.getActivity()) {
@@ -184,10 +197,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			if (null != store) {
 				store.setCapacityUse(store.getCapacityUse() - model.getCapacity());
 			}
-			Inno72StoreGoods storeGoods = new Inno72StoreGoods();
-			storeGoods.setGoodsId(model.getGoods());
-			storeGoods.setStoreId(model.getSendId());
-			storeGoods = inno72StoreGoodsMapper.selectOne(storeGoods);
+
 			// 商品库存减少，所占容量减少
 			storeGoods.setNumber(storeGoods.getNumber() - model.getNumber());
 			storeGoods.setCapacity(storeGoods.getCapacity() - model.getCapacity());
