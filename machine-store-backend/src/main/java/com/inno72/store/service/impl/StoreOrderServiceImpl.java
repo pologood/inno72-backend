@@ -84,6 +84,10 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			model.setUpdater(mUser.getName());
 			model.setCreateTime(LocalDateTime.now());
 			model.setUpdateTime(LocalDateTime.now());
+			model.setReceiveCapacity(0);
+			model.setReceiveNumber(0);
+			model.setStatus(0);
+			model.setIsDelete(0);
 			// 库单类型：0入库，1出库
 			model.setOrderType(1);
 			model.setOrderNum("C" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S2));
