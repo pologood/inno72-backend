@@ -105,7 +105,9 @@
   </select>
   
   <resultMap id="VoResultMap" extends="BaseResultMap"  type="com.inno72.store.vo.StoreOrderVo">
-   
+   <result column="goodsName" jdbcType="VARCHAR" property="goodsName" />
+   <result column="goodsCode" jdbcType="VARCHAR" property="goodsCode" />
+   <result column="merchantName" jdbcType="VARCHAR" property="merchantName" />
 	<association property="expressList" resultMap="expressList" />
   </resultMap>
   <resultMap id="expressList" type="com.inno72.store.model.Inno72StoreExpress">
