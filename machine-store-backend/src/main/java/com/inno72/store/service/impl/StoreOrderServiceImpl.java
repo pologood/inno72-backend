@@ -417,8 +417,8 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		map.put("pendingStorageCount", pendingStorageCount);
 		int pendingOutStoreCount = inno72StoreOrderMapper.selectPendingOutStoreCount(userId);
 		map.put("pendingOutStoreCount",pendingOutStoreCount);
-		int unOutStorageCount = inno72StoreOrderMapper.selectUnOutStorageCount(userId);
-		map.put("unOutStorageCount",unOutStorageCount);
+		int unStorageCount = inno72StoreOrderMapper.selectUnStorageCount(userId);
+		map.put("unStorageCount",unStorageCount);
 		return ResultGenerator.genSuccessResult(map);
 	}
 
