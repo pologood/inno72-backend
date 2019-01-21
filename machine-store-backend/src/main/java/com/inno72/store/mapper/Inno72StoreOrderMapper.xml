@@ -92,7 +92,7 @@
 			) e ON e.order_id = o.id
 			LEFT JOIN inno72_storekeeper_storte ss ON ss.store_id=o.receive_id
 		WHERE o.receive_type=2 and ss.storekeeper_id = #{userId}
-	    	<if test="beginTime != null and beginTime !=''"> and o.create_timee <![CDATA[>=]]> #{beginTime} </if>
+	    	<if test="beginTime != null and beginTime !=''"> and o.create_time <![CDATA[>=]]> #{beginTime} </if>
       		<if test="endTime != null and endTime !=''"> and o.create_time <![CDATA[<=]]> #{endTime} </if>
 	      	<if test="keyword != null and keyword != ''">
               and (o.sender like CONCAT('%','${keyword}','%')
@@ -118,6 +118,7 @@
   
   <select id="selectOrderById" parameterType="java.util.Map" resultMap="VoResultMap">
 		SELECT
+			so.id
 			so.order_num,
 			so.sender,
 			so.receiver,
@@ -132,7 +133,6 @@
 			g.`name` AS goodsName,
 			g.`code` goodsCode,
 			m.merchant_name AS merchantName,
-			IFNULL(ai.name,ac.name) AS activity,
 			se.express_company AS expressCompany,
 			se.express_num AS expressNum,
 			se.number AS expressNumber,
@@ -144,8 +144,6 @@
 			LEFT JOIN inno72_goods g on g.id=so.goods
 			LEFT JOIN inno72_merchant m ON m.id =so.merchant
 			LEFT JOIN inno72_store_express se ON se.order_id = so.id 
-			LEFT JOIN inno72_interact ai ON ai.id = so.activity 
-			LEFT JOIN inno72_activity ac ON ac.id = so.activity 
 		WHERE
 			so.id =#{id}
   </select>
