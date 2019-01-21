@@ -50,7 +50,7 @@
 			LEFT JOIN inno72_merchant m ON m.id =o.merchant
 			LEFT JOIN inno72_storekeeper_storte ss ON ss.store_id=o.send_id
 		WHERE o.order_type=1 and ss.storekeeper_id = #{userId}
-	    	<if test="beginTime != null and beginTime !=''"> and o.create_timee <![CDATA[>=]]> #{beginTime} </if>
+	    	<if test="beginTime != null and beginTime !=''"> and o.create_time <![CDATA[>=]]> #{beginTime} </if>
       		<if test="endTime != null and endTime !=''"> and o.create_time <![CDATA[<=]]> #{endTime} </if>
 	      	<if test="keyword != null and keyword != ''">
               and (o.sender like CONCAT('%','${keyword}','%')
@@ -76,7 +76,7 @@
 			o.receive_number AS receiveNumber,
 			o.`status`,
 			date_format( o.receive_time, '%Y-%m-%d %H:%i:%s' ) AS receiveTime,
-			e.rExpressNum,e.expressNum
+			e.rExpressNum,e.expressNum,e.keeper
 		FROM
 			inno72_store_order o
 			LEFT JOIN inno72_goods g on g.id=o.goods
@@ -85,7 +85,7 @@
 				SELECT
 					se.order_id,
 					COUNT( IF ( se.STATUS = 1, se.id, NULL ) ) AS rExpressNum,
-					COUNT(1) AS  expressNum
+					COUNT(1) AS  expressNum,GROUP_CONCAT(se.receiver) as keeper
 				FROM
 					inno72_store_express se 
 				GROUP BY se.order_id
