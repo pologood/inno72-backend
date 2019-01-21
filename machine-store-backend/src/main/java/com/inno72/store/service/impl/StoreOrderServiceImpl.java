@@ -237,6 +237,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			express.setReceiver(mUser.getName());
 			express.setUpdater(mUser.getName());
 			express.setUpdateTime(LocalDateTime.now());
+			express.setStatus(1);
 			// 更新物流单
 			inno72StoreExpressMapper.updateByPrimaryKeySelective(express);
 		}
@@ -416,9 +417,9 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		Map<String, Object> map = new HashMap<>();
 		map.put("pendingStorageCount", pendingStorageCount);
 		int pendingOutStoreCount = inno72StoreOrderMapper.selectPendingOutStoreCount(userId);
-		map.put("pendingOutStoreCount",pendingOutStoreCount);
+		map.put("pendingOutStoreCount", pendingOutStoreCount);
 		int unOutStorageCount = inno72StoreOrderMapper.selectUnOutStorageCount(userId);
-		map.put("unOutStorageCount",unOutStorageCount);
+		map.put("unOutStorageCount", unOutStorageCount);
 		return ResultGenerator.genSuccessResult(map);
 	}
 
