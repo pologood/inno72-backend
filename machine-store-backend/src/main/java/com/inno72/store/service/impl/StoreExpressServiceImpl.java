@@ -54,7 +54,7 @@ public class StoreExpressServiceImpl extends AbstractService<Inno72StoreExpress>
 
 		List<Inno72StoreExpress> addExpressList = new ArrayList<>();
 		List<Inno72StoreExpress> updateExpressList = new ArrayList<>();
-		Integer allNumber = 0;
+		int allNumber = 0;
 		for (Inno72StoreExpress express : expressList) {
 			if (StringUtil.isBlank(express.getId())) {
 				express.setId(StringUtil.getUUID());
