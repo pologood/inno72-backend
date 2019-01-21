@@ -119,25 +119,10 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 				}
 				model.setSender(store.getName());
 			}
-
 			if (null == model.getReceiveType()) {
 				logger.info("请选择收货方");
 				return Results.failure("请选择收货方");
 			}
-			// 收货方类型：0商家，1巡检，2仓库
-			Inno72Store store = null;
-			if (model.getReceiveType() == 2) {
-				if (null == model.getReceiveId()) {
-					logger.info("请选择收货仓库");
-					return Results.failure("请选择收货仓库");
-				}
-				store = inno72StoreMapper.selectByPrimaryKey(model.getReceiveId());
-				if (null == store) {
-					return Results.failure("收货仓不存在");
-				}
-				model.setSender(store.getName());
-			}
-
 			Inno72StoreGoods storeGoods = new Inno72StoreGoods();
 			storeGoods.setGoodsId(model.getGoods());
 			storeGoods.setStoreId(model.getSendId());
@@ -150,8 +135,23 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 				logger.info("商品库存不足");
 				return Results.failure("商品库存不足");
 			}
-			Inno72CheckGoodsNum checkGoodsNum = new Inno72CheckGoodsNum();
+
+			// 收货方类型：0商家，1巡检，2仓库
+			Inno72Store store = null;
+			if (model.getReceiveType() == 2) {
+				if (null == model.getReceiveId()) {
+					logger.info("请选择收货仓库");
+					return Results.failure("请选择收货仓库");
+				}
+				store = inno72StoreMapper.selectByPrimaryKey(model.getReceiveId());
+				if (null == store) {
+					return Results.failure("收货仓不存在");
+				}
+				model.setReceiver(store.getName());
+			}
+
 			if (model.getReceiveType() == 1) {
+				Inno72CheckGoodsNum checkGoodsNum = new Inno72CheckGoodsNum();
 				if (null == model.getActivity()) {
 					logger.info("请选择参与活动");
 					return Results.failure("请选择参与活动");
@@ -160,6 +160,8 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 					logger.info("请选择收货人员");
 					return Results.failure("请选择收货人员");
 				}
+				Map<String, Object> user = inno72StoreOrderMapper.getCheckUserById(model.getReceiveId());
+				model.setReceiver("巡检：" + user.get("name"));
 				checkGoodsNum.setActivityId(model.getActivity());
 				checkGoodsNum.setCheckUserId(model.getReceiveId());
 				checkGoodsNum.setGoodsId(model.getGoods());
@@ -171,7 +173,6 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 					checkGoodsNum.setActivityId(model.getActivity());
 					checkGoodsNum.setCheckUserId(model.getReceiveId());
 					checkGoodsNum.setGoodsId(model.getGoods());
-
 					checkGoodsNum.setReceiveTotalCount(model.getNumber());
 					checkGoodsNum.setDifferTotalCount(model.getNumber());
 					checkGoodsNum.setSupplyTotalCount(0);

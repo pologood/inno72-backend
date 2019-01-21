@@ -18,7 +18,9 @@ import com.inno72.common.Results;
 import com.inno72.common.StringUtil;
 import com.inno72.common.UserUtil;
 import com.inno72.store.mapper.Inno72StoreExpressMapper;
+import com.inno72.store.mapper.Inno72StoreOrderMapper;
 import com.inno72.store.model.Inno72StoreExpress;
+import com.inno72.store.model.Inno72StoreOrder;
 import com.inno72.store.model.Inno72Storekeeper;
 import com.inno72.store.service.StoreExpressService;
 import com.inno72.store.vo.StoreOrderVo;
@@ -32,6 +34,8 @@ public class StoreExpressServiceImpl extends AbstractService<Inno72StoreExpress>
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Resource
 	private Inno72StoreExpressMapper inno72StoreExpressMapper;
+	@Resource
+	private Inno72StoreOrderMapper inno72StoreOrderMapper;
 
 	@Override
 	public Result<Object> saveModel(StoreOrderVo storeOrderVo) {
@@ -49,7 +53,8 @@ public class StoreExpressServiceImpl extends AbstractService<Inno72StoreExpress>
 		}
 
 		List<Inno72StoreExpress> addExpressList = new ArrayList<>();
-
+		List<Inno72StoreExpress> updateExpressList = new ArrayList<>();
+		Integer allNumber = 0;
 		for (Inno72StoreExpress express : expressList) {
 			if (StringUtil.isBlank(express.getId())) {
 				express.setId(StringUtil.getUUID());
@@ -58,16 +63,30 @@ public class StoreExpressServiceImpl extends AbstractService<Inno72StoreExpress>
 				express.setUpdater(mUser.getName());
 				express.setCreateTime(LocalDateTime.now());
 				express.setUpdateTime(LocalDateTime.now());
-
 				addExpressList.add(express);
-				inno72StoreExpressMapper.insert(express);
+
+				allNumber += express.getNumber();
 			} else {
 				Inno72StoreExpress storeExpress = inno72StoreExpressMapper.selectByPrimaryKey(express.getId());
 				storeExpress.setExpressCompany(express.getExpressCompany());
 				storeExpress.setExpressNum(express.getExpressNum());
 				storeExpress.setNumber(express.getNumber());
-				inno72StoreExpressMapper.updateByPrimaryKeySelective(storeExpress);
+				updateExpressList.add(storeExpress);
+
+				allNumber += express.getNumber();
 			}
+		}
+		Inno72StoreOrder storeOrder = inno72StoreOrderMapper.selectByPrimaryKey(storeOrderVo.getId());
+		if (allNumber != storeOrder.getNumber()) {
+			logger.info("物流单发货总数量与出库单数量不一致");
+			return Results.failure("物流单发货总数量与出库单数量不一致");
+		}
+
+		for (Inno72StoreExpress inno72StoreExpress : updateExpressList) {
+			inno72StoreExpressMapper.updateByPrimaryKeySelective(inno72StoreExpress);
+		}
+		for (Inno72StoreExpress inno72StoreExpress : addExpressList) {
+			inno72StoreExpressMapper.insert(inno72StoreExpress);
 		}
 
 		// inno72StoreExpressMapper.insertStoreExpressList(addExpressList);

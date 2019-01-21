@@ -236,6 +236,16 @@
             )
         </if>
   </select>
+  
+  <select id="getCheckUserById" parameterType="String" resultType="java.util.Map">
+		SELECT
+			cu.id,
+			cu.`name`
+		FROM
+			inno72_check_user cu 
+		WHERE
+			cu.id=#{id}
+  </select>
 
   <select id="selectPendingStorageCount" resultType="java.lang.Integer">
       select count(so.id) from inno72_store_order so
