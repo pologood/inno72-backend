@@ -30,5 +30,5 @@ public interface Inno72StoreOrderMapper extends Mapper<Inno72StoreOrder> {
 
 	int selectPendingOutStoreCount(@Param("userId") String userId);
 
-	int selectUnStorageCount(@Param("userId") String userId);
+	int selectUnOutStorageCount(@Param("userId") String userId);
 }
