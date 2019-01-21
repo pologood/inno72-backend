@@ -118,7 +118,7 @@
   
   <select id="selectOrderById" parameterType="java.util.Map" resultMap="VoResultMap">
 		SELECT
-			so.id
+			so.id,
 			so.order_num,
 			so.sender,
 			so.receiver,
