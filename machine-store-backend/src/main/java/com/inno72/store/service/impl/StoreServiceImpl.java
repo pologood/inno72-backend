@@ -80,7 +80,7 @@ public class StoreServiceImpl extends AbstractService<Inno72Store> implements St
 
 			inno72StoreMapper.insert(model);
 
-			return Results.warn("操作成功", 0, model.getId());
+			return Results.warn("操作成功", 0, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -129,7 +129,7 @@ public class StoreServiceImpl extends AbstractService<Inno72Store> implements St
 
 			inno72StoreMapper.updateByPrimaryKeySelective(model);
 
-			return Results.warn("操作成功", 0, model.getId());
+			return Results.warn("操作成功", 0, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
