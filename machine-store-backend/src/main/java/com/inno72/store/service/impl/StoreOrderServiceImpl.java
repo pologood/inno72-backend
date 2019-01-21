@@ -207,7 +207,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			// 保存出库单
 			inno72StoreOrderMapper.insertSelective(model);
 
-			this.storeGoodsDetail(model, storeGoods.getNumber(), storeGoods.getCapacity(), storeGoods.getId());
+			this.storeGoodsDetail(model, model.getNumber(), model.getCapacity(), storeGoods.getId());
 
 			return Results.warn("操作成功", 0, null);
 
