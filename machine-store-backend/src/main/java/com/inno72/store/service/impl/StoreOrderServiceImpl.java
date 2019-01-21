@@ -108,16 +108,17 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 				return Results.failure("请填写出库容量");
 			}
 			// 发货方:0商家，1巡检，2仓库
+			Inno72Store sendStore = null;
 			model.setSendType(2);
 			if (null == model.getSendId()) {
 				logger.info("请选择发货仓库");
 				return Results.failure("请选择发货仓库");
 			} else {
-				Inno72Store store = inno72StoreMapper.selectByPrimaryKey(model.getSendId());
-				if (null == store) {
+				sendStore = inno72StoreMapper.selectByPrimaryKey(model.getSendId());
+				if (null == sendStore) {
 					return Results.failure("发货仓不存在");
 				}
-				model.setSender(store.getName());
+				model.setSender(sendStore.getName());
 			}
 			if (null == model.getReceiveType()) {
 				logger.info("请选择收货方");
@@ -137,13 +138,12 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			}
 
 			// 收货方类型：0商家，1巡检，2仓库
-			Inno72Store store = null;
 			if (model.getReceiveType() == 2) {
 				if (null == model.getReceiveId()) {
 					logger.info("请选择收货仓库");
 					return Results.failure("请选择收货仓库");
 				}
-				store = inno72StoreMapper.selectByPrimaryKey(model.getReceiveId());
+				Inno72Store store = inno72StoreMapper.selectByPrimaryKey(model.getReceiveId());
 				if (null == store) {
 					return Results.failure("收货仓不存在");
 				}
@@ -195,9 +195,10 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			}
 
 			// 仓库增加相应容量
-			if (null != store) {
-				store.setCapacityUse(store.getCapacityUse() - model.getCapacity());
+			if (null != sendStore) {
+				sendStore.setCapacityUse(sendStore.getCapacityUse() - model.getCapacity());
 			}
+			inno72StoreMapper.updateByPrimaryKey(sendStore);
 
 			// 商品库存减少，所占容量减少
 			storeGoods.setNumber(storeGoods.getNumber() - model.getNumber());
