@@ -415,6 +415,10 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		int pendingStorageCount = inno72StoreOrderMapper.selectPendingStorageCount(userId);
 		Map<String, Object> map = new HashMap<>();
 		map.put("pendingStorageCount", pendingStorageCount);
+		int pendingOutStoreCount = inno72StoreOrderMapper.selectPendingOutStoreCount(userId);
+		map.put("pendingOutStoreCount",pendingOutStoreCount);
+		int unStorageCount = inno72StoreOrderMapper.selectUnStorageCount(userId);
+		map.put("unStorageCount",unStorageCount);
 		return ResultGenerator.genSuccessResult(map);
 	}
 

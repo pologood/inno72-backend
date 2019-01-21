@@ -27,4 +27,8 @@ public interface Inno72StoreOrderMapper extends Mapper<Inno72StoreOrder> {
 	List<Map<String, Object>> getCheckUserList(Map<String, Object> map);
 
 	int selectPendingStorageCount(@Param("userId") String userId);
+
+	int selectPendingOutStoreCount(@Param("userId") String userId);
+
+	int selectUnStorageCount(@Param("userId") String userId);
 }
