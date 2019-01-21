@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +33,7 @@ import com.inno72.project.service.Inno72ActivityInfoDescService;
 @RestController
 @RequestMapping("/inno72/activity/info/desc")
 @SuppressWarnings({"rawtypes", "unchecked"})
+@CrossOrigin
 public class Inno72ActivityInfoDescController {
     @Resource
     private Inno72ActivityInfoDescService inno72ActivityInfoDescService;

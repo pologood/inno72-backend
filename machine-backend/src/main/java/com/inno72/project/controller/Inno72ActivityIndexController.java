@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,6 +26,7 @@ import com.inno72.project.vo.Inno72ActivityIndexVo;
 @RestController
 @RequestMapping("/inno72/activity/index")
 @SuppressWarnings({"rawtypes", "unchecked"})
+@CrossOrigin
 public class Inno72ActivityIndexController {
     @Resource
     private Inno72ActivityIndexService inno72ActivityIndexService;
