@@ -115,6 +115,8 @@
 		<result column="expressCompany" jdbcType="VARCHAR" property="expressCompany" />
 		<result column="expressNum" jdbcType="VARCHAR" property="expressNum" />
 		<result column="expressNumber" jdbcType="INTEGER" property="number" />
+		<result column="expressReceiveNumber" jdbcType="INTEGER" property="receiveNumber" />
+		<result column="expressReceiveCapacity" jdbcType="INTEGER" property="receiveCapacity" />
 		<result column="expressStatus" jdbcType="INTEGER" property="status" />
 	</resultMap>
   
@@ -138,6 +140,8 @@
 			se.express_company AS expressCompany,
 			se.express_num AS expressNum,
 			se.number AS expressNumber,
+			se.receive_number AS expressReceiveNumber,
+			se.receive_capacity AS expressReceiveCapacity,
 			se.`status` AS expressStatus,
 			se.id AS expressId
 			
