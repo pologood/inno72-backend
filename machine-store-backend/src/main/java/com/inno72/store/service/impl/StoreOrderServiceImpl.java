@@ -84,6 +84,10 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			model.setUpdater(mUser.getName());
 			model.setCreateTime(LocalDateTime.now());
 			model.setUpdateTime(LocalDateTime.now());
+			model.setReceiveCapacity(0);
+			model.setReceiveNumber(0);
+			model.setStatus(0);
+			model.setIsDelete(0);
 			// 库单类型：0入库，1出库
 			model.setOrderType(1);
 			model.setOrderNum("C" + DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S2));
@@ -104,37 +108,50 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 				return Results.failure("请填写出库容量");
 			}
 			// 发货方:0商家，1巡检，2仓库
+			Inno72Store sendStore = null;
 			model.setSendType(2);
 			if (null == model.getSendId()) {
 				logger.info("请选择发货仓库");
 				return Results.failure("请选择发货仓库");
 			} else {
-				Inno72Store store = inno72StoreMapper.selectByPrimaryKey(model.getSendId());
-				if (null == store) {
+				sendStore = inno72StoreMapper.selectByPrimaryKey(model.getSendId());
+				if (null == sendStore) {
 					return Results.failure("发货仓不存在");
 				}
-				model.setSender(store.getName());
+				model.setSender(sendStore.getName());
 			}
-
 			if (null == model.getReceiveType()) {
 				logger.info("请选择收货方");
 				return Results.failure("请选择收货方");
 			}
+			Inno72StoreGoods storeGoods = new Inno72StoreGoods();
+			storeGoods.setGoodsId(model.getGoods());
+			storeGoods.setStoreId(model.getSendId());
+			storeGoods = inno72StoreGoodsMapper.selectOne(storeGoods);
+			if (null == storeGoods) {
+				logger.info("商品无库存");
+				return Results.failure("商品无库存");
+			}
+			if (storeGoods.getNumber() < model.getNumber()) {
+				logger.info("商品库存不足");
+				return Results.failure("商品库存不足");
+			}
+
 			// 收货方类型：0商家，1巡检，2仓库
-			Inno72Store store = null;
 			if (model.getReceiveType() == 2) {
 				if (null == model.getReceiveId()) {
 					logger.info("请选择收货仓库");
 					return Results.failure("请选择收货仓库");
 				}
-				store = inno72StoreMapper.selectByPrimaryKey(model.getReceiveId());
+				Inno72Store store = inno72StoreMapper.selectByPrimaryKey(model.getReceiveId());
 				if (null == store) {
 					return Results.failure("收货仓不存在");
 				}
-				model.setSender(store.getName());
+				model.setReceiver(store.getName());
 			}
-			Inno72CheckGoodsNum checkGoodsNum = new Inno72CheckGoodsNum();
+
 			if (model.getReceiveType() == 1) {
+				Inno72CheckGoodsNum checkGoodsNum = new Inno72CheckGoodsNum();
 				if (null == model.getActivity()) {
 					logger.info("请选择参与活动");
 					return Results.failure("请选择参与活动");
@@ -143,6 +160,8 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 					logger.info("请选择收货人员");
 					return Results.failure("请选择收货人员");
 				}
+				Map<String, Object> user = inno72StoreOrderMapper.getCheckUserById(model.getReceiveId());
+				model.setReceiver("巡检：" + user.get("name"));
 				checkGoodsNum.setActivityId(model.getActivity());
 				checkGoodsNum.setCheckUserId(model.getReceiveId());
 				checkGoodsNum.setGoodsId(model.getGoods());
@@ -154,7 +173,6 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 					checkGoodsNum.setActivityId(model.getActivity());
 					checkGoodsNum.setCheckUserId(model.getReceiveId());
 					checkGoodsNum.setGoodsId(model.getGoods());
-
 					checkGoodsNum.setReceiveTotalCount(model.getNumber());
 					checkGoodsNum.setDifferTotalCount(model.getNumber());
 					checkGoodsNum.setSupplyTotalCount(0);
@@ -177,13 +195,11 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			}
 
 			// 仓库增加相应容量
-			if (null != store) {
-				store.setCapacityUse(store.getCapacityUse() - model.getCapacity());
+			if (null != sendStore) {
+				sendStore.setCapacityUse(sendStore.getCapacityUse() - model.getCapacity());
 			}
-			Inno72StoreGoods storeGoods = new Inno72StoreGoods();
-			storeGoods.setGoodsId(model.getGoods());
-			storeGoods.setStoreId(model.getSendId());
-			storeGoods = inno72StoreGoodsMapper.selectOne(storeGoods);
+			inno72StoreMapper.updateByPrimaryKey(sendStore);
+
 			// 商品库存减少，所占容量减少
 			storeGoods.setNumber(storeGoods.getNumber() - model.getNumber());
 			storeGoods.setCapacity(storeGoods.getCapacity() - model.getCapacity());
@@ -191,7 +207,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			// 保存出库单
 			inno72StoreOrderMapper.insertSelective(model);
 
-			this.storeGoodsDetail(model, storeGoods.getNumber(), storeGoods.getCapacity(), storeGoods.getId());
+			this.storeGoodsDetail(model, model.getNumber(), model.getCapacity(), storeGoods.getId());
 
 			return Results.warn("操作成功", 0, null);
 
@@ -237,6 +253,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			express.setReceiver(mUser.getName());
 			express.setUpdater(mUser.getName());
 			express.setUpdateTime(LocalDateTime.now());
+			express.setStatus(1);
 			// 更新物流单
 			inno72StoreExpressMapper.updateByPrimaryKeySelective(express);
 		}
@@ -416,9 +433,9 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		Map<String, Object> map = new HashMap<>();
 		map.put("pendingStorageCount", pendingStorageCount);
 		int pendingOutStoreCount = inno72StoreOrderMapper.selectPendingOutStoreCount(userId);
-		map.put("pendingOutStoreCount",pendingOutStoreCount);
+		map.put("pendingOutStoreCount", pendingOutStoreCount);
 		int unOutStorageCount = inno72StoreOrderMapper.selectUnOutStorageCount(userId);
-		map.put("unOutStorageCount",unOutStorageCount);
+		map.put("unOutStorageCount", unOutStorageCount);
 		return ResultGenerator.genSuccessResult(map);
 	}
 

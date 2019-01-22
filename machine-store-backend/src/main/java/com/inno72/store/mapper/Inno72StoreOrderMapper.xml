@@ -50,7 +50,7 @@
 			LEFT JOIN inno72_merchant m ON m.id =o.merchant
 			LEFT JOIN inno72_storekeeper_storte ss ON ss.store_id=o.send_id
 		WHERE o.order_type=1 and ss.storekeeper_id = #{userId}
-	    	<if test="beginTime != null and beginTime !=''"> and o.create_timee <![CDATA[>=]]> #{beginTime} </if>
+	    	<if test="beginTime != null and beginTime !=''"> and o.create_time <![CDATA[>=]]> #{beginTime} </if>
       		<if test="endTime != null and endTime !=''"> and o.create_time <![CDATA[<=]]> #{endTime} </if>
 	      	<if test="keyword != null and keyword != ''">
               and (o.sender like CONCAT('%','${keyword}','%')
@@ -76,7 +76,7 @@
 			o.receive_number AS receiveNumber,
 			o.`status`,
 			date_format( o.receive_time, '%Y-%m-%d %H:%i:%s' ) AS receiveTime,
-			e.rExpressNum,e.expressNum
+			e.rExpressNum,e.expressNum,e.keeper
 		FROM
 			inno72_store_order o
 			LEFT JOIN inno72_goods g on g.id=o.goods
@@ -85,7 +85,7 @@
 				SELECT
 					se.order_id,
 					COUNT( IF ( se.STATUS = 1, se.id, NULL ) ) AS rExpressNum,
-					COUNT(1) AS  expressNum
+					COUNT(1) AS  expressNum,GROUP_CONCAT(se.receiver) as keeper
 				FROM
 					inno72_store_express se 
 				GROUP BY se.order_id
@@ -115,6 +115,8 @@
 		<result column="expressCompany" jdbcType="VARCHAR" property="expressCompany" />
 		<result column="expressNum" jdbcType="VARCHAR" property="expressNum" />
 		<result column="expressNumber" jdbcType="INTEGER" property="number" />
+		<result column="expressReceiveNumber" jdbcType="INTEGER" property="receiveNumber" />
+		<result column="expressReceiveCapacity" jdbcType="INTEGER" property="receiveCapacity" />
 		<result column="expressStatus" jdbcType="INTEGER" property="status" />
 	</resultMap>
   
@@ -138,6 +140,8 @@
 			se.express_company AS expressCompany,
 			se.express_num AS expressNum,
 			se.number AS expressNumber,
+			se.receive_number AS expressReceiveNumber,
+			se.receive_capacity AS expressReceiveCapacity,
 			se.`status` AS expressStatus,
 			se.id AS expressId
 			
@@ -235,6 +239,16 @@
               	or cu.code like CONCAT('%','${keyword}','%')
             )
         </if>
+  </select>
+  
+  <select id="getCheckUserById" parameterType="String" resultType="java.util.Map">
+		SELECT
+			cu.id,
+			cu.`name`
+		FROM
+			inno72_check_user cu 
+		WHERE
+			cu.id=#{id}
   </select>
 
   <select id="selectPendingStorageCount" resultType="java.lang.Integer">

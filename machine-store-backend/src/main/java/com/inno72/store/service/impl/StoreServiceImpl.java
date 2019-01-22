@@ -50,6 +50,8 @@ public class StoreServiceImpl extends AbstractService<Inno72Store> implements St
 			}
 			String mUserId = Optional.ofNullable(mUser).map(Inno72Storekeeper::getId).orElse(null);
 			model.setId(StringUtil.getUUID());
+			model.setIsDelete(0);
+			model.setCapacityUse(0);
 			model.setCreateId(mUserId);
 			model.setUpdateId(mUserId);
 			model.setCreateTime(LocalDateTime.now());
@@ -75,8 +77,8 @@ public class StoreServiceImpl extends AbstractService<Inno72Store> implements St
 				logger.info("请填写使用时长");
 				return Results.failure("请填写使用时长");
 			}
-			model.setStartTime(DateUtil.toDateTime(model.getStartTimeStr(), DateUtil.DF_ONLY_YMDHM_S1));
-			model.setEndTime(DateUtil.toDateTime(model.getEndTimeStr(), DateUtil.DF_ONLY_YMDHM_S1));
+			model.setStartTime(DateUtil.toDateTime(model.getStartTimeStr(), DateUtil.DF_FULL_S1));
+			model.setEndTime(DateUtil.toDateTime(model.getEndTimeStr(), DateUtil.DF_FULL_S1));
 
 			inno72StoreMapper.insert(model);
 

@@ -32,9 +32,8 @@ public class StoreExpressController {
 	private StoreExpressService storeExpressService;
 
 	@RequestMapping(value = "/add", method = { RequestMethod.POST, RequestMethod.GET })
-	public Result<String> add(@RequestBody StoreOrderVo storeOrderVo) {
-		storeExpressService.saveModel(storeOrderVo);
-		return ResultGenerator.genSuccessResult();
+	public Result<Object> add(@RequestBody StoreOrderVo storeOrderVo) {
+		return storeExpressService.saveModel(storeOrderVo);
 	}
 
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST, RequestMethod.GET })
