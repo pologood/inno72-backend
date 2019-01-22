@@ -88,6 +88,8 @@ public class StoreExpressServiceImpl extends AbstractService<Inno72StoreExpress>
 		for (Inno72StoreExpress inno72StoreExpress : addExpressList) {
 			inno72StoreExpressMapper.insert(inno72StoreExpress);
 		}
+		storeOrder.setUpdateTime(LocalDateTime.now());
+		inno72StoreOrderMapper.updateByPrimaryKeySelective(storeOrder);
 
 		// inno72StoreExpressMapper.insertStoreExpressList(addExpressList);
 		return Results.success();
