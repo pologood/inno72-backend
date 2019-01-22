@@ -65,6 +65,14 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 		if(alarmParam != null){
 			LocalDate localDate = LocalDate.now();
 			List<String> dateList = DateUtil.getMonthFullDay(localDate);
+			String lastDateStr = DateUtil.getLastDay(2019,1);
+			LocalDate lastDate = DateUtil.toDate(lastDateStr,DateUtil.DF_ONLY_YMD_S1);
+			List<String> dateList1 = DateUtil.getMonthFullDay(lastDate);
+			for(String findTime:dateList1){
+				if(!dateList.contains(findTime)){
+					dateList.add(findTime);
+				}
+			}
 			for(String findTime:dateList){
 				LocalDate findDate = DateUtil.toDate(findTime,DateUtil.DF_ONLY_YMD_S1);
 				LocalDate nowDate = LocalDate.now();
