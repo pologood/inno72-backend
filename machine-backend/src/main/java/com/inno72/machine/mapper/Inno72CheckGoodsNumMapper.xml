@@ -18,9 +18,10 @@
   </resultMap>
 
   <select id="selectListByPage" resultMap="BaseResultMap">
-      select cgn.*,g.name goodsName,vam.activity_name,cu.name checkUserName from inno72_check_goods_num cgn
+      select cgn.*,g.name goodsName,if(a.name is null ,i.name,a.name) activity_name,cu.name checkUserName from inno72_check_goods_num cgn
       left join inno72_goods g on cgn.goods_id=g.id
-      left join view_activity_machine vam on cgn.activity_id=vam.activity_id
+      left join inno72_activity a on cgn.activity_id=a.id
+      left join inno72_interact i on cgn.activity_id=i.id
       left join inno72_check_user cu on cgn.check_user_id=cu.id
       <where>
           <if test="keyword != null">
@@ -29,6 +30,7 @@
           </if>
       </where>
       group by cgn.id
+      order by a.is_delete,i.status
   </select>
 
 
