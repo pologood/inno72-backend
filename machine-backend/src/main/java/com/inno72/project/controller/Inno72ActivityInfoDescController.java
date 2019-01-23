@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -42,7 +43,10 @@ public class Inno72ActivityInfoDescController {
     private Inno72InteractMapper inno72InteractMapper;
 
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result add(@Valid Inno72ActivityInfoDesc inno72ActivityInfoDesc) {
+    public Result add(@Valid Inno72ActivityInfoDesc inno72ActivityInfoDesc, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
+		}
 		Inno72User inno72User = getmUser();
 		inno72ActivityInfoDesc.setCreator(inno72User.getId());
 		inno72ActivityInfoDesc.setCreateTime(LocalDateTime.now());
