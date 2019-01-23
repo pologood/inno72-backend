@@ -59,10 +59,10 @@
 	      	<if test="keyword != null and keyword != ''">
               and (o.sender like CONCAT('%','${keyword}','%')
               	or o.receiver like CONCAT('%','${keyword}','%')
-              	or o.creater like CONCAT('%','${keyword}','%'
+              	or o.creater like CONCAT('%','${keyword}','%')
               	or g.code like CONCAT('%','${keyword}','%')
               	or g.name like CONCAT('%','${keyword}','%')
-              	)
+              	or m.merchant_name like CONCAT('%','${keyword}','%')
               )
           	</if>
         ORDER BY o.update_time DESC
@@ -104,6 +104,7 @@
               	or o.receiver like CONCAT('%','${keyword}','%')
               	or g.code like CONCAT('%','${keyword}','%')
               	or g.name like CONCAT('%','${keyword}','%')
+              	or m.merchant_name like CONCAT('%','${keyword}','%')
               )
           </if>
         ORDER BY o.update_time DESC
