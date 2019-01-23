@@ -51,7 +51,7 @@ public class Inno72ActivityInfoDesc {
 
 	@Column(name = "info_date")
 	@JsonSerialize(using = CustomLocalDateSerializer.class)
-	@DateTimeFormat(pattern = "yyyy年MM月dd日")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@NotNull(message = "活动日志日期为空!")
 	private LocalDate infoDate;
 
