@@ -65,7 +65,7 @@
               	or m.merchant_name like CONCAT('%','${keyword}','%')
               )
           	</if>
-        ORDER BY o.update_time DESC
+        ORDER BY o.create_time DESC
   </select>
   
   <select id="selectReceiveOrderByPage" parameterType="java.util.Map" resultType="java.util.Map">
