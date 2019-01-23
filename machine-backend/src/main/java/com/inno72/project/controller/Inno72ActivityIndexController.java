@@ -15,10 +15,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
-import com.inno72.common.Results;
 import com.inno72.project.model.Inno72ActivityIndex;
 import com.inno72.project.service.Inno72ActivityIndexService;
-import com.inno72.project.vo.Inno72ActivityIndexVo;
 
 /**
 * Created by CodeGenerator on 2019/01/11.

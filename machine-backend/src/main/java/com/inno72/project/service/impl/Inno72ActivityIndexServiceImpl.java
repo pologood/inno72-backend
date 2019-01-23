@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
+import com.inno72.Interact.mapper.Inno72InteractMapper;
+import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.common.AbstractService;
 import com.inno72.common.JSR303Util;
 import com.inno72.common.Result;
@@ -49,7 +51,7 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 	private Inno72ActivityInfoDescMapper inno72ActivityInfoDescMapper;
 
 	@Resource
-	private Inno72ActivityMapper inno72ActivityMapper;
+	private Inno72InteractMapper inno72InteractMapper;
 
 	@Resource
 	private Inno72MerchantUserMapper inno72MerchantUserMapper;
@@ -116,8 +118,8 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 		for (Inno72ActivityIndex index : indexList){
 
 			String activityId = index.getActivityId();
-			Inno72ActivityVo inno72ActivityVo = inno72ActivityMapper.selectById(activityId);
-			if (inno72ActivityVo == null){
+			Inno72Interact inno72Interact = inno72InteractMapper.selectByPrimaryKey(activityId);
+			if (inno72Interact == null){
 				return Results.failure("活动不在呀!");
 			}
 
@@ -157,7 +159,7 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 				index.setOperator(mUser.getName());
 				index.setCreator(mUser.getName());
 				index.setId(StringUtil.getUUID());
-				index.setActivityName(inno72ActivityVo.getName());
+				index.setActivityName(inno72Interact.getName());
 				insertS.add(index);
 
 			}else {
