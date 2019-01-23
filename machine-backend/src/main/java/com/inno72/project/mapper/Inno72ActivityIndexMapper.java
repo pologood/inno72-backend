@@ -11,4 +11,6 @@ import com.inno72.project.model.Inno72ActivityIndex;
 public interface Inno72ActivityIndexMapper extends Mapper<Inno72ActivityIndex> {
 	List<Inno72ActivityIndex> selectIndex(@Param("merchantId") String merchantId,
 			@Param("activityId") String activityId, @Param("activityIndexType") String activityIndexType);
+
+	int insertS(List<Inno72ActivityIndex> list);
 }
