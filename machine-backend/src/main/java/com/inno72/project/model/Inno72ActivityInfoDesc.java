@@ -33,7 +33,6 @@ public class Inno72ActivityInfoDesc {
 	 * 活动名称
 	 */
 	@Column(name = "activity_name")
-	@NotNull(message = "活动名称为空!")
 	private String activityName;
 
 	/**

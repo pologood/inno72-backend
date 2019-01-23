@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.inno72.Interact.mapper.Inno72InteractMapper;
+import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.Results;
@@ -24,8 +26,6 @@ import com.inno72.common.StringUtil;
 import com.inno72.project.model.Inno72ActivityInfoDesc;
 import com.inno72.project.service.Inno72ActivityInfoDescService;
 import com.inno72.system.model.Inno72User;
-import com.inno72.project.model.Inno72ActivityInfoDesc;
-import com.inno72.project.service.Inno72ActivityInfoDescService;
 
 /**
 * Created by CodeGenerator on 2019/01/11.
@@ -38,12 +38,21 @@ public class Inno72ActivityInfoDescController {
     @Resource
     private Inno72ActivityInfoDescService inno72ActivityInfoDescService;
 
+    @Resource
+    private Inno72InteractMapper inno72InteractMapper;
+
     @RequestMapping(value = "/add", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result add(@Valid Inno72ActivityInfoDesc inno72ActivityInfoDesc) {
 		Inno72User inno72User = getmUser();
 		inno72ActivityInfoDesc.setCreator(inno72User.getId());
 		inno72ActivityInfoDesc.setCreateTime(LocalDateTime.now());
 		inno72ActivityInfoDesc.setId(StringUtil.getUUID());
+		String activityId = inno72ActivityInfoDesc.getActivityId();
+		Inno72Interact inno72Interact = inno72InteractMapper.selectByPrimaryKey(activityId);
+		if (inno72Interact == null){
+			return Results.failure("活动错误!");
+		}
+		inno72ActivityInfoDesc.setActivityName(inno72Interact.getName());
 		inno72ActivityInfoDescService.save(inno72ActivityInfoDesc);
         return ResultGenerator.genSuccessResult();
     }
