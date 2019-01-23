@@ -25,13 +25,11 @@ import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72ActivityIndexMapper;
 import com.inno72.project.mapper.Inno72ActivityInfoDescMapper;
-import com.inno72.project.mapper.Inno72ActivityMapper;
 import com.inno72.project.mapper.Inno72MerchantUserMapper;
 import com.inno72.project.model.Inno72ActivityIndex;
 import com.inno72.project.model.Inno72ActivityInfoDesc;
 import com.inno72.project.service.Inno72ActivityIndexService;
 import com.inno72.project.vo.Inno72ActivityIndexVo;
-import com.inno72.project.vo.Inno72ActivityVo;
 import com.inno72.system.model.Inno72User;
 
 
@@ -63,7 +61,8 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 			return Results.failure("参数不存在!");
 		}
 
-		List<Inno72ActivityIndex> indexList = inno72ActivityIndexMapper.selectIndex(merchantId, activityId);
+		List<Inno72ActivityIndex> indexList = inno72ActivityIndexMapper.selectIndex(merchantId, activityId,
+				null);
 
 		List<Inno72ActivityInfoDesc> infoList = inno72ActivityInfoDescMapper.selectInfoDesc(merchantId, activityId);
 
@@ -149,7 +148,7 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 			}
 
 			if (StringUtil.isEmpty(index.getId())){
-				List<Inno72ActivityIndex> sss = inno72ActivityIndexMapper.selectIndex(machineId, activityId);
+				List<Inno72ActivityIndex> sss = inno72ActivityIndexMapper.selectIndex(machineId, activityId, activityIndexType);
 				if (sss.size() > 0){
 					return Results.failure("提交的指标重复");
 				}

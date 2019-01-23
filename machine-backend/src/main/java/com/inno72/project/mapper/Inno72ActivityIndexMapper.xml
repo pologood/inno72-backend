@@ -21,5 +21,8 @@
     <select id="selectIndex" resultMap="BaseResultMap">
       select * from inno72_activity_index
         where activity_id = #{activityId} and merchant_id = #{merchantId}
+            <if test="activityIndexType != null">
+              and activity_index_type = #{activityIndexType}
+            </if>
     </select>
 </mapper>
