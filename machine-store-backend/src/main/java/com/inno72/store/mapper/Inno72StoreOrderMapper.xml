@@ -54,6 +54,7 @@
 			) e ON e.order_id = o.id
 			LEFT JOIN inno72_storekeeper_storte ss ON ss.store_id=o.send_id
 		WHERE o.order_type=1 and ss.storekeeper_id = #{userId}
+			<if test="status != null and status !=''"> and o.status =#{status} </if>
 	    	<if test="beginTime != null and beginTime !=''"> and o.create_time <![CDATA[>=]]> #{beginTime} </if>
       		<if test="endTime != null and endTime !=''"> and o.create_time <![CDATA[<=]]> #{endTime} </if>
 	      	<if test="keyword != null and keyword != ''">

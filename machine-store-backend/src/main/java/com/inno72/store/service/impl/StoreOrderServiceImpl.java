@@ -341,7 +341,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 	 * 查询出库单
 	 */
 	@Override
-	public List<Map<String, Object>> findSendOrderByPage(String date, String keyword) {
+	public List<Map<String, Object>> findSendOrderByPage(String date, Integer status, String keyword) {
 
 		Inno72Storekeeper mUser = UserUtil.getKepper();
 
@@ -354,6 +354,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			params.put("beginTime", date.trim() + " 00:00:00");
 			params.put("endTime", date.trim() + " 23:59:59");
 		}
+		params.put("status", status);
 		return inno72StoreOrderMapper.selectSendOrderByPage(params);
 	}
 
@@ -361,7 +362,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 	 * 查询入库单
 	 */
 	@Override
-	public List<Map<String, Object>> findReceiveOrderByPage(String date, String keyword) {
+	public List<Map<String, Object>> findReceiveOrderByPage(String date, Integer status, String keyword) {
 		Inno72Storekeeper mUser = UserUtil.getKepper();
 
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -373,6 +374,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			params.put("beginTime", date.trim() + " 00:00:00");
 			params.put("endTime", date.trim() + " 23:59:59");
 		}
+		params.put("status", status);
 		return inno72StoreOrderMapper.selectReceiveOrderByPage(params);
 	}
 
