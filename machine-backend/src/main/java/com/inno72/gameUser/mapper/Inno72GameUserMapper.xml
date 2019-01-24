@@ -21,34 +21,13 @@
 		uc.phone,
 		uc.channel_user_key AS channelKey,
 		uc.user_nick AS userNick,
-		sex.sex,
-		age.age,
 		a.city,
-		tag.tagName,
 		date_format( uc.create_time, '%Y-%m-%d %H:%i:%s' ) AS createTime,
 		CONCAT(IFNULL( l1.mall,""),IFNULL( l1.name,"")) AS createArea,
 		date_format( login.last_time, '%Y-%m-%d %H:%i:%s' ) AS lastTime
 	FROM
 		inno72_game_user_channel uc
 		LEFT JOIN inno72_channel c ON c.id=uc.channel_id 
-		LEFT JOIN (
-			SELECT GROUP_CONCAT(tf.`content`) AS sex,tf.user_id
-			FROM inno72_game_user_tag_ref tf
-			LEFT JOIN inno72_game_user_tag t ON tf.tag_id=t.id
-			WHERE t.`code`='gender' GROUP BY tf.user_id
-		) sex ON sex.user_id=uc.game_user_id
-		LEFT JOIN (
-			SELECT GROUP_CONCAT(tf.`content`) AS age,tf.user_id
-			FROM inno72_game_user_tag_ref tf
-			LEFT JOIN inno72_game_user_tag t ON tf.tag_id=t.id
-			WHERE t.`code`='age' GROUP BY tf.user_id
-		) age ON age.user_id=uc.game_user_id
-		LEFT JOIN (
-			SELECT GROUP_CONCAT(tf.`content`) AS tagName,tf.user_id
-			FROM inno72_game_user_tag_ref tf
-			LEFT JOIN inno72_game_user_tag t ON tf.tag_id=t.id
-			WHERE t.`code`!='age' AND t.`code`!='gender' GROUP BY tf.user_id
-		) tag ON tag.user_id=uc.game_user_id
 		LEFT JOIN (
 			SELECT MAX(login.login_time) AS last_time,login.user_id
 			FROM inno72_game_user_login login GROUP BY login.user_id
@@ -65,12 +44,9 @@
       <if test="code !=null and code !=''">and LEFT(l2.area_code,#{num}) = LEFT(#{code},#{num})</if>
       <if test="beginTime != null and beginTime !=''  "> and uc.create_time <![CDATA[>=]]> #{beginTime} </if>
       <if test="endTime != null and endTime !='' "> and uc.create_time <![CDATA[<=]]> #{endTime} </if>
-      <if test="sex != null and sex !='' and sex !='未知' "> and sex.sex =#{sex} </if>
-      <if test="sex =='未知' "> and sex.sex is null </if>
       <if test="keyword != null">
         and (
-        tag.tagName like CONCAT('%','${keyword}','%')
-        OR l1.name like CONCAT('%','${keyword}','%')
+        l1.name like CONCAT('%','${keyword}','%')
         OR l1.mall like CONCAT('%','${keyword}','%')
         OR uc.phone like CONCAT('%','${keyword}','%')
         )
