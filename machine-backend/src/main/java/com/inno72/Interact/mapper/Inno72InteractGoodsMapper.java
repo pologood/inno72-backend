@@ -11,6 +11,8 @@ import com.inno72.common.Mapper;
 @org.apache.ibatis.annotations.Mapper
 public interface Inno72InteractGoodsMapper extends Mapper<Inno72InteractGoods> {
 
+	List<Map<String, Object>> getGoodsList(Map<String, Object> pm);
+
 	InteractGoodsVo selectInteractGoodsById(String id);
 
 	InteractGoodsVo selectInteractCouponById(String id);

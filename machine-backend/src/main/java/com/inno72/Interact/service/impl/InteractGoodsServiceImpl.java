@@ -70,7 +70,50 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 	private Inno72InteractGameRuleMapper inno72InteractGameRuleMapper;
 
 	@Override
-	public Result<String> save(InteractGoodsVo model) {
+	public Result<String> saveGoods(InteractGoodsVo model) {
+
+		try {
+			SessionData session = SessionUtil.sessionData.get();
+			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
+			if (mUser == null) {
+				logger.info("登陆用户为空");
+				return Results.failure("未找到用户登录信息");
+			}
+			String mUserId = Optional.ofNullable(mUser).map(Inno72User::getId).orElse(null);
+			List<Map<String, String>> list = model.getGoodsList();
+
+			if (list == null || list.size() <= 0) {
+				logger.info("请添加商品");
+				return Results.failure("请添加商品");
+			}
+			for (Map<String, String> goods : list) {
+				String goodsId = goods.get("goodsId");
+				Inno72InteractGoods interactGoods = new Inno72InteractGoods();
+				interactGoods.setId(StringUtil.getUUID());
+				interactGoods.setInteractId(model.getInteractId());
+				interactGoods.setType(0);
+				interactGoods.setGoodsId(goodsId);
+				Inno72Goods g = inno72GoodsMapper.selectByPrimaryKey(goodsId);
+
+				// 微信类型操作默认店铺
+				Result<Object> sr = this.wxChannlShops(g.getId(), model.getInteractId(), mUserId);
+				if (sr.getCode() == 0) {
+					model.setShopId(sr.getData().toString());
+				}
+
+				inno72InteractGoodsMapper.insert(interactGoods);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+		return Results.success("操作成功");
+	}
+
+	@Override
+	public Result<String> saveCoupon(InteractGoodsVo model) {
 
 		try {
 			SessionData session = SessionUtil.sessionData.get();
@@ -85,7 +128,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 			Inno72InteractGoods interactGoods = new Inno72InteractGoods();
 			interactGoods.setId(StringUtil.getUUID());
 			interactGoods.setInteractId(model.getInteractId());
-			interactGoods.setType(model.getType());
+			interactGoods.setType(1);
 			if (null == model.getType()) {
 				logger.info("请选择商品类型");
 				return Results.failure("请选择商品类型");
@@ -106,31 +149,8 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 			}
 
 			if (0 == model.getType()) {
-
-				if (StringUtil.isBlank(model.getName())) {
-					logger.info("请填写商品名称");
-					return Results.failure("请填写商品名称");
-				}
-				if (StringUtil.isBlank(model.getCode())) {
-					logger.info("请填写商品ID");
-					return Results.failure("请填写商品ID");
-				}
-				if (null == model.getImg()) {
-					logger.info("请上传图片");
-					return Results.failure("请上传图片");
-				}
-
-				model.setId(StringUtil.getUUID());
-				model.setUseType(1);
-				model.setIsDelete(0);
-				model.setCreateId(mUserId);
-				model.setUpdateId(mUserId);
-				model.setCreateTime(LocalDateTime.now());
-				model.setUpdateTime(LocalDateTime.now());
-
-				inno72GoodsMapper.insert(model);
-				interactGoods.setGoodsId(model.getId());
-				interactGoods.setUserDayNumber(model.getUserDayNumber());
+				logger.info("参数错误");
+				return Results.failure("参数错误");
 			} else {
 				if (StringUtil.isBlank(model.getName())) {
 					logger.info("请填写优惠券名称");
@@ -225,6 +245,14 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					shops.setUpdateTime(LocalDateTime.now());
 
 					inno72ShopsMapper.insertSelective(shops);
+
+					return Results.warn("微店ID", 0, shops.getId());
+				}
+				Inno72InteractShops pm = new Inno72InteractShops();
+				pm.setInteractId(interactId);
+				pm.setShopsId(merchantId);
+				List<Inno72InteractShops> interactShopsList = inno72InteractShopsMapper.select(pm);
+				if (interactShopsList.size() == 0) {
 					// 活动关联店铺
 					Inno72InteractShops interactShops = new Inno72InteractShops();
 					interactShops.setId(StringUtil.getUUID());
@@ -232,9 +260,9 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					interactShops.setShopsId(merchantId);
 					inno72InteractShopsMapper.insert(interactShops);
 
-					return Results.warn("微店ID", 0, shops.getId());
+					return Results.warn("微店ID", 0, merchantId);
 				}
-				return Results.warn("微店ID", 0, shopsList.get(0).getId());
+				return Results.warn("微店ID", 0, merchantId);
 			} else {
 				return Results.failure("无需操作店铺");
 			}
@@ -246,8 +274,7 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 	}
 
 	@Override
-	public Result<String> update(InteractGoodsVo model) {
-
+	public Result<String> updateCoupon(InteractGoodsVo model) {
 		try {
 			SessionData session = SessionUtil.sessionData.get();
 			Inno72User mUser = Optional.ofNullable(session).map(SessionData::getUser).orElse(null);
@@ -279,20 +306,8 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 			}
 
 			if (0 == model.getType()) {
-				if (StringUtil.isBlank(model.getName())) {
-					logger.info("请填写商品名称");
-					return Results.failure("请填写商品名称");
-				}
-				if (StringUtil.isBlank(model.getCode())) {
-					logger.info("请填写商品编码");
-					return Results.failure("请填写商品编码");
-				}
-
-				model.setUpdateId(mUserId);
-				model.setUpdateTime(LocalDateTime.now());
-
-				inno72GoodsMapper.updateByPrimaryKeySelective(model);
-				interactGoods.setUserDayNumber(model.getUserDayNumber());
+				logger.info("参数错误");
+				return Results.failure("参数错误");
 			} else {
 				if (StringUtil.isBlank(model.getName())) {
 					logger.info("请填写优惠券名称");
@@ -378,13 +393,25 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 
 	@Override
 	public List<InteractGoodsVo> getList(String interactId, String shopsId, Integer isAlone) {
-		logger.info("---------------------获取活动下商品列表-------------------");
+		logger.info("---------------------获取活动下已添加的商品列表-------------------");
 
 		Map<String, Object> pm = new HashMap<>();
 		pm.put("interactId", interactId);
 		pm.put("shopsId", shopsId);
 		pm.put("isAlone", isAlone);
 		return inno72InteractGoodsMapper.selectGoods(pm);
+
+	}
+
+	@Override
+	public List<Map<String, Object>> getToAddList(String interactId, String shopsId, String sellerId) {
+		logger.info("---------------------获取将要添加的商品列表-------------------");
+
+		Map<String, Object> pm = new HashMap<>();
+		pm.put("interactId", interactId);
+		pm.put("shopId", shopsId);
+		pm.put("sellerId", sellerId);
+		return inno72InteractGoodsMapper.getGoodsList(pm);
 
 	}
 
@@ -430,12 +457,6 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 					return Results.failure("该商品已关联优惠券不能删除");
 				}
 
-				Inno72Goods goods = new Inno72Goods();
-				goods.setId(goodsId);
-				goods.setIsDelete(1);
-				goods.setUpdateId(mUserId);
-				goods.setUpdateTime(LocalDateTime.now());
-				inno72GoodsMapper.updateByPrimaryKeySelective(goods);
 			} else {
 				// 清空优惠券原来关联的商品
 				Inno72InteractGoods old = new Inno72InteractGoods();
