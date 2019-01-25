@@ -241,6 +241,8 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			goodsDetail.setDifferCount(number);
 			goodsDetail.setCreateTime(LocalDateTime.now());
 			inno72CheckGoodsDetailMapper.insertSelective(goodsDetail);
+			inno72StoreOrder.setIsDelete(1);
+			inno72StoreOrderMapper.updateByPrimaryKeySelective(inno72StoreOrder);
 		}
 		return ResultGenerator.genSuccessResult();
 	}
