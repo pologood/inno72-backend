@@ -71,7 +71,7 @@ public class StoreOrderController {
     public ModelAndView list(@RequestBody StoreOrderVo storeOrderVo) {
     	logger.info("查询订单集合接收参数:{}",JSON.toJSON(storeOrderVo));
         List<Inno72StoreOrder> list = storeOrderService.findOrderByPage(storeOrderVo);
-        logger.info("查询订单集合返回结果:{}",JSON.toJSON(ResultPages.page(ResultGenerator.genSuccessResult(list))));
+        logger.info("查询订单集合返回结果:{}",JSON.toJSON(list));
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
 
