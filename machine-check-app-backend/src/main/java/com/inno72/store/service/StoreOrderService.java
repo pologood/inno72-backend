@@ -23,4 +23,6 @@ public interface StoreOrderService extends Service<Inno72StoreOrder> {
 	Inno72StoreOrder findOrderById(String id);
 
 	Result<List<Inno72CheckGoodsNum>> findActivityList(StoreOrderVo storeOrderVo);
+
+	Result<String> deleteModel(String id);
 }

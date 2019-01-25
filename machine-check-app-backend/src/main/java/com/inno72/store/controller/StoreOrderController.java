@@ -43,32 +43,43 @@ public class StoreOrderController {
         return result;
     }
     @RequestMapping(value = "/delete", method = { RequestMethod.POST,  RequestMethod.GET})
-    public Result<String> delete(@RequestParam String id) {
-        storeOrderService.deleteById(id);
-        return ResultGenerator.genSuccessResult();
+    public Result<String> delete(@RequestBody StoreOrderVo storeOrderVo) {
+    	String id = storeOrderVo.getId();
+    	logger.info("删除寄出单接口接收参数：{}",JSON.toJSON(id));
+        Result<String> result = storeOrderService.deleteModel(id);
+		logger.info("删除寄出单接口返回结果：{}",JSON.toJSON(result));
+        return result;
     }
     
     @RequestMapping(value = "/update", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<String> update(@RequestBody StoreOrderVo storeOrderVo) {
+		logger.info("修改寄出单接口接收参数：{}",JSON.toJSON(storeOrderVo));
         storeOrderService.updateOrder(storeOrderVo);
+        logger.info("修改寄出单返回结果：{}",JSON.toJSON(ResultGenerator.genSuccessResult()));
         return ResultGenerator.genSuccessResult();
     }
     
     @RequestMapping(value = "/detail", method = { RequestMethod.POST,  RequestMethod.GET})
     public Result<Inno72StoreOrder> detail(@RequestBody StoreOrderVo storeOrderVo) {
+    	logger.info("查询寄出单详情接收参数：{}",JSON.toJSON(storeOrderVo));
         Inno72StoreOrder storeOrder = storeOrderService.findOrderById(storeOrderVo.getId());
+		logger.info("查询寄出单详情返回结果：{}",JSON.toJSON(storeOrder));
         return ResultGenerator.genSuccessResult(storeOrder);
     }
     
     @RequestMapping(value = "/list", method = { RequestMethod.POST,  RequestMethod.GET})
     public ModelAndView list(@RequestBody StoreOrderVo storeOrderVo) {
+    	logger.info("查询订单集合接收参数:{}",JSON.toJSON(storeOrderVo));
         List<Inno72StoreOrder> list = storeOrderService.findOrderByPage(storeOrderVo);
+        logger.info("查询订单集合返回结果:{}",JSON.toJSON(ResultPages.page(ResultGenerator.genSuccessResult(list))));
         return ResultPages.page(ResultGenerator.genSuccessResult(list));
     }
 
     @RequestMapping(value = "/activityList")
     public Result<List<Inno72CheckGoodsNum>> activityList(@RequestBody StoreOrderVo storeOrderVo){
+    	logger.info("查询活动列表接收参数{}",JSON.toJSON(storeOrderVo));
 		Result<List<Inno72CheckGoodsNum>> result = storeOrderService.findActivityList(storeOrderVo);
+		logger.info("查询活动列表返回结果{}",JSON.toJSON(result));
 		return result;
 	}
 }

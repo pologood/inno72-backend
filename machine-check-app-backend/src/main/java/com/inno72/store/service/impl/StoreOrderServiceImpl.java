@@ -206,4 +206,42 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		List<Inno72CheckGoodsNum> list = inno72CheckGoodsNumMapper.selectActivityList(map);
 		return ResultGenerator.genSuccessResult(list);
 	}
+
+	@Override
+	public Result<String> deleteModel(String id) {
+		Inno72StoreOrder inno72StoreOrder = inno72StoreOrderMapper.selectByPrimaryKey(id);
+		if(inno72StoreOrder != null){
+			int isDelete = inno72StoreOrder.getIsDelete();
+			if(isDelete == 1){
+				return ResultGenerator.genSuccessResult();
+			}
+			int number = inno72StoreOrder.getNumber();
+			String checkUserId = UserUtil.getUser().getId();
+			String goodsId = inno72StoreOrder.getGoods();
+			String activityId = inno72StoreOrder.getActivity();
+			Map<String,Object> goodsMap = new HashMap<>();
+			goodsMap.put("checkUserId",checkUserId);
+			goodsMap.put("goodsId",goodsId);
+			goodsMap.put("activityId",activityId);
+			Inno72CheckGoodsNum goodsNum = inno72CheckGoodsNumMapper.selectByparam(goodsMap);
+			if(goodsNum != null){
+				int receiveTotalCount = goodsNum.getReceiveTotalCount();
+				receiveTotalCount += number;
+				int supplyTotalCount = goodsNum.getSupplyTotalCount();
+				int differTotalCount = receiveTotalCount-supplyTotalCount;
+				goodsNum.setReceiveTotalCount(receiveTotalCount);
+				goodsNum.setDifferTotalCount(differTotalCount);
+				inno72CheckGoodsNumMapper.updateByPrimaryKeySelective(goodsNum);
+			}
+			Inno72CheckGoodsDetail goodsDetail = new Inno72CheckGoodsDetail();
+			goodsDetail.setGoodsNumId(goodsNum.getId());
+			goodsDetail.setId(StringUtil.getUUID());
+			goodsDetail.setReceiveCount(number);
+			goodsDetail.setSupplyCount(0);
+			goodsDetail.setDifferCount(number);
+			goodsDetail.setCreateTime(LocalDateTime.now());
+			inno72CheckGoodsDetailMapper.insertSelective(goodsDetail);
+		}
+		return ResultGenerator.genSuccessResult();
+	}
 }
