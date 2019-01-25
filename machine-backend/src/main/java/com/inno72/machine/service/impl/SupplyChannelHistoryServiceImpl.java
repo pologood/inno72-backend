@@ -1,5 +1,6 @@
 package com.inno72.machine.service.impl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.common.AbstractService;
+import com.inno72.common.DateUtil;
 import com.inno72.common.ExportExcel;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
@@ -118,9 +120,15 @@ public class SupplyChannelHistoryServiceImpl extends AbstractService<Inno72Suppl
 
 		if (StringUtil.isNotEmpty(beginTime) && StringUtil.isNotEmpty(beginTime.trim())) {
 			map.put("beginTime", beginTime.trim() + " 00:00:00");
+		} else {
+			beginTime = DateUtil.toStr(LocalDate.now().plusWeeks(-3), DateUtil.DF_ONLY_YMD_S1);
+			map.put("beginTime", beginTime.trim() + " 00:00:00");
 		}
 		if (StringUtil.isNotEmpty(endTime) && StringUtil.isNotEmpty(endTime.trim())) {
 			map.put("endTime", endTime.trim() + " 23:59:59");
+		} else {
+			endTime = DateUtil.toStr(LocalDate.now(), DateUtil.DF_ONLY_YMD_S1);
+			map.put("endTime", endTime + " 23:59:59");
 		}
 		if (StringUtil.isNotEmpty(keyword) && StringUtil.isNotEmpty(keyword.trim())) {
 			map.put("keyword", keyword.trim());
@@ -146,9 +154,15 @@ public class SupplyChannelHistoryServiceImpl extends AbstractService<Inno72Suppl
 
 		if (StringUtil.isNotEmpty(beginTime) && StringUtil.isNotEmpty(beginTime.trim())) {
 			map.put("beginTime", beginTime.trim() + " 00:00:00");
+		} else {
+			beginTime = DateUtil.toStr(LocalDate.now().plusWeeks(-3), DateUtil.DF_ONLY_YMD_S1);
+			map.put("beginTime", beginTime.trim() + " 00:00:00");
 		}
 		if (StringUtil.isNotEmpty(endTime) && StringUtil.isNotEmpty(endTime.trim())) {
 			map.put("endTime", endTime.trim() + " 23:59:59");
+		} else {
+			endTime = DateUtil.toStr(LocalDate.now(), DateUtil.DF_ONLY_YMD_S1);
+			map.put("endTime", endTime + " 23:59:59");
 		}
 		if (StringUtil.isNotEmpty(keyword) && StringUtil.isNotEmpty(keyword.trim())) {
 			map.put("keyword", keyword.trim());

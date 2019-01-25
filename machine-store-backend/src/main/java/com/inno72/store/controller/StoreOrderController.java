@@ -62,8 +62,8 @@ public class StoreOrderController {
 	 * 查询出库单
 	 */
 	@RequestMapping(value = "/sendOrderList", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView sendOrderList(String date, String keyword) {
-		List<Map<String, Object>> list = storeOrderService.findSendOrderByPage(date, keyword);
+	public ModelAndView sendOrderList(String date, Integer status, String keyword) {
+		List<Map<String, Object>> list = storeOrderService.findSendOrderByPage(date, status, keyword);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 
@@ -71,8 +71,8 @@ public class StoreOrderController {
 	 * 查询入库单
 	 */
 	@RequestMapping(value = "/receiveOrderList", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView receiveOrderList(String date, String keyword) {
-		List<Map<String, Object>> list = storeOrderService.findReceiveOrderByPage(date, keyword);
+	public ModelAndView receiveOrderList(String date, Integer status, String keyword) {
+		List<Map<String, Object>> list = storeOrderService.findReceiveOrderByPage(date, status, keyword);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
 

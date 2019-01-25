@@ -15,9 +15,9 @@ public interface StoreOrderService extends Service<Inno72StoreOrder> {
 
 	Result<Object> saveModel(Inno72StoreOrder model);
 
-	List<Map<String, Object>> findSendOrderByPage(String date, String keyword);
+	List<Map<String, Object>> findSendOrderByPage(String date, Integer status, String keyword);
 
-	List<Map<String, Object>> findReceiveOrderByPage(String date, String keyword);
+	List<Map<String, Object>> findReceiveOrderByPage(String date, Integer status, String keyword);
 
 	StoreOrderVo findDetailById(String id);
 
