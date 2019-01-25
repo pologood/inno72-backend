@@ -99,6 +99,7 @@ public class StorekeeperServiceImpl extends AbstractService<Inno72Storekeeper> i
 		this.addToStorte(storeIds,storekeeperId);
 		Condition functionCondition = new Condition(Inno72StorekeeperFunction.class);
 		functionCondition.createCriteria().andEqualTo("storekeeperId",storekeeperId);
+		inno72StorekeeperFunctionMapper.deleteByCondition(functionCondition);
 		this.addToFunction(functionIds,storekeeperId);
 		return ResultGenerator.genSuccessResult();
 	}
