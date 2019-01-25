@@ -263,6 +263,7 @@
       select count(so.id) from inno72_store_order so
       left join inno72_storekeeper_storte ss on so.receive_id = ss.store_id
       where ss.storekeeper_id= #{userId} and so.order_type=0 and so.receive_type=2
+      and so.status=0
       and so.is_delete = 0
   </select>
 
@@ -271,6 +272,7 @@
       left join inno72_storekeeper_storte ss on so.send_id = ss.store_id
       left join inno72_store_express se on so.id=se.order_id
       where ss.storekeeper_id= #{userId} and so.order_type=1
+      and so.status=0
       and (se.express_num is null or se.express_num='')
       and so.is_delete = 0
   </select>
