@@ -162,6 +162,10 @@ public class StorekeeperServiceImpl extends AbstractService<Inno72Storekeeper> i
 			}
 		}
 		if(keeper != null){
+			int status = keeper.getStatus();
+			if(status != 0){
+				return Results.failure("用户已禁用");
+			}
 			String token = StringUtil.getUUID();
 			String tokenKey = CommonConstants.STORE_KEEPER_TOKEN_KEY_PREF+token;
 			SessionData sessionData = new SessionData(token, keeper);
