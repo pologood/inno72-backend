@@ -177,8 +177,10 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 
 		}
 
-		int i = inno72ActivityIndexMapper.insertS(insertS);
-		LOGGER.info("插入核心指标 -> {}, {}", JSON.toJSONString(insertS), i);
+		if(insertS.size() > 0){
+			int i = inno72ActivityIndexMapper.insertS(insertS);
+			LOGGER.info("插入核心指标 -> {}, {}", JSON.toJSONString(insertS), i);
+		}
 
 		return Results.success();
 	}
