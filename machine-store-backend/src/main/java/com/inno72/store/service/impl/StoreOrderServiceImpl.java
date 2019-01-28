@@ -207,7 +207,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			// 保存出库单
 			inno72StoreOrderMapper.insertSelective(model);
 
-			this.storeGoodsDetail(model, model.getNumber(), model.getCapacity(), storeGoods.getId());
+			this.storeGoodsDetail(model, model.getNumber(), model.getCapacity(), storeGoods.getId(), 1);
 
 			return Results.warn("操作成功", 0, null);
 
@@ -298,22 +298,23 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 				: (storeOrder.getReceiveCapacity() + totalCapacity));
 
 		inno72StoreOrderMapper.updateByPrimaryKeySelective(storeOrder);
-		this.storeGoodsDetail(storeOrder, totalNumber, totalCapacity, storeGoods.getId());
+		this.storeGoodsDetail(storeOrder, totalNumber, totalCapacity, storeGoods.getId(), 0);
 		return Results.success();
 	}
 
 	/**
 	 * 记录商品出入库记录
 	 */
-	public void storeGoodsDetail(Inno72StoreOrder storeOrder, Integer number, Integer capacity, String storeGoodsId) {
+	public void storeGoodsDetail(Inno72StoreOrder storeOrder, Integer number, Integer capacity, String storeGoodsId,
+			Integer type) {
 		StringBuffer detail = new StringBuffer();
 		Inno72StoreGoodsDetail storeGoodsDetail = new Inno72StoreGoodsDetail();
-		if (storeOrder.getOrderType() == 0) {
+		if (type == 0) {
 			detail.append("由");
 			detail.append(storeOrder.getSender());
 			detail.append("发来商品");
 			detail.append(number.toString());
-			detail.append("件  入库完成");
+			detail.append("件 入库完成");
 			storeGoodsDetail.setType(0);
 		} else {
 			detail.append("由仓库");
@@ -322,7 +323,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 			detail.append(storeOrder.getReceiver());
 			detail.append(" 商品 ");
 			detail.append(number.toString());
-			detail.append("件  出库完成");
+			detail.append("件 出库完成");
 			storeGoodsDetail.setType(1);
 		}
 
