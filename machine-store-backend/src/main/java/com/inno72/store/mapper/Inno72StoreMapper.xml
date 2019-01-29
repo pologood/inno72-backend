@@ -40,7 +40,8 @@
 		LEFT JOIN inno72_storekeeper er ON er.id=ses.storekeeper_id
 		LEFT JOIN inno72_admin_area area ON area.code =s.area_code
 		GROUP BY s.id) t 
-		where 1=1
+		LEFT JOIN inno72_storekeeper_storte ss ON ss.store_id=t.id
+		where ss.storekeeper_id = #{userId}
 		<if test="keyword !=null and keyword !='' ">
 			AND ( t.name LIKE '%${keyword}%' 
 			or t.areaName LIKE '%${keyword}%' 

@@ -21,7 +21,6 @@ import com.inno72.Interact.mapper.Inno72InteractShopsMapper;
 import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.model.Inno72InteractGameRule;
 import com.inno72.Interact.model.Inno72InteractGoods;
-import com.inno72.Interact.model.Inno72InteractMachineGoods;
 import com.inno72.Interact.model.Inno72InteractShops;
 import com.inno72.Interact.service.InteractGoodsService;
 import com.inno72.Interact.vo.InteractGoodsVo;
@@ -439,9 +438,10 @@ public class InteractGoodsServiceImpl extends AbstractService<Inno72InteractGood
 
 			// 查看商品是否被机器关联
 			logger.info("删除商品判断是否关联机器");
-			Inno72InteractMachineGoods machineGoods = new Inno72InteractMachineGoods();
-			machineGoods.setGoodsId(goodsId);
-			int n = inno72InteractMachineGoodsMapper.selectCount(machineGoods);
+			Map<String, Object> pm = new HashMap<>();
+			pm.put("interactId", interactId);
+			pm.put("goodsId", goodsId);
+			int n = inno72InteractMachineGoodsMapper.getMachineGoodsCount(pm);
 			if (n > 0) {
 				logger.info("已关联到机器，不可删除");
 				return Results.failure("已关联到机器，不可删除");

@@ -158,8 +158,11 @@ public class StoreServiceImpl extends AbstractService<Inno72Store> implements St
 
 	@Override
 	public List<StoreVo> findByPage(String keyword) {
+		Inno72Storekeeper mUser = UserUtil.getKepper();
+
 		Map<String, Object> map = new HashMap<>();
 		map.put("keyword", keyword);
+		map.put("userId", mUser.getId());
 		return inno72StoreMapper.selectByPage(map);
 	}
 
