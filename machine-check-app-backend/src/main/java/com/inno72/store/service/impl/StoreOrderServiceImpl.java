@@ -164,28 +164,30 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		inno72StoreExpress.setUpdater(user.getName());
 		inno72StoreExpress.setUpdateTime(now);
 		inno72StoreExpressMapper.updateByPrimaryKeySelective(inno72StoreExpress);
-		Map<String,Object> goodsMap = new HashMap<>();
-		goodsMap.put("goodsId",storeOrderVo.getGoods());
-		goodsMap.put("checkUserId",user.getId());
-		goodsMap.put("activityId",storeOrderVo.getActivity());
-		Inno72CheckGoodsNum goodsNum = inno72CheckGoodsNumMapper.selectByparam(goodsMap);
-		if(goodsNum != null){
-			int receiveTotalCount = goodsNum.getReceiveTotalCount();
-			int supplyTotalCount = goodsNum.getSupplyTotalCount();
-			receiveTotalCount = receiveTotalCount+oldCount-newCount;
-			int differTotalCount = receiveTotalCount-supplyTotalCount;
-			goodsNum.setDifferTotalCount(differTotalCount);
-			goodsNum.setReceiveTotalCount(receiveTotalCount);
-			inno72CheckGoodsNumMapper.updateByPrimaryKeySelective(goodsNum);
+		if(oldCount != newCount){
+			Map<String,Object> goodsMap = new HashMap<>();
+			goodsMap.put("goodsId",storeOrderVo.getGoods());
+			goodsMap.put("checkUserId",user.getId());
+			goodsMap.put("activityId",storeOrderVo.getActivity());
+			Inno72CheckGoodsNum goodsNum = inno72CheckGoodsNumMapper.selectByparam(goodsMap);
+			if(goodsNum != null){
+				int receiveTotalCount = goodsNum.getReceiveTotalCount();
+				int supplyTotalCount = goodsNum.getSupplyTotalCount();
+				receiveTotalCount = receiveTotalCount+oldCount-newCount;
+				int differTotalCount = receiveTotalCount-supplyTotalCount;
+				goodsNum.setDifferTotalCount(differTotalCount);
+				goodsNum.setReceiveTotalCount(receiveTotalCount);
+				inno72CheckGoodsNumMapper.updateByPrimaryKeySelective(goodsNum);
+			}
+			Inno72CheckGoodsDetail goodsDetail = new Inno72CheckGoodsDetail();
+			goodsDetail.setGoodsNumId(goodsNum.getId());
+			goodsDetail.setId(StringUtil.getUUID());
+			goodsDetail.setReceiveCount(oldCount-newCount);
+			goodsDetail.setSupplyCount(0);
+			goodsDetail.setDifferCount(oldCount-newCount);
+			goodsDetail.setCreateTime(LocalDateTime.now());
+			inno72CheckGoodsDetailMapper.insertSelective(goodsDetail);
 		}
-		Inno72CheckGoodsDetail goodsDetail = new Inno72CheckGoodsDetail();
-		goodsDetail.setGoodsNumId(goodsNum.getId());
-		goodsDetail.setId(StringUtil.getUUID());
-		goodsDetail.setReceiveCount(oldCount-newCount);
-		goodsDetail.setSupplyCount(0);
-		goodsDetail.setDifferCount(oldCount-newCount);
-		goodsDetail.setCreateTime(LocalDateTime.now());
-		inno72CheckGoodsDetailMapper.insertSelective(goodsDetail);
 		return ResultGenerator.genSuccessResult();
 	}
 
