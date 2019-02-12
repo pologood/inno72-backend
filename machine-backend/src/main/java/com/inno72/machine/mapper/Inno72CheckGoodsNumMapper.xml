@@ -30,7 +30,7 @@
           </if>
       </where>
       group by cgn.id
-      order by a.is_delete,i.status
+      order by cgn.update_time desc,a.is_delete,i.status
   </select>
 
 
