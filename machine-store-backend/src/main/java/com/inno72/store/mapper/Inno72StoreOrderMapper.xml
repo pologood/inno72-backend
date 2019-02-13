@@ -38,8 +38,8 @@
 			g.`name` AS goodsName,
 			g.`code` goodsCode,
 			m.merchant_name AS merchantName,
-			o.sender,
-			o.receiver,
+			sd.name AS sender,
+			IFNULL(sr.name,ur.`name`) AS receiver ,
 			o.number,
 			o.creater,
 			o.`status`,
@@ -49,6 +49,9 @@
 			inno72_store_order o
 			LEFT JOIN inno72_goods g on g.id=o.goods
 			LEFT JOIN inno72_merchant m ON m.id =o.merchant
+			LEFT JOIN inno72_store sd on sd.id=o.send_id
+			LEFT JOIN inno72_store sr on sr.id=o.receive_id
+			LEFT JOIN inno72_check_user ur on ur.id=o.receive_id
 			LEFT JOIN (
 				SELECT se.order_id,COUNT(1) AS  expressNum FROM inno72_store_express se GROUP BY se.order_id
 			) e ON e.order_id = o.id
