@@ -26,8 +26,13 @@ import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.common.UploadUtil;
 import com.inno72.project.mapper.Inno72GoodsMapper;
+import com.inno72.project.mapper.Inno72MerchantMapper;
+import com.inno72.project.mapper.Inno72ShopsMapper;
 import com.inno72.project.model.Inno72Goods;
+import com.inno72.project.model.Inno72Merchant;
+import com.inno72.project.model.Inno72Shops;
 import com.inno72.project.service.GoodsService;
+import com.inno72.project.vo.Inno72GoodsVo;
 import com.inno72.system.model.Inno72User;
 
 /**
@@ -40,9 +45,13 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 
 	@Resource
 	private Inno72GoodsMapper inno72GoodsMapper;
+	@Resource
+	private Inno72ShopsMapper inno72ShopsMapper;
+	@Resource
+	private Inno72MerchantMapper inno72MerchantMapper;
 
 	Pattern pattern = Pattern.compile("^([+]?\\d{0,6})(\\.\\d{0,2})?");
-	Pattern patternNumbe = Pattern.compile("^[0-9]{1,8}$");
+	Pattern patternNumbe = Pattern.compile("^[0-9]{8}$");
 
 	@Override
 	public Result<String> saveModel(Inno72Goods model) {
@@ -54,21 +63,48 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
+			// 微信类型操作默认店铺
+			Inno72Merchant m = inno72MerchantMapper.selectByPrimaryKey(model.getSellerId());
+			if (m.getChannelCode().equals(CommonConstants.WECHATCODE)) {
+				Result<Object> sr = this.wxChannlShops(model.getSellerId(), mUser.getId());
+				if (sr.getCode() == 0) {
+					model.setShopId(sr.getData().toString());
+				}
+			}
+
+			if (StringUtil.isBlank(model.getShopId())) {
+				logger.info("请选择店铺");
+				return Results.failure("请选择店铺");
+			}
+
+			// 商品ID：如果选择的店铺渠道是天猫，不限制输入长度，但需要校验唯一性；如果选择的店铺渠道是点七二或微信，则需要输入8位正整数，且校验唯一性
+			if (m.getChannelCode().equals(CommonConstants.WECHATCODE)
+					|| m.getChannelCode().equals(CommonConstants.INNO72CODE)) {
+				Matcher match = patternNumbe.matcher(model.getCode());
+				if (!match.matches()) {
+					return Results.failure("商品ID请输入8位正整数");
+				}
+			}
 			int n = inno72GoodsMapper.getCount(model.getCode());
 			if (n > 0) {
-				logger.info("商品编码已存在");
-				return Results.failure("商品编码已存在");
+				logger.info("商品ID");
+				return Results.failure("商品ID已存在");
 			}
+			if (StringUtil.isNotBlank(model.getName())) {
+				Inno72Goods gn = new Inno72Goods();
+				gn.setName(model.getName());
+				gn.setIsDelete(0);
+				List<Inno72Goods> gnList = inno72GoodsMapper.select(gn);
+				if (null != gnList && gnList.size() > 0) {
+					logger.info("商品名称已存在");
+					return Results.failure("商品名称已存在");
+				}
+			}
+
 			if (null != model.getPrice()) {
 				Matcher match = pattern.matcher(model.getPrice().toString());
 				if (!match.matches()) {
 					return Results.failure("商品价格最大整数6位，小数点后两位");
-				}
-			}
-			if (null != model.getNumber()) {
-				Matcher match = patternNumbe.matcher(model.getNumber().toString());
-				if (!match.matches()) {
-					return Results.failure("商品数量最大8位整数");
 				}
 			}
 
@@ -87,6 +123,36 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 		return Results.success("操作成功");
 	}
 
+	// 微信渠道添加虚拟店铺
+	public Result<Object> wxChannlShops(String merchantId, String mUserId) {
+		try {
+			// 已添加 已添加返回ID
+			Inno72Shops params = new Inno72Shops();
+			params.setSellerId(merchantId);
+			params.setIsDelete(0);
+			List<Inno72Shops> shopsList = inno72ShopsMapper.select(params);
+			if (shopsList.size() == 0) {
+				Inno72Shops shops = new Inno72Shops();
+				shops.setShopName("微店");
+				shops.setShopCode("VD");
+				shops.setId(merchantId);
+				shops.setSellerId(merchantId);
+				shops.setIsDelete(0);
+				shops.setCreateId(mUserId);
+				shops.setUpdateId(mUserId);
+				shops.setCreateTime(LocalDateTime.now());
+				shops.setUpdateTime(LocalDateTime.now());
+
+				inno72ShopsMapper.insertSelective(shops);
+			}
+			return Results.warn("微店ID", 0, merchantId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			return Results.failure("操作失败");
+		}
+	}
+
 	@Override
 	public Result<String> updateModel(Inno72Goods model) {
 		logger.info("----------------商品修改--------------");
@@ -97,24 +163,60 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 				logger.info("登陆用户为空");
 				return Results.failure("未找到用户登录信息");
 			}
+			// 活动添加不可修改
+			int gu1 = inno72GoodsMapper.selectIsUseing1(model.getId());
+			if (gu1 > 0) {
+				return Results.failure("商品在活动中被使用，请先去活动中移除商品后修改！");
+			}
+
+			int gu2 = inno72GoodsMapper.selectIsUseing2(model.getId());
+			if (gu2 > 0) {
+				return Results.failure("商品在活动中被使用，请先去活动中移除商品后修改！");
+			}
+
+			// 微信类型操作默认店铺
+			Inno72Merchant m = inno72MerchantMapper.selectByPrimaryKey(model.getSellerId());
+			if (m.getChannelCode().equals(CommonConstants.WECHATCODE)) {
+				Result<Object> sr = this.wxChannlShops(model.getSellerId(), mUser.getId());
+				if (sr.getCode() == 0) {
+					model.setShopId(sr.getData().toString());
+				}
+			}
+			if (StringUtil.isBlank(model.getShopId())) {
+				logger.info("请选择店铺");
+				return Results.failure("请选择店铺");
+			}
+			// 商品ID：如果选择的店铺渠道是天猫，不限制输入长度，但需要校验唯一性；如果选择的店铺渠道是点七二或微信，则需要输入8位正整数，且校验唯一性
+			if (m.getChannelCode().equals(CommonConstants.WECHATCODE)
+					|| m.getChannelCode().equals(CommonConstants.INNO72CODE)) {
+				Matcher match = patternNumbe.matcher(model.getCode());
+				if (!match.matches()) {
+					return Results.failure("商品ID请输入8位正整数");
+				}
+			}
 			if (StringUtil.isNotBlank(model.getCode())) {
 				int n = inno72GoodsMapper.getCount(model.getCode());
 				Inno72Goods g = inno72GoodsMapper.selectByPrimaryKey(model.getId());
 				if (n > 0 && !g.getCode().equals(model.getCode())) {
-					logger.info("商品编码已存在");
-					return Results.failure("商品编码已存在,请确认");
+					logger.info("商品ID");
+					return Results.failure("商品ID已存在");
+				}
+			}
+			if (StringUtil.isNotBlank(model.getName())) {
+				Inno72Goods gn = new Inno72Goods();
+				gn.setName(model.getName());
+				gn.setIsDelete(0);
+				List<Inno72Goods> gnList = inno72GoodsMapper.select(gn);
+				gnList.remove(model);
+				if (null != gnList && gnList.size() > 0) {
+					logger.info("商品名称已存在");
+					return Results.failure("商品名称已存在");
 				}
 			}
 			if (null != model.getPrice()) {
 				Matcher match = pattern.matcher(model.getPrice().toString());
 				if (!match.matches()) {
 					return Results.failure("商品价格最大整数6位，小数点后两位");
-				}
-			}
-			if (null != model.getNumber()) {
-				Matcher match = patternNumbe.matcher(model.getNumber().toString());
-				if (!match.matches()) {
-					return Results.failure("商品数量最大8位整数");
 				}
 			}
 
@@ -156,8 +258,8 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 	}
 
 	@Override
-	public Inno72Goods findById(String id) {
-		Inno72Goods good = inno72GoodsMapper.selectById(id);
+	public Inno72GoodsVo findId(String id) {
+		Inno72GoodsVo good = inno72GoodsMapper.selectById(id);
 		if (StringUtil.isNotBlank(good.getImg())) {
 			good.setImg(CommonConstants.ALI_OSS + good.getImg());
 		}
@@ -204,6 +306,32 @@ public class GoodsServiceImpl extends AbstractService<Inno72Goods> implements Go
 		}
 		logger.info("[out-uploadImg]-空");
 		return Results.success("");
+
+	}
+
+	@Override
+	public Result<String> isExist(String code, String sellerId, String Id, int type) {
+		// 商品ID：如果选择的店铺渠道是天猫，不限制输入长度，但需要校验唯一性；如果选择的店铺渠道是点七二或微信，则需要输入8位正整数，且校验唯一性
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("type", type);
+		params.put("code", code);
+		params.put("id", Id);
+		if (0 == type) {// 商品ID
+			Inno72Merchant m = inno72MerchantMapper.selectByPrimaryKey(sellerId);
+			if (m.getChannelCode().equals(CommonConstants.WECHATCODE)
+					|| m.getChannelCode().equals(CommonConstants.INNO72CODE)) {
+				Matcher match = patternNumbe.matcher(code);
+				if (!match.matches()) {
+					return Results.warn("商品ID请输入8位正整数", 0, "false");
+				}
+			}
+		}
+		int n = inno72GoodsMapper.selectIsExist(params);
+		if (n > 0) {
+			return Results.warn("内容重复,请修改", 0, "false");
+		} else {
+			return Results.success();
+		}
 
 	}
 

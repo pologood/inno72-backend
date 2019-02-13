@@ -8,6 +8,8 @@
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="goods_type" jdbcType="VARCHAR" property="goodsType" />
     <result column="price" jdbcType="DECIMAL" property="price" />
     <result column="number" jdbcType="INTEGER" property="number" />
     <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
@@ -26,29 +28,35 @@
   <resultMap id="VoResultMap" type="com.inno72.project.vo.Inno72GoodsVo" extends="BaseResultMap">
     <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
     <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
+    <result column="goods_type_code" jdbcType="VARCHAR" property="goodsTypeCode" />
+    <result column="goods_type_parent_code" jdbcType="VARCHAR" property="goodsTypeParentCode" />
+    <result column="channel_code" jdbcType="VARCHAR" property="channelCode" />
   </resultMap>
   
   <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
 		SELECT
-		g.id,
-		g.name,
-		g.code,
-		g.price,
-		g.number,
-		g.img,
-		g.banner,
-		g.remark,
-		g.spec_remark,
-		g.create_id,
-		g.update_id,
-		g.create_time,
-		g.update_time,
-		m.merchant_name as seller_id,
-		s.shop_name AS shop_id
+			g.id,
+			g.name,
+			g.code,
+			g.brand_name,
+			g.price,
+			g.number,
+			g.img,
+			g.banner,
+			g.remark,
+			g.spec_remark,
+			g.create_id,
+			g.update_id,
+			g.create_time,
+			g.update_time,
+			m.merchant_name as seller_id,
+			s.shop_name AS shop_id,
+			gt.name AS goods_type
 		
 		from inno72_goods g 
 		LEFT JOIN inno72_merchant m on m.id=g.seller_id
 		LEFT JOIN inno72_shops s ON s.id = g.shop_id
+		LEFT JOIN  inno72_goods_type gt ON gt.code=g.goods_type
 		WHERE g.is_delete=0 
 		<if test="keyword !=null and keyword !=''">and ( g.name LIKE '%${keyword}%' or g.code LIKE '%${keyword}%' )</if>
 		<if test="code !=null and code !=''">and g.seller_id = #{code}</if>
@@ -60,6 +68,7 @@
 		g.id,
 		g.name,
 		g.code,
+		g.brand_name,
 		g.price,
 		g.number,
 		g.img,
@@ -73,13 +82,17 @@
 		g.create_time,
 		g.update_time,
 		m.merchant_name,
-		s.shop_name
+		s.shop_name,
+		CONCAT(IFNULL( gt.parent_name,''), '-', IFNULL( gt.name,'') ) AS goods_type,
+		gt.code AS goods_type_code,
+		gt.parent_code AS goods_type_parent_code,
+		m.channel_code
 		
 		from inno72_goods g 
 		LEFT JOIN inno72_merchant m on m.id=g.seller_id
 		LEFT JOIN inno72_shops s ON s.id = g.shop_id
-		WHERE g.is_delete=0 
-		<if test="id !=null and id !=''">and g.id = #{id}</if>
+		LEFT JOIN  inno72_goods_type gt ON gt.code=g.goods_type
+		WHERE g.id = #{id}
   </select>
   
   <select id="selectByShop" parameterType="java.util.Map" resultMap="BaseResultMap">
@@ -89,6 +102,16 @@
 		WHERE g.is_delete=0 
 		AND g.id NOT IN ( SELECT g.goods_id FROM inno72_interact_goods g )
 		<if test="shopId !=null and shopId !=''">and g.shop_id = #{shopId}</if>
+  </select>
+  
+  <select id="selectIsExist" parameterType="java.util.Map" resultType="int">
+		SELECT count(1) FROM inno72_goods g
+		WHERE g.is_delete = 0 
+        <if test="type ==0">and g.code = #{code}</if>
+        <if test="type ==1">and g.name = #{code}</if>
+        <if test="id !=null and id !=''">
+            and id !=#{id}
+        </if>
   </select>
   
   <select id="selectIsUseing" parameterType="String" resultType="int">
@@ -104,6 +127,15 @@
 	WHERE
 		p.is_delete=0 and goods_id=#{id} <![CDATA[and NOW() <= p.end_time ]]>
 	
+  </select>
+  <select id="selectIsUseing2" parameterType="String" resultType="int">
+	SELECT
+		count( 1 ) 
+	FROM
+		inno72_interact_goods g
+		LEFT JOIN inno72_interact i ON g.interact_id=i.id
+	WHERE
+		i.is_delete=0 and g.goods_id=#{id}
   </select>
   
   <select id="getCount" parameterType="String" resultType="int">
