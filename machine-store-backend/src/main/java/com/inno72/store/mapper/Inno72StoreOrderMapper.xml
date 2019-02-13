@@ -77,7 +77,7 @@
 			g.`code` goodsCode,
 			m.merchant_name AS merchantName,
 			o.sender,
-			o.receiver,
+			sr.name AS receiver,
 			o.number,
 			o.receive_number AS receiveNumber,
 			o.`status`,
@@ -87,6 +87,7 @@
 			inno72_store_order o
 			LEFT JOIN inno72_goods g on g.id=o.goods
 			LEFT JOIN inno72_merchant m ON m.id =o.merchant
+			LEFT JOIN inno72_store sr on sr.id=o.receive_id
 			LEFT JOIN (
 				SELECT
 					se.order_id,
