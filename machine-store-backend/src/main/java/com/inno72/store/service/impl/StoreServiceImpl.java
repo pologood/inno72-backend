@@ -20,8 +20,10 @@ import com.inno72.common.Results;
 import com.inno72.common.StringUtil;
 import com.inno72.common.UserUtil;
 import com.inno72.store.mapper.Inno72StoreMapper;
+import com.inno72.store.mapper.Inno72StorekeeperStorteMapper;
 import com.inno72.store.model.Inno72Store;
 import com.inno72.store.model.Inno72Storekeeper;
+import com.inno72.store.model.Inno72StorekeeperStorte;
 import com.inno72.store.service.StoreService;
 import com.inno72.store.vo.StoreVo;
 
@@ -38,6 +40,9 @@ public class StoreServiceImpl extends AbstractService<Inno72Store> implements St
 
 	@Resource
 	private Inno72StoreMapper inno72StoreMapper;
+
+	@Resource
+	private Inno72StorekeeperStorteMapper inno72StorekeeperStorteMapper;
 
 	@Override
 	public Result<Object> saveModel(StoreVo model) {
@@ -80,7 +85,14 @@ public class StoreServiceImpl extends AbstractService<Inno72Store> implements St
 			model.setStartTime(DateUtil.toDateTime(model.getStartTimeStr(), DateUtil.DF_FULL_S1));
 			model.setEndTime(DateUtil.toDateTime(model.getEndTimeStr(), DateUtil.DF_FULL_S1));
 
+			Inno72StorekeeperStorte keeperStorte = new Inno72StorekeeperStorte();
+			keeperStorte.setId(StringUtil.getUUID());
+			keeperStorte.setStoreId(model.getId());
+			keeperStorte.setStorekeeperId(mUserId);
+
 			inno72StoreMapper.insert(model);
+			// 创建人员分配该权限
+			inno72StorekeeperStorteMapper.insertSelective(keeperStorte);
 
 			return Results.warn("操作成功", 0, null);
 
