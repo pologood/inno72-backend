@@ -156,5 +156,6 @@
     <module>zuul</module>
     <module>machine-remote-backend</module>
     <module>machine-change</module>
+    <module>machine-store-backend</module>
   </modules>
 </project>

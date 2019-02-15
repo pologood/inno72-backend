@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.store.mapper.Inno72StoreExpressMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.store.model.Inno72StoreExpress">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="express_num" jdbcType="VARCHAR" property="expressNum" />
+    <result column="express_company" jdbcType="VARCHAR" property="expressCompany" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="receive_number" jdbcType="INTEGER" property="receiveNumber" />
+    <result column="receive_capacity" jdbcType="INTEGER" property="receiveCapacity" />
+    <result column="receive_time" jdbcType="TIMESTAMP" property="receiveTime" />
+    <result column="receiver" jdbcType="VARCHAR" property="receiver" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  <insert id="insertStoreExpressList" parameterType="java.util.List">
+        insert into inno72_store_express (id,order_id,express_num,express_company,number,creater,updater)
+        values
+        <foreach collection="list" item="t" index="index" separator=",">
+            (#{t.id}, #{t.orderId},#{t.expressNum},#{t.expressCompany},#{t.creater},#{t.updater})
+        </foreach>
+  </insert>
+  
+</mapper>

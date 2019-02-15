@@ -141,6 +141,9 @@ public class Inno72Machine implements Comparable<Inno72Machine>{
 	private String areaCode;
 
 	@Transient
+	private String activityId;
+
+	@Transient
 	private String activityName;
 
 	@Transient
@@ -535,6 +538,14 @@ public class Inno72Machine implements Comparable<Inno72Machine>{
 
 	public void setAreaCode(String areaCode) {
 		this.areaCode = areaCode;
+	}
+
+	public String getActivityId() {
+		return activityId;
+	}
+
+	public void setActivityId(String activityId) {
+		this.activityId = activityId;
 	}
 
 	public String getActivityName() {

@@ -68,6 +68,7 @@
   </sql>
 
   <select id="seleByParamForPg" resultMap="BaseResultMap">
+      select j.* ,ore.status AS refundStatus from(
       select * from  (select
       o.id,o.user_id,o.channel_id,o.machine_id,
       o.order_time,o.order_price,o.order_type,o.pay_status,o.pay_time,
@@ -84,8 +85,7 @@
       og.status orderGoodsStatus,
       if(a.name is null ,i.name,a.name) activity_name,
       if(g1.name is null,g2.name,g1.name) gameName,
-      c.channel_name channelName,
-      ore.status refundStatus
+      c.channel_name channelName
       from inno72_order o
       left join inno72_order_goods og on og.order_num=o.order_num
       left join inno72_game_user_channel guc on guc.game_user_id=o.user_id
@@ -136,7 +136,7 @@
           </if>
       </where>
     ORDER BY k.order_time desc
-    limit #{pageParam},20
+    limit #{pageParam},20) j LEFT JOIN inno72_order_refund ore ON ore.order_id = j.id
 
   </select>
 

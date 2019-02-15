@@ -36,6 +36,20 @@ public class Inno72Goods {
 	private String code;
 
 	/**
+	 * 商品类目code
+	 */
+	@NotBlank(message = "选择类目")
+	@Column(name = "goods_type")
+	private String goodsType;
+
+	/**
+	 * 品牌名称
+	 */
+	@NotBlank(message = "请填写品牌名称")
+	@Column(name = "brand_name")
+	private String brandName;
+
+	/**
 	 * 商品价格
 	 */
 	@Column(name = "price")
@@ -57,13 +71,13 @@ public class Inno72Goods {
 	/**
 	 * 店铺ID
 	 */
-	@NotBlank(message = "请选择店铺")
 	@Column(name = "shop_id")
 	private String shopId;
 
 	/**
 	 * 图片
 	 */
+	@NotBlank(message = "请上传商品图片")
 	@Column(name = "img")
 	private String img;
 
@@ -178,6 +192,22 @@ public class Inno72Goods {
 	 */
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public String getGoodsType() {
+		return goodsType;
+	}
+
+	public void setGoodsType(String goodsType) {
+		this.goodsType = goodsType;
+	}
+
+	public String getBrandName() {
+		return brandName;
+	}
+
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
 	}
 
 	/**
@@ -389,5 +419,15 @@ public class Inno72Goods {
 	 */
 	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Inno72Goods) {
+			Inno72Goods other = (Inno72Goods) obj;
+			if (id.equals(other.id) && id.equals(other.id))
+				return true;
+		}
+		return false;
 	}
 }

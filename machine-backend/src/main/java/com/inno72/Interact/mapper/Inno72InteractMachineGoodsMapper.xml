@@ -51,7 +51,15 @@
 		where img.type =1
 		<if test="interactId !=null and interactId !='' ">and im.interact_id = #{interactId} </if>
 		<if test="machineId !=null and machineId !='' ">and im.machine_id = #{machineId} </if>
-  </select>		
+  </select>
+  
+  <select id="getMachineGoodsCount" parameterType="java.util.Map" resultType="int">
+		SELECT COUNT( 1 ) FROM inno72_interact_machine_goods mg
+		LEFT JOIN inno72_interact_machine m ON m.id = mg.interact_machine_id 
+		WHERE 1=1
+		<if test="interactId !=null and interactId !='' ">AND m.interact_id = #{interactId} </if>
+		<if test="goodsId !=null and goodsId !='' ">AND mg.goods_id = #{goodsId} </if>
+  </select>			
     
     
 </mapper>

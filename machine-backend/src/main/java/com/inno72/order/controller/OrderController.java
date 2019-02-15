@@ -83,11 +83,11 @@ public class OrderController {
 		boolean lastPage = false;
 		int totalPage = 100;
 		int totalCount = 100*20;
-		if(list == null || list.size()<20){
-			lastPage = true;
-			totalPage = pageNo;
-			totalCount = (pageNo-1)*20+list.size();
-		}
+//		if(list == null || list.size()<20){
+//			lastPage = true;
+//			totalPage = pageNo;
+//			totalCount = (pageNo-1)*20+list.size();
+//		}
 		page.setLastPage(lastPage);
 		page.setTotalCount(totalCount);
 		page.setNextPage(pageNo+1);

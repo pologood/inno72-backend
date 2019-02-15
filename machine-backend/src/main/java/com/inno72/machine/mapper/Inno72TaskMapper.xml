@@ -9,6 +9,7 @@
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="type" jdbcType="INTEGER" property="type" />
     <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_force" jdbcType="INTEGER" property="isForce" />
     <result column="do_type" jdbcType="INTEGER" property="doType" />
     <result column="do_time" jdbcType="TIMESTAMP" property="doTime" />
     <result column="app_id" jdbcType="VARCHAR" property="appId" />

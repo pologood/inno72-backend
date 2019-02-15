@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +46,8 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 	@Resource
 	private AlarmParamService alarmParamService;
 
+	private Logger log = LoggerFactory.getLogger(this.getClass());
+
     @Override
     public List<Inno72CheckUserPhone> selectPhoneByMachineCode(Inno72CheckUserPhone inno72CheckUserPhone) {
 
@@ -74,6 +78,7 @@ public class CheckUserServiceImpl extends AbstractService<Inno72CheckUser> imple
 					String text = "【互动管家】尊敬的用户，您的互动管家中有"+unReadCount+"条未处理的消息 请尽快处理！";
 					params.put("msg",text);
 					msgUtil.sendSMS("check_msg_count_sms",params,phone,"machineAlarm-RedisReceiver");
+					log.info("发送未读消息短信给"+phone+",内容为："+text);
 					Inno72Sms inno72Sms = new Inno72Sms();
 					inno72Sms.setId(StringUtil.getUUID());
 					inno72Sms.setUserType(1);

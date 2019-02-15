@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.store.mapper.Inno72StoreOrderMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.store.model.Inno72StoreOrder">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="order_num" jdbcType="VARCHAR" property="orderNum" />
+    <result column="order_type" jdbcType="INTEGER" property="orderType" />
+    <result column="goods" jdbcType="VARCHAR" property="goods" />
+    <result column="merchant" jdbcType="VARCHAR" property="merchant" />
+    <result column="sender" jdbcType="VARCHAR" property="sender" />
+    <result column="send_id" jdbcType="VARCHAR" property="sendId" />
+    <result column="send_type" jdbcType="INTEGER" property="sendType" />
+    <result column="receiver" jdbcType="VARCHAR" property="receiver" />
+    <result column="receive_id" jdbcType="VARCHAR" property="receiveId" />
+    <result column="receive_type" jdbcType="INTEGER" property="receiveType" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="capacity" jdbcType="INTEGER" property="capacity" />
+    <result column="receive_number" jdbcType="INTEGER" property="receiveNumber" />
+    <result column="receive_capacity" jdbcType="INTEGER" property="receiveCapacity" />
+    <result column="receive_time" jdbcType="TIMESTAMP" property="receiveTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="goodsName" jdbcType="VARCHAR" property="goodsName"/>
+    <result column="expressNum" jdbcType="VARCHAR" property="expressNum"/>
+    <result column="expressCompany" jdbcType="VARCHAR" property="expressCompany"/>
+    <result column="activity" jdbcType="VARCHAR" property="activity"/>
+    <result column="activityName" jdbcType="VARCHAR" property="activityName"/>
+  </resultMap>
+
+  <select id="selectOrderByPage" resultMap="BaseResultMap">
+      select so.*,g.name goodsName from inno72_store_order so
+      left join inno72_goods g on so.goods=g.id
+      <where>
+          <if test="keyword != null">
+              and (so.order_num like '%${keyword}%'
+              or g.name like '%${keyword}%')
+          </if>
+          <if test="sendId != null">
+              and send_id = #{sendId}
+          </if>
+      </where>
+      order by so.update_time desc
+  </select>
+
+  <select id="selectDetailById" resultMap="BaseResultMap">
+      select so.*,
+      se.express_num expressNum,
+      se.express_company expressCompany,
+      g.name goodsName,
+      if(a.name is null ,i.name,a.name) activityName
+      from inno72_store_order so
+      left join inno72_store_express se on so.id=se.order_id
+      left join inno72_goods g on so.goods=g.id
+      left join inno72_activity a on so.activity=a.id
+      left join inno72_interact i on so.activity=i.id
+      where so.id=#{id}
+  </select>
+</mapper>
