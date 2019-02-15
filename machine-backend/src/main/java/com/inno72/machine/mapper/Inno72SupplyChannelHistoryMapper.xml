@@ -110,27 +110,29 @@
   
   <select id="selectDayGoodsListByPage" resultType="java.util.Map">
   	SELECT
-		s.id,m.id AS machineId,m.machine_code AS machineCode,DATE_FORMAT(s.create_time,'%Y-%m-%d') AS date,
-		CONCAT(area.province,area.city,area.district,IFNULL(l.mall,""),IFNULL( l.name,'')) AS localeStr
-	FROM
-		inno72_supply_channel_order s 
-		LEFT JOIN inno72_machine m ON m.id=s.machine_id
-		LEFT JOIN inno72_locale l ON l.id = m.locale_id
-	  	LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
-	WHERE 1=1
-	  <if test="code !=null and code !=''">and LEFT(l.area_code,#{num}) = LEFT(#{code},#{num})</if>
-	  <if test="beginTime != null and beginTime !=''  "> and s.create_time <![CDATA[>]]> #{beginTime} </if>
-      <if test="endTime != null and endTime !='' "> and s.create_time <![CDATA[<=]]> #{endTime} </if>
-      <if test="keyword != null and keyword !='' ">
-       AND (m.machine_code LIKE '%${keyword}%' 
-			or l.mall LIKE '%${keyword}%' 
-			or JSON_EXTRACT(l.tag, '$.tags') LIKE '%${keyword}%'  
-			or l.name LIKE '%${keyword}%' 
-			or area.province LIKE '%${keyword}%' 
-			or area.city LIKE '%${keyword}%' 
-			or area.district LIKE '%${keyword}%' )
-      </if>
-	GROUP BY s.machine_id,DATE_FORMAT(s.create_time,'%Y-%m-%d') ORDER BY s.create_time DESC
+		s.id,s.machine_id AS machineId,m.machine_code AS machineCode,
+		DATE_FORMAT(s.create_time,'%Y-%m-%d') AS date,
+	  	CONCAT(area.province,area.city,area.district,IFNULL(l.mall,""),IFNULL( l.name,'')) AS localeStr
+		FROM ( SELECT s.id,s.machine_id,s.create_time FROM
+				inno72_supply_channel_order s GROUP BY s.machine_id,DATE_FORMAT(s.create_time,'%Y-%m-%d')) s
+	  LEFT JOIN inno72_machine m ON m.id=s.machine_id
+	  LEFT JOIN inno72_locale l ON l.id = m.locale_id
+	  LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
+	  <where>
+	  	<if test="code !=null and code !=''">and LEFT(l.area_code,#{num}) = LEFT(#{code},#{num})</if>
+		<if test="beginTime != null and beginTime !=''  "> and s.create_time <![CDATA[>]]> #{beginTime} </if>
+	    <if test="endTime != null and endTime !='' "> and s.create_time <![CDATA[<=]]> #{endTime} </if>
+	    <if test="keyword != null and keyword !='' ">
+	       AND (m.machine_code LIKE '%${keyword}%' 
+				or l.mall LIKE '%${keyword}%' 
+				or JSON_EXTRACT(l.tag, '$.tags') LIKE '%${keyword}%'  
+				or l.name LIKE '%${keyword}%' 
+				or area.province LIKE '%${keyword}%' 
+				or area.city LIKE '%${keyword}%' 
+				or area.district LIKE '%${keyword}%' )
+	     </if>
+	  </where>
+	ORDER BY s.create_time DESC
   </select>
   
   <select id="selectDayGoodsDetail" resultType="java.util.Map">
