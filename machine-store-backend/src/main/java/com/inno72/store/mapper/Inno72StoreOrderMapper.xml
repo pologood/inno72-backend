@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.store.mapper.Inno72StoreOrderMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.store.model.Inno72StoreOrder">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="order_num" jdbcType="VARCHAR" property="orderNum" />
+    <result column="order_type" jdbcType="INTEGER" property="orderType" />
+    <result column="goods" jdbcType="VARCHAR" property="goods" />
+    <result column="merchant" jdbcType="VARCHAR" property="merchant" />
+    <result column="activity" jdbcType="VARCHAR" property="activity" />
+    <result column="sender" jdbcType="VARCHAR" property="sender" />
+    <result column="send_id" jdbcType="VARCHAR" property="sendId" />
+    <result column="send_type" jdbcType="INTEGER" property="sendType" />
+    <result column="receiver" jdbcType="VARCHAR" property="receiver" />
+    <result column="receive_id" jdbcType="VARCHAR" property="receiveId" />
+    <result column="receive_type" jdbcType="INTEGER" property="receiveType" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="capacity" jdbcType="INTEGER" property="capacity" />
+    <result column="receive_number" jdbcType="INTEGER" property="receiveNumber" />
+    <result column="receive_capacity" jdbcType="INTEGER" property="receiveCapacity" />
+    <result column="receive_time" jdbcType="TIMESTAMP" property="receiveTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="creater" jdbcType="VARCHAR" property="creater" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  <select id="selectSendOrderByPage" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+			o.id,
+			o.order_num AS orderNum,
+			g.`name` AS goodsName,
+			g.`code` goodsCode,
+			m.merchant_name AS merchantName,
+			sd.name AS sender,
+			IFNULL(sr.name,ur.`name`) AS receiver ,
+			o.number,
+			o.creater,
+			o.`status`,
+			date_format( o.create_time, '%Y-%m-%d %H:%i:%s' ) AS createTime,
+			IFNULL(e.expressNum,0) AS expressNum
+		FROM
+			inno72_store_order o
+			LEFT JOIN inno72_goods g on g.id=o.goods
+			LEFT JOIN inno72_merchant m ON m.id =o.merchant
+			LEFT JOIN inno72_store sd on sd.id=o.send_id
+			LEFT JOIN inno72_store sr on sr.id=o.receive_id
+			LEFT JOIN inno72_check_user ur on ur.id=o.receive_id
+			LEFT JOIN (
+				SELECT se.order_id,COUNT(1) AS  expressNum FROM inno72_store_express se GROUP BY se.order_id
+			) e ON e.order_id = o.id
+			LEFT JOIN inno72_storekeeper_storte ss ON ss.store_id=o.send_id
+		WHERE o.order_type=1 and ss.storekeeper_id = #{userId}
+			<if test="status != null"> and o.status =#{status} </if>
+	    	<if test="beginTime != null and beginTime !=''"> and o.create_time <![CDATA[>=]]> #{beginTime} </if>
+      		<if test="endTime != null and endTime !=''"> and o.create_time <![CDATA[<=]]> #{endTime} </if>
+	      	<if test="keyword != null and keyword != ''">
+              and (o.sender like CONCAT('%','${keyword}','%')
+              	or o.receiver like CONCAT('%','${keyword}','%')
+              	or o.creater like CONCAT('%','${keyword}','%')
+              	or g.code like CONCAT('%','${keyword}','%')
+              	or g.name like CONCAT('%','${keyword}','%')
+              	or m.merchant_name like CONCAT('%','${keyword}','%')
+              )
+          	</if>
+        ORDER BY o.create_time DESC
+  </select>
+  
+  <select id="selectReceiveOrderByPage" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+			o.id,
+			o.order_num AS orderNum,
+			g.`name` AS goodsName,
+			g.`code` goodsCode,
+			m.merchant_name AS merchantName,
+			o.sender,
+			sr.name AS receiver,
+			o.number,
+			o.receive_number AS receiveNumber,
+			o.`status`,
+			date_format( o.receive_time, '%Y-%m-%d %H:%i:%s' ) AS receiveTime,
+			e.rExpressNum,e.expressNum,e.keeper
+		FROM
+			inno72_store_order o
+			LEFT JOIN inno72_goods g on g.id=o.goods
+			LEFT JOIN inno72_merchant m ON m.id =o.merchant
+			LEFT JOIN inno72_store sr on sr.id=o.receive_id
+			LEFT JOIN (
+				SELECT
+					se.order_id,
+					COUNT( IF ( se.STATUS = 1, se.id, NULL ) ) AS rExpressNum,
+					COUNT(1) AS  expressNum,GROUP_CONCAT(se.receiver) as keeper
+				FROM
+					inno72_store_express se 
+				GROUP BY se.order_id
+			) e ON e.order_id = o.id
+			LEFT JOIN inno72_storekeeper_storte ss ON ss.store_id=o.receive_id
+		WHERE o.receive_type=2 and ss.storekeeper_id = #{userId}
+			<if test="status != null"> and o.status =#{status} </if>
+	    	<if test="beginTime != null and beginTime !=''"> and o.create_time <![CDATA[>=]]> #{beginTime} </if>
+      		<if test="endTime != null and endTime !=''"> and o.create_time <![CDATA[<=]]> #{endTime} </if>
+	      	<if test="keyword != null and keyword != ''">
+              and (o.sender like CONCAT('%','${keyword}','%')
+              	or o.receiver like CONCAT('%','${keyword}','%')
+              	or g.code like CONCAT('%','${keyword}','%')
+              	or g.name like CONCAT('%','${keyword}','%')
+              	or m.merchant_name like CONCAT('%','${keyword}','%')
+              )
+          </if>
+        ORDER BY o.update_time DESC
+  </select>
+  
+  <resultMap id="VoResultMap" extends="BaseResultMap"  type="com.inno72.store.vo.StoreOrderVo">
+   <result column="goodsName" jdbcType="VARCHAR" property="goodsName" />
+   <result column="goodsCode" jdbcType="VARCHAR" property="goodsCode" />
+   <result column="merchantName" jdbcType="VARCHAR" property="merchantName" />
+	<association property="expressList" resultMap="expressList" />
+  </resultMap>
+  <resultMap id="expressList" type="com.inno72.store.model.Inno72StoreExpress">
+		<result column="expressId" jdbcType="VARCHAR" property="id" />
+		<result column="expressCompany" jdbcType="VARCHAR" property="expressCompany" />
+		<result column="expressNum" jdbcType="VARCHAR" property="expressNum" />
+		<result column="expressNumber" jdbcType="INTEGER" property="number" />
+		<result column="expressReceiveNumber" jdbcType="INTEGER" property="receiveNumber" />
+		<result column="expressReceiveCapacity" jdbcType="INTEGER" property="receiveCapacity" />
+		<result column="expressStatus" jdbcType="INTEGER" property="status" />
+	</resultMap>
+  
+  <select id="selectOrderById" parameterType="java.util.Map" resultMap="VoResultMap">
+		SELECT
+			so.id,
+			so.order_num,
+			so.sender,
+			so.receiver,
+			so.number,
+			so.capacity,
+			so.status,
+			so.creater,
+			so.create_time,
+			so.receive_number,
+			so.receive_capacity,
+			so.receive_time,
+			g.`name` AS goodsName,
+			g.`code` goodsCode,
+			m.merchant_name AS merchantName,
+			se.express_company AS expressCompany,
+			se.express_num AS expressNum,
+			se.number AS expressNumber,
+			se.receive_number AS expressReceiveNumber,
+			se.receive_capacity AS expressReceiveCapacity,
+			se.`status` AS expressStatus,
+			se.id AS expressId
+			
+		FROM
+			inno72_store_order so
+			LEFT JOIN inno72_goods g on g.id=so.goods
+			LEFT JOIN inno72_merchant m ON m.id =so.merchant
+			LEFT JOIN inno72_store_express se ON se.order_id = so.id 
+		WHERE
+			so.id =#{id}
+  </select>
+  
+  
+  <select id="getMerchantList" parameterType="java.util.Map" resultType="java.util.Map">
+  		SELECT
+			m.id,
+			m.merchant_name AS name,
+			m.merchant_code AS code
+		FROM
+			inno72_merchant m 
+		WHERE
+			m.is_delete =0
+		<if test="keyword != null and keyword != ''">
+            and (m.merchant_name like CONCAT('%','${keyword}','%')
+              	or m.merchant_code like CONCAT('%','${keyword}','%')
+            )
+        </if>
+		
+  </select>
+  
+  <select id="getGoodsList" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+			g.id,
+			g.name,
+			g.code
+		FROM
+			inno72_goods g 
+			LEFT JOIN inno72_store_goods sg ON g.id=sg.goods_id
+		WHERE g.is_delete =0
+            and g.seller_id =#{sellerId}
+            and sg.store_id =#{storeId}
+		<if test="keyword != null and keyword != ''">
+            and (g.name like CONCAT('%','${keyword}','%')
+              	or g.code like CONCAT('%','${keyword}','%')
+            )
+        </if>
+  </select>
+  
+  <select id="getActivityList" parameterType="java.util.Map" resultType="java.util.Map">
+  
+  SELECT * FROM (
+		SELECT
+			a.id AS id,	
+			a.name AS activityName,
+			0 AS activityType
+		FROM
+			inno72.inno72_activity_plan ap 
+			LEFT JOIN inno72.inno72_activity a ON a.id = ap.activity_id
+		WHERE
+			ap.is_delete = 0 AND now( ) BETWEEN ap.start_time AND ap.end_time GROUP BY a.id
+		UNION
+		SELECT
+			i.id AS id,
+			i.name AS activityName,
+			1 AS activityType
+		FROM
+			inno72.inno72_interact_machine im
+			LEFT JOIN inno72.inno72_interact_machine_time imt ON im.id = imt.interact_machine_id
+			LEFT JOIN inno72.inno72_machine m ON m.id = im.machine_id
+			LEFT JOIN inno72.inno72_interact i ON i.id = im.interact_id
+		WHERE
+			m.machine_status = 4 
+			AND  i.is_delete = 0 
+			AND i.status = 1 
+			AND now( ) BETWEEN imt.start_time AND imt.end_time
+		GROUP BY i.id
+	) m where 1=1
+	<if test="keyword != null and keyword != ''">
+        and (m.activityName like CONCAT('%','${keyword}','%')
+          or m.code like CONCAT('%','${keyword}','%')
+        )
+    </if>
+  </select>
+  
+  <select id="getCheckUserList" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+			cu.id,
+			cu.`name`
+		FROM
+			inno72_check_user cu 
+		WHERE
+			cu.is_delete = 0 AND cu.`status` =0
+		<if test="keyword != null and keyword != ''">
+            and (cu.name like CONCAT('%','${keyword}','%')
+              	or cu.code like CONCAT('%','${keyword}','%')
+            )
+        </if>
+  </select>
+  
+  <select id="getCheckUserById" parameterType="String" resultType="java.util.Map">
+		SELECT
+			cu.id,
+			cu.`name`
+		FROM
+			inno72_check_user cu 
+		WHERE
+			cu.id=#{id}
+  </select>
+
+  <select id="selectPendingStorageCount" resultType="java.lang.Integer">
+      select count(so.id) from inno72_store_order so
+      left join inno72_storekeeper_storte ss on so.receive_id = ss.store_id
+      where ss.storekeeper_id= #{userId} and so.order_type=0 and so.receive_type=2
+      and so.status=0
+      and so.is_delete = 0
+  </select>
+
+  <select id="selectPendingOutStoreCount" resultType="java.lang.Integer">
+      select count(DISTINCT so.id) from inno72_store_order so
+      left join inno72_storekeeper_storte ss on so.send_id = ss.store_id
+      left join inno72_store_express se on so.id=se.order_id
+      where ss.storekeeper_id= #{userId} and so.order_type=1
+      and so.status=0
+      and (se.express_num is null or se.express_num='')
+      and so.is_delete = 0
+  </select>
+
+  <select id="selectUnOutStorageCount" resultType="java.lang.Integer">
+      select count(so.id) from inno72_store_order so
+      left join inno72_storekeeper_storte ss on so.send_id = ss.store_id
+      where ss.storekeeper_id= #{userId} and so.order_type=1
+      and so.status=0 and so.receive_type=2
+      and so.is_delete = 0
+  </select>
+</mapper>

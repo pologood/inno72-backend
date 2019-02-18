@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.store.mapper.Inno72StoreGoodsMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.store.model.Inno72StoreGoods">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="store_id" jdbcType="VARCHAR" property="storeId" />
+    <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="capacity" jdbcType="INTEGER" property="capacity" />
+    <result column="update_id" jdbcType="VARCHAR" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  <select id="selectStoreGoodsByPage" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+			sg.id,
+			sg.goods_id AS goodsId,
+			sg.store_id AS storeId,
+			g.`name` AS goodsName,
+			s.`name` AS storeName,
+			sg.number AS number,
+			sg.capacity capacity,
+			skk.keeper 
+		FROM
+			inno72_store_goods sg
+			LEFT JOIN inno72_goods g ON g.id = sg.goods_id
+			LEFT JOIN inno72_store s ON s.id = sg.store_id
+			LEFT JOIN inno72_storekeeper_storte ss ON ss.store_id = s.id
+			LEFT JOIN inno72_storekeeper sk ON sk.id = ss.storekeeper_id 
+			LEFT JOIN (
+				SELECT ss.store_id,GROUP_CONCAT( sk.`name` ) AS keeper FROM  inno72_storekeeper_storte ss
+				LEFT JOIN inno72_storekeeper sk ON sk.id = ss.storekeeper_id 
+				GROUP BY ss.store_id
+			) skk ON skk.store_id=s.id
+		WHERE ss.storekeeper_id = #{userId}
+	      	<if test="keyword != null and keyword != ''">
+              and (s.name like CONCAT('%','${keyword}','%')
+              	or g.name like CONCAT('%','${keyword}','%')
+              )
+          </if>
+        GROUP BY sg.store_id,sg.goods_id
+  </select>
+  
+  
+  
+  
+  
+  
+  
+</mapper>

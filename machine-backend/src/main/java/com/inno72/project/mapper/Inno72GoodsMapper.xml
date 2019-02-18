@@ -100,7 +100,6 @@
 			g.*
 		from inno72_goods g 
 		WHERE g.is_delete=0 
-		AND g.id NOT IN ( SELECT g.goods_id FROM inno72_interact_goods g )
 		<if test="shopId !=null and shopId !=''">and g.shop_id = #{shopId}</if>
   </select>
   

@@ -16,6 +16,10 @@ import java.util.zip.DataFormatException;
 
 import javax.annotation.Resource;
 
+import com.inno72.check.mapper.Inno72CheckGoodsDetailMapper;
+import com.inno72.check.mapper.Inno72CheckGoodsNumMapper;
+import com.inno72.check.model.Inno72CheckGoodsDetail;
+import com.inno72.check.model.Inno72CheckGoodsNum;
 import com.inno72.check.vo.SignVo;
 import com.inno72.common.DateUtil;
 import com.inno72.machine.mapper.Inno72MachineBatchDetailMapper;
@@ -111,6 +115,12 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 	@Resource
 	private Statistic statistic;
 
+	@Resource
+	private Inno72CheckGoodsNumMapper inno72CheckGoodsNumMapper;
+
+	@Resource
+	private Inno72CheckGoodsDetailMapper inno72CheckGoodsDetailMapper;
+
 	@Override
 	public Result<String> merge(Inno72SupplyChannel supplyChannel) {
 		String code = supplyChannel.getCode();
@@ -162,6 +172,11 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 				Condition condition = new Condition(Inno72SupplyChannelGoods.class);
 				condition.createCriteria().andEqualTo("supplyChannelId", supply.getId());
 				inno72SupplyChannelGoodsMapper.deleteByCondition(condition);// 删除货道关联商品
+				int supplyCount =supply.getGoodsCount();
+				String goodsId = supply.getGoodsId();
+				if(StringUtil.isNotEmpty(goodsId)){
+					this.saveGoodsNum(goodsId,machine.getActivityId(),supplyCount);
+				}
 			}
 			String detail = "合并货道:在"+machine.getLocaleStr()+"点位处的机器对"+parentCode+"货道和"+childCode+"货道进行了合并，合并后为"+parentCode+"货道，"+childCode+"货道已被清除";
 			StringUtil.logger(CommonConstants.LOG_TYPE_MERGE_CHANNEL,machineCode,detail);
@@ -604,6 +619,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			LocalDateTime now = LocalDateTime.now();
 			StringBuffer detail = new StringBuffer("");
 			int historyCount = 0;
+			Map<String,Integer> checkGoodsCountMap = new HashMap<>();
 			for(Inno72SupplyChannel supplyChannel:supplyChannelList){
 				String supplyChannelId = supplyChannel.getId();
 				for(Map<String, Object> map:mapList){
@@ -648,6 +664,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 								history.setSupplyCount(supplyCount);
 								history.setSupplyType(1);
 								inno72SupplyChannelHistoryMapper.insertSelective(history);
+								this.setCheckGoodsNumMap(checkGoodsCountMap,goodsIdStr,supplyCount);
 								this.saveStatistic(machine,code,goodsIdStr,beforeGoodsCount,afterGoodsCount,userId);
 								detail.append("为"+machineCode+"机器"+code+"货道补货，补货数量为"+supplyCount+"；");
 								historyCount++;
@@ -670,6 +687,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 								history.setSupplyCount(supplyCount);
 								history.setSupplyType(2);
 								inno72SupplyChannelHistoryMapper.insertSelective(history);
+								this.setCheckGoodsNumMap(checkGoodsCountMap,dataGoodsId,supplyCount);
 								this.saveStatistic(machine,code,dataGoodsId,beforeGoodsCount,0,userId);
 								detail.append("为"+machineCode+"机器"+code+"货道补货，补货数量为"+supplyCount+"；");
 								historyCount++;
@@ -694,6 +712,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 									newHistory.setSupplyCount(supplyCount);
 									newHistory.setSupplyType(1);
 									inno72SupplyChannelHistoryMapper.insertSelective(newHistory);
+									this.setCheckGoodsNumMap(checkGoodsCountMap,goodsIdStr,supplyCount);
 									this.saveStatistic(machine,code,goodsIdStr,0,afterGoodsCount,userId);
 									detail.append("为"+machineCode+"机器"+code+"货道补货，补货数量为"+supplyCount+"；");
 									historyCount++;
@@ -723,11 +742,19 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 							history.setSupplyCount(supplyCount);
 							history.setSupplyType(1);
 							inno72SupplyChannelHistoryMapper.insertSelective(history);
+							this.setCheckGoodsNumMap(checkGoodsCountMap,goodsIdStr,supplyCount);
 							this.saveStatistic(machine,code,goodsIdStr,0,afterGoodsCount,userId);
 							detail.append("为"+machineCode+"机器"+code+"货道补货，补货数量为"+supplyCount+"；");
 							historyCount++;
 						}
 					}
+				}
+			}
+
+			for(String goodsKey:checkGoodsCountMap.keySet()){
+				int goodsVelue = checkGoodsCountMap.get(goodsKey);
+				if(goodsVelue != 0){
+					this.saveGoodsNum(goodsKey,machine.getActivityId(),goodsVelue);
 				}
 			}
 			if(historyCount>0){
@@ -739,6 +766,58 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 			this.saveToLog(detail,checkUser.getName(),machineCode);
 		}
 		return ResultGenerator.genSuccessResult();
+	}
+
+
+	public Map<String,Integer> setCheckGoodsNumMap(Map<String,Integer> map,String goodsIdStr,int supplyCount){
+		int checkGoodsCount = 0;
+		if(map.containsKey(goodsIdStr)){
+			checkGoodsCount = map.get(goodsIdStr);
+			checkGoodsCount += supplyCount;
+		}else{
+			checkGoodsCount = supplyCount;
+		}
+		map.put(goodsIdStr,checkGoodsCount);
+		return map;
+	}
+
+
+	public void saveGoodsNum(String goodsId,String activityId,int goodsCount){
+		Map<String,Object> goodsMap = new HashMap<>();
+		goodsMap.put("goodsId",goodsId);
+		goodsMap.put("checkUserId",UserUtil.getUser().getId());
+		goodsMap.put("activityId",activityId);
+		Inno72CheckGoodsNum goodsNum = inno72CheckGoodsNumMapper.selectByparam(goodsMap);
+		if(goodsNum != null){
+			int receiveTotalCount = goodsNum.getReceiveTotalCount();
+			int supplyTotalCount = goodsNum.getSupplyTotalCount();
+			supplyTotalCount += goodsCount;
+			int differTotalCount = receiveTotalCount-supplyTotalCount;
+			goodsNum.setSupplyTotalCount(supplyTotalCount);
+			goodsNum.setDifferTotalCount(differTotalCount);
+			inno72CheckGoodsNumMapper.updateByPrimaryKeySelective(goodsNum);
+		}else{
+			int receiveTotalCount = 0;
+			int supplyTotalCount = goodsCount;
+			int differTotalCount = -supplyTotalCount;
+			goodsNum = new Inno72CheckGoodsNum();
+			goodsNum.setId(StringUtil.getUUID());
+			goodsNum.setReceiveTotalCount(receiveTotalCount);
+			goodsNum.setSupplyTotalCount(supplyTotalCount);
+			goodsNum.setDifferTotalCount(differTotalCount);
+			goodsNum.setGoodsId(goodsId);
+			goodsNum.setCheckUserId(UserUtil.getUser().getId());
+			goodsNum.setActivityId(activityId);
+			inno72CheckGoodsNumMapper.insertSelective(goodsNum);
+		}
+		Inno72CheckGoodsDetail goodsDetail = new Inno72CheckGoodsDetail();
+		goodsDetail.setGoodsNumId(goodsNum.getId());
+		goodsDetail.setId(StringUtil.getUUID());
+		goodsDetail.setReceiveCount(0);
+		goodsDetail.setSupplyCount(goodsCount);
+		goodsDetail.setDifferCount(-goodsCount);
+		goodsDetail.setCreateTime(LocalDateTime.now());
+		inno72CheckGoodsDetailMapper.insertSelective(goodsDetail);
 	}
 
 	/**
@@ -1023,6 +1102,88 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 
 
 		return ResultGenerator.genSuccessResult();
+	}
+
+	@Override
+	public Result<Boolean> supplyCheck(List<Map<String, Object>> mapList) {
+		if (mapList == null || mapList.size() == 0) {
+			return Results.failure("参数不能为空");
+		}
+		Inno72CheckUser checkUser = UserUtil.getUser();
+		String [] suuplyChannelArray = new String[mapList.size()];
+		for(int i=0;i<mapList.size();i++){
+			suuplyChannelArray[i]=mapList.get(i).get("id").toString();
+		}
+		List<Inno72SupplyChannel> supplyChannelList = inno72SupplyChannelMapper.selectSupplyAndGoods(suuplyChannelArray);
+		if (supplyChannelList != null && supplyChannelList.size() > 0) {
+			String machineId = supplyChannelList.get(0).getMachineId();
+			Inno72Machine machine = inno72MachineMapper.getMachineById(machineId);
+			Map<String,Integer> checkGoodsCountMap = new HashMap<>();
+			for(Inno72SupplyChannel supplyChannel:supplyChannelList){
+				String supplyChannelId = supplyChannel.getId();
+				for(Map<String, Object> map:mapList){
+					String id = map.get("id").toString();
+					String dataGoodsId = supplyChannel.getGoodsId();//数据库查到的商品ID
+					if (id.equals(supplyChannelId)) {
+						Object goodsCount = map.get("goodsCount");
+						int afterGoodsCount = 0;
+						if (goodsCount != null) {
+							afterGoodsCount = Integer.parseInt(map.get("goodsCount").toString());
+						}
+						int beforeGoodsCount = supplyChannel.getGoodsCount();
+						Object goodsId = map.get("goodsId");
+						String goodsIdStr = "";//APP传入
+						if (goodsId != null) {
+							goodsIdStr = map.get("goodsId").toString();
+						}
+						int supplyCount = 0;
+						if(StringUtil.isNotEmpty(dataGoodsId)){
+							if(dataGoodsId.equals(goodsIdStr) && afterGoodsCount != beforeGoodsCount){
+								if(afterGoodsCount>beforeGoodsCount){
+									supplyCount = afterGoodsCount-beforeGoodsCount;
+								}else {
+									supplyCount = afterGoodsCount;
+								}
+								this.setCheckGoodsNumMap(checkGoodsCountMap,goodsIdStr,supplyCount);
+							}else if(!dataGoodsId.equals(goodsIdStr)){
+								supplyCount = -beforeGoodsCount;
+								this.setCheckGoodsNumMap(checkGoodsCountMap,goodsIdStr,supplyCount);
+								if (StringUtil.isNotEmpty(goodsIdStr)) {
+									supplyCount = afterGoodsCount;
+									this.setCheckGoodsNumMap(checkGoodsCountMap,goodsIdStr,supplyCount);
+								}
+							}
+						}else if(StringUtil.isNotEmpty(goodsIdStr)){
+							supplyCount = afterGoodsCount;
+							this.setCheckGoodsNumMap(checkGoodsCountMap,goodsIdStr,supplyCount);
+						}
+					}
+				}
+			}
+
+			for(String goodsKey:checkGoodsCountMap.keySet()){
+				int goodsVelue = checkGoodsCountMap.get(goodsKey);
+				if(goodsVelue != 0){
+					Map<String,Object> goodsMap = new HashMap<>();
+					goodsMap.put("goodsId",goodsKey);
+					goodsMap.put("checkUserId",checkUser.getId());
+					goodsMap.put("activityId",machine.getActivityId());
+					Inno72CheckGoodsNum goodsNum = inno72CheckGoodsNumMapper.selectByparam(goodsMap);
+					if(goodsNum != null){
+						int receiveTotalCount = goodsNum.getReceiveTotalCount();
+						int supplyTotalCount = goodsNum.getSupplyTotalCount();
+						supplyTotalCount += goodsVelue;
+						int differTotalCount = receiveTotalCount-supplyTotalCount;
+						if(differTotalCount<0){
+							return ResultGenerator.genSuccessResult(false);
+						}
+					}else{
+						return ResultGenerator.genSuccessResult(false);
+					}
+				}
+			}
+		}
+		return ResultGenerator.genSuccessResult(true);
 	}
 
 	public void addSupplyChannelToMongo(Inno72SupplyChannel supplyChannel) {
