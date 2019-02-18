@@ -122,14 +122,14 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 				return Results.failure("活动不在呀!");
 			}
 
-			String machineId = index.getMerchantId();
-			List<Map<String, String>> activity = inno72MerchantUserMapper.activity(machineId);
+			String merchantId = index.getMerchantId();
+			List<Map<String, String>> activity = inno72MerchantUserMapper.activity(merchantId);
 			if (activity.size() == 0){
 				return Results.failure("活动配置错误!");
 			}
 
 			param.put("activityId", activityId);
-			param.put("machineId", machineId);
+			param.put("merchantId", merchantId);
 
 			List<String> actIds = new ArrayList<>(activity.size());
 			for (Map<String, String> map : activity){
@@ -149,7 +149,7 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 			}
 
 			if (StringUtil.isEmpty(index.getId())){
-				List<Inno72ActivityIndex> sss = inno72ActivityIndexMapper.selectIndex(machineId, activityId, activityIndexType);
+				List<Inno72ActivityIndex> sss = inno72ActivityIndexMapper.selectIndex(merchantId, activityId, activityIndexType);
 				if (sss.size() > 0){
 					return Results.failure("提交的指标重复");
 				}
