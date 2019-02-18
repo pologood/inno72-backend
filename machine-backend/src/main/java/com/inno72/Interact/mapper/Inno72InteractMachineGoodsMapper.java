@@ -14,6 +14,8 @@ public interface Inno72InteractMachineGoodsMapper extends Mapper<Inno72InteractM
 
 	int insertInteractMachineGoodsList(@Param("list") List<Inno72InteractMachineGoodsVo> list);
 
+	int getMachineGoodsCount(Map<String, Object> pm);
+
 	List<Inno72InteractMachineGoodsVo> selectMachineGoods(Map<String, Object> pm);
 
 }

@@ -25,6 +25,7 @@
         <result column="noReadCount" jdbcType="INTEGER" property="noReadCount"/>
         <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
         <result column="lackGoodsStatus" jdbcType="INTEGER" property="lackGoodsStatus"/>
+        <result column="activityId" jdbcType="VARCHAR" property="activityId"/>
         <result column="activityName" jdbcType="VARCHAR" property="activityName"/>
 		<association property="supplyChannelVoList" resultMap="supplyChannelVoList"/>
 		<association property="checkUserVoList" resultMap="checkUserVoList"/>
@@ -235,10 +236,12 @@
 		aa.city,
 		aa.district,
 		if(aa.circle='其他' or aa.circle is null,'',aa.circle),IFNULL(l.mall,""),IFNULL( l.name,'')
-		) AS localeStr
+		) AS localeStr,
+		vam.activity_id activityId
 		from inno72_machine m
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
 		LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code
+		left join view_activity_machine vam on m.id=vam.machine_id
 		where m.id=#{machineId}
 		limit 1
 	</select>

@@ -73,6 +73,15 @@
             <artifactId>inno72-dataauth</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        
+        <dependency>
+            <groupId>com.inno72</groupId>
+            <artifactId>inno72-job-user-profile</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        
+        
+        
         <!-- poi office start -->
        
         
