@@ -83,7 +83,7 @@
 			sr.name AS receiver,
 			o.number,
 			o.receive_number AS receiveNumber,
-			o.`status`,
+			IF (o.STATUS = 3, 2, o.STATUS ) AS status,
 			date_format( o.receive_time, '%Y-%m-%d %H:%i:%s' ) AS receiveTime,
 			e.rExpressNum,e.expressNum,e.keeper
 		FROM
@@ -102,7 +102,10 @@
 			) e ON e.order_id = o.id
 			LEFT JOIN inno72_storekeeper_storte ss ON ss.store_id=o.receive_id
 		WHERE o.is_delete=0 and o.receive_type=2 and ss.storekeeper_id = #{userId}
-			<if test="status != null"> and o.status =#{status} </if>
+			<if test="status != null"> 
+				<if test="status !=2"> and o.status =#{status} </if>
+				<if test="status ==2"> and o.status in (2,3)</if>
+			</if>
 	    	<if test="beginTime != null and beginTime !=''"> and o.create_time <![CDATA[>=]]> #{beginTime} </if>
       		<if test="endTime != null and endTime !=''"> and o.create_time <![CDATA[<=]]> #{endTime} </if>
 	      	<if test="keyword != null and keyword != ''">
