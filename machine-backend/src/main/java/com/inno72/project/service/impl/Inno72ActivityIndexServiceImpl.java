@@ -2,6 +2,7 @@ package com.inno72.project.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -109,10 +110,9 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 		List<Inno72ActivityIndex> insertS = new ArrayList<>();
 		// 去重用
 		List<String> types = new ArrayList<>();
-		List<String> curTypes = new ArrayList<>();
-		curTypes.add("1");
-		curTypes.add("2");
-		curTypes.add("3");
+
+		List<String> delIds = new ArrayList<>();
+		Map<String, Object> param = new HashMap<>(3);
 
 		for (Inno72ActivityIndex index : indexList){
 
@@ -127,6 +127,10 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 			if (activity.size() == 0){
 				return Results.failure("活动配置错误!");
 			}
+
+			param.put("activityId", activityId);
+			param.put("machineId", machineId);
+
 			List<String> actIds = new ArrayList<>(activity.size());
 			for (Map<String, String> map : activity){
 				actIds.add(map.get("actId"));
@@ -137,9 +141,6 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 			}
 
 			String activityIndexType = index.getActivityIndexType();
-			if (!curTypes.contains(activityIndexType)){
-				return Results.failure("指标类型错误!");
-			}
 
 			if (types.contains(activityIndexType)){
 				return Results.failure("核心指标重复!");
@@ -175,12 +176,19 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 
 			}
 
+			delIds.add(index.getId());
+
 		}
 
 		if(insertS.size() > 0){
 			int i = inno72ActivityIndexMapper.insertS(insertS);
 			LOGGER.info("插入核心指标 -> {}, {}", JSON.toJSONString(insertS), i);
 		}
+
+		param.put("list", delIds);
+
+		int delSize = inno72ActivityIndexMapper.deleteByParam(param);
+		LOGGER.info("删除核心指标参数 -> {}, {}", JSON.toJSONString(param), delSize);
 
 		return Results.success();
 	}

@@ -1,6 +1,7 @@
 package com.inno72.project.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -13,4 +14,6 @@ public interface Inno72ActivityIndexMapper extends Mapper<Inno72ActivityIndex> {
 			@Param("activityId") String activityId, @Param("activityIndexType") String activityIndexType);
 
 	int insertS(List<Inno72ActivityIndex> list);
+
+	int deleteByParam(Map<String, Object> list);
 }
