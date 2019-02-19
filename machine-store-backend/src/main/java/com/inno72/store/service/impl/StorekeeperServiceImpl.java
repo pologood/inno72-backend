@@ -197,7 +197,7 @@ public class StorekeeperServiceImpl extends AbstractService<Inno72Storekeeper> i
 			return Results.failure("用户已禁用");
 		}
 
-		String code = "yp_validate_code";
+		String code = "store_smscode";
 		String smsCode = StringUtil.createVerificationCode(6);
 		Map<String, String> params = new HashMap<>();
 		params.put("code", smsCode);
