@@ -180,13 +180,13 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 					checkGoodsNum.setReceiveTotalCount(model.getNumber());
 					checkGoodsNum.setDifferTotalCount(model.getNumber());
 					checkGoodsNum.setSupplyTotalCount(0);
-					inno72CheckGoodsNumMapper.insert(checkGoodsNum);
+					inno72CheckGoodsNumMapper.insertSelective(checkGoodsNum);
 				} else {
 					checkGoodsNum.setReceiveTotalCount(checkGoodsNum.getReceiveTotalCount() + model.getNumber());
 					checkGoodsNum.setDifferTotalCount(
 							checkGoodsNum.getReceiveTotalCount() - checkGoodsNum.getSupplyTotalCount());
 
-					inno72CheckGoodsNumMapper.updateByPrimaryKey(checkGoodsNum);
+					inno72CheckGoodsNumMapper.updateByPrimaryKeySelective(checkGoodsNum);
 				}
 				Inno72CheckGoodsDetail checkGoodsDetail = new Inno72CheckGoodsDetail();
 				checkGoodsDetail.setId(StringUtil.getUUID());
@@ -194,7 +194,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 				checkGoodsDetail.setReceiveCount(model.getNumber());
 				checkGoodsDetail.setDifferCount(model.getNumber());
 				checkGoodsDetail.setGoodsNumId(checkGoodsNum.getId());
-				inno72CheckGoodsDetailMapper.insert(checkGoodsDetail);
+				inno72CheckGoodsDetailMapper.insertSelective(checkGoodsDetail);
 
 			}
 
@@ -283,7 +283,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 				storeGoods.setCapacity(totalCapacity);
 				storeGoods.setUpdateId(mUser.getId());
 				storeGoods.setUpdateTime(LocalDateTime.now());
-				inno72StoreGoodsMapper.insert(storeGoods);
+				inno72StoreGoodsMapper.insertSelective(storeGoods);
 			} else {
 				storeGoods.setNumber(storeGoods.getNumber() + totalNumber);
 				storeGoods.setCapacity(storeGoods.getCapacity() + totalCapacity);
@@ -355,7 +355,7 @@ public class StoreOrderServiceImpl extends AbstractService<Inno72StoreOrder> imp
 		storeGoodsDetail.setUpdateTime(LocalDateTime.now());
 		storeGoodsDetail.setDetail(detail.toString());
 		logger.info("记录商品出入库记录:{}", JSON.toJSON(storeGoodsDetail));
-		inno72StoreGoodsDetailMapper.insert(storeGoodsDetail);
+		inno72StoreGoodsDetailMapper.insertSelective(storeGoodsDetail);
 
 	}
 
