@@ -73,6 +73,14 @@ public class MachineServiceImpl extends AbstractService<Inno72Machine> implement
 					dateList.add(findTime);
 				}
 			}
+			lastDateStr = DateUtil.getLastDay(2019,2);
+			lastDate = DateUtil.toDate(lastDateStr,DateUtil.DF_ONLY_YMD_S1);
+			List<String> dateList2 = DateUtil.getMonthFullDay(lastDate);
+			for(String findTime:dateList2){
+				if(!dateList.contains(findTime)){
+					dateList.add(findTime);
+				}
+			}
 			for(String findTime:dateList){
 				LocalDate findDate = DateUtil.toDate(findTime,DateUtil.DF_ONLY_YMD_S1);
 				LocalDate nowDate = LocalDate.now();
