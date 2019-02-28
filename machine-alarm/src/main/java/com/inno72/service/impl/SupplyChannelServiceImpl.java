@@ -1,5 +1,6 @@
 package com.inno72.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,8 @@ import com.inno72.model.AlarmLackGoodsBean;
 import com.inno72.model.GoodsBean;
 import com.inno72.model.Inno72AlarmGroup;
 import com.inno72.model.Inno72AlarmParam;
+import com.inno72.model.Inno72CheckFault;
+import com.inno72.model.Inno72CheckFaultRemark;
 import com.inno72.model.Inno72CheckUserPhone;
 import com.inno72.model.Inno72Machine;
 import com.inno72.model.Inno72SupplyChannel;
@@ -36,6 +39,7 @@ import com.inno72.redis.IRedisUtil;
 import com.inno72.service.AlarmGroupService;
 import com.inno72.service.AlarmMsgService;
 import com.inno72.service.AlarmParamService;
+import com.inno72.service.CheckFaultService;
 import com.inno72.service.CheckUserService;
 import com.inno72.service.MachineService;
 import com.inno72.service.SupplyChannelService;
@@ -68,6 +72,9 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 
 	@Resource
 	private AlarmParamService alarmParamService;
+
+	@Resource
+	private CheckFaultService checkFaultService;
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
     @Override
@@ -259,8 +266,42 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 								redisUtil.sadd(lackKey,count);
 							}
 							log.info("缺货发送报警标记"+pushFlag);
+							String textBeaf = "您好，" + machine.getLocaleStr() + "，机器编号：" + machineCode + "，";
+							if(surPlusNum == 20){
+								String remark = textBeaf+goodsInfo+"请及时接单";
+								Inno72CheckFault checkFault = new Inno72CheckFault();
+								String id = StringUtil.getUUID();
+								checkFault.setId(id);
+								String time = DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S2);
+								checkFault.setCode("F" + StringUtil.createRandomCode(6) + time);
+								checkFault.setSubmitTime(LocalDateTime.now());
+								checkFault.setSubmitUser("系统");
+								checkFault.setMachineId(machine.getId());
+								checkFault.setWorkType(5);//
+								checkFault.setSource(1);// 巡检
+								checkFault.setUrgentStatus(2);// 紧急
+								checkFault.setSubmitId("admin");
+								checkFault.setSubmitUserType(1);// 巡检人员
+								checkFault.setStatus(1);// 待接单
+								checkFault.setReceiveUser(null);
+								checkFault.setReceiveId(null);
+								checkFault.setUpdateTime(LocalDateTime.now());
+								checkFault.setRemark(remark);
+								checkFaultService.saveCheckFault(checkFault);
+								Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
+								faultRemark.setRemark(remark);
+								faultRemark.setUserId("admin");
+								faultRemark.setName("系统");
+								faultRemark.setType(1);
+								faultRemark.setCreateTime(LocalDateTime.now());
+								faultRemark.setFaultId(id);
+								String remarkId = StringUtil.getUUID();
+								faultRemark.setId(remarkId);
+								checkFaultService.saveCheckFaultRemark(faultRemark);
+								String title = "您有未接收的自动补货工单";
+								alarmMsgService.saveAlarmMsg(CommonConstants.SYS_SUPPLY_WORK,machineCode,title,textBeaf,text,inno72CheckUserPhones);
+							}
 							if(pushFlag){
-								String textBeaf = "您好，" + machine.getLocaleStr() + "，机器编号：" + machineCode + "，";
 								text = goodsInfo+ "请及时联系巡检人员补货";
 								String ddStr = textBeaf+text;
 								param.put("text", StringUtil.setText(ddStr, active));

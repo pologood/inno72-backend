@@ -79,6 +79,10 @@ public class AlarmMsgServiceImpl extends AbstractService<Inno72AlarmMsg> impleme
 			titleBeaf = "【报警】";
 			titleLast = "，请及时处理";
 			typeInt = 4;
+		} else if(CommonConstants.SYS_SUPPLY_WORK.equals(system)){
+			textBeaf = "【自动补货】";
+			titleLast = "请及时处理";
+			typeInt = 5;
 		}
 		LocalDateTime nowTime = LocalDateTime.now();
 		String id = StringUtil.getUUID();

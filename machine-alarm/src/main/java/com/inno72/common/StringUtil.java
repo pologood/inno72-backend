@@ -133,4 +133,22 @@ public class StringUtil {
 		return 0;
 	}
 
+	/**
+	 * 生成验证码
+	 * @param count
+	 * @return
+	 */
+	public static String createRandomCode(int count){
+		String[] verificationCodeArrary={ "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+				"N", "O", "P", "Q", "R","S", "T", "U", "V", "W", "X", "Y", "Z",
+				"0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+		String verificationCode = "";
+		Random random = new Random();
+		//此处是生成验证码的核心了，利用一定范围内的随机数做为验证码数组的下标，循环组成我们需要长度的验证码，做为页面输入验证、邮件、短信验证码验证都行
+		for(int i=0;i<count;i++){
+			verificationCode += verificationCodeArrary[random.nextInt(verificationCodeArrary.length)];
+		}
+		return verificationCode;
+	}
+
 }

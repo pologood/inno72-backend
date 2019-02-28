@@ -20,6 +20,9 @@ public class CommonConstants {
 	// 机器缺货
 	public final static String SYS_MACHINE_LACKGOODS = "machineLackGoods";
 
+	//自动补货工单
+	public final static String SYS_SUPPLY_WORK = "supplyWork";
+
 	// 网络
 	public final static String SYS_MACHINE_NET = "machineCloseNet";
 
