@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -37,6 +39,8 @@ import tk.mybatis.mapper.entity.Condition;
 
 @Service
 public class SocketServiceImpl implements SocketService {
+	Logger log = LoggerFactory.getLogger(this.getClass());
+
 	@Resource
 	private MachineMonitorBackendProperties machineMonitorBackendProperties;
 	@Autowired
@@ -119,6 +123,7 @@ public class SocketServiceImpl implements SocketService {
 
 	@Override
 	public void checkApp(MachineAppStatus apps) {
+		log.info("====自动更新app=====");
 		if (apps != null && apps.getStatus() != null) {
 			List<MachineInstallAppBean> il = new ArrayList<>();
 			List<AppStatus> apps1 = apps.getStatus();
@@ -142,6 +147,8 @@ public class SocketServiceImpl implements SocketService {
 					}
 				}
 			}
+			log.info("====自动更新app1=====" + JSON.toJSONString(il));
+
 			if (!il.isEmpty() && (verisonCode >= 5 || verisonCode == 0)) {
 				SendMessageBean msg = new SendMessageBean();
 				msg.setEventType(2);
