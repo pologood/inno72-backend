@@ -267,7 +267,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 							}
 							log.info("缺货发送报警标记"+pushFlag);
 							String textBeaf = "您好，" + machine.getLocaleStr() + "，机器编号：" + machineCode + "，";
-							if(surPlusNum == 20){
+							if(surPlusNum == 19){
 								String remark = textBeaf+goodsInfo+"请及时接单";
 								Inno72CheckFault checkFault = new Inno72CheckFault();
 								String id = StringUtil.getUUID();
