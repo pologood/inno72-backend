@@ -40,7 +40,7 @@
 		LEFT JOIN inno72_game_user_login regLogin ON regLogin.user_id=uc.game_user_id and regLogin.login_time=login.last_time
 		LEFT JOIN inno72_locale l2 on l2.id=regLogin.locale_id
 		LEFT JOIN inno72_admin_area a ON a.CODE = l2.area_code
-		WHERE c.channel_code='002003'
+		WHERE c.channel_code='002003' AND uc.phone is not null AND uc.phone != ''
       <if test="code !=null and code !=''">and LEFT(l2.area_code,#{num}) = LEFT(#{code},#{num})</if>
       <if test="beginTime != null and beginTime !=''  "> and uc.create_time <![CDATA[>=]]> #{beginTime} </if>
       <if test="endTime != null and endTime !='' "> and uc.create_time <![CDATA[<=]]> #{endTime} </if>
