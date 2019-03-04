@@ -20,6 +20,6 @@
     <select id="selectInfoDesc" resultMap="BaseResultMap">
       select * from inno72_activity_info_desc
         where activity_id = #{activityId} and merchant_id = #{merchantId}
-        order by create_time asc
+        order by create_time desc
     </select>
 </mapper>

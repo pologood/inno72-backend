@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -25,6 +26,7 @@ public class Inno72ActivityInfoDesc {
 	 * 活动ID
 	 */
 	@Column(name = "activity_id")
+	@NotNull(message = "活动ID为空!")
 	private String activityId;
 
 	/**
@@ -37,20 +39,24 @@ public class Inno72ActivityInfoDesc {
 	 * 商户ID inno72_merchant_user.merchant_id
 	 */
 	@Column(name = "merchant_id")
+	@NotNull(message = "商户号为空!")
 	private String merchantId;
 
 	/**
 	 * 活动信息类型 1：新增；
 	 */
 	@Column(name = "info_type")
+	@NotNull(message = "日志类型为空!")
 	private Integer infoType;
 
 	@Column(name = "info_date")
 	@JsonSerialize(using = CustomLocalDateSerializer.class)
-	@DateTimeFormat(pattern = "yyyy年MM月dd日")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@NotNull(message = "活动日志日期为空!")
 	private LocalDate infoDate;
 
 	@Column(name = "info_desc")
+	@NotNull(message = "日志描述为空!")
 	private String infoDesc;
 
 	@Column(name = "create_time")

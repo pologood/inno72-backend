@@ -2,6 +2,7 @@ package com.inno72.project.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
+import com.inno72.Interact.mapper.Inno72InteractMapper;
+import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.common.AbstractService;
 import com.inno72.common.JSR303Util;
 import com.inno72.common.Result;
@@ -23,13 +26,11 @@ import com.inno72.common.SessionUtil;
 import com.inno72.common.StringUtil;
 import com.inno72.project.mapper.Inno72ActivityIndexMapper;
 import com.inno72.project.mapper.Inno72ActivityInfoDescMapper;
-import com.inno72.project.mapper.Inno72ActivityMapper;
 import com.inno72.project.mapper.Inno72MerchantUserMapper;
 import com.inno72.project.model.Inno72ActivityIndex;
 import com.inno72.project.model.Inno72ActivityInfoDesc;
 import com.inno72.project.service.Inno72ActivityIndexService;
 import com.inno72.project.vo.Inno72ActivityIndexVo;
-import com.inno72.project.vo.Inno72ActivityVo;
 import com.inno72.system.model.Inno72User;
 
 
@@ -49,7 +50,7 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 	private Inno72ActivityInfoDescMapper inno72ActivityInfoDescMapper;
 
 	@Resource
-	private Inno72ActivityMapper inno72ActivityMapper;
+	private Inno72InteractMapper inno72InteractMapper;
 
 	@Resource
 	private Inno72MerchantUserMapper inno72MerchantUserMapper;
@@ -61,7 +62,8 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 			return Results.failure("参数不存在!");
 		}
 
-		List<Inno72ActivityIndex> indexList = inno72ActivityIndexMapper.selectIndex(merchantId, activityId);
+		List<Inno72ActivityIndex> indexList = inno72ActivityIndexMapper.selectIndex(merchantId, activityId,
+				null);
 
 		List<Inno72ActivityInfoDesc> infoList = inno72ActivityInfoDescMapper.selectInfoDesc(merchantId, activityId);
 
@@ -108,24 +110,27 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 		List<Inno72ActivityIndex> insertS = new ArrayList<>();
 		// 去重用
 		List<String> types = new ArrayList<>();
-		List<String> curTypes = new ArrayList<>();
-		curTypes.add("1");
-		curTypes.add("2");
-		curTypes.add("3");
+
+		List<String> delIds = new ArrayList<>();
+		Map<String, Object> param = new HashMap<>(3);
 
 		for (Inno72ActivityIndex index : indexList){
 
 			String activityId = index.getActivityId();
-			Inno72ActivityVo inno72ActivityVo = inno72ActivityMapper.selectById(activityId);
-			if (inno72ActivityVo == null){
+			Inno72Interact inno72Interact = inno72InteractMapper.selectByPrimaryKey(activityId);
+			if (inno72Interact == null){
 				return Results.failure("活动不在呀!");
 			}
 
-			String machineId = index.getMerchantId();
-			List<Map<String, String>> activity = inno72MerchantUserMapper.activity(machineId);
+			String merchantId = index.getMerchantId();
+			List<Map<String, String>> activity = inno72MerchantUserMapper.activity(merchantId);
 			if (activity.size() == 0){
 				return Results.failure("活动配置错误!");
 			}
+
+			param.put("activityId", activityId);
+			param.put("merchantId", merchantId);
+
 			List<String> actIds = new ArrayList<>(activity.size());
 			for (Map<String, String> map : activity){
 				actIds.add(map.get("actId"));
@@ -136,9 +141,6 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 			}
 
 			String activityIndexType = index.getActivityIndexType();
-			if (!curTypes.contains(activityIndexType)){
-				return Results.failure("指标类型错误!");
-			}
 
 			if (types.contains(activityIndexType)){
 				return Results.failure("核心指标重复!");
@@ -147,7 +149,7 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 			}
 
 			if (StringUtil.isEmpty(index.getId())){
-				List<Inno72ActivityIndex> sss = inno72ActivityIndexMapper.selectIndex(machineId, activityId);
+				List<Inno72ActivityIndex> sss = inno72ActivityIndexMapper.selectIndex(merchantId, activityId, activityIndexType);
 				if (sss.size() > 0){
 					return Results.failure("提交的指标重复");
 				}
@@ -157,7 +159,7 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 				index.setOperator(mUser.getName());
 				index.setCreator(mUser.getName());
 				index.setId(StringUtil.getUUID());
-				index.setActivityName(inno72ActivityVo.getName());
+				index.setActivityName(inno72Interact.getName());
 				insertS.add(index);
 
 			}else {
@@ -174,10 +176,19 @@ public class Inno72ActivityIndexServiceImpl extends AbstractService<Inno72Activi
 
 			}
 
+			delIds.add(index.getId());
+
 		}
 
-		int i = inno72ActivityIndexMapper.insertList(insertS);
-		LOGGER.info("插入核心指标 -> {}, {}", JSON.toJSONString(insertS), i);
+		if(insertS.size() > 0){
+			int i = inno72ActivityIndexMapper.insertS(insertS);
+			LOGGER.info("插入核心指标 -> {}, {}", JSON.toJSONString(insertS), i);
+		}
+
+		param.put("list", delIds);
+
+		int delSize = inno72ActivityIndexMapper.deleteByParam(param);
+		LOGGER.info("删除核心指标参数 -> {}, {}", JSON.toJSONString(param), delSize);
 
 		return Results.success();
 	}
