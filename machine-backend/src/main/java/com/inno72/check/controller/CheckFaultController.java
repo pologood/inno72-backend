@@ -3,6 +3,7 @@ package com.inno72.check.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.validation.BindingResult;
@@ -59,6 +60,13 @@ public class CheckFaultController {
 		List<Inno72CheckFault> list = checkFaultService.findByPage(keyword, status, workType, source, type, startTime,
 				endTime);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
+	}
+
+	@RequestMapping(value = "/listExcel", method = { RequestMethod.POST, RequestMethod.GET })
+	public ModelAndView listExcel(HttpServletResponse response, String keyword, String status, String workType,
+			String source, String type, String startTime, String endTime) {
+		checkFaultService.listExcel(response, keyword, status, workType, source, type, startTime, endTime);
+		return null;
 	}
 
 	@RequestMapping(value = "/answer", method = { RequestMethod.POST, RequestMethod.GET })

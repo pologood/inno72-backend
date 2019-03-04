@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.inno72.check.model.Inno72CheckFault;
 import com.inno72.check.model.Inno72CheckUser;
+import com.inno72.check.vo.CheckFaultExcelVo;
 import com.inno72.check.vo.Inno72CheckFaultVo;
 import com.inno72.common.Mapper;
 
@@ -12,6 +13,8 @@ import com.inno72.common.Mapper;
 public interface Inno72CheckFaultMapper extends Mapper<Inno72CheckFault> {
 
 	List<Inno72CheckFault> selectCheckFaultByPage(Map<String, Object> params);
+
+	List<CheckFaultExcelVo> selectCheckFaultList(Map<String, Object> params);
 
 	Inno72CheckFaultVo selectFaultDetail(Map<String, Object> params);
 

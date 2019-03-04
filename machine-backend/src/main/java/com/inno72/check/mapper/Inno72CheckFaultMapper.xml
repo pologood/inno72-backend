@@ -74,6 +74,73 @@
 		
   </select>
   
+  <resultMap id="ExcelListResultMap" type="com.inno72.check.vo.CheckFaultExcelVo">
+	    <result column="code" jdbcType="VARCHAR" property="code" />
+	    <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+	    <result column="work_type" jdbcType="VARCHAR" property="workType" />
+	    <result column="status" jdbcType="VARCHAR" property="status" />
+	    <result column="source" jdbcType="VARCHAR" property="source" />
+	    <result column="urgent_status" jdbcType="VARCHAR" property="urgentStatus" />
+	    <result column="remark" jdbcType="VARCHAR" property="remark" />
+	    <result column="submit_time" jdbcType="VARCHAR" property="submitTime" />
+	    <result column="submit_user" jdbcType="VARCHAR" property="submitUser" />
+	    <result column="talking_time" jdbcType="VARCHAR" property="talkingTime" />
+	    <result column="finish_time" jdbcType="VARCHAR" property="finishTime" />
+	    <result column="finish_user" jdbcType="VARCHAR" property="finishUser" />
+	    <result column="finish_remark" jdbcType="VARCHAR" property="finishRemark" />
+	</resultMap>
+  
+  <select id="selectCheckFaultList" parameterType="java.util.Map" resultMap="ExcelListResultMap">
+ 		SELECT
+ 		f.code,
+ 		m.machine_code AS machine_code,
+ 		CASE WHEN f.work_type = '1' THEN '故障' 
+         WHEN f.work_type = '2' THEN '报警'
+         WHEN f.work_type = '3' THEN '补货' 
+         WHEN f.work_type = '4' THEN '其它' 
+         WHEN f.work_type = '5' THEN '自动补货' 
+		END AS work_type,
+		CASE WHEN f.source = '1' THEN '巡检上报' 
+         WHEN f.source = '2' THEN '运营派单'
+         WHEN f.source = '3' THEN '报警派单' 
+		END AS source,
+		CASE WHEN f.status = '1' THEN '待接单' 
+         WHEN f.status = '2' THEN '处理中'
+         WHEN f.status = '3' THEN '已完成' 
+         WHEN f.status = '4' THEN '已确认' 
+         WHEN f.status = '5' THEN '已关闭' 
+		END AS status,
+		CASE WHEN f.urgent_status = '1' THEN '日常' 
+         WHEN f.urgent_status = '2' THEN '紧急'
+		END AS urgent_status,
+ 		CONCAT(IFNULL(ft.name,''),' ',f.remark) AS remark,
+ 		f.submit_time,
+ 		f.submit_user,
+ 		f.talking_time,
+ 		f.finish_time,
+ 		f.finish_user,
+ 		f.finish_remark,
+ 		f.remind_status
+ 		 FROM inno72_check_fault f
+ 		LEFT JOIN inno72_check_fault_type ft ON ft.CODE = f.type
+		LEFT JOIN inno72_machine m ON m.id = f.machine_id
+		LEFT JOIN inno72_locale l ON l.id = m.locale_id
+		WHERE 1=1
+		<if test="status !=null and status !=''">and f.status =#{status} </if>
+		<if test="workType !=null and workType !=''">and f.work_type =#{workType} </if>
+		<if test="source !=null and source !=''">and f.source =#{source} </if>
+		<if test="type ==1">
+			<![CDATA[ and ( f.submit_time  BETWEEN #{startTime} AND #{endTime} ) ]]>
+		</if>
+		<if test="type ==2">
+			<![CDATA[ and ( f.finish_time  BETWEEN #{startTime} AND #{endTime} ) ]]>
+		</if>
+		<if test="keyword !=null and keyword !=''"> and ( m.machine_code LIKE '%${keyword}%' or f.finish_user LIKE '%${keyword}%' or f.submit_user LIKE '%${keyword}%')</if>
+		and 9=9
+		ORDER BY f.submit_time DESC
+		
+  </select>
+  
   <resultMap id="ResultFaultDetailMap" extends="BaseResultMap" type="com.inno72.check.vo.Inno72CheckFaultVo">
   <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
 	    <association property="answerList" resultMap="answerResult" />

@@ -47,8 +47,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 			"/check/user/selectAreaMachines", "/check/user/selectPhoneByMachineCode", "/activity/data/count/add",
 			"/activity/data/count/history", "/pai/data/count/add", "/pai/data/count/addTotalData",
 			"/machine/machine/exportMachinePointLog", "/supply/channel/history/dayGoodsCountExcel",
-			"/project/interact/merchant/exportMachineSellerId"});
-
+			"/project/interact/merchant/exportMachineSellerId", "/check/fault/listExcel" });
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
