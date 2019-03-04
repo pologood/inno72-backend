@@ -108,7 +108,7 @@ public class SocketIOStartHandler {
 							query.addCriteria(Criteria.where("machineId").is(machineId));
 							mongoTpl.remove(query, "MachineAppStatus");
 							mongoTpl.save(apps, "MachineAppStatus");
-							// socketService.checkApp(apps);
+							socketService.checkApp(apps);
 						}
 					} else if (SCREENSHOT.v() == subEventType) {
 						String url = $json.getJSONObject("data").getString("imgUrl");

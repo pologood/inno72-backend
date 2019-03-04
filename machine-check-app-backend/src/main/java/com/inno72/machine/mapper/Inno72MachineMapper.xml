@@ -237,7 +237,7 @@
 		aa.district,
 		if(aa.circle='其他' or aa.circle is null,'',aa.circle),IFNULL(l.mall,""),IFNULL( l.name,'')
 		) AS localeStr,
-		vam.activity_id activityId
+		vam.activity activityId
 		from inno72_machine m
 		LEFT JOIN inno72_locale l ON l.id = m.locale_id
 		LEFT JOIN inno72_admin_area aa ON aa.CODE = l.area_code
