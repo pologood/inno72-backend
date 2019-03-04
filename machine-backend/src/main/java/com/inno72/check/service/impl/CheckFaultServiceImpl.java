@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +24,12 @@ import com.inno72.check.model.Inno72CheckFaultRemark;
 import com.inno72.check.model.Inno72CheckFaultType;
 import com.inno72.check.model.Inno72CheckUser;
 import com.inno72.check.service.CheckFaultService;
+import com.inno72.check.vo.CheckFaultExcelVo;
 import com.inno72.check.vo.Inno72CheckFaultVo;
 import com.inno72.common.AbstractService;
 import com.inno72.common.CommonConstants;
 import com.inno72.common.DateUtil;
+import com.inno72.common.ExportExcel;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.SessionData;
@@ -54,6 +57,12 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 	private Inno72MachineMapper inno72MachineMapper;
 	@Resource
 	private Inno72CheckFaultTypeMapper inno72CheckFaultTypeMapper;
+
+	// 表格
+	public static final String[] CHARGE = { "故障单ID", "机器编号", "工单类型", "来源", "紧急状态", "工单描述", "派单时间", "派单人", "接单时间",
+			"解决时间", "解决人", "解决方案", "工单状态" };
+	public static final String[] COLUMN = { "code", "machineCode", "workType", "source", "urgentStatus", "remark",
+			"submitTime", "submitUser", "talkingTime", "finishTime", "finishUser", "finishRemark", "status" };
 
 	@Override
 	public Result<String> saveModel(Inno72CheckFault model) {
@@ -179,6 +188,28 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 		}
 
 		return inno72CheckFaultMapper.selectCheckFaultByPage(params);
+	}
+
+	@Override
+	public Result<String> listExcel(HttpServletResponse response, String keyword, String status, String workType,
+			String source, String type, String startTime, String endTime) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		keyword = Optional.ofNullable(keyword).map(a -> a.replace("'", "")).orElse(keyword);
+		params.put("status", status);
+		params.put("workType", workType);
+		params.put("source", source);
+		params.put("keyword", keyword);
+		params.put("type", type);
+		params.put("startTime", startTime);
+		if (StringUtil.isNotBlank(endTime)) {
+			params.put("endTime", endTime + " 23:59:59");
+		}
+
+		List<CheckFaultExcelVo> list = inno72CheckFaultMapper.selectCheckFaultList(params);
+
+		ExportExcel<CheckFaultExcelVo> ee = new ExportExcel<CheckFaultExcelVo>();
+		ee.setResponseHeader(CHARGE, COLUMN, list, response, "工单管理");
+		return Results.success();
 	}
 
 	@Override
