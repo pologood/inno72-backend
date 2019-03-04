@@ -245,7 +245,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 					if(StringUtil.isNotEmpty(info)){
 						String[] infoArray = info.split(",");
 						String lackKey = "lackGoods:"+machineCode+":"+lackGoodsBean.getGoodsId();
-						String textBeaf = "";
+						String textBeaf = "您好，" + machine.getLocaleStr() + "，机器编号：" + machineCode + "，";
 						for(int i=0;i<infoArray.length;i++){
 							int count = Integer.parseInt(infoArray[i]);
 							boolean flag = redisUtil.sismember(lackKey,count);
@@ -267,7 +267,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 								redisUtil.sadd(lackKey,count);
 							}
 							log.info("缺货发送报警标记"+pushFlag);
-							textBeaf = "您好，" + machine.getLocaleStr() + "，机器编号：" + machineCode + "，";
+
 							if(pushFlag){
 								text = goodsInfo+ "请及时联系巡检人员补货";
 								String ddStr = textBeaf+text;
@@ -318,7 +318,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 							faultRemark.setId(remarkId);
 							checkFaultService.saveCheckFaultRemark(faultRemark);
 							String title = "您有未接收的自动补货工单";
-							alarmMsgService.saveAlarmMsg(CommonConstants.SYS_SUPPLY_WORK,machineCode,title,textBeaf,text,inno72CheckUserPhones);
+							alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_LACKGOODS,machineCode,title,textBeaf,text,inno72CheckUserPhones);
 						}
 					}
 				}
