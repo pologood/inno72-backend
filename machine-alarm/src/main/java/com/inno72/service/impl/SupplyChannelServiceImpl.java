@@ -245,6 +245,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 					if(StringUtil.isNotEmpty(info)){
 						String[] infoArray = info.split(",");
 						String lackKey = "lackGoods:"+machineCode+":"+lackGoodsBean.getGoodsId();
+						String textBeaf = "";
 						for(int i=0;i<infoArray.length;i++){
 							int count = Integer.parseInt(infoArray[i]);
 							boolean flag = redisUtil.sismember(lackKey,count);
@@ -266,41 +267,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 								redisUtil.sadd(lackKey,count);
 							}
 							log.info("缺货发送报警标记"+pushFlag);
-							String textBeaf = "您好，" + machine.getLocaleStr() + "，机器编号：" + machineCode + "，";
-							if(surPlusNum == 19){
-								String remark = textBeaf+goodsInfo+"请及时接单";
-								Inno72CheckFault checkFault = new Inno72CheckFault();
-								String id = StringUtil.getUUID();
-								checkFault.setId(id);
-								String time = DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S2);
-								checkFault.setCode("F" + StringUtil.createRandomCode(6) + time);
-								checkFault.setSubmitTime(LocalDateTime.now());
-								checkFault.setSubmitUser("系统");
-								checkFault.setMachineId(machine.getId());
-								checkFault.setWorkType(2);//
-								checkFault.setSource(3);// 系统派单
-								checkFault.setUrgentStatus(2);// 紧急
-								checkFault.setSubmitId("admin");
-								checkFault.setSubmitUserType(1);// 巡检人员
-								checkFault.setStatus(1);// 待接单
-								checkFault.setReceiveUser(null);
-								checkFault.setReceiveId(null);
-								checkFault.setUpdateTime(LocalDateTime.now());
-								checkFault.setRemark(remark);
-								checkFaultService.saveCheckFault(checkFault);
-								Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
-								faultRemark.setRemark(remark);
-								faultRemark.setUserId("admin");
-								faultRemark.setName("系统");
-								faultRemark.setType(1);
-								faultRemark.setCreateTime(LocalDateTime.now());
-								faultRemark.setFaultId(id);
-								String remarkId = StringUtil.getUUID();
-								faultRemark.setId(remarkId);
-								checkFaultService.saveCheckFaultRemark(faultRemark);
-								String title = "您有未接收的自动补货工单";
-								alarmMsgService.saveAlarmMsg(CommonConstants.SYS_SUPPLY_WORK,machineCode,title,textBeaf,text,inno72CheckUserPhones);
-							}
+							textBeaf = "您好，" + machine.getLocaleStr() + "，机器编号：" + machineCode + "，";
 							if(pushFlag){
 								text = goodsInfo+ "请及时联系巡检人员补货";
 								String ddStr = textBeaf+text;
@@ -318,6 +285,40 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 								pushFlag = false;
 								break;
 							}
+						}
+						if(surPlusNum == 19){
+							String remark = textBeaf+goodsInfo+"请及时接单";
+							Inno72CheckFault checkFault = new Inno72CheckFault();
+							String id = StringUtil.getUUID();
+							checkFault.setId(id);
+							String time = DateUtil.toTimeStr(LocalDateTime.now(), DateUtil.DF_FULL_S2);
+							checkFault.setCode("F" + StringUtil.createRandomCode(6) + time);
+							checkFault.setSubmitTime(LocalDateTime.now());
+							checkFault.setSubmitUser("系统");
+							checkFault.setMachineId(machine.getId());
+							checkFault.setWorkType(2);//
+							checkFault.setSource(3);// 系统派单
+							checkFault.setUrgentStatus(2);// 紧急
+							checkFault.setSubmitId("admin");
+							checkFault.setSubmitUserType(1);// 巡检人员
+							checkFault.setStatus(1);// 待接单
+							checkFault.setReceiveUser(null);
+							checkFault.setReceiveId(null);
+							checkFault.setUpdateTime(LocalDateTime.now());
+							checkFault.setRemark(remark);
+							checkFaultService.saveCheckFault(checkFault);
+							Inno72CheckFaultRemark faultRemark = new Inno72CheckFaultRemark();
+							faultRemark.setRemark(remark);
+							faultRemark.setUserId("admin");
+							faultRemark.setName("系统");
+							faultRemark.setType(1);
+							faultRemark.setCreateTime(LocalDateTime.now());
+							faultRemark.setFaultId(id);
+							String remarkId = StringUtil.getUUID();
+							faultRemark.setId(remarkId);
+							checkFaultService.saveCheckFaultRemark(faultRemark);
+							String title = "您有未接收的自动补货工单";
+							alarmMsgService.saveAlarmMsg(CommonConstants.SYS_SUPPLY_WORK,machineCode,title,textBeaf,text,inno72CheckUserPhones);
 						}
 					}
 				}
