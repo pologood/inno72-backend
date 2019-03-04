@@ -277,8 +277,8 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 								checkFault.setSubmitTime(LocalDateTime.now());
 								checkFault.setSubmitUser("系统");
 								checkFault.setMachineId(machine.getId());
-								checkFault.setWorkType(5);//
-								checkFault.setSource(1);// 巡检
+								checkFault.setWorkType(2);//
+								checkFault.setSource(3);// 系统派单
 								checkFault.setUrgentStatus(2);// 紧急
 								checkFault.setSubmitId("admin");
 								checkFault.setSubmitUserType(1);// 巡检人员
