@@ -317,8 +317,8 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 							String remarkId = StringUtil.getUUID();
 							faultRemark.setId(remarkId);
 							checkFaultService.saveCheckFaultRemark(faultRemark);
-							String title = "您有未接收的自动补货工单";
-							alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_LACKGOODS,machineCode,title,textBeaf,text,inno72CheckUserPhones);
+							String title = "您有补货工单需要处理";
+							alarmMsgService.saveAlarmMsg(CommonConstants.SYS_MACHINE_LACKGOODS,machineCode,title,textBeaf,remark,inno72CheckUserPhones);
 						}
 					}
 				}
