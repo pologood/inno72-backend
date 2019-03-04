@@ -286,7 +286,7 @@ public class SupplyChannelServiceImpl extends AbstractService<Inno72SupplyChanne
 								break;
 							}
 						}
-						if(surPlusNum == 19){
+						if(surPlusNum == 20){
 							String remark = textBeaf+goodsInfo+"请及时接单";
 							Inno72CheckFault checkFault = new Inno72CheckFault();
 							String id = StringUtil.getUUID();
