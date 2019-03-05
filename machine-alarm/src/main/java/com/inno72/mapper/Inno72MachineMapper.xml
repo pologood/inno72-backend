@@ -106,19 +106,19 @@
         (select m.id,m.machine_code from inno72_machine m inner join inno72_activity_plan_machine apm on m.id=apm.machine_id
         inner join inno72_activity_plan ap  on apm.activity_plan_id=ap.id
         left join inno72_check_sign_in csi on m.id=csi.machine_id and DATE_FORMAT(csi.create_time,'%Y-%m-%d')=#{findTime}
-        where m.net_status>0 and csi.create_time is null and  (#{findTime} BETWEEN ap.start_time and ap.end_time) group by m.id)
+        where m.net_status>0 and csi.create_time is null and  (#{findTime} BETWEEN DATE_FORMAT(ap.start_time,'%Y-%m-%d')   and DATE_FORMAT(ap.end_time,'%Y-%m-%d')) group by m.id)
         UNION ALL
         (select m.id,m.machine_code
         from inno72_machine m
         inner join inno72_interact_machine im on m.id=im.machine_id
         inner join inno72_interact_machine_time imt on im.id=imt.interact_machine_id
         left join inno72_check_sign_in csi on m.id=csi.machine_id and DATE_FORMAT(csi.create_time,'%Y-%m-%d')=#{findTime}
-        where m.net_status>0 and csi.create_time is null and (#{findTime} BETWEEN imt.start_time and imt.end_time)
+        where m.net_status>0 and csi.create_time is null and (#{findTime} BETWEEN DATE_FORMAT(imt.start_time,'%Y-%m-%d')   and DATE_FORMAT(imt.end_time,'%Y-%m-%d'))
         )
         UNION ALL
         (select m.id,m.machine_code from inno72_machine m
         left join inno72_check_sign_in csi on m.id=csi.machine_id and DATE_FORMAT(csi.create_time,'%Y-%m-%d')=#{findTime}
-        where m.net_status>0 and csi.create_time is null and m.machine_status=9)
+        where m.net_status>0 and csi.create_time is null and m.machine_type=2)
         )
         a left join inno72_check_user_machine cum on a.id=cum.machine_id
         left join inno72_check_user cu on cu.id=cum.check_user_id

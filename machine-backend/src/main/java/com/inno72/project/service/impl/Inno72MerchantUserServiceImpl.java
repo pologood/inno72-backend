@@ -52,6 +52,8 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 	@Resource
 	private IRedisUtil redisUtil;
 
+
+
 	@Override
 	public Result saveOrUpdate(Inno72MerchantUser user){
 
@@ -217,6 +219,18 @@ public class Inno72MerchantUserServiceImpl extends AbstractService<Inno72Merchan
 		Condition condition = new Condition(Inno72MerchantUser.class);
 		condition.createCriteria().andEqualTo(model);
 		return Results.success(super.findByCondition(condition));
+	}
+
+	@Override
+	public Result<List<Map<String, String>>> activity(String merchantId) {
+		if (StringUtil.isEmpty(merchantId)){
+			return Results.failure("参数不存在!");
+		}
+		List<Map<String, String>> act = inno72MerchantUserMapper.activity(merchantId);
+		if (act.size() == 0){
+			return Results.failure("没有配置的活动!");
+		}
+		return Results.success(act);
 	}
 
 	private String genMerchantCode(){

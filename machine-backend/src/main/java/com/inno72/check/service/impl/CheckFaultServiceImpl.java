@@ -127,7 +127,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			faultRemark.setType(2);
 			faultRemark.setCreateTime(LocalDateTime.now());
 			faultRemark.setIsDelete(0);
-			inno72CheckFaultRemarkMapper.insert(faultRemark);
+			inno72CheckFaultRemarkMapper.insertSelective(faultRemark);
 
 		} catch (Exception e) {
 			logger.info(e.getMessage());
@@ -164,7 +164,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			checkFault.setStatus(status);
 
 			checkFault.setUpdateTime(LocalDateTime.now());
-			inno72CheckFaultMapper.updateByPrimaryKey(checkFault);
+			inno72CheckFaultMapper.updateByPrimaryKeySelective(checkFault);
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 			return Results.failure("操作失败");
@@ -240,7 +240,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 			faultRemark.setCreateTime(LocalDateTime.now());
 			faultRemark.setIsDelete(0);
 
-			inno72CheckFaultRemarkMapper.insert(faultRemark);
+			inno72CheckFaultRemarkMapper.insertSelective(faultRemark);
 			// 派单
 			if (StringUtil.isNotBlank(toUserId)) {
 				Inno72CheckUser receiveUser = inno72CheckUserMapper.selectByPrimaryKey(toUserId);
@@ -253,7 +253,7 @@ public class CheckFaultServiceImpl extends AbstractService<Inno72CheckFault> imp
 				checkFault.setReceiveUser(receiveUser.getName());
 				checkFault.setTalkingTime(LocalDateTime.now());
 
-				inno72CheckFaultMapper.updateByPrimaryKey(checkFault);
+				inno72CheckFaultMapper.updateByPrimaryKeySelective(checkFault);
 			}
 
 		} catch (Exception e) {

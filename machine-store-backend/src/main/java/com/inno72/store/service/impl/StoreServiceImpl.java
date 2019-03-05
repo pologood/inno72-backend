@@ -90,7 +90,7 @@ public class StoreServiceImpl extends AbstractService<Inno72Store> implements St
 			keeperStorte.setStoreId(model.getId());
 			keeperStorte.setStorekeeperId(mUserId);
 
-			inno72StoreMapper.insert(model);
+			inno72StoreMapper.insertSelective(model);
 			// 创建人员分配该权限
 			inno72StorekeeperStorteMapper.insertSelective(keeperStorte);
 

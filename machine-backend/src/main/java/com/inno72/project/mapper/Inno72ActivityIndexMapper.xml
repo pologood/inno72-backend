@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.project.mapper.Inno72ActivityIndexMapper">
+  <resultMap id="BaseResultMap" type="com.inno72.project.model.Inno72ActivityIndex">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="activity_name" jdbcType="VARCHAR" property="activityName" />
+    <result column="merchant_id" jdbcType="VARCHAR" property="merchantId" />
+    <result column="activity_index_type" jdbcType="VARCHAR" property="activityIndexType" />
+    <result column="activity_index" jdbcType="INTEGER" property="activityIndex" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" javaType="java.time.LocalDateTime"
+                typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" javaType="java.time.LocalDateTime"
+                typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+    <result column="operator" jdbcType="VARCHAR" property="operator" />
+  </resultMap>
+    <insert id="insertS" parameterType="list">
+        INSERT INTO inno72_activity_index
+        ( id, activity_id,activity_name,
+          merchant_id,activity_index_type,activity_index,
+          create_time,creator,update_time,
+          operator )
+        VALUES
+            <foreach collection="list" item="item" separator=",">
+                (
+                #{item.id}, #{item.activityId}, #{item.activityName},
+                #{item.merchantId}, #{item.activityIndexType}, #{item.activityIndex},
+                #{item.createTime}, #{item.creator}, #{item.updateTime},
+                #{item.operator}
+                )
+            </foreach>
+    </insert>
+
+    <delete id="deleteByParam" parameterType="map">
+      delete from inno72_activity_index
+        where  activity_id = #{activityId}
+               and merchant_id = #{merchantId}
+               and id not in
+                <foreach collection="list" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+    </delete>
+
+    <select id="selectIndex" resultMap="BaseResultMap">
+      select * from inno72_activity_index
+        where activity_id = #{activityId} and merchant_id = #{merchantId}
+            <if test="activityIndexType != null">
+              and activity_index_type = #{activityIndexType}
+            </if>
+    </select>
+</mapper>

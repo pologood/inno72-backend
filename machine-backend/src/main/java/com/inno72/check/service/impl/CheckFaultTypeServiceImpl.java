@@ -96,7 +96,7 @@ public class CheckFaultTypeServiceImpl extends AbstractService<Inno72CheckFaultT
 			}
 			inno72CheckFaultTypeMapper.insertFaultTypeList(insertFaultTypeList);
 
-			inno72CheckFaultTypeMapper.insert(model);
+			inno72CheckFaultTypeMapper.insertSelective(model);
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 			return Results.failure("操作失败");
