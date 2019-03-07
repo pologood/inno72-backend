@@ -102,8 +102,7 @@
 		END AS work_type,
 		CASE WHEN f.source = '1' THEN '巡检上报' 
          WHEN f.source = '2' THEN '运营派单'
-         WHEN f.source = '3' THEN '报警派单' 
-         WHEN f.source = '4' THEN '系统派单' 
+         WHEN f.source = '3' THEN '系统派单' 
 		END AS source,
 		CASE WHEN f.status = '1' THEN '待接单' 
          WHEN f.status = '2' THEN '处理中'
