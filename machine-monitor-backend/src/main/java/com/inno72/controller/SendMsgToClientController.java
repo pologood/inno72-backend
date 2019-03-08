@@ -1,5 +1,6 @@
 package com.inno72.controller;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,12 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.inno72.common.CommonConstants;
 import com.inno72.common.MachineMonitorBackendProperties;
 import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.common.utils.StringUtil;
+import com.inno72.model.Inno72AppMsg;
 import com.inno72.model.SendMessageBean;
 import com.inno72.redis.IRedisUtil;
+import com.inno72.service.AppMsgService;
 import com.inno72.util.AesUtils;
 import com.inno72.util.GZIPUtil;
 import com.inno72.util.HttpFormConnector;
@@ -37,6 +41,9 @@ public class SendMsgToClientController {
 
 	@Autowired
 	private MachineMonitorBackendProperties machineMonitorBackendProperties;
+
+	@Autowired
+	private AppMsgService appMsgService;
 
 	@RequestMapping(value = "/sendMsg", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<Map<String, Object>> sendMsg(@RequestBody SendMessageBean... msgs) {
@@ -65,6 +72,31 @@ public class SendMsgToClientController {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+				map.put(msg.getMachineId(), "发送失败");
+			}
+		}
+		return ResultGenerator.genSuccessResult(map);
+	}
+
+	@RequestMapping(value = "/sendMsgOld", method = { RequestMethod.POST, RequestMethod.GET })
+	public Result<Map<String, Object>> sendMsgOld(@RequestBody SendMessageBean... msgs) {
+		Map<String, Object> map = new HashMap<>();
+		for (SendMessageBean msg : msgs) {
+			logger.info("客户端发送消息：{}", JSON.toJSONString(msg));
+			String result = GZIPUtil.compress(AesUtils.encrypt(JSON.toJSONString(msg)));
+			String machinKey = CommonConstants.REDIS_SESSION_PATH + msg.getMachineId();
+			String sessionId = redisUtil.get(machinKey);
+			if (!com.inno72.common.utils.StringUtil.isEmpty(sessionId)) {
+				Inno72AppMsg msg1 = new Inno72AppMsg();
+				msg1.setId(StringUtil.uuid());
+				msg1.setCreateTime(LocalDateTime.now());
+				msg1.setMachineCode(msg.getMachineId());
+				msg1.setContent(result);
+				msg1.setStatus(0);
+				msg1.setMsgType(1);
+				appMsgService.save(msg1);
+				map.put(msg.getMachineId(), "发送成功");
+			} else {
 				map.put(msg.getMachineId(), "发送失败");
 			}
 		}
