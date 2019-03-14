@@ -70,35 +70,7 @@ public class OrderController {
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
 	public Map<String,Object> list(Inno72Order order) {
 		logger.info("查询订单列表参数：{}", JSON.toJSON(order));
-		List<Inno72Order> list = orderService.getOrderList(order);
-		Map<String,Object> map = new HashMap<>();
-		Page page = new Page();
-		int pageNo = order.getPageNo();
-		page.setPageNo(pageNo);
-		boolean firstPage = false;
-		if(pageNo==1){
-			firstPage = true;
-		}
-		page.setFirstPage(firstPage);
-		boolean lastPage = false;
-		int totalPage = 100;
-		int totalCount = 100*20;
-//		if(list == null || list.size()<20){
-//			lastPage = true;
-//			totalPage = pageNo;
-//			totalCount = (pageNo-1)*20+list.size();
-//		}
-		page.setLastPage(lastPage);
-		page.setTotalCount(totalCount);
-		page.setNextPage(pageNo+1);
-		page.setPageSize(20);
-		page.setPrePage(pageNo);
-		page.setTotalPage(totalPage);
-		map.put("page",page);
-		map.put("data",list);
-		map.put("code",0);
-		map.put("msg","");
-		return map;
+		return orderService.getOrderList(order);
 	}
 
 }

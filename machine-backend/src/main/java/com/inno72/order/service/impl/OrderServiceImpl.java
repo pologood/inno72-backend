@@ -1,6 +1,8 @@
 package com.inno72.order.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -14,6 +16,7 @@ import com.inno72.common.StringUtil;
 import com.inno72.order.mapper.Inno72OrderGoodsMapper;
 import com.inno72.order.mapper.Inno72OrderMapper;
 import com.inno72.order.model.Inno72Order;
+import com.inno72.order.model.Page;
 import com.inno72.order.service.OrderService;
 
 @Service
@@ -27,7 +30,7 @@ public class OrderServiceImpl extends AbstractService<Inno72Order> implements Or
 	private Inno72OrderGoodsMapper inno72OrderGoodsMapper;
 
 	@Override
-	public List<Inno72Order> getOrderList(Inno72Order order) {
+	public Map<String,Object> getOrderList(Inno72Order order) {
 		String keyword = order.getKeyword();
 		if (StringUtil.isEmpty(keyword)) {
 			order.setKeyword(null);
@@ -42,7 +45,29 @@ public class OrderServiceImpl extends AbstractService<Inno72Order> implements Or
 		int pageNo = order.getPageNo();
 		order.setPageParam((pageNo-1)*20);
 		List<Inno72Order> orderList = inno72OrderMapper.seleByParamForPg(order);
-		return orderList;
+		int totalCount = inno72OrderMapper.selectListCount(order);
+		Page page = new Page();
+		page.setPageNo(pageNo);
+		boolean firstPage = false;
+		if(pageNo==1){
+			firstPage = true;
+		}
+		page.setFirstPage(firstPage);
+		boolean lastPage = false;
+		int pageSize = 20;
+		int totalPage = totalCount % pageSize == 0 ? totalCount / pageSize : (int) Math.ceil(totalCount / pageSize);
+		Map<String,Object> map = new HashMap<>();
+		page.setLastPage(lastPage);
+		page.setTotalCount(totalCount);
+		page.setNextPage(pageNo+1);
+		page.setPageSize(pageSize);
+		page.setPrePage(pageNo);
+		page.setTotalPage(totalPage);
+		map.put("page",page);
+		map.put("data",orderList);
+		map.put("code",0);
+		map.put("msg","");
+		return map;
 	}
 
 	@Override
