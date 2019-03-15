@@ -19,10 +19,12 @@ import com.inno72.Interact.mapper.Inno72InteractMachineGoodsMapper;
 import com.inno72.Interact.mapper.Inno72InteractMachineMapper;
 import com.inno72.Interact.mapper.Inno72InteractMachineTimeMapper;
 import com.inno72.Interact.mapper.Inno72InteractMapper;
+import com.inno72.Interact.mapper.Inno72MachineEnterMapper;
 import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.model.Inno72InteractMachine;
 import com.inno72.Interact.model.Inno72InteractMachineGoods;
 import com.inno72.Interact.model.Inno72InteractMachineTime;
+import com.inno72.Interact.model.Inno72MachineEnter;
 import com.inno72.Interact.service.InteractMachineService;
 import com.inno72.Interact.vo.InteractMachineTime;
 import com.inno72.Interact.vo.MachineActivityVo;
@@ -59,6 +61,9 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 	private Inno72InteractMachineTimeMapper inno72InteractMachineTimeMapper;
 	@Resource
 	private Inno72InteractMachineGoodsMapper inno72InteractMachineGoodsMapper;
+
+	@Resource
+	private Inno72MachineEnterMapper inno72MachineEnterMapper;
 
 	@Override
 	public List<MachineVo> getList(String keyword, String startTime, String endTime) {
@@ -359,6 +364,40 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 		}
 
 		return interactMachines;
+	}
+
+	/**
+	 * 初始化入驻信息
+	 */
+	public void saveMachineEnter(Inno72Interact interact, List<Inno72InteractMachine> insetInteractMachineList) {
+		logger.info("---------------------机器初始化入驻操作-------------------");
+
+		// 判断时候需要入驻
+		String enterType = interact.getEnterType();
+		if (StringUtil.isNotBlank(enterType)) {
+			String[] enterTypes = enterType.split(",");
+
+			List<Inno72MachineEnter> insetMachineEnterList = new ArrayList<>();
+			for (String type : enterTypes) {
+				for (Inno72InteractMachine interactMachine : insetInteractMachineList) {
+					Inno72MachineEnter machineEnter = new Inno72MachineEnter();
+					machineEnter.setId(StringUtil.getUUID());
+					machineEnter.setEnterType(type);
+					machineEnter.setEnterStatus(0);
+					machineEnter.setMachineId(interactMachine.getMachineId());
+					machineEnter.setMachineCode(interactMachine.getMachineCode());
+					machineEnter.setCreateTime(LocalDateTime.now());
+					insetMachineEnterList.add(machineEnter);
+				}
+			}
+			// 查询已入驻机器
+			List<Inno72MachineEnter> enterList = inno72MachineEnterMapper.selectAll();
+			insetMachineEnterList.removeAll(enterList);
+			if (insetMachineEnterList.size() > 0) {
+				inno72MachineEnterMapper.insetMachineEnterList(insetMachineEnterList);
+			}
+		}
+
 	}
 
 	public List<MachineActivityVo> getContinuTime(String interactId, MachineVo machineVo) {
