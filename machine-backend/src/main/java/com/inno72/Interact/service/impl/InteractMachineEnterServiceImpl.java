@@ -1,5 +1,6 @@
 package com.inno72.Interact.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.Interact.mapper.Inno72InteractMachineMapper;
 import com.inno72.Interact.mapper.Inno72MachineEnterMapper;
-import com.inno72.Interact.model.Inno72InteractMachine;
 import com.inno72.Interact.model.Inno72MachineEnter;
 import com.inno72.Interact.service.InteractMachineEnterService;
 import com.inno72.Interact.vo.MachineEnterVo;
@@ -58,49 +58,39 @@ public class InteractMachineEnterServiceImpl extends AbstractService<Inno72Machi
 
 		}
 
-		Inno72InteractMachine inno72InteractMachine = new Inno72InteractMachine();
-		inno72InteractMachine.setInteractId(interactId);
-		List<Inno72InteractMachine> interactMachineList = inno72InteractMachineMapper.select(inno72InteractMachine);
+		List<String> failList = new ArrayList<>();
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("interactId", interactId);
+		params.put("enterType", enterType);
+		List<Inno72MachineEnter> machineEnterList = inno72MachineEnterMapper.selectMachineEnterList(params);
 
-		if (null != interactMachineList && interactMachineList.size() > 0) {
+		if (null != machineEnterList && machineEnterList.size() > 0) {
 
-			for (Inno72InteractMachine machine : interactMachineList) {
-
-				Inno72MachineEnter machineEnter = new Inno72MachineEnter();
-				machineEnter.setMachineId(machine.getMachineId());
-				machineEnter.setEnterType(enterType);
-
-				machineEnter = inno72MachineEnterMapper.selectOne(machineEnter);
-				if (null != machineEnter && machineEnter.getEnterStatus() == 0) {
-					// 入驻平台：1 蚂蚁金服，2京东金融
-					Result<Object> res = new Result<>();
+			for (Inno72MachineEnter machineEnter : machineEnterList) {
+				// 入驻平台：1 蚂蚁金服，2京东金融
+				Result<Object> res = new Result<>();
+				try {
 					if (enterType.equals("1")) {
-						res = machineEnterServiceImpl.alipayAutomatUpload(machine.getMachineId());
+						res = machineEnterServiceImpl.alipayAutomatUpload(machineEnter.getMachineId());
 					} else if (enterType.equals("2")) {
-						res = machineEnterServiceImpl.jingdongAutomatUpload(machine.getMachineId());
+						res = machineEnterServiceImpl.jingdongAutomatUpload(machineEnter.getMachineId());
 					}
 					if (res.getCode() == 0) {
 						// 更新入驻记录
 						machineEnter.setEnterStatus(1);
 						inno72MachineEnterMapper.updateByPrimaryKeySelective(machineEnter);
-
-						return Results.warn("入驻成功", 0, null);
 					} else {
-						return Results.failure("入驻失败");
+						failList.add(machineEnter.getMachineCode());
 					}
-
-				} else {
-					logger.info("入驻信息有误");
-					return Results.failure("入驻失败");
+				} catch (Exception e) {
+					failList.add(machineEnter.getMachineCode());
+					continue;
 				}
-
 			}
-
 		} else {
 			return Results.failure("无可入驻机器");
 		}
-
-		return null;
+		return Results.warn("入驻成功", 0, failList);
 	}
 
 	@Override

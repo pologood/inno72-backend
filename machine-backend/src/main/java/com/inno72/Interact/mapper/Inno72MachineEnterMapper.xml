@@ -63,5 +63,22 @@
     </where>
 		
   </select>
+  <select id="selectMachineEnterList" parameterType="java.util.Map" resultMap="BaseResultMap">
+  	SELECT
+		me.* 
+	FROM
+		inno72_machine_enter me 
+	LEFT JOIN inno72_interact_machine im ON im.machine_id=me.machine_id
+	where me.enter_status=0 
+	<if test="interactId != null and interactId !=''">
+        and im.interact_id = #{interactId}
+    </if>
+    <if test="enterType != null and enterType !=''">
+        and me.enter_type = #{enterType}
+    </if>
+		
+  </select>
+  
+  
   
 </mapper>
