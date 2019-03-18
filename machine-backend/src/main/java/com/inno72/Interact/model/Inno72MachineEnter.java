@@ -35,7 +35,7 @@ public class Inno72MachineEnter {
 	private String machineCode;
 
 	/**
-	 * 0 alipay，1京东
+	 * 1 alipay，2京东
 	 */
 	@Column(name = "enter_type")
 	private String enterType;
@@ -116,9 +116,9 @@ public class Inno72MachineEnter {
 	}
 
 	/**
-	 * 获取0 alipay，1京东
+	 * 获取1 alipay，2京东
 	 *
-	 * @return enter_type - 0 alipay，1京东
+	 * @return enter_type - 1 alipay，2京东
 	 */
 	public String getEnterType() {
 		return enterType;

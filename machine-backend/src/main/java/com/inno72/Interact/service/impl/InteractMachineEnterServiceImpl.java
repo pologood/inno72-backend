@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inno72.Interact.mapper.Inno72InteractMachineMapper;
 import com.inno72.Interact.mapper.Inno72MachineEnterMapper;
+import com.inno72.Interact.model.Inno72InteractMachine;
 import com.inno72.Interact.model.Inno72MachineEnter;
 import com.inno72.Interact.service.InteractMachineEnterService;
 import com.inno72.Interact.vo.MachineEnterVo;
@@ -35,6 +37,9 @@ public class InteractMachineEnterServiceImpl extends AbstractService<Inno72Machi
 	@Resource
 	private MachineEnterServiceImpl machineEnterServiceImpl;
 
+	@Resource
+	private Inno72InteractMachineMapper inno72InteractMachineMapper;
+
 	@Override
 	public List<MachineEnterVo> findByPage(String interactId, Integer status, String machineCode) {
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -50,6 +55,49 @@ public class InteractMachineEnterServiceImpl extends AbstractService<Inno72Machi
 
 		if (!enterType.equals("1") && !enterType.equals("2")) {
 			return Results.failure("入驻平台不存在");
+
+		}
+
+		Inno72InteractMachine inno72InteractMachine = new Inno72InteractMachine();
+		inno72InteractMachine.setInteractId(interactId);
+		List<Inno72InteractMachine> interactMachineList = inno72InteractMachineMapper.select(inno72InteractMachine);
+
+		if (null != interactMachineList && interactMachineList.size() > 0) {
+
+			for (Inno72InteractMachine machine : interactMachineList) {
+
+				Inno72MachineEnter machineEnter = new Inno72MachineEnter();
+				machineEnter.setMachineId(machine.getMachineId());
+				machineEnter.setEnterType(enterType);
+
+				machineEnter = inno72MachineEnterMapper.selectOne(machineEnter);
+				if (null != machineEnter && machineEnter.getEnterStatus() == 0) {
+					// 入驻平台：1 蚂蚁金服，2京东金融
+					Result<Object> res = new Result<>();
+					if (enterType.equals("1")) {
+						res = machineEnterServiceImpl.alipayAutomatUpload(machine.getMachineId());
+					} else if (enterType.equals("2")) {
+						res = machineEnterServiceImpl.jingdongAutomatUpload(machine.getMachineId());
+					}
+					if (res.getCode() == 0) {
+						// 更新入驻记录
+						machineEnter.setEnterStatus(1);
+						inno72MachineEnterMapper.updateByPrimaryKeySelective(machineEnter);
+
+						return Results.warn("入驻成功", 0, null);
+					} else {
+						return Results.failure("入驻失败");
+					}
+
+				} else {
+					logger.info("入驻信息有误");
+					return Results.failure("入驻失败");
+				}
+
+			}
+
+		} else {
+			return Results.failure("无可入驻机器");
 		}
 
 		return null;
