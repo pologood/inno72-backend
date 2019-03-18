@@ -196,6 +196,7 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 
 			interact.setRunTime(runTime);
 			interact.setUpdateTime(LocalDateTime.now());
+			this.saveMachineEnter(interact, insetInteractMachineList);
 			inno72InteractMapper.updateByPrimaryKeySelective(interact);
 			inno72InteractMachineMapper.insertInteractMachineList(insetInteractMachineList);
 			inno72InteractMachineTimeMapper.insertInteractMachineTimeList(insetInteractMachineTimeList);
