@@ -25,10 +25,11 @@ import com.inno72.machine.mapper.Inno72MachineMapper;
 import com.inno72.share.mapper.Inno72AlipayAreaMapper;
 import com.inno72.share.model.Inno72AlipayArea;
 
+import tk.mybatis.mapper.entity.Condition;
+
 @Service
 @Transactional
 public class MachineEnterServiceImpl implements MachineEnterService {
-
 	private static Logger logger = LoggerFactory.getLogger(MachineEnterServiceImpl.class);
 
 	private String alipayPrivateKey = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC8o5HZOvFNmUlMNyrUC4GMC47Wqp8MyrokYbk9EsgL1g/mHsuxGi3W1P1LJg8NDknCNKPFuo8Uqs0hT7x32V7lG3nstynh0RT72gUxLlnFG7KecRRj6pSnAs/HF4YfaBgC7ftsTnpNyJnW8CBySpbJ8TY4XkwBXaByFyr9D8ID8i8iUpd/qstGB4YzQfeY52ufEi3VfN68Gcco0lVAZDNcglHs9YsWf//sjej7b5LVvR4hqKSp4CyD2dlNLF/i/mSD3zaH3DsID+xbSV37Ij3vkATjuj0LTOVi4OORPVj91V/2Ogixgk2Uq2BPBSoK/gHsydxrn0CLJjIgYH30t61PAgMBAAECggEBALPGCsQEeVzjncgFt0o34PEPPsRz/HnbZgQwIbIDiSRGkAZWCPcyJMddWjtY/PULTd3H/t/8iElA8Zcyf0GUpewgAFVIxaBQevf98f7J1oGTgOmgiLckIyD6+/sX/xlFQcTg+kBglgw1Be+iDrn9PbEcsPiNXU/b44F3dN+ROew5KhuSel7R+xEJazHUfEOaKIa4dOAK47MzwoCiiXf1kLfOIyFdr/X4LqS5QKiN0NT95xvZgGJ3u7S0szpl1B0IXneC7ZbAytHUeLdPg2yaCbUpDb9ZOI7kQGbkTcRdA1ex+1cmXd/HpOOFJBL0Qno4NGtQ+BSL2x54P22xdE1m91kCgYEA4O1ReydWQWrM/ynJsdKS/1tMswvJL8XWd+6IZv0r1hetiWTZh+nUYZj5/kQUiV/wC98J8pqPQDixt8ANiQh579gXCuqbPpwRnI3k6+K8zwwoET9DRnkCT+XAtRDVN437elj22wXyYYQLKD8joSxQd+NOGAkHcE42p6OfYRCVm7sCgYEA1rLmux+4UQjLEC/EMt7gOZVUbXobnTrna1PcdYFVY6+klvRSt8+W9kVppwEoMpz0Pkt8vGF7Bn/oK1OX4i7sJDx8K21SGKPBtE90hsTvJOAGiAa50LfoMMjGVTMtfXCywuFfq1CWNgkiEj71a5xJWFQZ1AtraYt75sCDLgEaOX0CgYB4r1000xp45zEvB+DsxKuS0A4LU5uTQnecyiPt/pFywimeurntLw2BgG9Ceoz6WLuX4wiXX07VipXwnd+lUyL6CdvzQ4YgxeS9N3VJC9N61G77MhKK0YroC8KmZG3C7S+tqeZqBnrSz+KcqaQYaoqSiSfxxYZ0P8Mbl7OAhUGA2QKBgQC6Py/RHE80XMBrJkS5LIau7U/0OH1EBBlFDdatSKjedTv+h6xKMBbxRH3GlkZcwbNPZwSqFpY2qTaqfzW+zJ2lQaMluQwCu+wJkvOvBZ+/CWghEFSZLzCJQWJr/p1zuBQa4o+veZUVAw8/bMZRt54YtbxCKjXftVSidFZXzjUFsQKBgF+Thohiylk9NLqRhbcrDMzGFcfg8VKP5CMwdnhQpmGgqFuwrQpbxoGPJ0Lgishkp02/LB2sJMzZMPEPQqHtWz3cAfePWm3S3CwwQH/NDnPbtu6IAvJ2MCIW/XSwSP0VvGU8imFIWyy5hFcG+WyHSiKtWapVv+YaP8z87+MAK3rl";
@@ -36,13 +37,10 @@ public class MachineEnterServiceImpl implements MachineEnterService {
 
 	@Resource
 	private Inno72MachineMapper inno72MachineMapper;
-
 	@Resource
 	private Inno72LocaleMapper inno72LocaleMapper;
-
 	@Resource
 	private Inno72MachineEnterMapper inno72MachineEnterMapper;
-
 	@Resource
 	private Inno72AlipayAreaMapper inno72AlipayAreaMapper;
 
@@ -63,7 +61,10 @@ public class MachineEnterServiceImpl implements MachineEnterService {
 
 			Inno72AlipayArea inno72AlipayArea = new Inno72AlipayArea();
 			inno72AlipayArea.setDistrict(district);
-			inno72AlipayArea = inno72AlipayAreaMapper.select(inno72AlipayArea).get(0);
+
+			Condition condition = new Condition(Inno72AlipayArea.class);
+			condition.createCriteria().andEqualTo("name", district);
+			inno72AlipayArea = inno72AlipayAreaMapper.selectByCondition(condition).get(0);
 
 			String areaCode = inno72AlipayArea.getCode();
 			String cityCode = inno72AlipayArea.getParentCode();
