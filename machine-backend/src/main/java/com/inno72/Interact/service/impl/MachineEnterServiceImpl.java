@@ -14,13 +14,16 @@ import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.request.AntMerchantExpandAutomatApplyUploadRequest;
 import com.alipay.api.response.AntMerchantExpandAutomatApplyUploadResponse;
+import com.inno72.Interact.mapper.Inno72MachineEnterMapper;
 import com.inno72.Interact.service.MachineEnterService;
 import com.inno72.common.DateUtil;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.json.JsonUtil;
+import com.inno72.machine.mapper.Inno72LocaleMapper;
 import com.inno72.machine.mapper.Inno72MachineMapper;
-import com.inno72.machine.model.Inno72Machine;
+import com.inno72.share.mapper.Inno72AlipayAreaMapper;
+import com.inno72.share.model.Inno72AlipayArea;
 
 @Service
 @Transactional
@@ -34,6 +37,15 @@ public class MachineEnterServiceImpl implements MachineEnterService {
 	@Resource
 	private Inno72MachineMapper inno72MachineMapper;
 
+	@Resource
+	private Inno72LocaleMapper inno72LocaleMapper;
+
+	@Resource
+	private Inno72MachineEnterMapper inno72MachineEnterMapper;
+
+	@Resource
+	private Inno72AlipayAreaMapper inno72AlipayAreaMapper;
+
 	@Override
 	public Result<Object> alipayAutomatUpload(String machineId) {
 		String appId = "2018112362328253";
@@ -45,12 +57,20 @@ public class MachineEnterServiceImpl implements MachineEnterService {
 					"utf-8", alipayPublicKey, "RSA2");
 			AntMerchantExpandAutomatApplyUploadRequest request = new AntMerchantExpandAutomatApplyUploadRequest();
 
-			Inno72Machine machine = inno72MachineMapper.selectByPrimaryKey(machineId);
+			Map<String, String> machineAddress = inno72MachineEnterMapper.selectMachineAddress(machineId);
+			String address = machineAddress.get("address");
+			String district = machineAddress.get("district");
 
-			inno72MachineMapper.findMachineInfoById(machineId);
+			Inno72AlipayArea inno72AlipayArea = new Inno72AlipayArea();
+			inno72AlipayArea.setDistrict(district);
+			inno72AlipayArea = inno72AlipayAreaMapper.select(inno72AlipayArea).get(0);
+
+			String areaCode = inno72AlipayArea.getCode();
+			String cityCode = inno72AlipayArea.getParentCode();
+			String provinceCode = getParentCode(areaCode, 1);
 
 			Map<String, Object> param = new HashMap<String, Object>();
-			param.put("terminal_id", machine.getMachineCode());
+			param.put("terminal_id", machineAddress.get("machineCode"));
 			param.put("product_user_id", alipayUserId);
 			param.put("merchant_user_id", alipayUserId);
 			param.put("machine_type", "AUTOMAT");
@@ -64,16 +84,30 @@ public class MachineEnterServiceImpl implements MachineEnterService {
 			associate.put("associate_user_id", alipayUserId);
 
 			Map<String, Object> deliveryAddress = new HashMap<String, Object>();
-			deliveryAddress.put("province_code", "110000");
-			deliveryAddress.put("city_code", "110100");
-			deliveryAddress.put("area_code", "110105");
-			deliveryAddress.put("machine_address", "骏豪朝阳公园广场");
+			deliveryAddress.put("province_code", provinceCode);
+			deliveryAddress.put("city_code", cityCode);
+			deliveryAddress.put("area_code", areaCode);
+			deliveryAddress.put("machine_address", address);
+
+			/*
+			 * deliveryAddress.put("province_code", "110000");
+			 * deliveryAddress.put("city_code", "110100");
+			 * deliveryAddress.put("area_code", "110105");
+			 * deliveryAddress.put("machine_address", "骏豪朝阳公园广场");
+			 */
 
 			Map<String, Object> pointPosition = new HashMap<String, Object>();
-			pointPosition.put("province_code", "110000");
-			pointPosition.put("city_code", "110100");
-			pointPosition.put("area_code", "110105");
-			pointPosition.put("machine_address", "骏豪朝阳公园广场");
+			pointPosition.put("province_code", provinceCode);
+			pointPosition.put("city_code", cityCode);
+			pointPosition.put("area_code", areaCode);
+			pointPosition.put("machine_address", address);
+
+			/*
+			 * pointPosition.put("province_code", "110000");
+			 * pointPosition.put("city_code", "110100");
+			 * pointPosition.put("area_code", "110105");
+			 * pointPosition.put("machine_address", "骏豪朝阳公园广场");
+			 */
 
 			Map<String, Object> scene = new HashMap<String, Object>();
 			scene.put("level_1", "MALL");
@@ -84,7 +118,7 @@ public class MachineEnterServiceImpl implements MachineEnterService {
 			param.put("associate", associate);
 			param.put("scene", scene);
 
-			System.out.println("-----------------" + JsonUtil.toJson(param));
+			System.out.println("入驻参数：" + JsonUtil.toJson(param));
 
 			request.setBizContent(JsonUtil.toJson(param));
 
@@ -105,6 +139,16 @@ public class MachineEnterServiceImpl implements MachineEnterService {
 	@Override
 	public Result<Object> jingdongAutomatUpload(String machineCode) {
 		return Results.warn("入驻成功", 0, "success");
+	}
+
+	public static String getParentCode(String areaCode, int level) {
+		String coed = "";
+		if (level == 1) {
+			coed = areaCode.substring(0, 2) + "0000";
+		} else if (level == 2) {
+			coed = areaCode.substring(0, 4) + "00";
+		}
+		return coed;
 	}
 
 }

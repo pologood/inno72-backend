@@ -12,6 +12,8 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inno72.share.mapper.Inno72AlipayAreaMapper;
+
 @Service
 @Transactional
 public class InitAlipayArea {
@@ -34,7 +36,7 @@ public class InitAlipayArea {
 				while ((text = bufferedReader.readLine()) != null) {
 					initArea(text);
 				}
-				int n = alipayAreaMapper.insertAlipayAreaList(list);
+				// int n = alipayAreaMapper.insertAlipayAreaList(list);
 				return list;
 			} catch (Exception e) {
 				e.printStackTrace();
