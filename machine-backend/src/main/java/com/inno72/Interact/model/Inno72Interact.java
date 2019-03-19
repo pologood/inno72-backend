@@ -57,6 +57,7 @@ public class Inno72Interact {
 	/**
 	 * 入驻平台类型
 	 */
+	@Column(name = "enter_type")
 	private String enterType;
 
 	/**
