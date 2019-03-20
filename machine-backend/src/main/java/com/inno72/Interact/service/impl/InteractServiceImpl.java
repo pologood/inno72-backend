@@ -219,32 +219,33 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 
 	public void saveMachineEnter(String interactId, String enterType) {
 		logger.info("---------------------机器初始化入驻操作-------------------");
-
 		// 判断时候需要入驻
-		String[] enterTypes = enterType.split(",");
-		List<Inno72MachineEnter> insetMachineEnterList = new ArrayList<>();
 		Inno72InteractMachine interactMachine = new Inno72InteractMachine();
-		List<Inno72InteractMachine> interactMachineList = inno72InteractMachineMapper.select(interactMachine);
 		interactMachine.setInteractId(interactId);
-		for (String type : enterTypes) {
-			for (Inno72InteractMachine machine : interactMachineList) {
-				Inno72MachineEnter machineEnter = new Inno72MachineEnter();
-				machineEnter.setId(StringUtil.getUUID());
-				machineEnter.setEnterType(type);
-				machineEnter.setEnterStatus(0);
-				machineEnter.setMachineId(machine.getMachineId());
-				machineEnter.setMachineCode(machine.getMachineCode());
-				machineEnter.setCreateTime(LocalDateTime.now());
-				insetMachineEnterList.add(machineEnter);
+		List<Inno72InteractMachine> machineList = inno72InteractMachineMapper.select(interactMachine);
+		if (machineList != null && machineList.size() > 0) {
+			List<Inno72MachineEnter> insetMachineEnterList = new ArrayList<>();
+
+			String[] enterTypes = enterType.split(",");
+			for (String type : enterTypes) {
+				for (Inno72InteractMachine machine : machineList) {
+					Inno72MachineEnter machineEnter = new Inno72MachineEnter();
+					machineEnter.setId(StringUtil.getUUID());
+					machineEnter.setEnterType(type);
+					machineEnter.setEnterStatus(0);
+					machineEnter.setMachineId(machine.getMachineId());
+					machineEnter.setMachineCode(machine.getMachineCode());
+					machineEnter.setCreateTime(LocalDateTime.now());
+					insetMachineEnterList.add(machineEnter);
+				}
+			}
+			// 查询已入驻机器
+			List<Inno72MachineEnter> enterList = inno72MachineEnterMapper.selectAll();
+			insetMachineEnterList.removeAll(enterList);
+			if (insetMachineEnterList.size() > 0) {
+				inno72MachineEnterMapper.insetMachineEnterList(insetMachineEnterList);
 			}
 		}
-		// 查询已入驻机器
-		List<Inno72MachineEnter> enterList = inno72MachineEnterMapper.selectAll();
-		insetMachineEnterList.removeAll(enterList);
-		if (insetMachineEnterList.size() > 0) {
-			inno72MachineEnterMapper.insetMachineEnterList(insetMachineEnterList);
-		}
-
 	}
 
 	@Override
