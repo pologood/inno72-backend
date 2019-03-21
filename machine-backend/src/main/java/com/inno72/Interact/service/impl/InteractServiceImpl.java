@@ -490,7 +490,26 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 
 	@Override
 	public Inno72InteractVo findDetailById(String id) {
-		return inno72InteractMapper.selectInteractDetail(id);
+		Inno72InteractVo detail = inno72InteractMapper.selectInteractDetail(id);
+
+		if (StringUtil.isNotBlank(detail.getEnterType())) {
+			List<Map<String, String>> enterTypeList = new ArrayList<>();
+			String[] enterTypes = detail.getEnterType().split(",");
+			for (String enterType : enterTypes) {
+				Map<String, String> m = new HashMap<>();
+				if (enterType.equals("1")) {
+					m.put("enterType", enterType);
+					m.put("name", "蚂蚁金服");
+				}
+				if (enterType.equals("2")) {
+					m.put("enterType", enterType);
+					m.put("name", "京东金融");
+				}
+				enterTypeList.add(m);
+			}
+			detail.setEnterTypeList(enterTypeList);
+		}
+		return detail;
 	}
 
 }
