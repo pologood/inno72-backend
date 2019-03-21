@@ -71,36 +71,57 @@ public class MachineEnterServiceImpl implements MachineEnterService {
 			String cityCode = inno72AlipayArea.getParentCode();
 			String provinceCode = getParentCode(areaCode, 1);
 
-			AlipayAutomat automat = new AlipayAutomat();
+			AlipayAutomat p = new AlipayAutomat();
 
-			automat.setTerminal_id(machineAddress.get("machineCode"));
-			automat.setProduct_user_id(alipayUserId);
-			automat.setMerchant_user_id(alipayUserId);
-			automat.setMachine_type("AUTOMAT");
-			automat.setMachine_cooperation_type("COOPERATION_EXCLUSIVE");
-			automat.setMachine_delivery_date(DateUtil.nowStr());
-			automat.setMachine_name("点72");
+			p.setTerminal_id(machineAddress.get("machineCode"));
+			p.setProduct_user_id(alipayUserId);
+			p.setMerchant_user_id(alipayUserId);
+			p.setMachine_type("AUTOMAT");
+			p.setMachine_cooperation_type("COOPERATION_EXCLUSIVE");
+			p.setMachine_delivery_date(DateUtil.nowStr());
+			p.setMachine_name("点72");
 
 			Map<String, String> associate = new HashMap<String, String>();
 			associate.put("associate_type ", "DISTRIBUTORS");
 			associate.put("associate_user_id", alipayUserId);
 
-			Map<String, String> areaAddress = new HashMap<String, String>();
-			areaAddress.put("province_code", provinceCode);
-			areaAddress.put("city_code", cityCode);
-			areaAddress.put("area_code", areaCode);
-			areaAddress.put("machine_address", address);
+			Map<String, String> deliveryAddress = new HashMap<String, String>();
+			deliveryAddress.put("province_code", provinceCode);
+			deliveryAddress.put("city_code", cityCode);
+			deliveryAddress.put("area_code", areaCode);
+			deliveryAddress.put("machine_address", address);
 
-			automat.setDelivery_address(areaAddress);
-			automat.setPoint_position(areaAddress);
-			automat.setMerchant_user_type("ALIPAY_MERCHANT");
+			/*
+			 * deliveryAddress.put("province_code", "110000");
+			 * deliveryAddress.put("city_code", "110100");
+			 * deliveryAddress.put("area_code", "110105");
+			 * deliveryAddress.put("machine_address", "骏豪朝阳公园广场");
+			 */
+
+			Map<String, String> pointPosition = new HashMap<String, String>();
+			pointPosition.put("province_code", provinceCode);
+			pointPosition.put("city_code", cityCode);
+			pointPosition.put("area_code", areaCode);
+			pointPosition.put("machine_address", address);
+
+			p.setDelivery_address(deliveryAddress);
+			p.setPoint_position(deliveryAddress);
+			p.setMerchant_user_type("ALIPAY_MERCHANT");
 			// p.setAssociate(associate);
+			/*
+			 * pointPosition.put("province_code", "110000");
+			 * pointPosition.put("city_code", "110100");
+			 * pointPosition.put("area_code", "110105");
+			 * pointPosition.put("machine_address", "骏豪朝阳公园广场");
+			 */
 
 			Map<String, String> scene = new HashMap<String, String>();
 			scene.put("level_1", "MALL");
 			scene.put("level_2", "001");
-			automat.setScene(scene);
-			logger.info("入驻参数：" + JsonUtil.toJson(automat));
+			p.setScene(scene);
+
+			request.setBizContent(JsonUtil.toJson(p));
+			logger.info("入驻参数：" +  request.getBizContent());
 
 			AntMerchantExpandAutomatApplyUploadResponse response = alipayClient.execute(request);
 			if (response.isSuccess()) {
