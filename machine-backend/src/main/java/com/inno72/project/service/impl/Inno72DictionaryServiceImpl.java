@@ -40,12 +40,12 @@ public class Inno72DictionaryServiceImpl extends AbstractService<Inno72Dictionar
 			result.put("channel", this.getDictionary(Inno72Dictionary.CHANNEL));
 			break;
 		case Inno72Dictionary.ENTER:
-			result.put("enyer", this.getDictionary(Inno72Dictionary.ENTER));
+			result.put("enter", this.getDictionary(Inno72Dictionary.ENTER));
 			break;
 		default:
 			result.put("industry", this.getDictionary(Inno72Dictionary.INDUSTRY));
 			result.put("channel", this.getDictionary(Inno72Dictionary.CHANNEL));
-			result.put("enyer", this.getDictionary(Inno72Dictionary.ENTER));
+			result.put("enter", this.getDictionary(Inno72Dictionary.ENTER));
 
 		}
 		LOGGER.info("字典数据 code - {}, result - {}", JSON.toJSONString(result));
