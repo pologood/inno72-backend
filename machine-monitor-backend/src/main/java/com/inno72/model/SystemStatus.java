@@ -36,6 +36,7 @@ public class SystemStatus {
 	private double allTraffic;// 手机总流量
 	private double thatdayTraffic;// 当天流量
 	private double monthTraffic;// 当月流量
+	private String systemVersion;
 
 	/**
 	 * 创建时间
@@ -171,4 +172,11 @@ public class SystemStatus {
 		this.monthTraffic = monthTraffic;
 	}
 
+	public String getSystemVersion() {
+		return systemVersion;
+	}
+
+	public void setSystemVersion(String systemVersion) {
+		this.systemVersion = systemVersion;
+	}
 }
