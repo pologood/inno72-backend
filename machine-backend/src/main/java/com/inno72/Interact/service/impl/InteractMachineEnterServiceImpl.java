@@ -13,13 +13,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.Interact.mapper.Inno72InteractMachineMapper;
+import com.inno72.Interact.mapper.Inno72InteractMapper;
 import com.inno72.Interact.mapper.Inno72MachineEnterMapper;
+import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.model.Inno72MachineEnter;
 import com.inno72.Interact.service.InteractMachineEnterService;
 import com.inno72.Interact.vo.MachineEnterVo;
 import com.inno72.common.AbstractService;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
+import com.inno72.common.StringUtil;
 
 /**
  * Created by CodeGenerator on 2019/03/15.
@@ -40,12 +43,19 @@ public class InteractMachineEnterServiceImpl extends AbstractService<Inno72Machi
 	@Resource
 	private Inno72InteractMachineMapper inno72InteractMachineMapper;
 
+	@Resource
+	private Inno72InteractMapper inno72InteractMapper;
+
 	@Override
 	public List<MachineEnterVo> findByPage(String interactId, String status, String machineCode) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("interactId", interactId);
 		params.put("enterStatus", status);
 		params.put("machineCode", machineCode);
+		Inno72Interact inno72Interact = inno72InteractMapper.selectByPrimaryKey(interactId);
+		if (StringUtil.isNotBlank(inno72Interact.getEnterType())) {
+			params.put("enterType", inno72Interact.getEnterType());
+		}
 
 		return inno72MachineEnterMapper.selectByPage(params);
 	}
