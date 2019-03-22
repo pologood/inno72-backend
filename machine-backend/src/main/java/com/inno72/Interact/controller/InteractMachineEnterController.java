@@ -37,7 +37,7 @@ public class InteractMachineEnterController {
 	}
 
 	@RequestMapping(value = "/list", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView list(String interactId, Integer status, String machineCode) {
+	public ModelAndView list(String interactId, String status, String machineCode) {
 		List<MachineEnterVo> list = interactMachineEnterService.findByPage(interactId, status, machineCode);
 		return ResultPages.page(ResultGenerator.genSuccessResult(list));
 	}
