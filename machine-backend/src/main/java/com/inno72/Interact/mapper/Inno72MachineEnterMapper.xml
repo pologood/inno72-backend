@@ -61,7 +61,7 @@
         and me.enter_status = #{enterStatus}
       </if>
       <if test="enterType != null and enterType !=''">
-        and me.enter_type in (#{enterType}) 
+        and me.enter_type in (${enterType}) 
       </if>
     </where>
 		
