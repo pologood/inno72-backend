@@ -41,10 +41,10 @@ public class InteractMachineEnterServiceImpl extends AbstractService<Inno72Machi
 	private Inno72InteractMachineMapper inno72InteractMachineMapper;
 
 	@Override
-	public List<MachineEnterVo> findByPage(String interactId, Integer status, String machineCode) {
+	public List<MachineEnterVo> findByPage(String interactId, String status, String machineCode) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("interactId", interactId);
-		params.put("status", status);
+		params.put("enterStatus", status);
 		params.put("machineCode", machineCode);
 
 		return inno72MachineEnterMapper.selectByPage(params);

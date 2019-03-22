@@ -380,15 +380,17 @@ public class InteractMachineServiceImpl extends AbstractService<Inno72InteractMa
 
 			List<Inno72MachineEnter> insetMachineEnterList = new ArrayList<>();
 			for (String type : enterTypes) {
-				for (Inno72InteractMachine interactMachine : insetInteractMachineList) {
-					Inno72MachineEnter machineEnter = new Inno72MachineEnter();
-					machineEnter.setId(StringUtil.getUUID());
-					machineEnter.setEnterType(type);
-					machineEnter.setEnterStatus(0);
-					machineEnter.setMachineId(interactMachine.getMachineId());
-					machineEnter.setMachineCode(interactMachine.getMachineCode());
-					machineEnter.setCreateTime(LocalDateTime.now());
-					insetMachineEnterList.add(machineEnter);
+				if (type.equals("1") || type.equals("2")) {
+					for (Inno72InteractMachine interactMachine : insetInteractMachineList) {
+						Inno72MachineEnter machineEnter = new Inno72MachineEnter();
+						machineEnter.setId(StringUtil.getUUID());
+						machineEnter.setEnterType(type);
+						machineEnter.setEnterStatus(0);
+						machineEnter.setMachineId(interactMachine.getMachineId());
+						machineEnter.setMachineCode(interactMachine.getMachineCode());
+						machineEnter.setCreateTime(LocalDateTime.now());
+						insetMachineEnterList.add(machineEnter);
+					}
 				}
 			}
 			// 查询已入驻机器

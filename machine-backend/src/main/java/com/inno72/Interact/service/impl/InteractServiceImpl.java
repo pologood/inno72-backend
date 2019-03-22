@@ -228,15 +228,17 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 
 			String[] enterTypes = enterType.split(",");
 			for (String type : enterTypes) {
-				for (Inno72InteractMachine machine : machineList) {
-					Inno72MachineEnter machineEnter = new Inno72MachineEnter();
-					machineEnter.setId(StringUtil.getUUID());
-					machineEnter.setEnterType(type);
-					machineEnter.setEnterStatus(0);
-					machineEnter.setMachineId(machine.getMachineId());
-					machineEnter.setMachineCode(machine.getMachineCode());
-					machineEnter.setCreateTime(LocalDateTime.now());
-					insetMachineEnterList.add(machineEnter);
+				if (type.equals("1") || type.equals("2")) {
+					for (Inno72InteractMachine machine : machineList) {
+						Inno72MachineEnter machineEnter = new Inno72MachineEnter();
+						machineEnter.setId(StringUtil.getUUID());
+						machineEnter.setEnterType(type);
+						machineEnter.setEnterStatus(0);
+						machineEnter.setMachineId(machine.getMachineId());
+						machineEnter.setMachineCode(machine.getMachineCode());
+						machineEnter.setCreateTime(LocalDateTime.now());
+						insetMachineEnterList.add(machineEnter);
+					}
 				}
 			}
 			// 查询已入驻机器

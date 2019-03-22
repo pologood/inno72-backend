@@ -12,7 +12,7 @@ import com.inno72.common.Service;
  */
 public interface InteractMachineEnterService extends Service<Inno72MachineEnter> {
 
-	List<MachineEnterVo> findByPage(String interactId, Integer status, String machineCode);
+	List<MachineEnterVo> findByPage(String interactId, String status, String machineCode);
 
 	Result<Object> updateBatchEnter(String interactId, String enterType);
 
