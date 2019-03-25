@@ -63,6 +63,35 @@
       <if test="enterType != null and enterType !=''">
         and me.enter_type in (${enterType}) 
       </if>
+      
+       GROUP BY im.machine_id
+    </where>
+  </select>
+    <select id="selectMachineEnterAll" parameterType="java.util.Map" resultMap="VoResultMap">
+  	SELECT
+		im.machine_id,im.machine_code,
+		CONCAT( area.province, area.city, area.district, IFNULL( l.mall, "" ), IFNULL( l.NAME, "" ) ) AS local_desc,
+		me.enter_status,
+		me.enter_type
+	FROM
+		inno72_interact_machine im
+		LEFT JOIN inno72_machine_enter me ON me.machine_id = im.machine_id
+		LEFT JOIN inno72_machine m ON m.id = im.machine_id
+		LEFT JOIN inno72_locale l ON l.id = m.locale_id
+		LEFT JOIN inno72_admin_area area ON area.CODE = l.area_code
+	<where>
+	<if test="interactId != null and interactId !=''">
+        im.interact_id = #{interactId}
+      </if>
+      <if test="machineCode != null and machineCode !=''">
+        and m.machine_code = #{machineCode}
+      </if>
+      <if test="enterStatus != null and enterStatus !=''">
+        and me.enter_status = #{enterStatus}
+      </if>
+      <if test="enterType != null and enterType !=''">
+        and me.enter_type in (${enterType}) 
+      </if>
     </where>
 		
   </select>

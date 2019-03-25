@@ -16,6 +16,8 @@ public interface Inno72MachineEnterMapper extends Mapper<Inno72MachineEnter> {
 
 	List<MachineEnterVo> selectByPage(Map<String, Object> params);
 
+	List<MachineEnterVo> selectMachineEnterAll(Map<String, Object> params);
+
 	List<Inno72MachineEnter> selectMachineEnterList(Map<String, Object> params);
 
 	Map<String, String> selectMachineAddress(@Param("machineId") String machineId);

@@ -57,7 +57,18 @@ public class InteractMachineEnterServiceImpl extends AbstractService<Inno72Machi
 			params.put("enterType", inno72Interact.getEnterType());
 		}
 
-		return inno72MachineEnterMapper.selectByPage(params);
+		List<MachineEnterVo> list = inno72MachineEnterMapper.selectByPage(params);
+
+		List<MachineEnterVo> list1 = inno72MachineEnterMapper.selectMachineEnterAll(params);
+		for (MachineEnterVo machineEnterVo : list) {
+			for (MachineEnterVo machineEnterVo1 : list1) {
+				if (machineEnterVo.getMachineId().equals(machineEnterVo1.getMachineId())) {
+					machineEnterVo.setEnterList(machineEnterVo1.getEnterList());
+				}
+			}
+		}
+
+		return list;
 	}
 
 	@Override
