@@ -63,7 +63,7 @@
       <if test="enterType != null and enterType !=''">
         and me.enter_type in (${enterType}) 
       </if>
-       GROUP BY im.machine_id
+      GROUP BY im.machine_id
       ORDER BY im.machine_code,me.enter_type
     </where>
   </select>
