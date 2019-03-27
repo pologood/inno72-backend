@@ -69,8 +69,8 @@
 
     <select id="selectListCount" resultType="java.lang.Integer">
       select count(*) from inno72_order o
+      left join inno72_machine m on m.id=o.machine_id
       <if test="areaCode != null and areaCode != ''">
-          left join inno72_machine m on m.id=o.machine_id
           left join inno72_locale l on m.locale_id=l.id
       </if>
       <if test="keyword != null and keyword != ''">
@@ -119,8 +119,8 @@
       where 	o.id in
       (select t.id from (
       select o.id from inno72_order o
+      left join inno72_machine m on m.id=o.machine_id
       <if test="areaCode != null and areaCode != ''">
-          left join inno72_machine m on m.id=o.machine_id
           left join inno72_locale l on m.locale_id=l.id
       </if>
       <if test="keyword != null and keyword != ''">
