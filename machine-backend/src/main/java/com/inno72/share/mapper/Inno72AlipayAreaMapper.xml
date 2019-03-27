@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inno72.share.mapper.Inno72AlipayAreaMapper">
+    <resultMap id="BaseResultMap" type="com.inno72.share.model.Inno72AlipayArea">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="code" jdbcType="VARCHAR" property="code" />
+        <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="province" jdbcType="VARCHAR" property="province" />
+        <result column="city" jdbcType="VARCHAR" property="city" />
+        <result column="district" jdbcType="VARCHAR" property="district" />
+        <result column="level" jdbcType="INTEGER" property="level" />
+    </resultMap>
+    
+    <insert id="insertAlipayAreaList" parameterType="java.util.List">
+        insert into inno72_alipay_area (code,parent_code,name,province,level)
+        values
+        <foreach collection="list" item="t" index="index" separator=",">
+            (#{t.code}, #{t.parentCode},#{t.name},#{t.province},#{t.level})
+        </foreach>
+  </insert>
+
+   
+</mapper>

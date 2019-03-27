@@ -55,6 +55,12 @@ public class Inno72Interact {
 	private String manager;
 
 	/**
+	 * 入驻平台类型
+	 */
+	@Column(name = "enter_type")
+	private String enterType;
+
+	/**
 	 * 状态：0待提交，1已提交，3已结束
 	 */
 	private Integer status;
@@ -229,6 +235,14 @@ public class Inno72Interact {
 	 */
 	public void setManager(String manager) {
 		this.manager = manager;
+	}
+
+	public String getEnterType() {
+		return enterType;
+	}
+
+	public void setEnterType(String enterType) {
+		this.enterType = enterType;
 	}
 
 	/**

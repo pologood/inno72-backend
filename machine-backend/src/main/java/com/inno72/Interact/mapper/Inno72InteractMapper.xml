@@ -12,6 +12,7 @@
     <result column="plan_code" jdbcType="VARCHAR" property="planCode" />
     <result column="day" jdbcType="VARCHAR" property="day" />
     <result column="manager" jdbcType="VARCHAR" property="manager" />
+    <result column="enter_type" jdbcType="VARCHAR" property="enterType" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="times" jdbcType="INTEGER" property="times" />
     <result column="day_times" jdbcType="INTEGER" property="dayTimes" />

@@ -21,10 +21,12 @@ import com.inno72.Interact.mapper.Inno72InteractMachineMapper;
 import com.inno72.Interact.mapper.Inno72InteractMapper;
 import com.inno72.Interact.mapper.Inno72InteractMerchantMapper;
 import com.inno72.Interact.mapper.Inno72InteractShopsMapper;
+import com.inno72.Interact.mapper.Inno72MachineEnterMapper;
 import com.inno72.Interact.model.Inno72Interact;
 import com.inno72.Interact.model.Inno72InteractGameRule;
 import com.inno72.Interact.model.Inno72InteractGoods;
 import com.inno72.Interact.model.Inno72InteractMachine;
+import com.inno72.Interact.model.Inno72MachineEnter;
 import com.inno72.Interact.service.InteractService;
 import com.inno72.Interact.vo.Inno72InteractMachineGoodsVo;
 import com.inno72.Interact.vo.Inno72InteractVo;
@@ -57,24 +59,20 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 	private IRedisUtil redisUtil;
 	@Resource
 	private Inno72InteractMapper inno72InteractMapper;
-
 	@Resource
 	private Inno72InteractMachineMapper inno72InteractMachineMapper;
-
 	@Resource
 	private Inno72InteractMerchantMapper inno72InteractMerchantMapper;
-
 	@Resource
 	private Inno72InteractShopsMapper inno72InteractShopsMapper;
-
 	@Resource
 	private Inno72InteractGoodsMapper inno72InteractGoodsMapper;
-
 	@Resource
 	private Inno72InteractMachineGoodsMapper inno72InteractMachineGoodsMapper;
-
 	@Resource
 	private Inno72InteractGameRuleMapper inno72InteractGameRuleMapper;
+	@Resource
+	private Inno72MachineEnterMapper inno72MachineEnterMapper;
 
 	@Override
 	public List<InteractListVo> findByPage(String keyword, Integer status, String orderBy) {
@@ -192,6 +190,10 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 					logger.info("请填写负责人");
 					return Results.failure("请填写负责人");
 				}
+				if (StringUtil.isNotBlank(model.getEnterType())) {
+					this.saveMachineEnter(model.getId(), model.getEnterType());
+				}
+
 				inno72InteractMapper.updateByPrimaryKeySelective(model);
 			} else if (type == 2) {
 
@@ -212,6 +214,39 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 			e.printStackTrace();
 			logger.info(e.getMessage());
 			return Results.failure("操作失败");
+		}
+	}
+
+	public void saveMachineEnter(String interactId, String enterType) {
+		logger.info("---------------------机器初始化入驻操作-------------------");
+		// 判断时候需要入驻
+		Inno72InteractMachine interactMachine = new Inno72InteractMachine();
+		interactMachine.setInteractId(interactId);
+		List<Inno72InteractMachine> machineList = inno72InteractMachineMapper.select(interactMachine);
+		if (machineList != null && machineList.size() > 0) {
+			List<Inno72MachineEnter> insetMachineEnterList = new ArrayList<>();
+
+			String[] enterTypes = enterType.split(",");
+			for (String type : enterTypes) {
+				if (type.equals("1") || type.equals("2")) {
+					for (Inno72InteractMachine machine : machineList) {
+						Inno72MachineEnter machineEnter = new Inno72MachineEnter();
+						machineEnter.setId(StringUtil.getUUID());
+						machineEnter.setEnterType(type);
+						machineEnter.setEnterStatus(0);
+						machineEnter.setMachineId(machine.getMachineId());
+						machineEnter.setMachineCode(machine.getMachineCode());
+						machineEnter.setCreateTime(LocalDateTime.now());
+						insetMachineEnterList.add(machineEnter);
+					}
+				}
+			}
+			// 查询已入驻机器
+			List<Inno72MachineEnter> enterList = inno72MachineEnterMapper.selectAll();
+			insetMachineEnterList.removeAll(enterList);
+			if (insetMachineEnterList.size() > 0) {
+				inno72MachineEnterMapper.insetMachineEnterList(insetMachineEnterList);
+			}
 		}
 	}
 
@@ -457,7 +492,26 @@ public class InteractServiceImpl extends AbstractService<Inno72Interact> impleme
 
 	@Override
 	public Inno72InteractVo findDetailById(String id) {
-		return inno72InteractMapper.selectInteractDetail(id);
+		Inno72InteractVo detail = inno72InteractMapper.selectInteractDetail(id);
+
+		if (StringUtil.isNotBlank(detail.getEnterType())) {
+			List<Map<String, String>> enterTypeList = new ArrayList<>();
+			String[] enterTypes = detail.getEnterType().split(",");
+			for (String enterType : enterTypes) {
+				Map<String, String> m = new HashMap<>();
+				if (enterType.equals("1")) {
+					m.put("enterType", enterType);
+					m.put("name", "蚂蚁金服");
+				}
+				if (enterType.equals("2")) {
+					m.put("enterType", enterType);
+					m.put("name", "京东金融");
+				}
+				enterTypeList.add(m);
+			}
+			detail.setEnterTypeList(enterTypeList);
+		}
+		return detail;
 	}
 
 }
