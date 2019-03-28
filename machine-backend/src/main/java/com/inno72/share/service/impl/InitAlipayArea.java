@@ -1,4 +1,4 @@
-package com.inno72.test.alipay;
+package com.inno72.share.service.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inno72.share.mapper.Inno72AlipayAreaMapper;
+import com.inno72.share.model.Inno72AlipayArea;
 
 @Service
 @Transactional
@@ -36,7 +37,7 @@ public class InitAlipayArea {
 				while ((text = bufferedReader.readLine()) != null) {
 					initArea(text);
 				}
-				// int n = alipayAreaMapper.insertAlipayAreaList(list);
+				int n = alipayAreaMapper.insertAlipayAreaList(list);
 				return list;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -53,7 +54,7 @@ public class InitAlipayArea {
 		Inno72AlipayArea area = new Inno72AlipayArea();
 		area.setCode(code);
 		area.setName(name.trim());
-		int level = getAreaCodeNum(code) / 2;
+		int level = getAreaCodeNum(code);
 		area.setLevel(level);
 		if (level == 1) {
 			area.setProvince(area.getName());

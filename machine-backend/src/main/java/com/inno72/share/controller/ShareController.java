@@ -17,6 +17,7 @@ import com.inno72.common.Result;
 import com.inno72.common.ResultGenerator;
 import com.inno72.project.service.Inno72DictionaryService;
 import com.inno72.share.service.ShareService;
+import com.inno72.share.service.impl.InitAlipayArea;
 
 /**
  * Created by CodeGenerator on 2018/06/29.
@@ -27,6 +28,8 @@ import com.inno72.share.service.ShareService;
 public class ShareController {
 	@Resource
 	private ShareService shareService;
+	@Resource
+	private InitAlipayArea initAlipayArea;
 
 	@Resource
 	private Inno72DictionaryService inno72DictionaryService;
@@ -44,5 +47,11 @@ public class ShareController {
 	@RequestMapping(value = "/getBaseDict", method = { RequestMethod.POST, RequestMethod.GET })
 	public Result<Map<String, List<Map<String, String>>>> getBaseDict(String type) {
 		return inno72DictionaryService.getBaseDict(type);
+	}
+
+	@RequestMapping(value = "/initAlipayArea", method = { RequestMethod.POST, RequestMethod.GET })
+	public void initAlipayArea(String type) {
+		initAlipayArea.init("/Users/72cy-0101-01-0014/aaaa.txt");
+
 	}
 }
